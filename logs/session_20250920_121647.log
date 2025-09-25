@@ -1,0 +1,3 @@
+2025-09-20 12:16:47 - INFO - logger.py:124 - === Nueva sesión iniciada: 20250920_121647 ===
+2025-09-20 12:16:47 - INFO - test_logging_system.py:168 - Test de sesión específica
+2025-09-20 12:16:47 - WARNING - test_logging_system.py:169 - Test warning en sesión

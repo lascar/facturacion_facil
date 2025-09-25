@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/utils/logger.py
+# hypothesis_version: 6.139.2
+
+[1024, '%H:%M:%S', '%Y%m%d_%H%M%S', '%Y-%m-%d %H:%M:%S', 'facturacion_facil', 'logs', 'utf-8']

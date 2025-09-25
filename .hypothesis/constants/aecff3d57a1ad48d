@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/common/validators.py
+# hypothesis_version: 6.139.2
+
+[0.0, 100, 254, '+', '..', '0.0%', 'Cantidad', 'DNI/NIE/NIF', 'Email', 'IVA', 'Precio', 'Teléfono', '[^\\d]', '^(\\+)?[\\d\\s\\-\\(\\)]+$', '^[XYZ]\\d{7}[A-Z]$', '^\\d{8}[A-Z]$', 'descuento_amount', 'iva_amount', 'subtotal', 'total', 'validators', '€']

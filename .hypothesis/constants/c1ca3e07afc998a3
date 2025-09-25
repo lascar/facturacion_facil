@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/common/ui_components.py
+# hypothesis_version: 6.139.2
+
+[100, 120, 150, 750, 1150, '*.*', '*.bmp', '*.gif', '*.jpg *.jpeg', '*.png', '-topmost', '1.0', '800x600', '<Button-4>', '<Button-5>', '<MouseWheel>', 'BMP files', 'Configuración', 'Error', 'GIF files', 'Imágenes', 'JPEG files', 'PNG files', 'Sin imagen', 'Todos los archivos', '_show_message', 'both', 'disabled', 'error', 'image_selector', 'imagen', 'info', 'left', 'main_frame', 'normal', 'quitar_imagen', 'right', 'seleccionar_imagen', 'ui_components', 'units', 'warning', 'window', 'x', 'yesno', '⚙️']

@@ -1,0 +1,21 @@
+{
+  "default_image_directory": "/home/pascal/Documents",
+  "assets_directory": "assets/images",
+  "max_image_size": 1048576,
+  "supported_image_formats": [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".bmp"
+  ],
+  "image_display_size": [
+    150,
+    150
+  ],
+  "factura_numero_inicial": 500,
+  "factura_auto_increment": true,
+  "factura_prefijo": "FACT",
+  "factura_sufijo": "-2024",
+  "factura_formato": "{prefijo}{numero}{sufijo}"
+}

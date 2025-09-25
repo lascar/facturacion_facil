@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/ui/producto_factura_dialog.py
+# hypothesis_version: 6.139.2
+
+[100, 120, 400, ' (', '#228B22', '#2E8B57', '*', '+', '0', '0.0', '0.00', '0.00 €', '1', '21.0', '500x600', '<Button-4>', '<Button-5>', '<FocusIn>', '<KeyRelease>', '<MouseWheel>', 'Configuración:', 'Descuento (%)', 'Descuento:', 'Error', 'Error de Validación', 'IVA:', 'Preview de Totales:', 'Subtotal:', 'Total:', 'aceptar', 'all', 'bind', 'bold', 'both', 'break', 'cancelar', 'cantidad', 'delta', 'descuento_amount', 'dialog', 'e', 'iva_amount', 'iva_aplicado', 'left', 'num', 'precio_unitario', 'right', 'subtotal', 'total', 'units', 'w', 'x']

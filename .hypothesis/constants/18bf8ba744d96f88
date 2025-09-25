@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/database/models.py
+# hypothesis_version: 6.139.2
+
+[0.0, 21.0, 'descuento_amount', 'iva_amount', 'subtotal', 'total']

@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/database/database.py
+# hypothesis_version: 6.139.2
+
+['SELECT', '\\d+', '\\d+(?!.*\\d)', 'database', 'facturacion.db']

@@ -1,0 +1,4 @@
+# file: /home/pascal/for_django/facturacion_facil/utils/config.py
+# hypothesis_version: 6.139.2
+
+[150, 1024, '.bmp', '.gif', '.jpeg', '.jpg', '.png', 'Pictures', 'assets/images', 'assets_directory', 'config.json', 'image_display_size', 'max_image_size', 'r', 'utf-8', 'w']
