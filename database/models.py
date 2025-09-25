@@ -365,6 +365,67 @@ class Stock:
         """Actualiza el stock después de una venta"""
         current_stock = Stock.get_by_product(producto_id)
         new_stock = max(0, current_stock - cantidad_vendida)
-        query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP 
+        query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
                   WHERE producto_id=?'''
         db.execute_query(query, (new_stock, producto_id))
+
+        # Registrar movimiento en historial
+        StockMovement.create(producto_id, -cantidad_vendida, "VENTA", f"Venta de {cantidad_vendida} unidades")
+
+    @staticmethod
+    def get_low_stock(threshold=5):
+        """Obtiene productos con stock bajo"""
+        query = '''SELECT s.producto_id, s.cantidad_disponible, p.nombre, p.referencia
+                  FROM stock s
+                  JOIN productos p ON s.producto_id = p.id
+                  WHERE s.cantidad_disponible <= ?
+                  ORDER BY s.cantidad_disponible ASC, p.nombre'''
+        return db.execute_query(query, (threshold,))
+
+class StockMovement:
+    """Clase para registrar movimientos de stock"""
+    def __init__(self, id=None, producto_id=None, cantidad=0, tipo="MANUAL",
+                 descripcion="", fecha_movimiento=None):
+        self.id = id
+        self.producto_id = producto_id
+        self.cantidad = cantidad  # Positivo para entrada, negativo para salida
+        self.tipo = tipo  # MANUAL, VENTA, AJUSTE, INICIAL
+        self.descripcion = descripcion
+        self.fecha_movimiento = fecha_movimiento
+
+    def save(self):
+        """Guarda el movimiento de stock"""
+        query = '''INSERT INTO stock_movements (producto_id, cantidad, tipo, descripcion)
+                  VALUES (?, ?, ?, ?)'''
+        params = (self.producto_id, self.cantidad, self.tipo, self.descripcion)
+        self.id = db.execute_query(query, params)
+
+    @staticmethod
+    def create(producto_id, cantidad, tipo, descripcion):
+        """Crea un nuevo movimiento de stock"""
+        movement = StockMovement(
+            producto_id=producto_id,
+            cantidad=cantidad,
+            tipo=tipo,
+            descripcion=descripcion
+        )
+        movement.save()
+        return movement
+
+    @staticmethod
+    def get_by_product(producto_id, limit=10):
+        """Obtiene los últimos movimientos de un producto"""
+        query = '''SELECT id, producto_id, cantidad, tipo, descripcion, fecha_movimiento
+                  FROM stock_movements
+                  WHERE producto_id=?
+                  ORDER BY fecha_movimiento DESC
+                  LIMIT ?'''
+        results = db.execute_query(query, (producto_id, limit))
+        movements = []
+        for row in results:
+            movement = StockMovement(
+                id=row[0], producto_id=row[1], cantidad=row[2],
+                tipo=row[3], descripcion=row[4], fecha_movimiento=row[5]
+            )
+            movements.append(movement)
+        return movements

@@ -4,6 +4,7 @@ from ui.productos import ProductosWindow
 from ui.organizacion import OrganizacionWindow
 from ui.stock import StockWindow
 from ui.facturas import FacturasWindow
+from ui.search_window import SearchWindow
 
 class MainWindow:
     def __init__(self):
@@ -28,6 +29,7 @@ class MainWindow:
         self.organizacion_window = None
         self.stock_window = None
         self.facturas_window = None
+        self.search_window = None
     
     def center_window(self):
         """Centra la ventana en la pantalla"""
@@ -56,9 +58,9 @@ class MainWindow:
         buttons_frame = ctk.CTkFrame(main_frame)
         buttons_frame.pack(fill="both", expand=True, padx=40, pady=20)
         
-        # Configurar grid
+        # Configurar grid (añadimos una fila más)
         buttons_frame.grid_columnconfigure((0, 1), weight=1)
-        buttons_frame.grid_rowconfigure((0, 1, 2), weight=1)
+        buttons_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
         
         # Botón Productos
         productos_btn = ctk.CTkButton(
@@ -100,6 +102,18 @@ class MainWindow:
         )
         facturas_btn.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
         
+        # Botón Búsqueda Avanzada
+        search_btn = ctk.CTkButton(
+            buttons_frame,
+            text="🔍 Búsqueda Avanzada",
+            font=ctk.CTkFont(size=16, weight="bold"),
+            height=60,
+            fg_color="#4169E1",
+            hover_color="#0000CD",
+            command=self.open_search
+        )
+        search_btn.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
+
         # Botón Nueva Factura (destacado)
         nueva_factura_btn = ctk.CTkButton(
             buttons_frame,
@@ -110,7 +124,7 @@ class MainWindow:
             hover_color="#228B22",
             command=self.open_nueva_factura
         )
-        nueva_factura_btn.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
+        nueva_factura_btn.grid(row=3, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
         
         # Frame inferior para botón salir
         bottom_frame = ctk.CTkFrame(main_frame)
@@ -172,6 +186,16 @@ class MainWindow:
             self.facturas_window.window.attributes('-topmost', True)
             self.facturas_window.window.attributes('-topmost', False)
     
+    def open_search(self):
+        """Abre la ventana de búsqueda avanzada"""
+        if self.search_window is None or not self.search_window.window.winfo_exists():
+            self.search_window = SearchWindow(self.root)
+        else:
+            self.search_window.window.lift()
+            self.search_window.window.focus_force()
+            self.search_window.window.attributes('-topmost', True)
+            self.search_window.window.attributes('-topmost', False)
+
     def open_nueva_factura(self):
         """Abre la ventana para crear una nueva factura"""
         if self.facturas_window is None or not self.facturas_window.window.winfo_exists():

@@ -8,6 +8,7 @@ from utils.translations import get_text
 from utils.logger import get_logger
 from common.validators import FormValidator, CalculationHelper
 from common.ui_components import FormHelper
+from database.models import Stock
 
 class ProductoFacturaDialog:
     """Diálogo para seleccionar y configurar un producto para la factura"""
@@ -94,9 +95,22 @@ class ProductoFacturaDialog:
         ctk.CTkLabel(selection_frame, text="Seleccionar Producto:",
                    font=ctk.CTkFont(size=14, weight="bold")).pack(pady=(10, 5))
         
-        # ComboBox para productos
-        productos_names = [f"{p.nombre} ({p.referencia}) - {CalculationHelper.format_currency(p.precio)}"
-                          for p in self.productos_disponibles]
+        # ComboBox para productos con información de stock
+        productos_names = []
+        for p in self.productos_disponibles:
+            stock_actual = Stock.get_by_product(p.id)
+            stock_info = f"Stock: {stock_actual}"
+            if stock_actual == 0:
+                stock_info = "🔴 Sin Stock"
+            elif stock_actual <= 5:
+                stock_info = f"🟠 Stock Bajo: {stock_actual}"
+            elif stock_actual <= 10:
+                stock_info = f"🟡 Stock: {stock_actual}"
+            else:
+                stock_info = f"🟢 Stock: {stock_actual}"
+
+            producto_text = f"{p.nombre} ({p.referencia}) - {CalculationHelper.format_currency(p.precio)} - {stock_info}"
+            productos_names.append(producto_text)
         
         self.producto_combo = ctk.CTkComboBox(selection_frame, values=productos_names,
                                             command=self.on_producto_selected, width=400)
@@ -109,6 +123,16 @@ class ProductoFacturaDialog:
         self.info_label = ctk.CTkLabel(self.info_frame, text="Seleccione un producto para ver detalles",
                                      wraplength=400)
         self.info_label.pack(pady=10)
+
+        # Botón para actualizar stock
+        refresh_btn = ctk.CTkButton(
+            selection_frame,
+            text="🔄 Actualizar Stock",
+            command=self.refresh_stock_info,
+            width=150,
+            height=25
+        )
+        refresh_btn.pack(pady=5)
 
         # Marcar que necesitamos inicializar el primer producto después
         self._needs_auto_init = not self.producto_seleccionado and productos_names
@@ -235,14 +259,24 @@ class ProductoFacturaDialog:
                 return
 
             self.producto_seleccionado = producto
-            
-            # Actualizar información
+
+            # Obtener información de stock
+            stock_actual = Stock.get_by_product(producto.id)
+
+            # Actualizar información incluyendo stock
             info_text = (f"Nombre: {producto.nombre}\n"
                         f"Referencia: {producto.referencia}\n"
                         f"Precio: {CalculationHelper.format_currency(producto.precio)}\n"
                         f"Categoría: {producto.categoria}\n"
-                        f"IVA Recomendado: {CalculationHelper.format_percentage(producto.iva_recomendado)}")
-            
+                        f"IVA Recomendado: {CalculationHelper.format_percentage(producto.iva_recomendado)}\n"
+                        f"Stock Disponible: {stock_actual} unidades")
+
+            # Agregar advertencia si stock es bajo o cero
+            if stock_actual == 0:
+                info_text += "\n⚠️ PRODUCTO SIN STOCK"
+            elif stock_actual <= 5:
+                info_text += f"\n⚠️ STOCK BAJO ({stock_actual} unidades)"
+
             if producto.descripcion:
                 info_text += f"\nDescripción: {producto.descripcion[:100]}..."
             
@@ -297,30 +331,45 @@ class ProductoFacturaDialog:
                 label.configure(text="0.00 €")
     
     def validate_form(self):
-        """Valida el formulario"""
+        """Valida el formulario incluyendo verificación de stock"""
         errors = []
-        
+
         if not self.producto_seleccionado:
             errors.append("Debe seleccionar un producto")
-        
+            return errors
+
         # Validar cantidad
         cantidad_str = FormHelper.get_entry_value(self.cantidad_entry)
         error = FormValidator.validate_cantidad(cantidad_str)
         if error:
             errors.append(error)
-        
+        else:
+            # Validar stock disponible
+            try:
+                cantidad_solicitada = int(cantidad_str)
+                stock_actual = Stock.get_by_product(self.producto_seleccionado.id)
+
+                if cantidad_solicitada > stock_actual:
+                    if stock_actual == 0:
+                        errors.append(f"El producto '{self.producto_seleccionado.nombre}' no tiene stock disponible")
+                    else:
+                        errors.append(f"Stock insuficiente. Disponible: {stock_actual}, Solicitado: {cantidad_solicitada}")
+
+            except ValueError:
+                pass  # El error de cantidad ya se capturó arriba
+
         # Validar precio
         precio_str = FormHelper.get_entry_value(self.precio_entry)
         error = FormValidator.validate_precio(precio_str)
         if error:
             errors.append(error)
-        
+
         # Validar IVA
         iva_str = FormHelper.get_entry_value(self.iva_entry)
         error = FormValidator.validate_iva(iva_str)
         if error:
             errors.append(error)
-        
+
         # Validar descuento
         descuento_str = FormHelper.get_entry_value(self.descuento_entry, "0")
         if descuento_str:
@@ -330,7 +379,7 @@ class ProductoFacturaDialog:
                     errors.append("El descuento debe estar entre 0 y 100%")
             except ValueError:
                 errors.append("El descuento debe ser un número válido")
-        
+
         return errors
     
     def accept(self):
@@ -669,3 +718,46 @@ class ProductoFacturaDialog:
         """Muestra el diálogo y retorna el resultado"""
         self.dialog.wait_window()
         return self.result
+
+    def refresh_stock_info(self):
+        """Actualiza la información de stock en el combo de productos"""
+        try:
+            # Guardar selección actual
+            current_selection = self.producto_combo.get()
+
+            # Regenerar lista de productos con stock actualizado
+            productos_names = []
+            for p in self.productos_disponibles:
+                stock_actual = Stock.get_by_product(p.id)
+                stock_info = f"Stock: {stock_actual}"
+                if stock_actual == 0:
+                    stock_info = "🔴 Sin Stock"
+                elif stock_actual <= 5:
+                    stock_info = f"🟠 Stock Bajo: {stock_actual}"
+                elif stock_actual <= 10:
+                    stock_info = f"🟡 Stock: {stock_actual}"
+                else:
+                    stock_info = f"🟢 Stock: {stock_actual}"
+
+                producto_text = f"{p.nombre} ({p.referencia}) - {CalculationHelper.format_currency(p.precio)} - {stock_info}"
+                productos_names.append(producto_text)
+
+            # Actualizar combo
+            self.producto_combo.configure(values=productos_names)
+
+            # Restaurar selección si es posible
+            if current_selection:
+                try:
+                    # Buscar la selección actual en la nueva lista
+                    nombre_producto = current_selection.split(" (")[0]
+                    nueva_seleccion = next((p for p in productos_names if p.startswith(nombre_producto)), None)
+                    if nueva_seleccion:
+                        self.producto_combo.set(nueva_seleccion)
+                        self.on_producto_selected(nueva_seleccion)
+                except:
+                    pass
+
+            self.logger.info("Información de stock actualizada en diálogo de productos")
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando información de stock: {e}")

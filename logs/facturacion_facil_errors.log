@@ -4912,3 +4912,29 @@ Traceback (most recent call last):
   File "/home/pascal/for_django/lib/python3.13/site-packages/customtkinter/windows/widgets/appearance_mode/appearance_mode_base_class.py", line 51, in _check_color_type
     raise ValueError(f"color is None, for transparency set color='transparent'")
 ValueError: color is None, for transparency set color='transparent'
+2025-09-25 09:09:00 - facturacion_facil - ERROR - logger.py:92 - Excepción en agregar_producto: 'int' object has no attribute 'cantidad_disponible'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas_methods.py", line 173, in agregar_producto
+    if stock and stock.cantidad_disponible < cantidad:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'int' object has no attribute 'cantidad_disponible'
+2025-09-25 09:48:37 - facturacion_facil - ERROR - logger.py:92 - Excepción en on_factura_select: color is None, for transparency set color='transparent'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 419, in on_factura_select
+    self.form_title_label.configure(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        text="Datos de la Factura",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        text_color=None  # Color por defecto
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/pascal/for_django/lib/python3.13/site-packages/customtkinter/windows/widgets/ctk_label.py", line 197, in configure
+    self._text_color = self._check_color_type(kwargs.pop("text_color"))
+                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/for_django/lib/python3.13/site-packages/customtkinter/windows/widgets/appearance_mode/appearance_mode_base_class.py", line 51, in _check_color_type
+    raise ValueError(f"color is None, for transparency set color='transparent'")
+ValueError: color is None, for transparency set color='transparent'
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'

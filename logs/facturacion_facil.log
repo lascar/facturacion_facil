@@ -29853,3 +29853,186 @@ ValueError: color is None, for transparency set color='transparent'
 2025-09-25 08:48:20 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Logo seleccionado - /home/pascal/Documents/20230113_141136.jpg
 2025-09-25 08:48:35 - facturacion_facil.organizacion - INFO - organizacion.py:669 - Configuración de organización guardada correctamente
 2025-09-25 08:48:35 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Organización guardada - Nombre: Empresa Antigua
+2025-09-25 08:55:32 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 08:55:32 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 08:56:11 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 08:56:11 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 08:57:08 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 08:57:08 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:04:44 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:04:44 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:06:23 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 09:06:29 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:06:29 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:06:30 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:06:32 - facturacion_facil.stock_window - INFO - stock.py:141 - Cargados 11 productos en stock
+2025-09-25 09:06:56 - facturacion_facil.stock_window - INFO - stock.py:380 - Stock agregado para producto 4: +100 (total: 100)
+2025-09-25 09:08:00 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 11 facturas
+2025-09-25 09:08:00 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 11 productos disponibles con información de stock
+2025-09-25 09:08:00 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 09:08:05 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-001-2024
+2025-09-25 09:08:05 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-001-2024
+2025-09-25 09:08:05 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-001-2024
+2025-09-25 09:08:11 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:513 - Interceptor de scroll basado en foco instalado
+2025-09-25 09:08:46 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:760 - Información de stock actualizada en diálogo de productos
+2025-09-25 09:09:00 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:438 - Interceptor de scroll basado en foco removido
+2025-09-25 09:09:00 - facturacion_facil - ERROR - logger.py:92 - Excepción en agregar_producto: 'int' object has no attribute 'cantidad_disponible'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas_methods.py", line 173, in agregar_producto
+    if stock and stock.cantidad_disponible < cantidad:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'int' object has no attribute 'cantidad_disponible'
+2025-09-25 09:12:42 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:12:42 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:13:12 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:14:33 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:14:33 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:14:54 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:14:54 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:15:21 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:15:21 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:35:45 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:35:45 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:36:42 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 09:37:17 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:37:17 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:38:33 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:38:36 - facturacion_facil.stock_window - INFO - stock.py:284 - Cargados 19 productos en stock
+2025-09-25 09:38:44 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 13 facturas
+2025-09-25 09:38:44 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 19 productos disponibles con información de stock
+2025-09-25 09:38:44 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 09:38:47 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: FACT-101-2025
+2025-09-25 09:38:47 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: FACT-101-2025
+2025-09-25 09:38:47 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: FACT-101-2025
+2025-09-25 09:38:49 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-COMPLETO-784521
+2025-09-25 09:38:49 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-COMPLETO-784521
+2025-09-25 09:38:49 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-COMPLETO-784521
+2025-09-25 09:41:55 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 09:42:14 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:42:14 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:43:40 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:43:43 - facturacion_facil.stock_window - INFO - stock.py:284 - Cargados 20 productos en stock
+2025-09-25 09:43:49 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 14 facturas
+2025-09-25 09:43:49 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 20 productos disponibles con información de stock
+2025-09-25 09:43:49 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 09:46:45 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 09:46:58 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:46:58 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:47:25 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:47:27 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 17 facturas
+2025-09-25 09:47:27 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 21 productos disponibles con información de stock
+2025-09-25 09:47:27 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 09:47:37 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-COMPLETO-784521
+2025-09-25 09:47:37 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-COMPLETO-784521
+2025-09-25 09:47:37 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-COMPLETO-784521
+2025-09-25 09:48:07 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 09:48:10 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 09:48:11 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 09:48:13 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 17 facturas
+2025-09-25 09:48:13 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 21 productos disponibles con información de stock
+2025-09-25 09:48:13 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 09:48:27 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-COMPLETO-784521
+2025-09-25 09:48:27 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-COMPLETO-784521
+2025-09-25 09:48:27 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-COMPLETO-784521
+2025-09-25 09:48:37 - facturacion_facil.facturaswindow - DEBUG - facturas.py:493 - Formulario de factura limpiado
+2025-09-25 09:48:37 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-786419-2025
+2025-09-25 09:48:37 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-786419-2025
+2025-09-25 09:48:37 - facturacion_facil.facturaswindow - INFO - facturas.py:447 - Nueva factura iniciada
+2025-09-25 09:48:37 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-09-25 09:48:37 - facturacion_facil - ERROR - logger.py:92 - Excepción en on_factura_select: color is None, for transparency set color='transparent'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 419, in on_factura_select
+    self.form_title_label.configure(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        text="Datos de la Factura",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        text_color=None  # Color por defecto
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/pascal/for_django/lib/python3.13/site-packages/customtkinter/windows/widgets/ctk_label.py", line 197, in configure
+    self._text_color = self._check_color_type(kwargs.pop("text_color"))
+                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/for_django/lib/python3.13/site-packages/customtkinter/windows/widgets/appearance_mode/appearance_mode_base_class.py", line 51, in _check_color_type
+    raise ValueError(f"color is None, for transparency set color='transparent'")
+ValueError: color is None, for transparency set color='transparent'
+2025-09-25 09:48:54 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-COMPLETO-784521
+2025-09-25 09:48:54 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-COMPLETO-784521
+2025-09-25 09:48:54 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-COMPLETO-784521
+2025-09-25 09:49:46 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-25 10:04:09 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 10:04:09 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:04:34 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 10:04:34 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 10:04:34 - facturacion_facil.pdf_generator - INFO - pdf_generator.py:129 - PDF generado exitosamente: /home/pascal/for_django/facturacion_facil/pdfs/Factura_FACT-101-2025.pdf
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-25 10:07:08 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-25 10:07:10 - facturacion_facil.facturaswindow - INFO - facturas.py:377 - Cargadas 20 facturas
+2025-09-25 10:07:10 - facturacion_facil.facturaswindow - INFO - facturas.py:392 - Cargados 24 productos disponibles con información de stock
+2025-09-25 10:07:10 - facturacion_facil.facturaswindow - INFO - facturas.py:36 - Ventana de facturas inicializada correctamente
+2025-09-25 10:07:15 - facturacion_facil.facturaswindow - INFO - facturas.py:526 - Factura cargada en formulario: TEST-COMPLETO-001
+2025-09-25 10:07:15 - facturacion_facil.facturaswindow - INFO - facturas.py:415 - Factura seleccionada y cargada para edición: TEST-COMPLETO-001
+2025-09-25 10:07:15 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-COMPLETO-001
+2025-09-25 10:07:29 - facturacion_facil.pdf_generator - INFO - pdf_generator.py:129 - PDF generado exitosamente: /home/pascal/for_django/facturacion_facil/pdfs/Factura_TEST-COMPLETO-001.pdf

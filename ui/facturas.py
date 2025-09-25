@@ -381,10 +381,15 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
             self._show_message("error", get_text("error"), f"Error al cargar facturas: {str(e)}")
 
     def load_productos_disponibles(self):
-        """Carga la lista de productos disponibles"""
+        """Carga la lista de productos disponibles con información de stock"""
         try:
             self.productos_disponibles = Producto.get_all()
-            self.logger.info(f"Cargados {len(self.productos_disponibles)} productos disponibles")
+
+            # Agregar información de stock a cada producto para referencia
+            for producto in self.productos_disponibles:
+                producto._stock_actual = Stock.get_by_product(producto.id)
+
+            self.logger.info(f"Cargados {len(self.productos_disponibles)} productos disponibles con información de stock")
         except Exception as e:
             log_exception(e, "load_productos_disponibles")
             self.productos_disponibles = []

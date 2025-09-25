@@ -69,6 +69,19 @@ class Database:
                 FOREIGN KEY (producto_id) REFERENCES productos (id)
             )
         ''')
+
+        # Tabla movimientos de stock
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS stock_movements (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                cantidad INTEGER NOT NULL,
+                tipo TEXT NOT NULL,
+                descripcion TEXT,
+                fecha_movimiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (producto_id) REFERENCES productos (id)
+            )
+        ''')
         
         # Tabla facturas
         cursor.execute('''
