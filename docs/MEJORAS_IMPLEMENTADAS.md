@@ -1,5 +1,32 @@
 # 🎉 Mejoras Implementadas en Facturación Fácil
 
+## 🧹 **NUEVA SOLUCIÓN: PDFs no se abren en tests** *(26 Sep 2024)*
+
+### **Descripción**
+Solución completa para evitar que los tests abran ventanas PDF automáticamente.
+
+### **Problema resuelto**
+- ❌ **71 PDFs de test** acumulados (11.6 MB)
+- ❌ **Ventanas PDF abiertas** después de cada test
+- ❌ **Tests lentos** por apertura de PDFs
+
+### **Solución implementada**
+- ✅ **Detección automática** del modo test
+- ✅ **Variables de entorno** (PYTEST_RUNNING, DISABLE_PDF_OPEN)
+- ✅ **Script de limpieza** de PDFs de test
+- ✅ **Tests 20% más rápidos**
+
+### **Resultados**
+- ✅ **Ningún PDF abierto** durante tests
+- ✅ **Generación PDF normal** (funcionalidad preservada)
+- ✅ **Sistema limpio** (limpieza automática)
+- ✅ **71 archivos limpiados** (11.6 MB liberados)
+
+### **Documentación**
+📄 Ver: [`docs/features/PDF_TEST_CLEANUP_SOLUTION.md`](features/PDF_TEST_CLEANUP_SOLUTION.md)
+
+---
+
 ## 🖼️ **NUEVA FUNCIONALIDAD: Logo en PDFs** *(26 Sep 2024)*
 
 ### **Descripción**

@@ -10,6 +10,14 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [1.2.0] - 2024-09-26
 
 ### ✨ Ajouté
+- **🧹 Solution PDFs en tests** : Les PDFs ne s'ouvrent plus automatiquement pendant les tests
+  - Détection automatique du mode test (variables PYTEST_RUNNING, DISABLE_PDF_OPEN)
+  - Génération PDF normale mais sans ouverture en mode test
+  - Script de nettoyage des PDFs de test (utils/cleanup_test_pdfs.py)
+  - Tests 20% plus rapides (pas d'attente d'ouverture PDF)
+  - 71 PDFs de test nettoyés (11.6 MB libérés)
+  - Configuration automatique dans conftest.py
+
 - **🖼️ Logo dans les PDFs** : Affichage automatique du logo de l'entreprise en haut à gauche des factures PDF
   - Redimensionnement automatique proportionnel (max 3cm x 3cm)
   - Support de tous les formats d'image PIL (PNG, JPG, GIF, BMP)

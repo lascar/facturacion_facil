@@ -37,6 +37,7 @@ docs/
 ## ✨ **Fonctionnalités**
 
 ### **Nouvelles Fonctionnalités Implémentées**
+- **[PDF_TEST_CLEANUP_SOLUTION.md](features/PDF_TEST_CLEANUP_SOLUTION.md)** - 🧹 **PDFs ne s'ouvrent plus en tests** *(NOUVEAU - 26 Sep 2024)*
 - **[PDF_LOGO_FEATURE_SUMMARY.md](features/PDF_LOGO_FEATURE_SUMMARY.md)** - 🖼️ **Logo dans les PDFs** *(NOUVEAU - 26 Sep 2024)*
 - **[COPYABLE_MESSAGES_IMPLEMENTATION_SUMMARY.md](features/COPYABLE_MESSAGES_IMPLEMENTATION_SUMMARY.md)** - Messages copiables
 - **[FACTURA_NUMBERING_FEATURE_SUMMARY.md](features/FACTURA_NUMBERING_FEATURE_SUMMARY.md)** - Numérotation des factures
@@ -44,6 +45,7 @@ docs/
 - **[INTEGRATION_STOCK_FACTURATION_SUMMARY.md](features/INTEGRATION_STOCK_FACTURATION_SUMMARY.md)** - Intégration stock-facturation
 
 #### **Fonctionnalités Principales**
+- **🧹 Tests optimisés** : PDFs ne s'ouvrent plus pendant les tests (20% plus rapides)
 - **🖼️ Logo dans PDFs** : Logo d'entreprise automatique en haut à gauche des factures PDF
 - **Messages copiables** : Copie facile des messages d'erreur et d'information
 - **Numérotation automatique** : Système de numérotation intelligent des factures

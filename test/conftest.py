@@ -144,6 +144,10 @@ def pytest_sessionfinish(session, exitstatus):
     # Nettoyer toutes les ressources restantes
     test_db_manager.cleanup_all_test_resources()
 
+    # Nettoyer les variables d'environnement
+    os.environ.pop('PYTEST_RUNNING', None)
+    os.environ.pop('DISABLE_PDF_OPEN', None)
+
     # Afficher les statistiques finales
     stats = test_db_manager.get_test_stats()
     if stats['total_databases'] > 0 or stats['total_directories'] > 0:
@@ -151,6 +155,10 @@ def pytest_sessionfinish(session, exitstatus):
 
 def pytest_configure(config):
     """Configuration pytest"""
+    # Définir les variables d'environnement pour désactiver l'ouverture des PDFs
+    os.environ['PYTEST_RUNNING'] = '1'
+    os.environ['DISABLE_PDF_OPEN'] = '1'
+
     # Ajouter des marqueurs personnalisés
     config.addinivalue_line(
         "markers", "isolated_db: marque les tests nécessitant une DB complètement isolée"

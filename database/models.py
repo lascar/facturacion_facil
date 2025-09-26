@@ -319,6 +319,7 @@ class Organizacion:
             row = results[0]
             # Orden de columnas: id, nombre, direccion, telefono, email, cif, logo_path, fecha_actualizacion, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado
             # Manejar compatibilidad con bases de datos existentes
+            logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
             directorio_imagenes = row[8] if len(row) > 8 and row[8] is not None else ""
             numero_inicial = row[9] if len(row) > 9 and row[9] is not None else 1
             directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
@@ -326,7 +327,7 @@ class Organizacion:
 
             return Organizacion(
                 nombre=row[1], direccion=row[2], telefono=row[3],
-                email=row[4], cif=row[5], logo_path=row[6],
+                email=row[4], cif=row[5], logo_path=logo_path,
                 directorio_imagenes_defecto=directorio_imagenes,
                 numero_factura_inicial=numero_inicial,
                 directorio_descargas_pdf=directorio_pdf,

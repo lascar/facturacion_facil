@@ -151,6 +151,11 @@ class PDFGenerator:
     def open_pdf_file(self, pdf_path):
         """Abre el archivo PDF con el visor configurado o el predeterminado del sistema"""
         try:
+            # Verificar si estamos en modo test (no abrir PDFs durante tests)
+            if os.environ.get('PYTEST_RUNNING') or os.environ.get('DISABLE_PDF_OPEN'):
+                self.logger.info(f"Modo test detectado - PDF no abierto: {pdf_path}")
+                return
+
             import platform
             import subprocess
 
