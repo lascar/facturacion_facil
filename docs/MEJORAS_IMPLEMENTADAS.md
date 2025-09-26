@@ -1,3 +1,27 @@
+# 🎉 Mejoras Implementadas en Facturación Fácil
+
+## 🖼️ **NUEVA FUNCIONALIDAD: Logo en PDFs** *(26 Sep 2024)*
+
+### **Descripción**
+Implementación completa del logo de empresa en las facturas PDF generadas.
+
+### **Características**
+- ✅ **Logo en haut à gauche** de cada factura PDF
+- ✅ **Redimensionnement automatique** (max 3cm x 3cm, proportions préservées)
+- ✅ **Gestion d'erreurs robuste** (fonctionne avec ou sans logo)
+- ✅ **Formats supportés** : PNG, JPG, GIF, BMP (tous formats PIL)
+- ✅ **Configuration simple** via les paramètres d'organisation
+
+### **Tests**
+- ✅ 8 tests complets (unitaires, intégration, bout en bout)
+- ✅ Script de démonstration avec PDF réel généré
+- ✅ Validation de taille PDF (avec logo: ~4000 bytes, sans logo: ~3100 bytes)
+
+### **Documentation**
+📄 Voir : [`docs/features/PDF_LOGO_FEATURE_SUMMARY.md`](features/PDF_LOGO_FEATURE_SUMMARY.md)
+
+---
+
 # 🎉 Mejoras Implementadas en la Interfaz de Productos
 
 ## 📋 Problemas Identificados y Solucionados

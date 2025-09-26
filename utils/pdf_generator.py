@@ -186,42 +186,98 @@ class PDFGenerator:
             # No lanzar excepción, es una funcionalidad opcional
     
     def add_header(self, story, factura):
-        """Añade el encabezado con información de la empresa"""
+        """Añade el encabezado con información de la empresa y logo"""
         try:
             # Obtener información de la organización
             org = Organizacion.get()
-            
+
             if org:
-                # Título de la empresa
-                empresa_title = Paragraph(
-                    f"<b>{org.nombre}</b>",
-                    self.styles['TituloFactura']
-                )
-                story.append(empresa_title)
-                
-                # Información de contacto
-                info_empresa = f"""
+                # Crear tabla para logo y información de empresa
+                header_data = []
+
+                # Verificar si hay logo
+                logo_cell = self.create_logo_image(org.logo_path)
+
+                # Información de la empresa
+                empresa_info = f"""
+                <b>{org.nombre}</b><br/>
                 <b>Dirección:</b> {org.direccion}<br/>
                 <b>Teléfono:</b> {org.telefono}<br/>
                 <b>Email:</b> {org.email}<br/>
                 <b>CIF:</b> {org.cif}
                 """
-                
-                empresa_info = Paragraph(info_empresa, self.styles['InfoEmpresa'])
-                story.append(empresa_info)
+
+                empresa_paragraph = Paragraph(empresa_info, self.styles['InfoEmpresa'])
+
+                # Si hay logo, crear tabla con logo a la izquierda y info a la derecha
+                if logo_cell:
+                    header_data = [[logo_cell, empresa_paragraph]]
+                    header_table = Table(header_data, colWidths=[4*cm, 12*cm])
+                    header_table.setStyle(TableStyle([
+                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                        ('ALIGN', (0, 0), (0, 0), 'LEFT'),   # Logo a la izquierda
+                        ('ALIGN', (1, 0), (1, 0), 'LEFT'),   # Info a la izquierda
+                        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                        ('TOPPADDING', (0, 0), (-1, -1), 0),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                    ]))
+                    story.append(header_table)
+                else:
+                    # Sin logo, solo información de empresa
+                    story.append(empresa_paragraph)
+
+                # Título FACTURA centrado
+                factura_title = Paragraph(
+                    "<b>FACTURA</b>",
+                    self.styles['TituloFactura']
+                )
+                story.append(factura_title)
+
             else:
                 # Información por defecto si no hay organización configurada
                 default_title = Paragraph("<b>FACTURA</b>", self.styles['TituloFactura'])
                 story.append(default_title)
-            
-            story.append(Spacer(1, 1*cm))
-            
+
+            story.append(Spacer(1, 0.5*cm))
+
         except Exception as e:
             self.logger.error(f"Error añadiendo encabezado: {e}")
             # Añadir título básico en caso de error
             story.append(Paragraph("<b>FACTURA</b>", self.styles['TituloFactura']))
             story.append(Spacer(1, 1*cm))
-    
+
+    def create_logo_image(self, logo_path, max_width=3*cm, max_height=3*cm):
+        """Crea una imagen del logo con redimensionamiento proporcional"""
+        if not logo_path or not os.path.exists(logo_path):
+            return None
+
+        try:
+            from PIL import Image as PILImage
+
+            # Abrir imagen para obtener dimensiones originales
+            with PILImage.open(logo_path) as pil_img:
+                original_width, original_height = pil_img.size
+
+            # Calcular dimensiones manteniendo proporción
+            width_ratio = max_width / original_width
+            height_ratio = max_height / original_height
+            scale_ratio = min(width_ratio, height_ratio)
+
+            # Nuevas dimensiones
+            new_width = original_width * scale_ratio
+            new_height = original_height * scale_ratio
+
+            # Crear imagen ReportLab con dimensiones calculadas
+            logo_img = Image(logo_path, width=new_width, height=new_height)
+
+            self.logger.debug(f"Logo cargado: {os.path.basename(logo_path)} ({new_width:.1f}x{new_height:.1f})")
+            return logo_img
+
+        except Exception as e:
+            self.logger.warning(f"Error cargando logo {logo_path}: {e}")
+            return None
+
     def add_factura_info(self, story, factura):
         """Añade información básica de la factura"""
         # Crear tabla con información de factura
