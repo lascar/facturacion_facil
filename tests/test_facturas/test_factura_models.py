@@ -12,19 +12,8 @@ from database.database import Database
 class TestFacturaModel:
     """Tests para el modelo Factura"""
     
-    @pytest.fixture
-    def temp_db(self):
-        """Crea una base de datos temporal para tests"""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        temp_file.close()
-        
-        # Crear instancia temporal de base de datos
-        temp_db = Database(temp_file.name)
-        
-        yield temp_db
-        
-        # Limpiar
-        os.unlink(temp_file.name)
+    # Utiliser la fixture temp_db globale du conftest.py
+    # (plus besoin de définir une fixture locale)
     
     @pytest.fixture
     def sample_producto(self, temp_db):

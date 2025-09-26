@@ -43,6 +43,7 @@ facturacion_facil/
 ├── main.py                 # Punto de entrada
 ├── requirements.txt        # Dependencias
 ├── README.md              # Este archivo
+├── docs/                  # 📚 Documentación organizada
 ├── database/
 │   ├── __init__.py
 │   ├── database.py        # Conexión SQLite
@@ -202,6 +203,23 @@ make clean
 # Information du projet
 make info
 ```
+
+## 📚 Documentación
+
+La documentación completa del proyecto está organizada en el directorio `docs/`:
+
+- **[docs/README.md](docs/README.md)** - Índice de toda la documentación
+- **[docs/architecture/](docs/architecture/)** - Arquitectura y factorización del código
+- **[docs/features/](docs/features/)** - Nuevas funcionalidades implementadas
+- **[docs/fixes/](docs/fixes/)** - Correcciones y resoluciones de bugs
+- **[docs/implementation/](docs/implementation/)** - Detalles de implementación
+
+### Documentación Destacada
+
+- **Arquitectura factorizada**: Código simplificado y reutilizable
+- **Gestión de archivos**: FileManager, ImageManager, LogoManager
+- **Tests organizados**: 13/13 tests pasan, cobertura completa
+- **Funcionalidades**: PDF, stock, numeración, búsqueda
 
 ## Licencia
 

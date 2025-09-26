@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from utils.translations import get_text
 from database.models import Organizacion
 from utils.logger import get_logger, log_user_action, log_exception
+from utils.logo_manager import LogoManager
 from common.ui_components import FormHelper
 from utils.config import Config
 
@@ -25,12 +26,15 @@ class OrganizacionWindow:
         # Logger y configuración
         self.logger = get_logger("organizacion")
         self.config = Config()
+        self.logo_manager = LogoManager()
 
         # Variables
         self.organizacion = None
         self.logo_image = None
         self.logo_path = ""
         self.directorio_imagenes = ""
+        self.directorio_pdf = ""
+        self.visor_pdf_path = ""
 
         # Crear interfaz
         self.create_widgets()
@@ -263,25 +267,74 @@ class OrganizacionWindow:
         )
         select_dir_btn.pack(side="right", padx=10, pady=10)
 
+        # Directorio por defecto para descargas de PDF
+        ctk.CTkLabel(config_fields_frame, text="Directorio por defecto para descargas de PDF:").grid(
+            row=2, column=0, sticky="w", padx=10, pady=10, columnspan=2
+        )
+
+        pdf_dir_frame = ctk.CTkFrame(config_fields_frame)
+        pdf_dir_frame.grid(row=3, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
+
+        self.directorio_pdf_entry = ctk.CTkEntry(
+            pdf_dir_frame,
+            placeholder_text="Seleccione un directorio para PDFs...",
+            width=400
+        )
+        self.directorio_pdf_entry.pack(side="left", fill="x", expand=True, padx=10, pady=10)
+
+        select_pdf_dir_btn = ctk.CTkButton(
+            pdf_dir_frame,
+            text="📁 Seleccionar",
+            command=self.select_directorio_pdf,
+            width=100
+        )
+        select_pdf_dir_btn.pack(side="right", padx=10, pady=10)
+
+        # Visor PDF personalizado
+        ctk.CTkLabel(config_fields_frame, text="Visor PDF personalizado (opcional):").grid(
+            row=4, column=0, sticky="w", padx=10, pady=10, columnspan=2
+        )
+
+        pdf_viewer_frame = ctk.CTkFrame(config_fields_frame)
+        pdf_viewer_frame.grid(row=5, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
+
+        self.visor_pdf_entry = ctk.CTkEntry(
+            pdf_viewer_frame,
+            placeholder_text="Ruta al ejecutable del visor PDF (dejar vacío para usar el predeterminado)...",
+            width=400
+        )
+        self.visor_pdf_entry.pack(side="left", fill="x", expand=True, padx=10, pady=10)
+
+        select_pdf_viewer_btn = ctk.CTkButton(
+            pdf_viewer_frame,
+            text="📁 Seleccionar",
+            command=self.select_visor_pdf,
+            width=100
+        )
+        select_pdf_viewer_btn.pack(side="right", padx=10, pady=10)
+
         # Número inicial de facturas
         ctk.CTkLabel(config_fields_frame, text="Número inicial para serie de facturas:").grid(
-            row=2, column=0, sticky="w", padx=10, pady=10
+            row=6, column=0, sticky="w", padx=10, pady=10
         )
         self.numero_inicial_entry = ctk.CTkEntry(
             config_fields_frame,
             width=150,
             placeholder_text="1"
         )
-        self.numero_inicial_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+        self.numero_inicial_entry.grid(row=6, column=1, padx=10, pady=10, sticky="w")
 
         # Información adicional
         info_frame = ctk.CTkFrame(config_fields_frame)
-        info_frame.grid(row=3, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
+        info_frame.grid(row=7, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
 
         info_text = ctk.CTkLabel(
             info_frame,
             text="💡 Información:\n" +
                  "• El directorio de imágenes se usará como ubicación por defecto al agregar imágenes a productos\n" +
+                 "• El directorio de PDF se usará para guardar y abrir automáticamente las facturas generadas\n" +
+                 "• El visor PDF personalizado permite elegir qué programa usar para abrir PDFs (Adobe Reader, Foxit, etc.)\n" +
+                 "• Si no se especifica visor personalizado, se usará el predeterminado del sistema\n" +
                  "• El número inicial de facturas se aplicará cuando se configure una nueva serie de numeración\n" +
                  "• Estos ajustes se pueden cambiar en cualquier momento",
             justify="left",
@@ -350,6 +403,8 @@ class OrganizacionWindow:
 
             # Cargar configuración adicional
             FormHelper.set_entry_value(self.directorio_entry, self.organizacion.directorio_imagenes_defecto)
+            FormHelper.set_entry_value(self.directorio_pdf_entry, self.organizacion.directorio_descargas_pdf)
+            FormHelper.set_entry_value(self.visor_pdf_entry, self.organizacion.visor_pdf_personalizado)
             FormHelper.set_entry_value(self.numero_inicial_entry, str(self.organizacion.numero_factura_inicial))
 
             # Cargar logo si existe
@@ -392,10 +447,22 @@ class OrganizacionWindow:
             self.window.attributes('-topmost', False)
 
             if filename:
-                self.logo_path = filename
-                self.load_logo_image(filename)
-                self.logger.info(f"Logo seleccionado: {filename}")
-                log_user_action("Logo seleccionado", filename)
+                # Copier le logo vers le répertoire permanent
+                organization_name = self.nombre_entry.get() if hasattr(self, 'nombre_entry') else "organization"
+                permanent_logo_path = self.logo_manager.save_logo(filename, organization_name)
+
+                if permanent_logo_path:
+                    # Supprimer l'ancien logo s'il existe
+                    if self.logo_path and self.logo_path != permanent_logo_path:
+                        self.logo_manager.remove_logo(self.logo_path)
+
+                    self.logo_path = permanent_logo_path
+                    self.load_logo_image(permanent_logo_path)
+                    self.logger.info(f"Logo seleccionado y copiado: {filename} -> {permanent_logo_path}")
+                    log_user_action("Logo seleccionado", permanent_logo_path)
+                else:
+                    self.logger.error(f"Error al copiar logo: {filename}")
+                    self._show_message("error", "Error", "Error al guardar el logo. Verifique que el archivo sea una imagen válida.")
 
         except Exception as e:
             log_exception(e, "select_logo")
@@ -551,7 +618,7 @@ class OrganizacionWindow:
             # Restaurar el label a su estado inicial
             try:
                 self.logo_label.configure(
-                    image=None,
+                    image="",
                     text="Sin logo\nseleccionado"
                 )
             except Exception as label_error:
@@ -602,6 +669,109 @@ class OrganizacionWindow:
                 pass
             self._show_message("error", "Error", f"Error al seleccionar directorio: {str(e)}")
 
+    def select_directorio_pdf(self):
+        """Seleccionar directorio por defecto para descargas de PDF"""
+        try:
+            # Asegurar que la ventana esté al frente antes de abrir el diálogo
+            self.window.lift()
+            self.window.focus_force()
+            self.window.attributes('-topmost', True)
+
+            # Obtener directorio inicial (usar el actual si existe, sino el de descargas del usuario)
+            initial_dir = self.directorio_pdf_entry.get().strip()
+            if not initial_dir or not os.path.exists(initial_dir):
+                initial_dir = os.path.expanduser("~/Downloads")
+
+            # Usar la ventana como parent para el diálogo
+            directorio = filedialog.askdirectory(
+                parent=self.window,
+                title="Seleccionar Directorio por Defecto para Descargas de PDF",
+                initialdir=initial_dir
+            )
+
+            # Restaurar el comportamiento normal de la ventana
+            self.window.attributes('-topmost', False)
+
+            if directorio:
+                self.directorio_pdf = directorio
+                FormHelper.set_entry_value(self.directorio_pdf_entry, directorio)
+                self.logger.info(f"Directorio PDF seleccionado: {directorio}")
+                log_user_action("Directorio de PDF seleccionado", directorio)
+
+        except Exception as e:
+            log_exception(e, "select_directorio_pdf")
+            # Asegurar que la ventana vuelva al estado normal en caso de error
+            try:
+                self.window.attributes('-topmost', False)
+            except:
+                pass
+            self._show_message("error", "Error", f"Error al seleccionar directorio PDF: {str(e)}")
+
+    def select_visor_pdf(self):
+        """Seleccionar ejecutable del visor PDF personalizado"""
+        try:
+            # Asegurar que la ventana esté al frente antes de abrir el diálogo
+            self.window.lift()
+            self.window.focus_force()
+            self.window.attributes('-topmost', True)
+
+            # Obtener archivo inicial (usar el actual si existe)
+            initial_file = self.visor_pdf_entry.get().strip()
+            initial_dir = os.path.dirname(initial_file) if initial_file and os.path.exists(initial_file) else None
+
+            # Definir tipos de archivo según el sistema operativo
+            import platform
+            system = platform.system()
+
+            if system == "Windows":
+                file_types = [
+                    ("Ejecutables", "*.exe"),
+                    ("Todos los archivos", "*.*")
+                ]
+                if not initial_dir:
+                    initial_dir = "C:\\Program Files"
+            elif system == "Darwin":  # macOS
+                file_types = [
+                    ("Aplicaciones", "*.app"),
+                    ("Ejecutables", "*"),
+                    ("Todos los archivos", "*.*")
+                ]
+                if not initial_dir:
+                    initial_dir = "/Applications"
+            else:  # Linux
+                file_types = [
+                    ("Ejecutables", "*"),
+                    ("Todos los archivos", "*.*")
+                ]
+                if not initial_dir:
+                    initial_dir = "/usr/bin"
+
+            # Usar la ventana como parent para el diálogo
+            archivo = filedialog.askopenfilename(
+                parent=self.window,
+                title="Seleccionar Visor PDF Personalizado",
+                initialdir=initial_dir,
+                filetypes=file_types
+            )
+
+            # Restaurar el comportamiento normal de la ventana
+            self.window.attributes('-topmost', False)
+
+            if archivo:
+                self.visor_pdf_path = archivo
+                FormHelper.set_entry_value(self.visor_pdf_entry, archivo)
+                self.logger.info(f"Visor PDF seleccionado: {archivo}")
+                log_user_action("Visor PDF seleccionado", archivo)
+
+        except Exception as e:
+            log_exception(e, "select_visor_pdf")
+            # Asegurar que la ventana vuelva al estado normal en caso de error
+            try:
+                self.window.attributes('-topmost', False)
+            except:
+                pass
+            self._show_message("error", "Error", f"Error al seleccionar visor PDF: {str(e)}")
+
     def validate_form(self):
         """Validar datos del formulario"""
         errors = []
@@ -649,11 +819,17 @@ class OrganizacionWindow:
                 email=self.email_entry.get().strip(),
                 logo_path=self.logo_path,
                 directorio_imagenes_defecto=self.directorio_entry.get().strip(),
-                numero_factura_inicial=int(self.numero_inicial_entry.get() or "1")
+                numero_factura_inicial=int(self.numero_inicial_entry.get() or "1"),
+                directorio_descargas_pdf=self.directorio_pdf_entry.get().strip(),
+                visor_pdf_personalizado=self.visor_pdf_entry.get().strip()
             )
 
             # Guardar en base de datos
             organizacion.save()
+
+            # Nettoyer les logos orphelins (garder seulement le logo actuel)
+            if self.logo_path:
+                self.logo_manager.cleanup_orphaned_logos(self.logo_path)
 
             # Actualizar configuración global si es necesario
             if organizacion.directorio_imagenes_defecto:

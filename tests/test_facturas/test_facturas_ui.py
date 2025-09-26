@@ -96,26 +96,27 @@ class TestProductoFacturaDialog:
         with patch('customtkinter.CTkToplevel'), \
              patch('utils.logger.get_logger'), \
              patch.object(ProductoFacturaDialog, 'create_widgets'):
-            
+
             dialog = ProductoFacturaDialog(self.root, sample_productos)
             dialog.producto_seleccionado = sample_productos[0]
-            
+
             # Mock de los campos del formulario
             dialog.cantidad_entry = Mock()
             dialog.cantidad_entry.get.return_value = "2"
-            
+
             dialog.precio_entry = Mock()
             dialog.precio_entry.get.return_value = "15.50"
-            
+
             dialog.iva_entry = Mock()
             dialog.iva_entry.get.return_value = "21.0"
-            
+
             dialog.descuento_entry = Mock()
             dialog.descuento_entry.get.return_value = "10.0"
-            
-            with patch('common.ui_components.FormHelper.get_entry_value') as mock_get_value:
+
+            with patch('common.ui_components.FormHelper.get_entry_value') as mock_get_value, \
+                 patch('database.models.Stock.get_by_product', return_value=10) as mock_stock:
                 mock_get_value.side_effect = ["2", "15.50", "21.0", "10.0"]
-                
+
                 errors = dialog.validate_form()
                 assert len(errors) == 0
     

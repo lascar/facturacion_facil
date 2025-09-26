@@ -59,6 +59,16 @@ class Database:
             cursor.execute('ALTER TABLE organizacion ADD COLUMN numero_factura_inicial INTEGER DEFAULT 1')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_descargas_pdf TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN visor_pdf_personalizado TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
         
         # Tabla stock
         cursor.execute('''

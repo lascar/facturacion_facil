@@ -70,24 +70,34 @@ class PDFGenerator:
             textColor=colors.grey
         ))
     
-    def generar_factura_pdf(self, factura, output_path=None):
+    def generar_factura_pdf(self, factura, output_path=None, auto_open=True):
         """
         Genera un PDF de la factura
-        
+
         Args:
             factura: Objeto Factura con todos los datos
             output_path: Ruta donde guardar el PDF (opcional)
-            
+            auto_open: Si True, abre automáticamente el PDF generado
+
         Returns:
             str: Ruta del archivo PDF generado
         """
         try:
             # Determinar ruta de salida
             if not output_path:
-                # Crear directorio de PDFs si no existe
-                pdf_dir = os.path.join(os.getcwd(), "pdfs")
+                # Obtener directorio configurado de la organización
+                from database.models import Organizacion
+                org = Organizacion.get()
+
+                if org.directorio_descargas_pdf and os.path.exists(org.directorio_descargas_pdf):
+                    pdf_dir = org.directorio_descargas_pdf
+                else:
+                    # Fallback al directorio por defecto
+                    pdf_dir = os.path.join(os.getcwd(), "pdfs")
+
+                # Crear directorio si no existe
                 os.makedirs(pdf_dir, exist_ok=True)
-                
+
                 # Nombre del archivo
                 filename = f"Factura_{factura.numero_factura.replace('/', '_')}.pdf"
                 output_path = os.path.join(pdf_dir, filename)
@@ -125,13 +135,55 @@ class PDFGenerator:
             
             # Generar PDF
             doc.build(story)
-            
+
             self.logger.info(f"PDF generado exitosamente: {output_path}")
+
+            # Abrir automáticamente el PDF si se solicita
+            if auto_open:
+                self.open_pdf_file(output_path)
+
             return output_path
-            
+
         except Exception as e:
             self.logger.error(f"Error generando PDF: {e}")
             raise
+
+    def open_pdf_file(self, pdf_path):
+        """Abre el archivo PDF con el visor configurado o el predeterminado del sistema"""
+        try:
+            import platform
+            import subprocess
+
+            # Obtener visor personalizado de la organización
+            from database.models import Organizacion
+            org = Organizacion.get()
+
+            # Si hay un visor personalizado configurado y existe
+            if org.visor_pdf_personalizado and os.path.exists(org.visor_pdf_personalizado):
+                try:
+                    # Usar el visor personalizado
+                    subprocess.run([org.visor_pdf_personalizado, pdf_path], check=False)
+                    self.logger.info(f"PDF abierto con visor personalizado: {org.visor_pdf_personalizado}")
+                    return
+                except Exception as e:
+                    self.logger.warning(f"Error usando visor personalizado {org.visor_pdf_personalizado}: {e}")
+                    # Continuar con el visor predeterminado
+
+            # Usar el visor predeterminado del sistema
+            system = platform.system()
+
+            if system == "Windows":
+                os.startfile(pdf_path)
+            elif system == "Darwin":  # macOS
+                subprocess.run(["open", pdf_path])
+            else:  # Linux y otros
+                subprocess.run(["xdg-open", pdf_path])
+
+            self.logger.info(f"PDF abierto con visor predeterminado del sistema: {pdf_path}")
+
+        except Exception as e:
+            self.logger.warning(f"No se pudo abrir automáticamente el PDF: {e}")
+            # No lanzar excepción, es una funcionalidad opcional
     
     def add_header(self, story, factura):
         """Añade el encabezado con información de la empresa"""

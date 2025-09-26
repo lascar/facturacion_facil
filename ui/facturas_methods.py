@@ -14,6 +14,7 @@ from utils.pdf_generator import PDFGenerator
 from utils.translations import get_text
 from utils.logger import log_user_action, log_database_operation, log_exception
 from utils.factura_numbering import factura_numbering_service
+from utils.image_utils import ImageUtils
 from database.models import Producto, Stock, Factura
 from common.validators import FormValidator, CalculationHelper
 from common.ui_components import FormHelper
@@ -215,13 +216,12 @@ class FacturasMethodsMixin:
     def editar_producto_factura(self):
         """Edita un producto de la factura"""
         try:
-            selection = self.productos_tree.selection()
-            if not selection:
+            selected_index = self.productos_tree.get_selected_index()
+            if selected_index is None:
                 self._show_message("warning", "Advertencia", "Seleccione un producto para editar")
                 return
-            
-            item_index = self.productos_tree.index(selection[0])
-            item = self.factura_items[item_index]
+
+            item = self.factura_items[selected_index]
             
             # Buscar el producto
             producto = next((p for p in self.productos_disponibles if p.id == item.producto_id), None)
@@ -260,47 +260,41 @@ class FacturasMethodsMixin:
     def eliminar_producto_factura(self):
         """Elimina un producto de la factura"""
         try:
-            selection = self.productos_tree.selection()
-            if not selection:
+            selected_index = self.productos_tree.get_selected_index()
+            if selected_index is None:
                 self._show_message("warning", "Advertencia", "Seleccione un producto para eliminar")
                 return
-            
+
             if self._show_message("yesno", "Confirmar", "¿Eliminar este producto de la factura?"):
-                item_index = self.productos_tree.index(selection[0])
-                removed_item = self.factura_items.pop(item_index)
-                
+                removed_item = self.factura_items.pop(selected_index)
+
                 self.update_productos_tree()
                 self.update_totales()
-                
-                log_user_action("Producto eliminado de factura", 
+
+                log_user_action("Producto eliminado de factura",
                               f"Producto ID: {removed_item.producto_id}")
-                
+
         except Exception as e:
             log_exception(e, "eliminar_producto_factura")
             self._show_message("error", get_text("error"), f"Error al eliminar producto: {str(e)}")
     
     def update_productos_tree(self):
-        """Actualiza la lista de productos en la factura"""
+        """Actualiza la lista de productos en la factura con mini imágenes"""
         try:
-            # Limpiar lista
-            for item in self.productos_tree.get_children():
-                self.productos_tree.delete(item)
-            
-            # Agregar items
-            for item in self.factura_items:
-                producto = item.get_producto()
-                if producto:
-                    self.productos_tree.insert("", "end", values=(
-                        f"{producto.nombre} ({producto.referencia})",
-                        str(item.cantidad),
-                        CalculationHelper.format_currency(item.precio_unitario),
-                        CalculationHelper.format_percentage(item.iva_aplicado),
-                        CalculationHelper.format_percentage(item.descuento),
-                        CalculationHelper.format_currency(item.total)
-                    ))
-                    
+            # Utiliser le nouveau widget personnalisé
+            self.productos_tree.update_items(self.factura_items)
+
         except Exception as e:
             log_exception(e, "update_productos_tree")
+
+    def on_producto_selected(self, index):
+        """Callback appelé quand un produit est sélectionné dans la liste"""
+        try:
+            if 0 <= index < len(self.factura_items):
+                self.selected_item_index = index
+                log_user_action("Producto seleccionado en factura", f"Index: {index}")
+        except Exception as e:
+            log_exception(e, "on_producto_selected")
     
     def update_totales(self):
         """Actualiza los totales de la factura"""
@@ -469,7 +463,7 @@ Este mensaje puede ser copiado para referencia."""
             # Generar PDF usando el nuevo generador
             try:
                 pdf_generator = PDFGenerator()
-                pdf_path = pdf_generator.generar_factura_pdf(self.selected_factura)
+                pdf_path = pdf_generator.generar_factura_pdf(self.selected_factura, auto_open=True)
 
                 # Mensaje de éxito con detalles
                 mensaje_exito = f"""✅ PDF generado exitosamente
@@ -507,8 +501,7 @@ Este mensaje puede ser copiado para referencia."""
 
                 show_copyable_success(self.window, "PDF Generado Exitosamente", mensaje_exito)
 
-                # Opcional: Abrir el PDF automáticamente
-                self.open_pdf_file(pdf_path)
+                # El PDF ya se abre automáticamente desde el generador
 
             except ImportError as e:
                 # Error de dependencia ReportLab
@@ -620,7 +613,7 @@ Si el error persiste, copie este mensaje para soporte técnico."""
             # Generar PDF de la factura actual
             try:
                 pdf_generator = PDFGenerator()
-                pdf_path = pdf_generator.generar_factura_pdf(self.current_factura)
+                pdf_path = pdf_generator.generar_factura_pdf(self.current_factura, auto_open=True)
 
                 # Mensaje de éxito detallado
                 mensaje_exito = f"""✅ PDF de factura generado exitosamente
@@ -668,8 +661,7 @@ Este mensaje puede ser copiado para documentación."""
 
                 show_copyable_success(self.window, "PDF Generado - Factura Actual", mensaje_exito)
 
-                # Abrir PDF automáticamente
-                self.open_pdf_file(pdf_path)
+                # El PDF ya se abre automáticamente desde el generador
 
             except ImportError as e:
                 # Error de dependencia

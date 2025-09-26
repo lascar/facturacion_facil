@@ -261,28 +261,19 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         list_frame = ctk.CTkFrame(productos_frame)
         list_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-        # Treeview para productos
-        columns = ("Producto", "Cantidad", "Precio Unit.", "IVA %", "Descuento %", "Total")
-        self.productos_tree = ttk.Treeview(list_frame, columns=columns, show="headings", height=8)
+        # Treeview para productos con columna de imagen
+        # Widget personnalisé pour productos avec images
+        from ui.producto_list_widget import ProductoListWidget
 
-        # Configurar columnas
-        for col in columns:
-            self.productos_tree.heading(col, text=col)
+        self.productos_tree = ProductoListWidget(
+            list_frame,
+            height=300,
+            corner_radius=10
+        )
+        self.productos_tree.pack(fill="both", expand=True, padx=5, pady=5)
 
-        self.productos_tree.column("Producto", width=200)
-        self.productos_tree.column("Cantidad", width=80)
-        self.productos_tree.column("Precio Unit.", width=100)
-        self.productos_tree.column("IVA %", width=80)
-        self.productos_tree.column("Descuento %", width=100)
-        self.productos_tree.column("Total", width=100)
-
-        # Scrollbar para productos
-        scrollbar_productos = ttk.Scrollbar(list_frame, orient="vertical",
-                                          command=self.productos_tree.yview)
-        self.productos_tree.configure(yscrollcommand=scrollbar_productos.set)
-
-        self.productos_tree.pack(side="left", fill="both", expand=True)
-        scrollbar_productos.pack(side="right", fill="y")
+        # Configurer le callback de sélection
+        self.productos_tree.set_selection_callback(self.on_producto_selected)
 
         # Botones para productos
         prod_buttons_frame = ctk.CTkFrame(productos_frame)

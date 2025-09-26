@@ -26,7 +26,7 @@ class StockWindow:
         self.stock_data = []
         self.filtered_data = []
         self.search_var = tk.StringVar()
-        self.search_var.trace('w', self.filter_stock)
+        # Nota: No usar trace para búsqueda automática, esperar Enter
 
         self.create_widgets()
         self.load_stock_data()
@@ -194,9 +194,44 @@ class StockWindow:
         self.search_entry = ctk.CTkEntry(
             search_frame,
             textvariable=self.search_var,
-            placeholder_text="Buscar por nombre o referencia..."
+            placeholder_text="Buscar por nombre o referencia... (presiona Enter)"
         )
         self.search_entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+        # Configurar eventos de teclado para búsqueda
+        self.search_entry.bind("<Return>", self.on_search_enter)
+        self.search_entry.bind("<KP_Enter>", self.on_search_enter)  # Enter del teclado numérico
+        self.search_entry.bind("<Escape>", self.on_search_escape)  # Escape para limpiar
+        self.search_entry.bind("<Control-a>", self.on_select_all)  # Ctrl+A para seleccionar todo
+
+        # Botón de búsqueda
+        search_btn = ctk.CTkButton(
+            search_frame,
+            text="🔍",
+            command=self.perform_search,
+            width=40
+        )
+        search_btn.pack(side="right", padx=(5, 0))
+
+        # Botón para limpiar búsqueda
+        clear_btn = ctk.CTkButton(
+            search_frame,
+            text="✖",
+            command=self.clear_search,
+            width=40,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        clear_btn.pack(side="right", padx=(5, 0))
+
+        # Indicador de resultados
+        self.results_label = ctk.CTkLabel(
+            search_frame,
+            text="",
+            font=ctk.CTkFont(size=12),
+            text_color="gray"
+        )
+        self.results_label.pack(side="right", padx=(10, 0))
 
         # Botones de acción
         buttons_frame = ctk.CTkFrame(controls_frame)
@@ -281,6 +316,7 @@ class StockWindow:
 
             self.filtered_data = self.stock_data.copy()
             self.update_stock_display()
+            self.update_results_indicator()  # Actualizar indicador inicial
             self.logger.info(f"Cargados {len(self.stock_data)} productos en stock")
 
         except Exception as e:
@@ -289,22 +325,40 @@ class StockWindow:
 
     def update_stock_display(self):
         """Actualiza la visualización de la tabla de stock"""
-        # Limpiar frame scrollable
-        for widget in self.scrollable_frame.winfo_children():
-            widget.destroy()
+        try:
+            self.logger.debug(f"Actualizando display stock: {len(self.filtered_data)} elementos")
 
-        if not self.filtered_data:
-            no_data_label = ctk.CTkLabel(
+            # Limpiar frame scrollable
+            for widget in self.scrollable_frame.winfo_children():
+                widget.destroy()
+
+            if not self.filtered_data:
+                self.logger.debug("No hay datos filtrados, mostrando mensaje")
+                no_data_label = ctk.CTkLabel(
+                    self.scrollable_frame,
+                    text="No hay productos en stock",
+                    font=ctk.CTkFont(size=16)
+                )
+                no_data_label.pack(pady=50)
+                return
+
+            # Crear filas de datos
+            self.logger.debug(f"Creando {len(self.filtered_data)} filas de stock")
+            for i, item in enumerate(self.filtered_data):
+                self.create_stock_row(item, i)
+
+            self.logger.debug("Display stock actualizado correctamente")
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando display stock: {e}")
+            # Mostrar mensaje de error en la interfaz
+            error_label = ctk.CTkLabel(
                 self.scrollable_frame,
-                text="No hay productos en stock",
-                font=ctk.CTkFont(size=16)
+                text=f"Error mostrando datos: {e}",
+                font=ctk.CTkFont(size=16),
+                text_color="red"
             )
-            no_data_label.pack(pady=50)
-            return
-
-        # Crear filas de datos
-        for i, item in enumerate(self.filtered_data):
-            self.create_stock_row(item, i)
+            error_label.pack(pady=50)
 
     def create_stock_row(self, item, row_index):
         """Crea una fila de la tabla de stock"""
@@ -434,29 +488,166 @@ class StockWindow:
 
     def filter_stock(self, *args):
         """Filtra los datos de stock según el texto de búsqueda"""
-        search_text = self.search_var.get().lower()
+        try:
+            search_text = self.search_var.get().lower().strip()
 
-        if not search_text:
+            if not search_text:
+                self.filtered_data = self.stock_data.copy()
+            else:
+                self.filtered_data = []
+                for item in self.stock_data:
+                    # Gestion robuste des valeurs None ou vides
+                    nombre = item.get('nombre', '') or ''
+                    referencia = item.get('referencia', '') or ''
+
+                    if (search_text in nombre.lower() or
+                        search_text in referencia.lower()):
+                        self.filtered_data.append(item)
+
+            self.update_stock_display()
+            self.logger.debug(f"Filtrado stock: '{search_text}' -> {len(self.filtered_data)} resultados")
+
+        except Exception as e:
+            self.logger.error(f"Error en filtrado de stock: {e}")
+            # En cas d'erreur, afficher toutes les données
             self.filtered_data = self.stock_data.copy()
-        else:
-            self.filtered_data = [
-                item for item in self.stock_data
-                if search_text in item['nombre'].lower() or
-                   search_text in item['referencia'].lower()
-            ]
+            self.update_stock_display()
 
-        self.update_stock_display()
+    def on_search_enter(self, event):
+        """Maneja el evento Enter en el campo de búsqueda"""
+        self.perform_search()
+        return "break"  # Evita que el evento se propague
+
+    def on_search_escape(self, event):
+        """Maneja el evento Escape para limpiar la búsqueda"""
+        self.clear_search()
+        return "break"
+
+    def on_select_all(self, event):
+        """Maneja Ctrl+A para seleccionar todo el texto"""
+        self.search_entry.select_range(0, 'end')
+        return "break"
+
+    def perform_search(self):
+        """Realiza la búsqueda cuando se presiona Enter o el botón de búsqueda"""
+        try:
+            search_text = self.search_var.get().lower().strip()
+
+            self.logger.debug(f"Realizando búsqueda: '{search_text}'")
+
+            if not search_text:
+                # Si no hay texto, mostrar todos los productos
+                self.filtered_data = self.stock_data.copy()
+                self.logger.debug("Búsqueda vacía, mostrando todos los productos")
+            else:
+                # Filtrar productos
+                self.filtered_data = []
+                for item in self.stock_data:
+                    # Gestion robuste des valeurs None ou vides
+                    nombre = item.get('nombre', '') or ''
+                    referencia = item.get('referencia', '') or ''
+
+                    if (search_text in nombre.lower() or
+                        search_text in referencia.lower()):
+                        self.filtered_data.append(item)
+
+                self.logger.debug(f"Búsqueda '{search_text}': {len(self.filtered_data)} resultados encontrados")
+
+            # Actualizar la visualización
+            self.update_stock_display()
+
+            # Actualizar indicador de resultados
+            self.update_results_indicator(search_text)
+
+            # Mostrar mensaje informativo si no hay resultados
+            if search_text and len(self.filtered_data) == 0:
+                self.show_info_message(
+                    "Búsqueda",
+                    f"No se encontraron productos que coincidan con '{search_text}'"
+                )
+            elif search_text:
+                self.logger.info(f"Búsqueda completada: {len(self.filtered_data)} resultados para '{search_text}'")
+
+        except Exception as e:
+            self.logger.error(f"Error en búsqueda: {e}")
+            self.show_error_message("Error", f"Error realizando búsqueda: {e}")
+            # En caso de error, mostrar todos los productos
+            self.filtered_data = self.stock_data.copy()
+            self.update_stock_display()
+
+    def clear_search(self):
+        """Limpia el campo de búsqueda y muestra todos los productos"""
+        try:
+            self.search_var.set("")
+            self.filtered_data = self.stock_data.copy()
+            self.update_stock_display()
+            self.update_results_indicator()  # Actualizar indicador
+            self.logger.debug("Búsqueda limpiada, mostrando todos los productos")
+
+            # Enfocar el campo de búsqueda para facilitar una nueva búsqueda
+            self.search_entry.focus()
+
+        except Exception as e:
+            self.logger.error(f"Error limpiando búsqueda: {e}")
+            self.show_error_message("Error", f"Error limpiando búsqueda: {e}")
+
+    def update_results_indicator(self, search_text=""):
+        """Actualiza el indicador de resultados de búsqueda"""
+        try:
+            total_products = len(self.stock_data)
+            filtered_products = len(self.filtered_data)
+
+            if not search_text:
+                # Sin búsqueda activa
+                self.results_label.configure(text=f"{total_products} productos")
+            elif filtered_products == 0:
+                # Sin resultados
+                self.results_label.configure(
+                    text="Sin resultados",
+                    text_color="red"
+                )
+            elif filtered_products == total_products:
+                # Todos los productos mostrados
+                self.results_label.configure(
+                    text=f"{total_products} productos",
+                    text_color="gray"
+                )
+            else:
+                # Resultados filtrados
+                self.results_label.configure(
+                    text=f"{filtered_products} de {total_products}",
+                    text_color="green"
+                )
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando indicador de resultados: {e}")
+            self.results_label.configure(text="", text_color="gray")
+
 
     def show_low_stock(self):
         """Muestra solo productos con stock bajo (<=5)"""
-        self.filtered_data = [
-            item for item in self.stock_data
-            if item['cantidad'] <= 5
-        ]
-        self.update_stock_display()
+        try:
+            # Limpiar campo de búsqueda para evitar confusión
+            self.search_var.set("")
 
-        if not self.filtered_data:
-            self.show_info_message("Stock Bajo", "No hay productos con stock bajo.")
+            # Filtrar productos con stock bajo
+            self.filtered_data = [
+                item for item in self.stock_data
+                if item['cantidad'] <= 5
+            ]
+
+            self.update_stock_display()
+            self.update_results_indicator()  # Actualizar indicador
+            self.logger.debug(f"Filtro stock bajo: {len(self.filtered_data)} productos encontrados")
+
+            if not self.filtered_data:
+                self.show_info_message("Stock Bajo", "No hay productos con stock bajo.")
+            else:
+                self.logger.info(f"Mostrando {len(self.filtered_data)} productos con stock bajo")
+
+        except Exception as e:
+            self.logger.error(f"Error mostrando stock bajo: {e}")
+            self.show_error_message("Error", f"Error mostrando stock bajo: {e}")
 
     def modify_stock(self, item):
         """Permite modificar directamente la cantidad de stock"""

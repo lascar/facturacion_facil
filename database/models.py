@@ -279,7 +279,8 @@ class FacturaItem:
 
 class Organizacion:
     def __init__(self, nombre="", direccion="", telefono="", email="", cif="",
-                 logo_path="", directorio_imagenes_defecto="", numero_factura_inicial=1):
+                 logo_path="", directorio_imagenes_defecto="", numero_factura_inicial=1,
+                 directorio_descargas_pdf="", visor_pdf_personalizado=""):
         self.nombre = nombre
         self.direccion = direccion
         self.telefono = telefono
@@ -288,6 +289,8 @@ class Organizacion:
         self.logo_path = logo_path
         self.directorio_imagenes_defecto = directorio_imagenes_defecto
         self.numero_factura_inicial = numero_factura_inicial
+        self.directorio_descargas_pdf = directorio_descargas_pdf
+        self.visor_pdf_personalizado = visor_pdf_personalizado
     
     def save(self):
         """Guarda los datos de la organización"""
@@ -296,15 +299,15 @@ class Organizacion:
         if existing and existing.nombre:  # Si existe et n'est pas vide
             query = '''UPDATE organizacion SET nombre=?, direccion=?, telefono=?,
                       email=?, cif=?, logo_path=?, directorio_imagenes_defecto=?,
-                      numero_factura_inicial=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                      numero_factura_inicial=?, directorio_descargas_pdf=?, visor_pdf_personalizado=?, fecha_actualizacion=CURRENT_TIMESTAMP
                       WHERE id=1'''
         else:
             query = '''INSERT INTO organizacion (id, nombre, direccion, telefono,
-                      email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial)
-                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)'''
+                      email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado)
+                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
 
         params = (self.nombre, self.direccion, self.telefono, self.email, self.cif,
-                 self.logo_path, self.directorio_imagenes_defecto, self.numero_factura_inicial)
+                 self.logo_path, self.directorio_imagenes_defecto, self.numero_factura_inicial, self.directorio_descargas_pdf, self.visor_pdf_personalizado)
         db.execute_query(query, params)
     
     @staticmethod
@@ -314,16 +317,20 @@ class Organizacion:
         results = db.execute_query(query)
         if results:
             row = results[0]
-            # Orden de columnas: id, nombre, direccion, telefono, email, cif, logo_path, fecha_actualizacion, directorio_imagenes_defecto, numero_factura_inicial
+            # Orden de columnas: id, nombre, direccion, telefono, email, cif, logo_path, fecha_actualizacion, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado
             # Manejar compatibilidad con bases de datos existentes
             directorio_imagenes = row[8] if len(row) > 8 and row[8] is not None else ""
             numero_inicial = row[9] if len(row) > 9 and row[9] is not None else 1
+            directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
+            visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
 
             return Organizacion(
                 nombre=row[1], direccion=row[2], telefono=row[3],
                 email=row[4], cif=row[5], logo_path=row[6],
                 directorio_imagenes_defecto=directorio_imagenes,
-                numero_factura_inicial=numero_inicial
+                numero_factura_inicial=numero_inicial,
+                directorio_descargas_pdf=directorio_pdf,
+                visor_pdf_personalizado=visor_pdf
             )
         return Organizacion()
 

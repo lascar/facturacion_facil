@@ -4938,3 +4938,1679 @@ ValueError: color is None, for transparency set color='transparent'
 2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
 2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
 2025-09-25 10:04:09 - facturacion_facil.pdf_generator - ERROR - pdf_generator.py:133 - Error generando PDF: 'Factura' object has no attribute 'observaciones'
+2025-09-25 10:14:17 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 10:14:24 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 10:14:24 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 10:14:24 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 10:14:33 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 10:14:49 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 10:14:49 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 10:14:49 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 10:14:49 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 10:14:50 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 10:15:35 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 10:15:35 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 10:15:35 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 10:15:35 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 10:15:35 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-25 10:15:35 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-25 10:15:35 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:15:13 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:15:13 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:15:13 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:15:13 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:15:14 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:17:58 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:17:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:17:58 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:17:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:17:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:19:26 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:19:26 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:19:26 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:19:26 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:19:26 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-25 11:19:26 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-25 11:19:26 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:22:21 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:22:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:22:22 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:22:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:22:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-25 11:22:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-25 11:22:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:35:25 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:35:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:35:25 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:35:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:35:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 11:44:50 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-25 11:44:50 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 11:44:50 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 11:44:50 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 11:44:51 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-25 12:32:37 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-25 12:32:37 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-25 12:37:08 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 12:37:08 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 12:37:08 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-25 12:39:07 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-25 12:39:07 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-25 14:58:59 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpb1wgodcz/test_files/test_prefix_204ead5a.txt'
+2025-09-25 15:02:04 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp3aplldt6/test_files/test_prefix_74b3b124.txt'
+2025-09-25 17:01:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-25 17:01:28 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-25 17:01:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 08:27:06 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 08:27:06 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 08:27:06 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 08:27:16 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 08:27:16 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 08:37:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 08:37:28 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 08:37:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 08:37:40 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 08:37:40 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 09:51:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 10:08:13 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 10:08:14 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 10:08:14 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 10:08:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 10:08:22 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 10:08:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 10:08:57 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 10:08:57 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 10:08:57 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 10:27:50 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage5" doesn't exist
+2025-09-26 10:27:50 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 10:27:50 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 10:27:53 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 11:10:09 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage5" doesn't exist
+2025-09-26 11:10:09 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 11:10:09 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 11:10:12 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 11:20:45 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 11:20:45 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 11:20:45 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 11:20:55 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 11:20:55 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 11:20:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 11:21:01 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 11:21:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 11:21:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 11:21:06 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 11:21:06 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpqglu6722/test_files/test_prefix_1a49efa0.txt'
+2025-09-26 11:21:06 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 11:21:06 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 11:31:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 11:31:58 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 11:31:58 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 11:32:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 11:32:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 11:32:05 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 11:32:08 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 11:32:08 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 11:32:08 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 11:32:11 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 11:32:11 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp9a3xik3q/test_files/test_prefix_27d44e63.txt'
+2025-09-26 11:32:11 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 11:32:11 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 12:16:15 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 12:16:15 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 12:16:15 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 12:16:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 12:16:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 12:16:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 12:16:30 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 12:16:30 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 12:16:31 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 12:16:33 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 12:16:34 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpyui0m4i5/test_files/test_prefix_acaaa38d.txt'
+2025-09-26 12:16:34 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 12:16:34 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 13:54:47 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 13:54:48 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 13:54:48 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 13:55:00 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 13:55:00 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 13:55:06 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 13:55:10 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 13:55:10 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 13:55:10 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 13:55:16 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 13:55:17 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp945zeh46/test_files/test_prefix_982966a5.txt'
+2025-09-26 13:55:17 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 13:55:17 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 17:41:39 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 17:41:39 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 17:41:39 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 17:41:53 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:41:53 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 17:41:57 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 17:42:01 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 17:42:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 17:42:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:42:06 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 17:42:07 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpmh_mf4rk/test_files/test_prefix_2c5a6c89.txt'
+2025-09-26 17:42:07 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 17:42:07 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 17:54:02 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 17:54:02 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 17:54:02 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 17:54:14 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:54:14 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 17:54:17 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 17:54:21 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 17:54:21 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 17:54:21 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:54:24 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 17:54:25 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp0ezz53lv/test_files/test_prefix_2cb07a38.txt'
+2025-09-26 17:54:25 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 17:54:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 17:59:29 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 17:59:29 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 17:59:29 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 17:59:43 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:59:43 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 17:59:47 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 17:59:51 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 17:59:51 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 17:59:51 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 17:59:56 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 17:59:57 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpwi3y3dtq/test_files/test_prefix_176b09c1.txt'
+2025-09-26 17:59:57 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 17:59:57 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 18:02:15 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 18:02:15 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 18:02:15 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 18:02:33 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 18:02:33 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 18:02:38 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 18:02:42 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 18:02:42 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 18:02:42 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 18:02:48 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 18:02:48 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpc0mh94yx/test_files/test_prefix_265353ca.txt'
+2025-09-26 18:02:48 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 18:02:48 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-09-26 18:09:40 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 536, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-09-26 18:09:40 - facturacion_facil.productos - ERROR - productos.py:553 - Error al abrir el diálogo de selección: Erreur de système
+2025-09-26 18:09:40 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Erreur de système
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Erreur de système
+2025-09-26 18:09:54 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 18:09:54 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 511, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-09-26 18:09:57 - facturacion_facil - ERROR - logger.py:92 - Excepción en limpiar_formulario: 'ProductoListWidget' object has no attribute 'get_children'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/facturas.py", line 476, in limpiar_formulario
+    for item in self.productos_tree.get_children():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProductoListWidget' object has no attribute 'get_children'
+2025-09-26 18:10:01 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage7" doesn't exist
+2025-09-26 18:10:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 729, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-09-26 18:10:01 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/ui/productos.py", line 507, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-09-26 18:10:07 - facturacion_facil.basewindow - ERROR - ui_components.py:113 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-09-26 18:10:07 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp2uw_zhfu/test_files/test_prefix_c087625d.txt'
+2025-09-26 18:10:07 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-09-26 18:10:07 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
