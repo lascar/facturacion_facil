@@ -4,6 +4,7 @@ from tkinter import ttk
 from utils.translations import get_text
 from utils.logger import get_logger, log_user_action, log_database_operation, log_exception
 from database.models import Factura, FacturaItem, Producto, Organizacion, Stock
+from database.optimized_models import OptimizedFactura, OptimizedProducto
 from common.ui_components import BaseWindow, FormHelper
 from common.validators import FormValidator, CalculationHelper
 from ui.facturas_methods import FacturasMethodsMixin
@@ -348,39 +349,74 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         config_btn.pack(side="right", padx=10)
 
     def load_facturas(self):
-        """Carga la lista de facturas"""
+        """Carga la lista de facturas (OPTIMIZADO)"""
         try:
-            self.facturas = Factura.get_all()
+            # 🚀 OPTIMIZACIÓN: Usar requête optimisée pour éviter le problème N+1
+            try:
+                # Pour l'affichage de la liste, utiliser le résumé optimisé
+                facturas_summary = OptimizedFactura.get_summary_optimized()
 
-            # Limpiar la lista
-            for item in self.facturas_tree.get_children():
-                self.facturas_tree.delete(item)
+                # Limpiar la lista
+                for item in self.facturas_tree.get_children():
+                    self.facturas_tree.delete(item)
 
-            # Agregar facturas a la lista
-            for factura in self.facturas:
-                self.facturas_tree.insert("", "end", values=(
-                    factura.numero_factura,
-                    factura.fecha_factura,
-                    factura.nombre_cliente,
-                    CalculationHelper.format_currency(factura.total_factura)
-                ))
+                # Agregar facturas a la lista (depuis le résumé)
+                for factura_data in facturas_summary:
+                    self.facturas_tree.insert("", "end", values=(
+                        factura_data['numero_factura'],
+                        factura_data['fecha_factura'],
+                        factura_data['nombre_cliente'],
+                        CalculationHelper.format_currency(factura_data['total_factura'])
+                    ))
 
-            self.logger.info(f"Cargadas {len(self.facturas)} facturas")
+                # Garder une référence pour la compatibilité
+                self.facturas = []
+                self.facturas_summary = facturas_summary
+
+                self.logger.info(f"Cargadas {len(facturas_summary)} facturas (OPTIMIZADO - résumé)")
+
+            except Exception as opt_error:
+                self.logger.warning(f"Error en método optimizado, usando fallback: {opt_error}")
+                # Fallback vers la méthode originale
+                self.facturas = Factura.get_all()
+
+                # Limpiar la lista
+                for item in self.facturas_tree.get_children():
+                    self.facturas_tree.delete(item)
+
+                # Agregar facturas a la lista
+                for factura in self.facturas:
+                    self.facturas_tree.insert("", "end", values=(
+                        factura.numero_factura,
+                        factura.fecha_factura,
+                        factura.nombre_cliente,
+                        CalculationHelper.format_currency(factura.total_factura)
+                    ))
+
+                self.logger.info(f"Cargadas {len(self.facturas)} facturas (método original)")
 
         except Exception as e:
             log_exception(e, "load_facturas")
             self._show_message("error", get_text("error"), f"Error al cargar facturas: {str(e)}")
 
     def load_productos_disponibles(self):
-        """Carga la lista de productos disponibles con información de stock"""
+        """Carga la lista de productos disponibles con información de stock (OPTIMIZADO)"""
         try:
-            self.productos_disponibles = Producto.get_all()
+            # 🚀 OPTIMIZACIÓN: Usar requête optimisée qui évite le problème N+1
+            try:
+                self.productos_disponibles = OptimizedProducto.get_all_with_stock_optimized()
+                self.logger.info(f"Cargados {len(self.productos_disponibles)} productos disponibles con información de stock (OPTIMIZADO)")
+            except Exception as opt_error:
+                self.logger.warning(f"Error en método optimizado, usando fallback: {opt_error}")
+                # Fallback vers la méthode originale
+                self.productos_disponibles = Producto.get_all()
 
-            # Agregar información de stock a cada producto para referencia
-            for producto in self.productos_disponibles:
-                producto._stock_actual = Stock.get_by_product(producto.id)
+                # Agregar información de stock a cada producto para referencia
+                for producto in self.productos_disponibles:
+                    producto._stock_actual = Stock.get_by_product(producto.id)
 
-            self.logger.info(f"Cargados {len(self.productos_disponibles)} productos disponibles con información de stock")
+                self.logger.info(f"Cargados {len(self.productos_disponibles)} productos disponibles con información de stock (método original)")
+
         except Exception as e:
             log_exception(e, "load_productos_disponibles")
             self.productos_disponibles = []

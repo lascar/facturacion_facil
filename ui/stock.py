@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 from utils.translations import get_text
 from database.models import Stock, Producto, StockMovement
+from database.optimized_models import OptimizedStock
 from common.ui_components import BaseWindow
 from common.custom_dialogs import (
     show_copyable_info, show_copyable_success,
@@ -255,6 +256,17 @@ class StockWindow:
         )
         low_stock_btn.pack(side="left", padx=5)
 
+        # Botón de estadísticas de rendimiento
+        performance_btn = ctk.CTkButton(
+            buttons_frame,
+            text="🚀 Rendimiento",
+            command=self.show_performance_stats,
+            width=120,
+            fg_color="purple",
+            hover_color="darkviolet"
+        )
+        performance_btn.pack(side="left", padx=5)
+
         # Frame para la tabla de stock
         self.create_stock_table(main_frame)
 
@@ -291,37 +303,49 @@ class StockWindow:
         self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
     def load_stock_data(self):
-        """Carga los datos de stock desde la base de datos"""
+        """Carga los datos de stock desde la base de datos (OPTIMIZADO)"""
         try:
-            # Obtener datos de stock con información de productos
-            query_results = Stock.get_all()
-            self.stock_data = []
-
-            for row in query_results:
-                producto_id, cantidad, nombre, referencia = row
-
-                # Obtener fecha de última actualización
-                from database.database import db
-                fecha_query = "SELECT fecha_actualizacion FROM stock WHERE producto_id=?"
-                fecha_result = db.execute_query(fecha_query, (producto_id,))
-                fecha_actualizacion = fecha_result[0][0] if fecha_result else "N/A"
-
-                self.stock_data.append({
-                    'producto_id': producto_id,
-                    'nombre': nombre,
-                    'referencia': referencia,
-                    'cantidad': cantidad,
-                    'fecha_actualizacion': fecha_actualizacion
-                })
+            # 🚀 OPTIMIZACIÓN: Usar requête optimisée qui évite le problème N+1
+            self.stock_data = OptimizedStock.get_all_optimized()
 
             self.filtered_data = self.stock_data.copy()
             self.update_stock_display()
             self.update_results_indicator()  # Actualizar indicador inicial
-            self.logger.info(f"Cargados {len(self.stock_data)} productos en stock")
+            self.logger.info(f"Cargados {len(self.stock_data)} productos en stock (OPTIMIZADO)")
 
         except Exception as e:
             self.logger.error(f"Error cargando datos de stock: {e}")
-            self.show_error_message("Error", f"Error cargando datos de stock: {e}")
+            # Fallback vers la méthode originale en cas d'erreur
+            try:
+                self.logger.warning("Intentando método original como fallback...")
+                query_results = Stock.get_all()
+                self.stock_data = []
+
+                for row in query_results:
+                    producto_id, cantidad, nombre, referencia = row
+
+                    # Obtener fecha de última actualización
+                    from database.database import db
+                    fecha_query = "SELECT fecha_actualizacion FROM stock WHERE producto_id=?"
+                    fecha_result = db.execute_query(fecha_query, (producto_id,))
+                    fecha_actualizacion = fecha_result[0][0] if fecha_result else "N/A"
+
+                    self.stock_data.append({
+                        'producto_id': producto_id,
+                        'nombre': nombre,
+                        'referencia': referencia,
+                        'cantidad': cantidad,
+                        'fecha_actualizacion': fecha_actualizacion
+                    })
+
+                self.filtered_data = self.stock_data.copy()
+                self.update_stock_display()
+                self.update_results_indicator()
+                self.logger.info(f"Cargados {len(self.stock_data)} productos en stock (método original)")
+
+            except Exception as fallback_error:
+                self.logger.error(f"Error en fallback: {fallback_error}")
+                self.show_error_message("Error", f"Error cargando datos de stock: {e}")
 
     def update_stock_display(self):
         """Actualiza la visualización de la tabla de stock"""
@@ -625,20 +649,27 @@ class StockWindow:
 
 
     def show_low_stock(self):
-        """Muestra solo productos con stock bajo (<=5)"""
+        """Muestra solo productos con stock bajo (<=5) - OPTIMIZADO"""
         try:
             # Limpiar campo de búsqueda para evitar confusión
             self.search_var.set("")
 
-            # Filtrar productos con stock bajo
-            self.filtered_data = [
-                item for item in self.stock_data
-                if item['cantidad'] <= 5
-            ]
+            # 🚀 OPTIMIZACIÓN: Usar requête optimisée pour le stock bas
+            try:
+                low_stock_data = OptimizedStock.get_low_stock_optimized(threshold=5)
+                self.filtered_data = low_stock_data
+                self.logger.debug(f"Filtro stock bajo optimizado: {len(self.filtered_data)} productos encontrados")
+            except Exception as opt_error:
+                self.logger.warning(f"Error en método optimizado, usando fallback: {opt_error}")
+                # Fallback vers la méthode originale
+                self.filtered_data = [
+                    item for item in self.stock_data
+                    if item['cantidad'] <= 5
+                ]
+                self.logger.debug(f"Filtro stock bajo (fallback): {len(self.filtered_data)} productos encontrados")
 
             self.update_stock_display()
             self.update_results_indicator()  # Actualizar indicador
-            self.logger.debug(f"Filtro stock bajo: {len(self.filtered_data)} productos encontrados")
 
             if not self.filtered_data:
                 self.show_info_message("Stock Bajo", "No hay productos con stock bajo.")
@@ -648,6 +679,119 @@ class StockWindow:
         except Exception as e:
             self.logger.error(f"Error mostrando stock bajo: {e}")
             self.show_error_message("Error", f"Error mostrando stock bajo: {e}")
+
+    def show_performance_stats(self):
+        """Muestra estadísticas de rendimiento y comparación"""
+        try:
+            import time
+            from utils.performance_optimizer import performance_monitor
+
+            # Crear ventana de estadísticas
+            stats_window = ctk.CTkToplevel(self.window)
+            stats_window.title("🚀 Estadísticas de Rendimiento")
+            stats_window.geometry("600x500")
+            stats_window.transient(self.window)
+
+            # Título
+            title_label = ctk.CTkLabel(
+                stats_window,
+                text="🚀 Rendimiento del Stock",
+                font=ctk.CTkFont(size=20, weight="bold")
+            )
+            title_label.pack(pady=20)
+
+            # Frame scrollable para las estadísticas
+            scrollable_frame = ctk.CTkScrollableFrame(stats_window)
+            scrollable_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+            # Realizar pruebas de rendimiento
+            stats_text = "📊 COMPARACIÓN DE RENDIMIENTO\n"
+            stats_text += "=" * 50 + "\n\n"
+
+            # Test método original vs optimizado
+            try:
+                # Método original simulado
+                start_time = time.time()
+                original_data = Stock.get_all()
+                # Simular las consultas N+1
+                for row in original_data:
+                    from database.database import db
+                    fecha_query = "SELECT fecha_actualizacion FROM stock WHERE producto_id=?"
+                    db.execute_query(fecha_query, (row[0],))
+                original_time = time.time() - start_time
+
+                # Método optimizado
+                start_time = time.time()
+                optimized_data = OptimizedStock.get_all_optimized()
+                optimized_time = time.time() - start_time
+
+                # Calcular mejora
+                if optimized_time > 0:
+                    improvement = original_time / optimized_time
+                else:
+                    improvement = float('inf')
+
+                stats_text += f"📊 RESULTADOS:\n"
+                stats_text += f"   🐌 Método original: {len(original_data)} productos en {original_time:.3f}s\n"
+                stats_text += f"   🚀 Método optimizado: {len(optimized_data)} productos en {optimized_time:.3f}s\n"
+                stats_text += f"   📈 Mejora: {improvement:.1f}x más rápido\n\n"
+
+                stats_text += f"📉 REDUCCIÓN DE CONSULTAS:\n"
+                stats_text += f"   🐌 Original: {1 + len(original_data)} consultas (N+1)\n"
+                stats_text += f"   🚀 Optimizado: 1 consulta (JOIN)\n"
+                stats_text += f"   📉 Reducción: {len(original_data) / (1 + len(original_data)) * 100:.0f}% menos consultas\n\n"
+
+            except Exception as test_error:
+                stats_text += f"⚠️ Error en prueba: {test_error}\n\n"
+
+            # Estadísticas del monitor de rendimiento
+            stats_text += f"📊 ESTADÍSTICAS DEL MONITOR:\n"
+            stats_text += "=" * 30 + "\n"
+
+            try:
+                stats = performance_monitor.get_stats()
+                if stats:
+                    for func_name, func_stats in stats.items():
+                        if 'stock' in func_name.lower():
+                            stats_text += f"\n🔍 {func_name}:\n"
+                            stats_text += f"   Llamadas: {func_stats['calls']}\n"
+                            stats_text += f"   Tiempo total: {func_stats['total_time']:.3f}s\n"
+                            stats_text += f"   Tiempo promedio: {func_stats['avg_time']:.3f}s\n"
+                            stats_text += f"   Tiempo máximo: {func_stats['max_time']:.3f}s\n"
+                else:
+                    stats_text += "No hay estadísticas disponibles aún.\n"
+            except Exception as monitor_error:
+                stats_text += f"⚠️ Error obteniendo estadísticas: {monitor_error}\n"
+
+            stats_text += "\n💡 BENEFICIOS DE LA OPTIMIZACIÓN:\n"
+            stats_text += "   ✅ Carga más rápida de datos\n"
+            stats_text += "   ✅ Menos carga en la base de datos\n"
+            stats_text += "   ✅ Interfaz más responsiva\n"
+            stats_text += "   ✅ Mejor experiencia de usuario\n"
+
+            # Mostrar las estadísticas
+            stats_label = ctk.CTkLabel(
+                scrollable_frame,
+                text=stats_text,
+                font=ctk.CTkFont(family="Courier", size=12),
+                justify="left"
+            )
+            stats_label.pack(anchor="w", padx=10, pady=10)
+
+            # Botón cerrar
+            close_btn = ctk.CTkButton(
+                stats_window,
+                text="Cerrar",
+                command=stats_window.destroy,
+                width=100
+            )
+            close_btn.pack(pady=20)
+
+            self.logger.info("Ventana de estadísticas de rendimiento mostrada")
+
+        except Exception as e:
+            self.logger.error(f"Error mostrando estadísticas de rendimiento: {e}")
+            self.show_error_message("Error", f"Error mostrando estadísticas: {e}")
 
     def modify_stock(self, item):
         """Permite modificar directamente la cantidad de stock"""
