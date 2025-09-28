@@ -43,22 +43,28 @@ class OrganizacionWindow:
         self.logger.info("Ventana de organización inicializada")
 
     def _show_message(self, msg_type, title, message):
-        """Mostrar mensaje con la ventana como parent para evitar que quede en segundo plano"""
+        """Mostrar mensaje copiable con la ventana como parent para evitar que quede en segundo plano"""
         try:
+            # Importar las funciones de diálogos copiables
+            from common.custom_dialogs import (
+                show_copyable_info, show_copyable_error,
+                show_copyable_warning, show_copyable_confirm
+            )
+
             # Asegurar que la ventana esté al frente
             self.window.lift()
             self.window.focus_force()
             self.window.attributes('-topmost', True)
 
-            # Mostrar mensaje con parent
+            # Usar diálogos copiables en lugar de messagebox estándar
             if msg_type == "info":
-                result = messagebox.showinfo(title, message, parent=self.window)
+                result = show_copyable_info(self.window, title, message)
             elif msg_type == "error":
-                result = messagebox.showerror(title, message, parent=self.window)
+                result = show_copyable_error(self.window, title, message)
             elif msg_type == "question":
-                result = messagebox.askyesno(title, message, parent=self.window)
+                result = show_copyable_confirm(self.window, title, message)
             else:
-                result = messagebox.showinfo(title, message, parent=self.window)
+                result = show_copyable_info(self.window, title, message)
 
             # Restaurar estado normal
             self.window.attributes('-topmost', False)

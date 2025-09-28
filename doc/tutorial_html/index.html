@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Técnico - Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💻 Tutorial Técnico Facturación Fácil</h1>
+            <p>Guía Completa para Desarrolladores y Programadores</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html" class="active">🏠 Inicio</a>
+            <a href="01-arquitectura.html">🏗️ Arquitectura</a>
+            <a href="02-estructura-codigo.html">📁 Estructura</a>
+            <a href="03-base-datos.html">🗄️ Base de Datos</a>
+            <a href="04-interfaz-gui.html">🎨 Interfaz GUI</a>
+            <a href="05-logica-negocio.html">⚙️ Lógica de Negocio</a>
+            <a href="06-testing.html">🧪 Testing</a>
+            <a href="07-deployment.html">🚀 Deployment</a>
+            <a href="08-extension.html">🔧 Extensión</a>
+            <a href="09-debugging.html">🐛 Debugging</a>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>🎯 Bienvenido Desarrollador</h4>
+            <p>Esta guía técnica te ayudará a comprender la <strong>arquitectura, implementación y extensión</strong> de Facturación Fácil. Desde la estructura del código hasta la implementación de nuevas funcionalidades.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📋 Tabla de Contenidos Técnicos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🏗️ Arquitectura y Estructura</h3>
+                        <ul>
+                            <li><a href="01-arquitectura.html">🏗️ <strong>Arquitectura del Sistema</strong></a><br>
+                                <small>Patrones de diseño, MVC, separación de responsabilidades</small></li>
+                            <li><a href="02-estructura-codigo.html">📁 <strong>Estructura del Código</strong></a><br>
+                                <small>Organización de archivos, módulos y dependencias</small></li>
+                            <li><a href="03-base-datos.html">🗄️ <strong>Base de Datos</strong></a><br>
+                                <small>Modelo de datos, ORM, migraciones y consultas</small></li>
+                            <li><a href="04-interfaz-gui.html">🎨 <strong>Interfaz GUI</strong></a><br>
+                                <small>CustomTkinter, componentes, eventos y layouts</small></li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>⚙️ Implementación y Testing</h3>
+                        <ul>
+                            <li><a href="05-logica-negocio.html">⚙️ <strong>Lógica de Negocio</strong></a><br>
+                                <small>Algoritmos, validaciones, cálculos y procesos</small></li>
+                            <li><a href="06-testing.html">🧪 <strong>Testing y Calidad</strong></a><br>
+                                <small>Tests unitarios, integración, cobertura y CI/CD</small></li>
+                            <li><a href="07-deployment.html">🚀 <strong>Deployment</strong></a><br>
+                                <small>Empaquetado, distribución y configuración</small></li>
+                            <li><a href="08-extension.html">🔧 <strong>Extensión y Personalización</strong></a><br>
+                                <small>Plugins, APIs, hooks y modificaciones</small></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>🐛 Debugging y Mantenimiento</h3>
+                        <ul>
+                            <li><a href="09-debugging.html">🐛 <strong>Debugging y Troubleshooting</strong></a><br>
+                                <small>Herramientas de debug, logging, profiling y optimización</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🛠️ Stack Tecnológico
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🐍 Backend</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Python 3.8+</strong> - Lenguaje principal</li>
+                            <li><span class="status-ok">✅</span> <strong>SQLite</strong> - Base de datos embebida</li>
+                            <li><span class="status-ok">✅</span> <strong>Peewee ORM</strong> - Mapeo objeto-relacional</li>
+                            <li><span class="status-ok">✅</span> <strong>ReportLab</strong> - Generación de PDFs</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🎨 Frontend</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>CustomTkinter</strong> - GUI moderna</li>
+                            <li><span class="status-ok">✅</span> <strong>Tkinter</strong> - GUI base de Python</li>
+                            <li><span class="status-ok">✅</span> <strong>PIL/Pillow</strong> - Procesamiento de imágenes</li>
+                            <li><span class="status-ok">✅</span> <strong>Matplotlib</strong> - Gráficos y visualización</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>🧪 Testing</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>pytest</strong> - Framework de testing</li>
+                            <li><span class="status-ok">✅</span> <strong>unittest.mock</strong> - Mocking</li>
+                            <li><span class="status-ok">✅</span> <strong>coverage.py</strong> - Cobertura de código</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🚀 Deployment</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>PyInstaller</strong> - Empaquetado ejecutable</li>
+                            <li><span class="status-ok">✅</span> <strong>pip</strong> - Gestión de dependencias</li>
+                            <li><span class="status-ok">✅</span> <strong>venv</strong> - Entornos virtuales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📊 Métricas del Proyecto
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Métrica</th>
+                                    <th>Valor</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Líneas de Código</strong></td>
+                                    <td>~15,000</td>
+                                    <td><span class="status-ok">✅ Bien estructurado</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Archivos Python</strong></td>
+                                    <td>~50</td>
+                                    <td><span class="status-ok">✅ Modular</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tests</strong></td>
+                                    <td>60+ tests</td>
+                                    <td><span class="status-ok">✅ Bien cubierto</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cobertura</strong></td>
+                                    <td>14%+</td>
+                                    <td><span class="status-warning">⚠️ En mejora</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dependencias</strong></td>
+                                    <td>~20</td>
+                                    <td><span class="status-ok">✅ Controladas</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Características Técnicas</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Arquitectura MVC</strong> - Separación clara</li>
+                            <li><span class="status-ok">✅</span> <strong>ORM Peewee</strong> - Abstracción de BD</li>
+                            <li><span class="status-ok">✅</span> <strong>Logging avanzado</strong> - Trazabilidad completa</li>
+                            <li><span class="status-ok">✅</span> <strong>Manejo de errores</strong> - Robusto y resiliente</li>
+                            <li><span class="status-ok">✅</span> <strong>Configuración flexible</strong> - Adaptable</li>
+                            <li><span class="status-ok">✅</span> <strong>Testing automatizado</strong> - CI/CD ready</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🚀 Inicio Rápido para Desarrolladores
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h4>⚡ Setup del Entorno de Desarrollo</h4>
+                    <pre><code># 1. Clonar el repositorio
+git clone https://github.com/tu-repo/facturacion-facil.git
+cd facturacion-facil
+
+# 2. Crear entorno virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate     # Windows
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Ejecutar tests
+python -m pytest test/ -v
+
+# 5. Ejecutar aplicación
+python main.py</code></pre>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <h3>📁 Estructura Básica</h3>
+                        <pre><code>facturacion_facil/
+├── main.py              # Punto de entrada
+├── models/              # Modelos de datos
+├── ui/                  # Interfaces GUI
+├── utils/               # Utilidades
+├── test/                # Tests
+├── docs/                # Documentación
+└── requirements.txt     # Dependencias</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Comandos Útiles</h3>
+                        <pre><code># Ejecutar tests específicos
+python -m pytest test/integration/ -v
+
+# Generar reporte de cobertura
+python -m pytest --cov=. --cov-report=html
+
+# Ejecutar linter
+flake8 .
+
+# Generar ejecutable
+pyinstaller --onefile main.py</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h4>📚 Prerrequisitos</h4>
+            <ul>
+                <li><strong>Python 3.8+</strong> - Conocimiento sólido del lenguaje</li>
+                <li><strong>Tkinter/CustomTkinter</strong> - Experiencia con GUIs en Python</li>
+                <li><strong>SQL/ORM</strong> - Comprensión de bases de datos relacionales</li>
+                <li><strong>Testing</strong> - Familiaridad con pytest y mocking</li>
+                <li><strong>Git</strong> - Control de versiones</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎯 Objetivos de Aprendizaje
+            </div>
+            <div class="card-body">
+                <p>Al completar este tutorial técnico, serás capaz de:</p>
+                <div class="row">
+                    <div class="col">
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Comprender la arquitectura</strong> completa del sistema</li>
+                            <li><span class="status-ok">✅</span> <strong>Modificar y extender</strong> funcionalidades existentes</li>
+                            <li><span class="status-ok">✅</span> <strong>Implementar nuevos módulos</strong> siguiendo los patrones</li>
+                            <li><span class="status-ok">✅</span> <strong>Escribir tests efectivos</strong> para nuevas funcionalidades</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Debuggear y optimizar</strong> el código existente</li>
+                            <li><span class="status-ok">✅</span> <strong>Configurar entornos</strong> de desarrollo y producción</li>
+                            <li><span class="status-ok">✅</span> <strong>Mantener y actualizar</strong> el sistema</li>
+                            <li><span class="status-ok">✅</span> <strong>Contribuir al proyecto</strong> de manera efectiva</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="01-arquitectura.html" class="btn btn-primary">Comenzar: Arquitectura del Sistema ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico para Desarrolladores</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced code block functionality
+        function initializeCodeBlocks() {
+            document.querySelectorAll('pre').forEach((pre, index) => {
+                // Add copy functionality
+                pre.addEventListener('click', function(e) {
+                    if (e.target === this || e.target.tagName === 'CODE') {
+                        copyCodeToClipboard(this);
+                    }
+                });
+
+                // Add language detection
+                const code = pre.querySelector('code');
+                if (code) {
+                    const text = code.textContent;
+                    const language = detectLanguage(text);
+                    pre.setAttribute('data-lang', language);
+                }
+
+                // Add line numbers for long code blocks
+                if (code && code.textContent.split('\n').length > 5) {
+                    pre.classList.add('line-numbers');
+                }
+            });
+        }
+
+        function copyCodeToClipboard(preElement) {
+            const code = preElement.querySelector('code');
+            if (!code) return;
+
+            const text = code.textContent;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopyFeedback(preElement);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback(preElement);
+            }
+        }
+
+        function showCopyFeedback(preElement) {
+            const originalAfter = window.getComputedStyle(preElement, '::after').content;
+            preElement.style.setProperty('--copy-text', '"✅ Copied!"');
+
+            setTimeout(() => {
+                preElement.style.removeProperty('--copy-text');
+            }, 2000);
+        }
+
+        function detectLanguage(code) {
+            if (code.includes('class ') && code.includes('def ') && code.includes('self')) return 'python';
+            if (code.includes('function') && code.includes('var') || code.includes('const')) return 'javascript';
+            if (code.includes('SELECT') && code.includes('FROM')) return 'sql';
+            if (code.includes('<') && code.includes('>') && code.includes('html')) return 'html';
+            if (code.includes('{') && code.includes('}') && code.includes(':')) return 'css';
+            if (code.includes('$') && code.includes('cd ')) return 'bash';
+            return 'code';
+        }
+
+        // Basic syntax highlighting - DISABLED to prevent HTML tag display
+        function applySyntaxHighlighting() {
+            // Disabled to prevent "keyword">, "string"> etc. from appearing in the code blocks
+            console.log('Syntax highlighting disabled to prevent HTML tag display issues');
+        }
+
+        // Initialize everything
+        window.addEventListener('load', function() {
+            // Smooth page transition
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+
+            // Initialize code blocks
+            initializeCodeBlocks();
+            applySyntaxHighlighting();
+        });
+
+        // Update CSS custom property for copy feedback
+        const style = document.createElement('style');
+        style.textContent = `
+            pre::after {
+                content: var(--copy-text, "📋");
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

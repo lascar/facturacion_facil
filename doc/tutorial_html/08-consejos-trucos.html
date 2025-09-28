@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejos y Trucos - Tutorial Técnico Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💡 Consejos y Trucos</h1>
+            <p>Best Practices y Optimizaciones para Desarrolladores</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html">📊 Stock</a>
+            <a href="06-creacion-facturas.html">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html" class="active">💡 Consejos</a>
+            <a href="09-solucion-problemas.html">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Best Practices para Desarrolladores</h4>
+            <p>Colección de <strong>patrones, optimizaciones y técnicas avanzadas</strong> descubiertas durante el desarrollo de Facturación Fácil. Estas prácticas te ayudarán a escribir código más eficiente, mantenible y robusto.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Patrones de Arquitectura
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Dependency Injection</h3>
+                        <pre><code>class ServiceContainer:
+    def __init__(self):
+        self._services = {}
+        self._singletons = {}
+    
+    def register(self, interface, implementation, singleton=False):
+        self._services[interface] = {
+            'implementation': implementation,
+            'singleton': singleton
+        }
+    
+    def get(self, interface):
+        if interface not in self._services:
+            raise ServiceNotFoundError(interface)
+        
+        service_config = self._services[interface]
+        
+        if service_config['singleton']:
+            if interface not in self._singletons:
+                self._singletons[interface] = service_config['implementation']()
+            return self._singletons[interface]
+        
+        return service_config['implementation']()
+
+# Uso en la aplicación
+container = ServiceContainer()
+container.register(DatabaseManager, SQLiteDatabaseManager, singleton=True)
+container.register(PDFGenerator, ReportLabPDFGenerator)
+container.register(EmailService, SMTPEmailService)
+
+# En los controladores
+class FacturaController:
+    def __init__(self, container):
+        self.db = container.get(DatabaseManager)
+        self.pdf_generator = container.get(PDFGenerator)
+        self.email_service = container.get(EmailService)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔄 Observer Pattern</h3>
+                        <pre><code>class EventManager:
+    def __init__(self):
+        self._listeners = defaultdict(list)
+    
+    def subscribe(self, event_type, callback):
+        self._listeners[event_type].append(callback)
+    
+    def unsubscribe(self, event_type, callback):
+        if callback in self._listeners[event_type]:
+            self._listeners[event_type].remove(callback)
+    
+    def emit(self, event_type, data=None):
+        for callback in self._listeners[event_type]:
+            try:
+                callback(data)
+            except Exception as e:
+                logger.error(f"Error in event callback: {e}")
+
+# Uso para actualización de stock
+class StockManager:
+    def __init__(self, event_manager):
+        self.events = event_manager
+    
+    def update_stock(self, producto_id, cantidad):
+        old_stock = self.get_stock(producto_id)
+        new_stock = old_stock + cantidad
+        
+        # Actualizar BD
+        self._update_database(producto_id, new_stock)
+        
+        # Emitir evento
+        self.events.emit('stock_updated', {
+            'producto_id': producto_id,
+            'old_stock': old_stock,
+            'new_stock': new_stock,
+            'change': cantidad
+        })
+
+# Listeners
+def on_stock_low(data):
+    if data['new_stock'] < 5:
+        send_low_stock_alert(data['producto_id'])
+
+def on_stock_updated_ui(data):
+    update_stock_display(data['producto_id'], data['new_stock'])
+
+event_manager.subscribe('stock_updated', on_stock_low)
+event_manager.subscribe('stock_updated', on_stock_updated_ui)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ⚡ Optimizaciones de Rendimiento
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🚀 Lazy Loading</h3>
+                        <pre><code>class LazyLoader:
+    def __init__(self, loader_func):
+        self._loader_func = loader_func
+        self._loaded = False
+        self._data = None
+    
+    def __call__(self):
+        if not self._loaded:
+            self._data = self._loader_func()
+            self._loaded = True
+        return self._data
+    
+    def invalidate(self):
+        self._loaded = False
+        self._data = None
+
+class ProductoManager:
+    def __init__(self):
+        self._productos_cache = LazyLoader(self._load_all_productos)
+        self._categorias_cache = LazyLoader(self._load_categorias)
+    
+    def get_productos(self):
+        return self._productos_cache()
+    
+    def get_categorias(self):
+        return self._categorias_cache()
+    
+    def invalidate_cache(self):
+        self._productos_cache.invalidate()
+        self._categorias_cache.invalidate()
+    
+    def _load_all_productos(self):
+        # Carga costosa desde BD
+        return Producto.select().order_by(Producto.nombre)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>💾 Caching Strategies</h3>
+                        <pre><code>from functools import lru_cache
+import time
+
+class TimedLRUCache:
+    def __init__(self, maxsize=128, ttl=300):
+        self.maxsize = maxsize
+        self.ttl = ttl
+        self.cache = {}
+        self.timestamps = {}
+    
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            key = self._make_key(args, kwargs)
+            now = time.time()
+            
+            # Check if cached and not expired
+            if (key in self.cache and 
+                now - self.timestamps[key] < self.ttl):
+                return self.cache[key]
+            
+            # Compute and cache
+            result = func(*args, **kwargs)
+            self._store(key, result, now)
+            
+            return result
+        return wrapper
+    
+    def _make_key(self, args, kwargs):
+        return str(args) + str(sorted(kwargs.items()))
+    
+    def _store(self, key, value, timestamp):
+        # LRU eviction if needed
+        if len(self.cache) >= self.maxsize:
+            oldest_key = min(self.timestamps.keys(), 
+                           key=lambda k: self.timestamps[k])
+            del self.cache[oldest_key]
+            del self.timestamps[oldest_key]
+        
+        self.cache[key] = value
+        self.timestamps[key] = timestamp
+
+# Uso
+@TimedLRUCache(maxsize=100, ttl=600)  # 10 minutos
+def get_producto_stats(producto_id):
+    # Cálculo costoso
+    return calculate_complex_stats(producto_id)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🛡️ Manejo Robusto de Errores
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🔄 Retry Decorator</h3>
+                        <pre><code>import time
+import random
+from functools import wraps
+
+def retry(max_attempts=3, delay=1, backoff=2, exceptions=(Exception,)):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            attempts = 0
+            current_delay = delay
+            
+            while attempts < max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    attempts += 1
+                    
+                    if attempts >= max_attempts:
+                        logger.error(f"Max attempts reached for {func.__name__}: {e}")
+                        raise
+                    
+                    # Exponential backoff with jitter
+                    jitter = random.uniform(0.1, 0.3)
+                    sleep_time = current_delay * (1 + jitter)
+                    
+                    logger.warning(f"Attempt {attempts} failed for {func.__name__}: {e}. "
+                                 f"Retrying in {sleep_time:.2f}s")
+                    
+                    time.sleep(sleep_time)
+                    current_delay *= backoff
+            
+            return None
+        return wrapper
+    return decorator
+
+# Uso
+@retry(max_attempts=3, delay=0.5, exceptions=(DatabaseError, ConnectionError))
+def save_factura(factura_data):
+    # Operación que puede fallar
+    return database.save(factura_data)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Context Managers</h3>
+                        <pre><code>class DatabaseTransaction:
+    def __init__(self, db):
+        self.db = db
+        self.transaction = None
+    
+    def __enter__(self):
+        self.transaction = self.db.begin()
+        return self.transaction
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.transaction.commit()
+            logger.info("Transaction committed successfully")
+        else:
+            self.transaction.rollback()
+            logger.error(f"Transaction rolled back due to: {exc_val}")
+        
+        return False  # Don't suppress exceptions
+
+class ResourceManager:
+    def __init__(self, resource_factory, cleanup_func=None):
+        self.resource_factory = resource_factory
+        self.cleanup_func = cleanup_func
+        self.resource = None
+    
+    def __enter__(self):
+        self.resource = self.resource_factory()
+        return self.resource
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.resource and self.cleanup_func:
+            try:
+                self.cleanup_func(self.resource)
+            except Exception as e:
+                logger.error(f"Error during cleanup: {e}")
+
+# Uso
+def create_factura_with_stock_update(factura_data):
+    with DatabaseTransaction(db) as transaction:
+        # Crear factura
+        factura = Factura.create(**factura_data)
+        
+        # Actualizar stock
+        for item in factura_data['items']:
+            update_stock(item['producto_id'], -item['cantidad'])
+        
+        # Si algo falla, todo se revierte automáticamente
+        return factura</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Testing Avanzado
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🏭 Test Factories</h3>
+                        <pre><code>import factory
+from factory import fuzzy
+from datetime import datetime, timedelta
+
+class ProductoFactory(factory.Factory):
+    class Meta:
+        model = Producto
+    
+    nombre = factory.Sequence(lambda n: f"Producto {n}")
+    referencia = factory.Sequence(lambda n: f"PROD-{n:04d}")
+    precio = fuzzy.FuzzyDecimal(10.0, 1000.0, 2)
+    categoria = fuzzy.FuzzyChoice(['Electrónica', 'Ropa', 'Hogar'])
+    iva_recomendado = fuzzy.FuzzyChoice([10.0, 21.0])
+    descripcion = factory.Faker('text', max_nb_chars=200)
+    
+    @factory.post_generation
+    def stock(self, create, extracted, **kwargs):
+        if not create:
+            return
+        
+        if extracted:
+            StockMovimiento.create(
+                producto=self,
+                tipo='entrada',
+                cantidad=extracted,
+                comentario='Stock inicial'
+            )
+
+class FacturaFactory(factory.Factory):
+    class Meta:
+        model = Factura
+    
+    numero = factory.Sequence(lambda n: f"FAC-2024-{n:06d}")
+    fecha = fuzzy.FuzzyDateTime(
+        datetime.now() - timedelta(days=30),
+        datetime.now()
+    )
+    cliente = factory.SubFactory(ClienteFactory)
+    
+    @factory.post_generation
+    def items(self, create, extracted, **kwargs):
+        if not create:
+            return
+        
+        if extracted:
+            for item_data in extracted:
+                FacturaItemFactory(factura=self, **item_data)
+        else:
+            # Crear items por defecto
+            FacturaItemFactory.create_batch(
+                random.randint(1, 5), 
+                factura=self
+            )
+
+# Uso en tests
+class TestFacturaCreation(unittest.TestCase):
+    def test_factura_with_multiple_items(self):
+        productos = ProductoFactory.create_batch(3, stock=10)
+        
+        factura = FacturaFactory(items=[
+            {'producto': productos[0], 'cantidad': 2},
+            {'producto': productos[1], 'cantidad': 1},
+            {'producto': productos[2], 'cantidad': 3}
+        ])
+        
+        self.assertEqual(len(factura.items), 3)
+        self.assertGreater(factura.total, 0)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎭 Advanced Mocking</h3>
+                        <pre><code>class SmartMock:
+    def __init__(self, spec_class=None):
+        self.spec_class = spec_class
+        self.call_history = []
+        self.return_values = {}
+        self.side_effects = {}
+    
+    def set_return_value(self, method_name, value):
+        self.return_values[method_name] = value
+    
+    def set_side_effect(self, method_name, effect):
+        self.side_effects[method_name] = effect
+    
+    def __getattr__(self, name):
+        def mock_method(*args, **kwargs):
+            call_info = {
+                'method': name,
+                'args': args,
+                'kwargs': kwargs,
+                'timestamp': datetime.now()
+            }
+            self.call_history.append(call_info)
+            
+            # Check for side effects first
+            if name in self.side_effects:
+                effect = self.side_effects[name]
+                if callable(effect):
+                    return effect(*args, **kwargs)
+                elif isinstance(effect, Exception):
+                    raise effect
+                else:
+                    return effect
+            
+            # Return configured value
+            if name in self.return_values:
+                return self.return_values[name]
+            
+            # Default behavior
+            if self.spec_class and hasattr(self.spec_class, name):
+                return Mock()
+            
+            return Mock()
+        
+        return mock_method
+    
+    def assert_called_with_pattern(self, method_name, **pattern):
+        matching_calls = []
+        
+        for call in self.call_history:
+            if call['method'] == method_name:
+                match = True
+                for key, expected in pattern.items():
+                    if key == 'args':
+                        if not self._args_match(call['args'], expected):
+                            match = False
+                            break
+                    elif key in call['kwargs']:
+                        if call['kwargs'][key] != expected:
+                            match = False
+                            break
+                
+                if match:
+                    matching_calls.append(call)
+        
+        if not matching_calls:
+            raise AssertionError(f"No calls to {method_name} matched pattern {pattern}")
+        
+        return matching_calls
+
+# Uso
+def test_pdf_generation_with_smart_mock():
+    pdf_generator = SmartMock(spec_class=PDFGenerator)
+    pdf_generator.set_return_value('generate', '/path/to/generated.pdf')
+    
+    controller = FacturaController(pdf_generator=pdf_generator)
+    result = controller.create_and_export_factura(factura_data)
+    
+    # Verificar que se llamó con los parámetros correctos
+    pdf_generator.assert_called_with_pattern(
+        'generate',
+        template='factura_template.html',
+        output_format='pdf'
+    )</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎨 GUI Best Practices
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🔄 Async GUI Operations</h3>
+                        <pre><code>import asyncio
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+class AsyncGUIManager:
+    def __init__(self, root):
+        self.root = root
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.loop = asyncio.new_event_loop()
+        self.thread = threading.Thread(target=self._run_loop, daemon=True)
+        self.thread.start()
+    
+    def _run_loop(self):
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_forever()
+    
+    def run_async(self, coro, callback=None):
+        future = asyncio.run_coroutine_threadsafe(coro, self.loop)
+        
+        if callback:
+            def on_done(fut):
+                try:
+                    result = fut.result()
+                    self.root.after(0, lambda: callback(result, None))
+                except Exception as e:
+                    self.root.after(0, lambda: callback(None, e))
+            
+            future.add_done_callback(on_done)
+        
+        return future
+    
+    def run_in_thread(self, func, *args, callback=None, **kwargs):
+        def wrapper():
+            try:
+                result = func(*args, **kwargs)
+                if callback:
+                    self.root.after(0, lambda: callback(result, None))
+                return result
+            except Exception as e:
+                if callback:
+                    self.root.after(0, lambda: callback(None, e))
+                raise
+        
+        return self.executor.submit(wrapper)
+
+# Uso
+class FacturaWindow:
+    def __init__(self):
+        self.async_manager = AsyncGUIManager(self.root)
+    
+    def generate_pdf_async(self):
+        # Mostrar loading
+        self.show_loading("Generando PDF...")
+        
+        # Ejecutar en background
+        self.async_manager.run_in_thread(
+            self.pdf_generator.generate,
+            self.factura_data,
+            callback=self.on_pdf_generated
+        )
+    
+    def on_pdf_generated(self, result, error):
+        self.hide_loading()
+        
+        if error:
+            self.show_error(f"Error generando PDF: {error}")
+        else:
+            self.show_success(f"PDF generado: {result}")
+            self.open_pdf(result)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Component System</h3>
+                        <pre><code>class BaseComponent:
+    def __init__(self, parent, **kwargs):
+        self.parent = parent
+        self.config = kwargs
+        self.widget = None
+        self.children = []
+        self.event_handlers = {}
+        
+        self.create_widget()
+        self.setup_events()
+        self.apply_config()
+    
+    def create_widget(self):
+        raise NotImplementedError
+    
+    def setup_events(self):
+        pass
+    
+    def apply_config(self):
+        for key, value in self.config.items():
+            if hasattr(self.widget, key):
+                setattr(self.widget, key, value)
+    
+    def add_child(self, child_component):
+        self.children.append(child_component)
+        return child_component
+    
+    def emit(self, event_name, data=None):
+        if event_name in self.event_handlers:
+            for handler in self.event_handlers[event_name]:
+                handler(data)
+    
+    def on(self, event_name, handler):
+        if event_name not in self.event_handlers:
+            self.event_handlers[event_name] = []
+        self.event_handlers[event_name].append(handler)
+
+class DataTable(BaseComponent):
+    def create_widget(self):
+        self.widget = ctk.CTkFrame(self.parent)
+        self.tree = ttk.Treeview(self.widget)
+        self.scrollbar = ctk.CTkScrollbar(self.widget)
+        
+        # Layout
+        self.tree.pack(side='left', fill='both', expand=True)
+        self.scrollbar.pack(side='right', fill='y')
+        
+        # Connect scrollbar
+        self.tree.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.configure(command=self.tree.yview)
+    
+    def setup_events(self):
+        self.tree.bind('<<TreeviewSelect>>', self._on_select)
+        self.tree.bind('<Double-1>', self._on_double_click)
+    
+    def _on_select(self, event):
+        selection = self.tree.selection()
+        if selection:
+            item_data = self.tree.item(selection[0])
+            self.emit('row_selected', item_data)
+    
+    def _on_double_click(self, event):
+        selection = self.tree.selection()
+        if selection:
+            item_data = self.tree.item(selection[0])
+            self.emit('row_double_clicked', item_data)
+    
+    def set_data(self, data, columns):
+        # Clear existing data
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        
+        # Set columns
+        self.tree['columns'] = columns
+        for col in columns:
+            self.tree.heading(col, text=col.title())
+        
+        # Add data
+        for row in data:
+            self.tree.insert('', 'end', values=row)
+
+# Uso
+class ProductosWindow:
+    def __init__(self):
+        self.table = DataTable(self.main_frame, height=400)
+        
+        # Event handlers
+        self.table.on('row_selected', self.on_product_selected)
+        self.table.on('row_double_clicked', self.on_product_edit)
+        
+        # Load data
+        self.refresh_table()
+    
+    def on_product_selected(self, item_data):
+        product_id = item_data['values'][0]
+        self.load_product_details(product_id)
+    
+    def on_product_edit(self, item_data):
+        product_id = item_data['values'][0]
+        self.open_edit_dialog(product_id)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>🚀 Consejos de Productividad</h4>
+            <ul>
+                <li><strong>Usa type hints:</strong> Mejora la legibilidad y permite mejor IDE support</li>
+                <li><strong>Implementa logging estructurado:</strong> Facilita el debugging y monitoring</li>
+                <li><strong>Automatiza tests:</strong> Configura CI/CD para ejecutar tests automáticamente</li>
+                <li><strong>Documenta APIs:</strong> Usa docstrings detallados para métodos públicos</li>
+                <li><strong>Profiling regular:</strong> Identifica bottlenecks de rendimiento temprano</li>
+                <li><strong>Code reviews:</strong> Mantén calidad de código con revisiones regulares</li>
+            </ul>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="07-busqueda-avanzada.html" class="btn btn-secondary">⬅️ Anterior: Búsqueda Avanzada</a>
+            <a href="09-solucion-problemas.html" class="btn btn-primary">Siguiente: Solución de Problemas ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico para Desarrolladores</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Syntax highlighting for code blocks
+        document.querySelectorAll('pre code').forEach(block => {
+            block.style.backgroundColor = '#f8f9fa';
+            block.style.border = '1px solid #e9ecef';
+            block.style.borderRadius = '4px';
+            block.style.padding = '1rem';
+            block.style.fontSize = '0.875rem';
+            block.style.lineHeight = '1.4';
+        });
+    </script>
+</body>
+</html>

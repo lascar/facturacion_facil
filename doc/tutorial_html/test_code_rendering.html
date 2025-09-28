@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Code Rendering - Tutorial Técnico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test Code Rendering</h1>
+            <p>Prueba de Renderizado de Bloques de Código</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🐍 Python Code Example
+            </div>
+            <div class="card-body">
+                <pre><code>class ProductoController:
+    def __init__(self, db_manager):
+        self.db = db_manager
+        self.validator = ProductoValidator()
+        self.logger = logging.getLogger(__name__)
+    
+    def crear_producto(self, datos):
+        """Crear nuevo producto con validación"""
+        try:
+            # Validar datos
+            errores = self.validator.validate(datos)
+            if errores:
+                raise ValidationError(errores)
+            
+            # Crear producto
+            producto = Producto.create(**datos)
+            
+            # Log de auditoría
+            self.logger.info(f"Producto creado: {producto.referencia}")
+            
+            return producto
+            
+        except Exception as e:
+            self.logger.error(f"Error creando producto: {e}")
+            raise</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🌐 JavaScript Code Example
+            </div>
+            <div class="card-body">
+                <pre><code>function initializeCodeBlocks() {
+    document.querySelectorAll('pre').forEach((pre, index) => {
+        // Add copy functionality
+        pre.addEventListener('click', function(e) {
+            if (e.target === this || e.target.tagName === 'CODE') {
+                copyCodeToClipboard(this);
+            }
+        });
+        
+        // Add language detection
+        const code = pre.querySelector('code');
+        if (code) {
+            const text = code.textContent;
+            const language = detectLanguage(text);
+            pre.setAttribute('data-lang', language);
+        }
+    });
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🗄️ SQL Code Example
+            </div>
+            <div class="card-body">
+                <pre><code>SELECT p.nombre, p.precio, s.cantidad_actual
+FROM productos p
+LEFT JOIN stock s ON p.id = s.producto_id
+WHERE p.categoria = 'Electrónica'
+  AND s.cantidad_actual > 0
+ORDER BY p.nombre ASC
+LIMIT 50;</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                💻 Terminal/Bash Example
+            </div>
+            <div class="card-body">
+                <pre><code># Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar tests
+python -m pytest test/ -v
+
+# Crear ejecutable
+pyinstaller --onefile main.py
+
+# Ejecutar aplicación
+python main.py</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📄 JSON Example
+            </div>
+            <div class="card-body">
+                <pre><code>{
+    "name": "facturacion-facil",
+    "version": "1.0.0",
+    "description": "Sistema de gestión empresarial",
+    "dependencies": {
+        "customtkinter": "^5.2.0",
+        "peewee": "^3.16.0",
+        "reportlab": "^4.0.0",
+        "pillow": "^10.0.0"
+    },
+    "scripts": {
+        "start": "python main.py",
+        "test": "python -m pytest",
+        "build": "pyinstaller --onefile main.py"
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎨 CSS Example
+            </div>
+            <div class="card-body">
+                <pre><code>/* Enhanced code blocks */
+pre {
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d30 100%);
+    color: #d4d4d4;
+    padding: 20px 24px;
+    border-radius: 12px;
+    border: 1px solid #3c3c3c;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border-left: 4px solid #007acc;
+    transition: all 0.3s ease;
+}
+
+pre:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Funcionalidades de los Bloques de Código</h4>
+            <ul>
+                <li><strong>📋 Clic para copiar:</strong> Haz clic en cualquier bloque de código para copiarlo</li>
+                <li><strong>🏷️ Detección automática de lenguaje:</strong> Se detecta automáticamente el lenguaje</li>
+                <li><strong>🎨 Syntax highlighting:</strong> Coloreado de sintaxis básico</li>
+                <li><strong>📱 Responsive:</strong> Se adapta a dispositivos móviles</li>
+                <li><strong>✨ Efectos hover:</strong> Animaciones suaves al pasar el ratón</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔧 Inline Code Examples
+            </div>
+            <div class="card-body">
+                <p>Puedes usar código inline como <code>pip install customtkinter</code> o <code>python main.py</code> dentro de párrafos.</p>
+                
+                <p>También funciona con comandos más largos: <code>python -m pytest test/ --cov=. --cov-report=html</code></p>
+                
+                <p>Y con código Python: <code>from models.producto import Producto</code></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Test de Renderizado de Código</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+    
+    <script>
+        // Additional test functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Code rendering test page loaded');
+            
+            // Add click counter for testing
+            let clickCount = 0;
+            document.querySelectorAll('pre').forEach(pre => {
+                pre.addEventListener('click', function() {
+                    clickCount++;
+                    console.log(`Code block clicked ${clickCount} times`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

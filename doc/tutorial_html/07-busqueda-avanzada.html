@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda Avanzada - Tutorial Técnico Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Búsqueda Avanzada</h1>
+            <p>Implementación de Motores de Búsqueda y Filtrado</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html">📊 Stock</a>
+            <a href="06-creacion-facturas.html">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html" class="active">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html">💡 Consejos</a>
+            <a href="09-solucion-problemas.html">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Arquitectura del Sistema de Búsqueda</h4>
+            <p>Implementación de un motor de búsqueda híbrido que combina <strong>búsqueda SQL</strong> con <strong>indexación en memoria</strong> y <strong>algoritmos de relevancia</strong> para proporcionar resultados rápidos y precisos.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ SearchEngine Architecture
+            </div>
+            <div class="card-body">
+                <pre><code>class SearchEngine:
+    def __init__(self, db_manager):
+        self.db = db_manager
+        self.indexer = SearchIndexer()
+        self.query_parser = QueryParser()
+        self.ranker = RelevanceRanker()
+        
+    def search(self, query, filters=None, limit=50):
+        # Parse query
+        parsed_query = self.query_parser.parse(query)
+        
+        # Get candidates from index
+        candidates = self.indexer.search(parsed_query)
+        
+        # Apply database filters
+        if filters:
+            candidates = self.apply_filters(candidates, filters)
+        
+        # Rank results
+        ranked_results = self.ranker.rank(candidates, parsed_query)
+        
+        # Limit results
+        return ranked_results[:limit]
+
+class SearchIndexer:
+    def __init__(self):
+        self.indices = {
+            'productos': InvertedIndex(),
+            'facturas': InvertedIndex(),
+            'clientes': InvertedIndex()
+        }
+        
+    def build_index(self, entity_type, entities):
+        index = self.indices[entity_type]
+        for entity in entities:
+            tokens = self.tokenize(entity)
+            index.add_document(entity.id, tokens)
+            
+    def tokenize(self, entity):
+        # Tokenización específica por tipo de entidad
+        if isinstance(entity, Producto):
+            return self._tokenize_producto(entity)
+        elif isinstance(entity, Factura):
+            return self._tokenize_factura(entity)
+        # ... más tipos</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔤 Query Parser y Tokenización
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📝 Query Parser</h3>
+                        <pre><code>class QueryParser:
+    def __init__(self):
+        self.operators = ['AND', 'OR', 'NOT']
+        self.special_chars = ['"', '(', ')', '*', '?']
+        
+    def parse(self, query_string):
+        # Normalizar query
+        normalized = self.normalize(query_string)
+        
+        # Detectar tipo de búsqueda
+        if self.is_phrase_search(normalized):
+            return PhraseQuery(normalized)
+        elif self.has_wildcards(normalized):
+            return WildcardQuery(normalized)
+        elif self.has_boolean_operators(normalized):
+            return BooleanQuery(normalized)
+        else:
+            return SimpleQuery(normalized)
+    
+    def normalize(self, query):
+        # Convertir a minúsculas
+        query = query.lower()
+        
+        # Remover acentos
+        query = self.remove_accents(query)
+        
+        # Limpiar caracteres especiales
+        query = re.sub(r'[^\w\s\*\?\"()]', '', query)
+        
+        return query.strip()
+    
+    def tokenize(self, text):
+        # Tokenización avanzada
+        tokens = []
+        
+        # Dividir por espacios
+        words = text.split()
+        
+        for word in words:
+            # Stemming básico
+            stemmed = self.stem(word)
+            tokens.append(stemmed)
+            
+            # Añadir sinónimos
+            synonyms = self.get_synonyms(word)
+            tokens.extend(synonyms)
+        
+        return list(set(tokens))  # Eliminar duplicados</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔍 Tipos de Búsqueda</h3>
+                        <pre><code>class SimpleQuery:
+    def __init__(self, terms):
+        self.terms = terms
+        self.type = 'simple'
+        
+class PhraseQuery:
+    def __init__(self, phrase):
+        self.phrase = phrase.strip('"')
+        self.terms = self.phrase.split()
+        self.type = 'phrase'
+        
+class BooleanQuery:
+    def __init__(self, expression):
+        self.expression = expression
+        self.clauses = self.parse_boolean(expression)
+        self.type = 'boolean'
+        
+    def parse_boolean(self, expr):
+        # Parser para expresiones booleanas
+        # Ejemplo: "laptop AND (HP OR Dell) NOT refurbished"
+        return self.build_ast(expr)
+        
+class WildcardQuery:
+    def __init__(self, pattern):
+        self.pattern = pattern
+        self.regex = self.wildcard_to_regex(pattern)
+        self.type = 'wildcard'
+        
+    def wildcard_to_regex(self, pattern):
+        # Convertir wildcards a regex
+        # * -> .*
+        # ? -> .
+        regex_pattern = pattern.replace('*', '.*').replace('?', '.')
+        return re.compile(regex_pattern, re.IGNORECASE)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📊 Inverted Index Implementation
+            </div>
+            <div class="card-body">
+                <pre><code>class InvertedIndex:
+    def __init__(self):
+        self.index = defaultdict(set)  # term -> set of document_ids
+        self.documents = {}  # document_id -> document_data
+        self.term_frequencies = defaultdict(lambda: defaultdict(int))  # term -> doc_id -> frequency
+        
+    def add_document(self, doc_id, tokens):
+        self.documents[doc_id] = tokens
+        
+        # Calcular frecuencias de términos
+        term_counts = Counter(tokens)
+        
+        for term, frequency in term_counts.items():
+            self.index[term].add(doc_id)
+            self.term_frequencies[term][doc_id] = frequency
+    
+    def search(self, query):
+        if query.type == 'simple':
+            return self._search_simple(query.terms)
+        elif query.type == 'phrase':
+            return self._search_phrase(query)
+        elif query.type == 'boolean':
+            return self._search_boolean(query)
+        elif query.type == 'wildcard':
+            return self._search_wildcard(query)
+    
+    def _search_simple(self, terms):
+        if not terms:
+            return set()
+        
+        # Intersección de todos los términos (AND implícito)
+        result_sets = [self.index.get(term, set()) for term in terms]
+        
+        if not result_sets:
+            return set()
+        
+        # Intersección de todos los conjuntos
+        result = result_sets[0]
+        for term_set in result_sets[1:]:
+            result = result.intersection(term_set)
+        
+        return result
+    
+    def _search_phrase(self, phrase_query):
+        # Búsqueda de frase exacta
+        terms = phrase_query.terms
+        
+        # Obtener documentos que contienen todos los términos
+        candidates = self._search_simple(terms)
+        
+        # Verificar que los términos aparezcan en secuencia
+        phrase_matches = set()
+        
+        for doc_id in candidates:
+            doc_tokens = self.documents[doc_id]
+            if self._contains_phrase(doc_tokens, terms):
+                phrase_matches.add(doc_id)
+        
+        return phrase_matches
+    
+    def _contains_phrase(self, tokens, phrase_terms):
+        # Verificar si los tokens contienen la frase exacta
+        phrase_length = len(phrase_terms)
+        
+        for i in range(len(tokens) - phrase_length + 1):
+            if tokens[i:i + phrase_length] == phrase_terms:
+                return True
+        
+        return False</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎯 Relevance Ranking
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📈 TF-IDF Implementation</h3>
+                        <pre><code>class RelevanceRanker:
+    def __init__(self, indexer):
+        self.indexer = indexer
+        
+    def rank(self, document_ids, query):
+        scores = {}
+        
+        for doc_id in document_ids:
+            score = self.calculate_score(doc_id, query)
+            scores[doc_id] = score
+        
+        # Ordenar por score descendente
+        ranked = sorted(
+            scores.items(), 
+            key=lambda x: x[1], 
+            reverse=True
+        )
+        
+        return [doc_id for doc_id, score in ranked]
+    
+    def calculate_score(self, doc_id, query):
+        score = 0.0
+        
+        for term in query.terms:
+            tf = self.term_frequency(term, doc_id)
+            idf = self.inverse_document_frequency(term)
+            score += tf * idf
+        
+        # Factores adicionales
+        score *= self.document_boost(doc_id)
+        score *= self.query_match_boost(doc_id, query)
+        
+        return score
+    
+    def term_frequency(self, term, doc_id):
+        # TF = (frecuencia del término) / (total de términos en el documento)
+        term_freq = self.indexer.term_frequencies[term].get(doc_id, 0)
+        doc_length = len(self.indexer.documents.get(doc_id, []))
+        
+        if doc_length == 0:
+            return 0.0
+        
+        return term_freq / doc_length
+    
+    def inverse_document_frequency(self, term):
+        # IDF = log(total documentos / documentos que contienen el término)
+        total_docs = len(self.indexer.documents)
+        docs_with_term = len(self.indexer.index.get(term, set()))
+        
+        if docs_with_term == 0:
+            return 0.0
+        
+        return math.log(total_docs / docs_with_term)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🚀 Boost Factors</h3>
+                        <pre><code>def document_boost(self, doc_id):
+    # Boost basado en características del documento
+    boost = 1.0
+    
+    doc = self.get_document(doc_id)
+    
+    # Boost por recencia
+    if hasattr(doc, 'fecha_creacion'):
+        days_old = (datetime.now() - doc.fecha_creacion).days
+        recency_boost = max(0.5, 1.0 - (days_old / 365))
+        boost *= recency_boost
+    
+    # Boost por popularidad (para productos)
+    if hasattr(doc, 'veces_vendido'):
+        popularity_boost = 1.0 + (doc.veces_vendido / 100)
+        boost *= min(popularity_boost, 2.0)  # Cap at 2x
+    
+    # Boost por completitud de datos
+    completeness = self.calculate_completeness(doc)
+    boost *= (0.5 + completeness * 0.5)
+    
+    return boost
+
+def query_match_boost(self, doc_id, query):
+    # Boost adicional por tipo de coincidencia
+    boost = 1.0
+    
+    doc = self.get_document(doc_id)
+    
+    # Boost si coincide en campos importantes
+    if self.matches_in_title(doc, query):
+        boost *= 1.5
+    
+    if self.matches_in_reference(doc, query):
+        boost *= 1.3
+    
+    # Boost por coincidencia exacta
+    if self.exact_match(doc, query):
+        boost *= 2.0
+    
+    return boost
+
+def calculate_completeness(self, doc):
+    # Calcular qué tan completo está el documento
+    total_fields = 0
+    filled_fields = 0
+    
+    for field_name, field_value in doc.__dict__.items():
+        if not field_name.startswith('_'):
+            total_fields += 1
+            if field_value and str(field_value).strip():
+                filled_fields += 1
+    
+    return filled_fields / total_fields if total_fields > 0 else 0</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔧 Filtros Avanzados
+            </div>
+            <div class="card-body">
+                <pre><code>class FilterEngine:
+    def __init__(self):
+        self.filter_types = {
+            'range': RangeFilter,
+            'date': DateFilter,
+            'category': CategoryFilter,
+            'boolean': BooleanFilter,
+            'text': TextFilter
+        }
+    
+    def apply_filters(self, results, filters):
+        filtered_results = results
+        
+        for filter_config in filters:
+            filter_type = filter_config['type']
+            filter_class = self.filter_types.get(filter_type)
+            
+            if filter_class:
+                filter_instance = filter_class(filter_config)
+                filtered_results = filter_instance.apply(filtered_results)
+        
+        return filtered_results
+
+class RangeFilter:
+    def __init__(self, config):
+        self.field = config['field']
+        self.min_value = config.get('min')
+        self.max_value = config.get('max')
+    
+    def apply(self, results):
+        filtered = []
+        
+        for result in results:
+            value = getattr(result, self.field, None)
+            
+            if value is None:
+                continue
+            
+            if self.min_value is not None and value < self.min_value:
+                continue
+            
+            if self.max_value is not None and value > self.max_value:
+                continue
+            
+            filtered.append(result)
+        
+        return filtered
+
+class DateFilter:
+    def __init__(self, config):
+        self.field = config['field']
+        self.start_date = self.parse_date(config.get('start'))
+        self.end_date = self.parse_date(config.get('end'))
+    
+    def apply(self, results):
+        filtered = []
+        
+        for result in results:
+            date_value = getattr(result, self.field, None)
+            
+            if not isinstance(date_value, (datetime, date)):
+                continue
+            
+            if self.start_date and date_value < self.start_date:
+                continue
+            
+            if self.end_date and date_value > self.end_date:
+                continue
+            
+            filtered.append(result)
+        
+        return filtered</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Testing del Motor de Búsqueda
+            </div>
+            <div class="card-body">
+                <pre><code>class TestSearchEngine(unittest.TestCase):
+    def setUp(self):
+        self.db = TestDatabaseManager()
+        self.search_engine = SearchEngine(self.db)
+        
+        # Crear datos de test
+        self.productos_test = [
+            Producto(nombre="Laptop HP Pavilion", referencia="LAP-HP-001"),
+            Producto(nombre="Mouse Logitech", referencia="MOU-LOG-001"),
+            Producto(nombre="Teclado HP", referencia="TEC-HP-001")
+        ]
+        
+        # Indexar datos
+        self.search_engine.indexer.build_index('productos', self.productos_test)
+    
+    def test_simple_search(self):
+        results = self.search_engine.search("HP")
+        
+        # Debe encontrar Laptop HP y Teclado HP
+        self.assertEqual(len(results), 2)
+        
+        nombres = [r.nombre for r in results]
+        self.assertIn("Laptop HP Pavilion", nombres)
+        self.assertIn("Teclado HP", nombres)
+    
+    def test_phrase_search(self):
+        results = self.search_engine.search('"HP Pavilion"')
+        
+        # Debe encontrar solo el laptop
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].nombre, "Laptop HP Pavilion")
+    
+    def test_wildcard_search(self):
+        results = self.search_engine.search("LAP-*")
+        
+        # Debe encontrar productos que empiecen con LAP-
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].referencia, "LAP-HP-001")
+    
+    def test_boolean_search(self):
+        results = self.search_engine.search("HP AND Laptop")
+        
+        # Debe encontrar solo el laptop HP
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].nombre, "Laptop HP Pavilion")
+    
+    def test_relevance_ranking(self):
+        # Añadir producto con HP en el nombre y descripción
+        producto_relevante = Producto(
+            nombre="HP EliteBook", 
+            descripcion="Laptop HP profesional HP"
+        )
+        
+        self.search_engine.indexer.add_document(
+            'productos', 
+            producto_relevante.id, 
+            self.search_engine.indexer.tokenize(producto_relevante)
+        )
+        
+        results = self.search_engine.search("HP")
+        
+        # El producto con más menciones de HP debe aparecer primero
+        self.assertEqual(results[0].nombre, "HP EliteBook")</code></pre>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>💡 Optimizaciones de Rendimiento</h4>
+            <ul>
+                <li><strong>Índices en memoria:</strong> Para búsquedas rápidas en datasets pequeños-medianos</li>
+                <li><strong>Caching de resultados:</strong> Cache LRU para queries frecuentes</li>
+                <li><strong>Búsqueda incremental:</strong> Actualización de resultados mientras el usuario escribe</li>
+                <li><strong>Paginación:</strong> Carga de resultados bajo demanda</li>
+                <li><strong>Indexación asíncrona:</strong> Actualización de índices en background</li>
+            </ul>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="06-creacion-facturas.html" class="btn btn-secondary">⬅️ Anterior: Creación de Facturas</a>
+            <a href="08-consejos-trucos.html" class="btn btn-primary">Siguiente: Consejos y Trucos ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico para Desarrolladores</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Syntax highlighting for code blocks
+        document.querySelectorAll('pre code').forEach(block => {
+            block.style.backgroundColor = '#f8f9fa';
+            block.style.border = '1px solid #e9ecef';
+            block.style.borderRadius = '4px';
+            block.style.padding = '1rem';
+            block.style.fontSize = '0.875rem';
+            block.style.lineHeight = '1.4';
+        });
+    </script>
+</body>
+</html>

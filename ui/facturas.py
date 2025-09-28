@@ -328,7 +328,7 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
 
         # Botón guardar
         self.guardar_btn = ctk.CTkButton(buttons_frame, text=get_text("guardar"),
-                                       command=self.guardar_factura, width=120, height=35,
+                                       command=self.debug_guardar_factura, width=120, height=35,
                                        fg_color="#2E8B57", hover_color="#228B22")
         self.guardar_btn.pack(side="left", padx=10)
 
@@ -421,34 +421,86 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
             log_exception(e, "load_productos_disponibles")
             self.productos_disponibles = []
 
+    def debug_guardar_factura(self):
+        """Método de debugging para guardar factura con logging detallado"""
+        try:
+            self.logger.info("🔧 DEBUG: Botón guardar presionado")
+            self.logger.info(f"🔧 DEBUG: Método guardar_factura disponible: {hasattr(self, 'guardar_factura')}")
+            self.logger.info(f"🔧 DEBUG: Tipo de guardar_factura: {type(getattr(self, 'guardar_factura', None))}")
+
+            # Verificar que tenemos los atributos necesarios
+            self.logger.info(f"🔧 DEBUG: current_factura: {self.current_factura}")
+            self.logger.info(f"🔧 DEBUG: factura_items: {len(self.factura_items) if hasattr(self, 'factura_items') else 'NO EXISTE'}")
+
+            # Llamar al método original
+            if hasattr(self, 'guardar_factura'):
+                self.logger.info("🔧 DEBUG: Llamando a guardar_factura...")
+                try:
+                    self.guardar_factura()
+                    self.logger.info("🔧 DEBUG: guardar_factura completado SIN ERRORES")
+                except Exception as e:
+                    self.logger.error(f"🔧 DEBUG: EXCEPCIÓN en guardar_factura: {e}")
+                    import traceback
+                    self.logger.error(f"🔧 DEBUG: Traceback completo: {traceback.format_exc()}")
+                    # Re-lanzar para que sea visible
+                    raise
+            else:
+                self.logger.error("🔧 DEBUG: ¡Método guardar_factura NO disponible!")
+                self._show_message("error", "Error de Desarrollo",
+                                 "Método guardar_factura no está disponible. Problema de herencia.")
+
+        except Exception as e:
+            self.logger.error(f"🔧 DEBUG: Error en debug_guardar_factura: {e}")
+            import traceback
+            self.logger.error(f"🔧 DEBUG: Traceback: {traceback.format_exc()}")
+            self._show_message("error", "Error de Debug", f"Error en debug_guardar_factura: {str(e)}")
+
     def on_factura_select(self, event):
         """Maneja la selección de una factura en la lista y la carga automáticamente para edición"""
         try:
             selection = self.facturas_tree.selection()
             if selection:
                 item = selection[0]
-                index = self.facturas_tree.index(item)
-                self.selected_factura = self.facturas[index]
+                # Obtener el número de factura desde la primera columna del TreeView
+                item_values = self.facturas_tree.item(item, 'values')
+                if item_values and len(item_values) > 0:
+                    numero_factura = item_values[0]  # Primera columna es el número de factura
 
-                # Cargar factura en el formulario para edición automática
-                self.load_factura_to_form()
+                    # Buscar la factura por número en la base de datos
+                    self.logger.info(f"🔍 DEBUG: Buscando factura con número: {numero_factura}")
+                    self.selected_factura = Factura.get_by_numero(numero_factura)
+                    self.logger.info(f"🔍 DEBUG: Factura encontrada: {self.selected_factura is not None}")
 
-                # Actualizar título del formulario para indicar modo edición
-                self.form_title_label.configure(
-                    text=f"Editando Factura: {self.selected_factura.numero_factura}",
-                    text_color="#2E8B57"  # Verde para indicar edición activa
-                )
+                    if self.selected_factura:
+                        self.logger.info(f"🔍 DEBUG: Factura ID: {self.selected_factura.id}, Items: {len(self.selected_factura.items)}")
 
-                self.logger.info(f"Factura seleccionada y cargada para edición: {self.selected_factura.numero_factura}")
-                log_user_action("Factura en edición automática", f"Número: {self.selected_factura.numero_factura}")
+                        # Cargar factura en el formulario para edición automática
+                        self.load_factura_to_form()
+
+                        # Actualizar título del formulario para indicar modo edición
+                        self.form_title_label.configure(
+                            text=f"Editando Factura: {self.selected_factura.numero_factura}",
+                            text_color="#2E8B57"  # Verde para indicar edición activa
+                        )
+
+                        self.logger.info(f"Factura seleccionada y cargada para edición: {self.selected_factura.numero_factura}")
+                        log_user_action("Factura en edición automática", f"Número: {self.selected_factura.numero_factura}")
+                    else:
+                        self.logger.error(f"No se encontró la factura con número: {numero_factura}")
+                        self._show_message("error", "Error", f"No se encontró la factura {numero_factura}")
+                else:
+                    self.logger.error("No se pudo obtener el número de factura de la selección")
             else:
                 # Si no hay selección, volver al título normal
+                self.selected_factura = None
                 self.form_title_label.configure(
                     text="Datos de la Factura",
                     text_color=None  # Color por defecto
                 )
         except Exception as e:
             log_exception(e, "on_factura_select")
+            self.logger.error(f"Error en selección de factura: {e}")
+            self._show_message("error", "Error", f"Error al seleccionar factura: {str(e)}")
 
     def nueva_factura(self):
         """Prepara el formulario para una nueva factura"""
@@ -509,8 +561,7 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
             FormHelper.clear_entry(self.telefono_cliente_entry)
 
             # Limpiar productos
-            for item in self.productos_tree.get_children():
-                self.productos_tree.delete(item)
+            self.productos_tree.clear_items()
 
             self.factura_items = []
 

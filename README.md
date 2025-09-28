@@ -6,8 +6,11 @@ Aplicación de facturación simple con gestión de productos, stock y clientes d
 
 - ✅ **Gestión de Productos**: CRUD completo con imágenes, categorías, precios e IVA
 - 🏢 **Datos de Organización**: Configuración de empresa con logo
-- 📦 **Gestión de Stock**: Control de inventario automático
+- 📦 **Gestión de Stock**: Control de inventario automático con confirmación
 - 🧾 **Facturación**: Creación de facturas con cálculos automáticos
+- 📄 **Exportación PDF**: Generación profesional de facturas en PDF
+- 🔄 **Actualización Automática**: Stock se actualiza al guardar facturas
+- 🛡️ **Sistema Robusto**: Múltiples fallbacks para máxima compatibilidad
 - 🌍 **Multiidioma**: Interfaz en español (fácilmente extensible)
 - 💾 **Base de datos SQLite**: Sin configuración adicional
 - 🖥️ **Multiplataforma**: Funciona en Linux y Windows
@@ -21,20 +24,58 @@ Aplicación de facturación simple con gestión de productos, stock y clientes d
 
 ## Instalación
 
-### 1. Clonar o descargar el proyecto
+### **Instalación Automática (Recomendada)**
 ```bash
+# Clonar el repositorio
+git clone <url-del-repositorio>
 cd facturacion_facil
+
+# Ejecutar script de despliegue
+python3 deploy/deploy_solution.py
 ```
 
-### 2. Instalar dependencias
+### **Instalación Manual**
 ```bash
-pip install -r requirements.txt
+# 1. Instalar dependencias
+pip install customtkinter reportlab pillow
+
+# 2. Inicializar base de datos
+python3 -c "from database.database import db; db.init_database()"
+
+# 3. Ejecutar aplicación
+python3 main.py
 ```
 
-### 3. Ejecutar la aplicación
+### **Verificación de Instalación**
 ```bash
-python main.py
+# Test completo del sistema
+python3 test/demo/demo_complete_solution_test.py
+
+# Validación del sistema
+python3 test/validate_solution.py
 ```
+
+## 🎯 **Funcionalidades Principales**
+
+### **🔄 Actualización Automática de Stock**
+- **Confirmación inteligente**: Diálogo aparece al guardar facturas
+- **Sistema robusto**: Múltiples fallbacks (CustomTkinter → tkinter → consola)
+- **Logging detallado**: Seguimiento completo de operaciones
+- **Validación**: Verificación de stock disponible antes de venta
+
+### **📄 Exportación PDF Profesional**
+- **Selección fácil**: Clic en factura de la lista para seleccionar
+- **Generación automática**: PDF se crea y abre automáticamente
+- **Diseño profesional**: Formato empresarial completo
+- **Datos completos**: Empresa, cliente, productos, totales, IVA
+
+### **🛠️ Herramientas de Diagnóstico**
+- **Monitor en tiempo real**: Seguimiento de actividad del sistema
+- **Tests automatizados**: Validación completa de funcionalidades
+- **Benchmark de performance**: Medición de velocidad del sistema
+- **Stress testing**: Pruebas bajo carga alta
+
+---
 
 ## Estructura del Proyecto
 
@@ -218,8 +259,58 @@ La documentación completa del proyecto está organizada en el directorio `docs/
 
 - **Arquitectura factorizada**: Código simplificado y reutilizable
 - **Gestión de archivos**: FileManager, ImageManager, LogoManager
-- **Tests organizados**: 13/13 tests pasan, cobertura completa
+- **Tests organizados**: Suite completa de tests automatizados
 - **Funcionalidades**: PDF, stock, numeración, búsqueda
+- **Soluciones robustas**: Stock automático y exportación PDF
+
+---
+
+## 🧪 **Herramientas de Testing y Diagnóstico**
+
+### **Tests Rápidos**
+```bash
+# Test completo del sistema (Stock + PDF)
+python3 test/demo/demo_complete_solution_test.py
+
+# Validación completa del sistema
+python3 test/validate_solution.py
+
+# Test específico de selección de facturas
+python3 test/demo/demo_test_factura_selection.py
+```
+
+### **Herramientas de Monitoreo**
+```bash
+# Monitor en tiempo real
+python3 test/demo/demo_real_time_monitor.py
+
+# Benchmark de performance
+python3 test/performance/benchmark_solution.py
+
+# Stress test del sistema
+python3 test/stress/stress_test_solution.py
+```
+
+### **Accesos Directos (después del despliegue)**
+```bash
+# Ejecutar aplicación
+python3 run_app.py
+
+# Test del sistema
+python3 test_system.py
+
+# Monitor del sistema
+python3 monitor_system.py
+
+# Validar sistema
+python3 validate_system.py
+```
+
+### **Documentación de Soporte**
+- **`docs/USER_GUIDE_STOCK_CONFIRMATION.md`** - Guía de confirmación de stock
+- **`docs/USER_GUIDE_PDF_EXPORT.md`** - Guía de exportación PDF
+- **`docs/ADMIN_GUIDE.md`** - Guía de administración del sistema
+- **`docs/TESTING_GUIDE.md`** - Guía completa de testing
 
 ## Licencia
 

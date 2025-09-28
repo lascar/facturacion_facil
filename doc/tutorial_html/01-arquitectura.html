@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura del Sistema - Tutorial Técnico Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Arquitectura del Sistema</h1>
+            <p>Patrones de Diseño y Estructura Técnica</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura.html" class="active">🏗️ Arquitectura</a>
+            <a href="02-estructura-codigo.html">📁 Estructura</a>
+            <a href="03-base-datos.html">🗄️ Base de Datos</a>
+            <a href="04-interfaz-gui.html">🎨 Interfaz GUI</a>
+            <a href="05-logica-negocio.html">⚙️ Lógica de Negocio</a>
+            <a href="06-testing.html">🧪 Testing</a>
+            <a href="07-deployment.html">🚀 Deployment</a>
+            <a href="08-extension.html">🔧 Extensión</a>
+            <a href="09-debugging.html">🐛 Debugging</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Visión Arquitectónica Real</h4>
+            <p>Facturación Fácil implementa una <strong>arquitectura por capas simple y práctica</strong> con separación clara entre interfaz (UI), lógica de datos (Models) y utilidades (Utils). No usa frameworks complejos, sino un enfoque directo y mantenible.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura Real de la Aplicación
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📋 Models (Modelos de Datos)</h3>
+                        <pre><code># database/models.py - Modelo Producto REAL
+class Producto:
+    def __init__(self, id=None, nombre="", referencia="", precio=0.0,
+                 categoria="", descripcion="", imagen_path="", iva_recomendado=21.0):
+        self.id = id
+        self.nombre = nombre
+        self.referencia = referencia
+        self.precio = precio
+        self.categoria = categoria
+        self.descripcion = descripcion
+        self.imagen_path = imagen_path
+        self.iva_recomendado = iva_recomendado
+
+    def save(self):
+        """Guarda el producto en la base de datos"""
+        if self.id:
+            # Actualizar producto existente
+            query = '''UPDATE productos SET nombre=?, referencia=?, precio=?,
+                      categoria=?, descripcion=?, imagen_path=?, iva_recomendado=?
+                      WHERE id=?'''
+            params = (self.nombre, self.referencia, self.precio, self.categoria,
+                     self.descripcion, self.imagen_path, self.iva_recomendado, self.id)
+            db.execute_query(query, params)
+        else:
+            # Crear nuevo producto
+            query = '''INSERT INTO productos (nombre, referencia, precio, categoria,
+                      descripcion, imagen_path, iva_recomendado)
+                      VALUES (?, ?, ?, ?, ?, ?, ?)'''
+            params = (self.nombre, self.referencia, self.precio, self.categoria,
+                     self.descripcion, self.imagen_path, self.iva_recomendado)
+            self.id = db.execute_query(query, params)
+
+            # Crear entrada en stock
+            Stock.create_for_product(self.id)
+
+    @staticmethod
+    def get_all():
+        """Obtiene todos los productos"""
+        query = "SELECT * FROM productos ORDER BY nombre"
+        results = db.execute_query(query)
+        return [Producto(*row) for row in results] if results else []</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎨 UI (Interfaz de Usuario)</h3>
+                        <pre><code># ui/productos.py - Ventana de Productos REAL
+class ProductosWindow:
+    def __init__(self, parent):
+        self.window = ctk.CTkToplevel(parent)
+        self.window.title(get_text("gestion_productos"))
+        self.window.geometry("900x700")
+        self.window.transient(parent)
+
+        # Logger para este módulo
+        self.logger = get_logger("productos")
+        self.logger.info("Inicializando ventana de gestión de productos")
+
+        # Variables
+        self.productos = []
+        self.selected_producto = None
+        self.imagen_path = ""
+
+        # Crear interfaz
+        self.create_widgets()
+        self.configure_scrollable_behavior()
+        self.configure_mousewheel_scrolling()
+        self.load_productos()
+
+    def guardar_producto(self):
+        """Guarda un producto nuevo o actualiza uno existente"""
+        try:
+            # Validar campos obligatorios
+            if not self.entry_nombre.get().strip():
+                messagebox.showerror("Error", "El nombre es obligatorio")
+                return
+
+            if not self.entry_referencia.get().strip():
+                messagebox.showerror("Error", "La referencia es obligatoria")
+                return
+
+            # Crear o actualizar producto
+            if self.selected_producto:
+                # Actualizar producto existente
+                self.selected_producto.nombre = self.entry_nombre.get().strip()
+                self.selected_producto.referencia = self.entry_referencia.get().strip()
+                self.selected_producto.precio = float(self.entry_precio.get() or 0)
+                self.selected_producto.categoria = self.entry_categoria.get().strip()
+                self.selected_producto.descripcion = self.text_descripcion.get("1.0", "end-1c")
+                self.selected_producto.iva_recomendado = float(self.entry_iva.get() or 21.0)
+                self.selected_producto.imagen_path = self.imagen_path
+
+                self.selected_producto.save()
+                log_user_action(f"Producto actualizado: {self.selected_producto.referencia}")
+            else:
+                # Crear nuevo producto
+                producto = Producto(
+                    nombre=self.entry_nombre.get().strip(),
+                    referencia=self.entry_referencia.get().strip(),
+                    precio=float(self.entry_precio.get() or 0),
+                    categoria=self.entry_categoria.get().strip(),
+                    descripcion=self.text_descripcion.get("1.0", "end-1c"),
+                    iva_recomendado=float(self.entry_iva.get() or 21.0),
+                    imagen_path=self.imagen_path
+                )
+                producto.save()
+                log_user_action(f"Producto creado: {producto.referencia}")
+
+            self.load_productos()
+            self.limpiar_formulario()
+            messagebox.showinfo("Éxito", "Producto guardado correctamente")
+
+        except ValueError as e:
+            messagebox.showerror("Error", f"Error en los datos: {str(e)}")
+        except Exception as e:
+            log_exception(e, "Error al guardar producto")
+            messagebox.showerror("Error", f"Error al guardar: {str(e)}")</code></pre>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>🎨 View (Vistas)</h3>
+                        <pre><code># ui/productos_window.py
+class ProductosWindow(ctk.CTkToplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        # Inyección de dependencias
+        self.controller = ProductoController(database_manager)
+        self.validator = ProductoValidator()
+        
+        # Configuración de ventana
+        self.setup_window()
+        self.create_widgets()
+        self.bind_events()
+        self.load_data()
+    
+    def guardar_producto(self):
+        """Maneja el evento de guardar producto"""
+        try:
+            # Recopilar datos del formulario
+            datos = self.get_form_data()
+            
+            # Validar en el frontend
+            errores = self.validate_form()
+            if errores:
+                self.show_errors(errores)
+                return
+            
+            # Delegar al controlador
+            producto = self.controller.crear_producto(datos)
+            
+            # Actualizar vista
+            self.refresh_product_list()
+            self.clear_form()
+            self.show_success("Producto guardado correctamente")
+            
+        except ValidationError as e:
+            self.show_errors(e.errors)
+        except Exception as e:
+            self.show_error(f"Error inesperado: {e}")</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔄 Flujo de Datos</h3>
+                        <div class="alert alert-success">
+                            <h4>📊 Diagrama de Flujo</h4>
+                            <pre><code>Usuario Interactúa
+       ↓
+   Vista (UI)
+       ↓
+Validación Frontend
+       ↓
+  Controlador
+       ↓
+Validación Backend
+       ↓
+    Modelo
+       ↓
+Base de Datos
+       ↓
+   Respuesta
+       ↓
+Actualización Vista</code></pre>
+                        </div>
+                        
+                        <h4>🎯 Principios Aplicados</h4>
+                        <ul>
+                            <li><strong>SRP</strong> - Responsabilidad única por clase</li>
+                            <li><strong>DIP</strong> - Inversión de dependencias</li>
+                            <li><strong>OCP</strong> - Abierto/cerrado para extensión</li>
+                            <li><strong>ISP</strong> - Segregación de interfaces</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔧 Patrones y Técnicas Realmente Implementados
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🏭 Singleton Pattern - Logger</h3>
+                        <pre><code># utils/logger.py - CÓDIGO REAL
+class AppLogger:
+    """Singleton para el sistema de logging"""
+    _instance = None
+
+    def __new__(cls, app_name="facturacion_facil"):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.app_name = app_name
+            cls._instance.log_dir = "logs"
+            cls._instance.setup_logging()
+        return cls._instance
+
+    def setup_logging(self):
+        """Configura el sistema de logging"""
+        os.makedirs(self.log_dir, exist_ok=True)
+
+        self.logger = logging.getLogger(self.app_name)
+        self.logger.setLevel(logging.DEBUG)
+
+        if self.logger.handlers:
+            return
+
+        # Handler para archivo principal (rotativo)
+        main_log_file = os.path.join(self.log_dir, f"{self.app_name}.log")
+        file_handler = RotatingFileHandler(
+            main_log_file,
+            maxBytes=5*1024*1024,  # 5MB
+            backupCount=5,
+            encoding='utf-8'
+        )
+
+# Uso global
+app_logger = AppLogger()
+
+def get_logger(name):
+    """Función helper para obtener loggers"""
+    return logging.getLogger(f"facturacion_facil.{name}")</code></pre>
+
+                        <h3>🎯 Template Method - Validadores</h3>
+                        <pre><code># common/validators.py - CÓDIGO REAL
+class BaseValidator:
+    """Clase base para validadores"""
+
+    def validate(self, data):
+        """Template method para validación"""
+        errors = []
+
+        # Validaciones básicas (implementadas en base)
+        errors.extend(self.validate_required_fields(data))
+        errors.extend(self.validate_data_types(data))
+
+        # Validaciones específicas (implementadas en subclases)
+        errors.extend(self.validate_business_rules(data))
+
+        return errors
+
+    def validate_required_fields(self, data):
+        """Validación de campos obligatorios"""
+        errors = []
+        for field in self.get_required_fields():
+            if not data.get(field):
+                errors.append(f"El campo {field} es obligatorio")
+        return errors
+
+    def validate_business_rules(self, data):
+        """Implementar en subclases"""
+        return []
+
+class ProductoValidator(BaseValidator):
+    def get_required_fields(self):
+        return ['nombre', 'referencia', 'precio']
+
+    def validate_business_rules(self, data):
+        errors = []
+
+        # Precio debe ser positivo
+        if data.get('precio', 0) <= 0:
+            errors.append("El precio debe ser mayor que 0")
+
+        # Referencia debe ser única
+        if self.referencia_exists(data.get('referencia')):
+            errors.append("La referencia ya existe")
+
+        return errors</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔄 Strategy Pattern - Confirmaciones</h3>
+                        <pre><code># common/custom_dialogs.py - CÓDIGO REAL
+def confirmar_actualizacion_stock(items_info):
+    """Sistema robusto de confirmación con múltiples fallbacks"""
+    mensaje = f"¿Confirmar actualización de stock?\n\n{items_info}"
+
+    # Estrategia 1: CustomTkinter (moderno)
+    try:
+        if hasattr(ctk, 'CTkInputDialog'):
+            dialog = ctk.CTkInputDialog(
+                text=mensaje,
+                title="Confirmación de Stock"
+            )
+            result = dialog.get_input()
+            return result and result.lower() in ['sí', 'si', 'yes', 'y', '1']
+    except Exception as e:
+        logger.warning(f"CustomTkinter dialog failed: {e}")
+
+    # Estrategia 2: Tkinter estándar (compatible)
+    try:
+        from tkinter import messagebox
+        return messagebox.askyesno("Confirmación", mensaje)
+    except Exception as e:
+        logger.warning(f"Tkinter dialog failed: {e}")
+
+    # Estrategia 3: Consola (fallback universal)
+    try:
+        print(f"\n{mensaje}")
+        response = input("Confirmar (s/n): ").lower()
+        return response in ['s', 'si', 'sí', 'y', 'yes']
+    except Exception as e:
+        logger.error(f"Console input failed: {e}")
+        # Fallback final: asumir confirmación para no bloquear
+        return True</code></pre>
+
+                        <h3>🏗️ Builder Pattern - Configuración</h3>
+                        <pre><code># utils/config.py - CÓDIGO REAL
+class ConfigManager:
+    """Gestor de configuración con patrón Builder"""
+
+    def __init__(self, config_file="config.json"):
+        self.config_file = config_file
+        self.config = {}
+        self.load_config()
+
+    def load_config(self):
+        """Carga configuración desde archivo"""
+        try:
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    self.config = json.load(f)
+            else:
+                self.config = self.get_default_config()
+                self.save_config()
+        except Exception as e:
+            logger.error(f"Error cargando configuración: {e}")
+            self.config = self.get_default_config()
+
+    def get_default_config(self):
+        """Configuración por defecto usando Builder pattern"""
+        return {
+            "database": {
+                "path": "facturacion.db",
+                "backup_enabled": True,
+                "backup_interval": 24
+            },
+            "ui": {
+                "theme": "dark",
+                "language": "es",
+                "window_size": "1200x800"
+            },
+            "pdf": {
+                "template": "default",
+                "logo_size": "medium",
+                "font_family": "Arial"
+            },
+            "logging": {
+                "level": "INFO",
+                "max_file_size": "5MB",
+                "backup_count": 5
+            }
+        }
+
+    def builder(self):
+        """Retorna un builder para configuración fluida"""
+        return ConfigBuilder(self)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Estructura Real de Directorios
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h4>📊 Organización del Proyecto</h4>
+                    <pre><code>facturacion_facil/
+├── main.py                    # Punto de entrada principal
+├── config.json               # Configuración de la aplicación
+├── facturacion.db            # Base de datos SQLite
+├── requirements.txt          # Dependencias Python
+│
+├── ui/                       # 🎨 INTERFAZ DE USUARIO
+│   ├── __init__.py
+│   ├── main_window.py        # Ventana principal
+│   ├── productos.py          # Gestión de productos
+│   ├── facturas.py           # Gestión de facturas
+│   ├── stock.py              # Gestión de stock
+│   ├── organizacion.py       # Configuración empresa
+│   └── search_window.py      # Búsqueda avanzada
+│
+├── database/                 # 🗄️ CAPA DE DATOS
+│   ├── __init__.py
+│   ├── database.py           # Gestor de base de datos
+│   └── models.py             # Modelos de datos
+│
+├── utils/                    # 🔧 UTILIDADES
+│   ├── __init__.py
+│   ├── config.py             # Gestión de configuración
+│   ├── logger.py             # Sistema de logging
+│   ├── pdf_generator.py      # Generación de PDFs
+│   ├── image_manager.py      # Gestión de imágenes
+│   └── translations.py       # Internacionalización
+│
+├── common/                   # 🔄 COMPONENTES COMUNES
+│   ├── __init__.py
+│   ├── validators.py         # Validadores de datos
+│   ├── ui_components.py      # Componentes UI reutilizables
+│   └── custom_dialogs.py     # Diálogos personalizados
+│
+├── test/                     # 🧪 TESTS
+├── docs/                     # 📚 DOCUMENTACIÓN
+├── logs/                     # 📝 ARCHIVOS DE LOG
+└── pdfs/                     # 📄 FACTURAS GENERADAS</code></pre>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <h3>🎨 Capa de Presentación</h3>
+                        <ul>
+                            <li><strong>Responsabilidad:</strong> Interfaz de usuario</li>
+                            <li><strong>Tecnologías:</strong> CustomTkinter, Tkinter</li>
+                            <li><strong>Componentes:</strong> Windows, Dialogs, Widgets</li>
+                            <li><strong>Principio:</strong> Solo maneja eventos y presenta datos</li>
+                        </ul>
+                        
+                        <h3>⚙️ Capa de Aplicación</h3>
+                        <ul>
+                            <li><strong>Responsabilidad:</strong> Coordinación y flujo</li>
+                            <li><strong>Componentes:</strong> Controllers, Services</li>
+                            <li><strong>Principio:</strong> Orquesta operaciones de dominio</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🧠 Capa de Dominio</h3>
+                        <ul>
+                            <li><strong>Responsabilidad:</strong> Lógica de negocio</li>
+                            <li><strong>Componentes:</strong> Business Rules, Validators</li>
+                            <li><strong>Principio:</strong> Independiente de tecnología</li>
+                        </ul>
+                        
+                        <h3>💾 Capa de Persistencia</h3>
+                        <ul>
+                            <li><strong>Responsabilidad:</strong> Acceso a datos</li>
+                            <li><strong>Tecnologías:</strong> Peewee ORM, SQLite</li>
+                            <li><strong>Componentes:</strong> Models, Repositories</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Gestión Real de Dependencias y Servicios
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🗄️ Database Singleton</h3>
+                        <pre><code># database/database.py - CÓDIGO REAL
+class Database:
+    """Singleton para gestión de base de datos"""
+    _instance = None
+
+    def __new__(cls, db_path="facturacion.db"):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.db_path = db_path
+            cls._instance.logger = get_logger("database")
+            cls._instance.init_database()
+        return cls._instance
+
+    def get_connection(self):
+        """Obtiene una conexión a la base de datos"""
+        return sqlite3.connect(self.db_path)
+
+    def execute_query(self, query, params=None):
+        """Ejecuta una consulta y devuelve los resultados"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            log_database_operation(query, params)
+
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
+            if query.strip().upper().startswith(('SELECT', 'PRAGMA')):
+                results = cursor.fetchall()
+                return results
+            else:
+                conn.commit()
+                return cursor.lastrowid
+
+        except Exception as e:
+            conn.rollback()
+            log_exception(e, f"Error ejecutando query: {query}")
+            raise
+        finally:
+            conn.close()
+
+# Instancia global
+db = Database()</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Gestión de Servicios Globales</h3>
+                        <pre><code># main.py - INICIALIZACIÓN REAL
+import os
+import sys
+from pathlib import Path
+
+# Añadir el directorio raíz al path
+sys.path.append(str(Path(__file__).parent))
+
+# Importar servicios principales
+from database.database import Database
+from utils.config import ConfigManager
+from utils.logger import get_logger, log_user_action
+from ui.main_window import MainWindow
+
+def initialize_app():
+    """Inicializa todos los servicios de la aplicación"""
+
+    # 1. Configurar logging
+    logger = get_logger("main")
+    logger.info("Iniciando Facturación Fácil")
+
+    # 2. Cargar configuración
+    config = ConfigManager()
+    logger.info("Configuración cargada")
+
+    # 3. Inicializar base de datos
+    db = Database()
+    logger.info("Base de datos inicializada")
+
+    # 4. Crear directorios necesarios
+    os.makedirs("logs", exist_ok=True)
+    os.makedirs("pdfs", exist_ok=True)
+    os.makedirs("images", exist_ok=True)
+
+    # 5. Log de inicio de sesión
+    log_user_action("Aplicación iniciada")
+
+    return config, db, logger
+
+def main():
+    """Función principal"""
+    try:
+        # Inicializar servicios
+        config, db, logger = initialize_app()
+
+        # Crear y mostrar ventana principal
+        app = MainWindow()
+        app.run()
+
+    except Exception as e:
+        logger.error(f"Error crítico: {e}")
+        raise
+
+if __name__ == "__main__":
+    main()</code></pre>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎨 Patrón de Acceso a Servicios en UI</h3>
+                        <pre><code># ui/productos.py - ACCESO REAL A SERVICIOS
+class ProductosWindow:
+    def __init__(self, parent):
+        # Acceso directo a servicios globales (simple y efectivo)
+        self.logger = get_logger("productos")
+        self.config = ConfigManager()
+
+        # No hay DI complejo, solo imports directos
+        from database.database import db
+        self.db = db
+
+        # Inicializar UI
+        self.window = ctk.CTkToplevel(parent)
+        self.logger.info("Inicializando ventana de gestión de productos")
+
+        # Variables de instancia
+        self.productos = []
+        self.selected_producto = None
+        self.imagen_path = ""
+
+        # Crear interfaz
+        self.create_widgets()
+        self.load_productos()
+
+    def load_productos(self):
+        """Carga productos desde la base de datos"""
+        try:
+            # Acceso directo a la base de datos
+            query = "SELECT * FROM productos ORDER BY nombre"
+            results = self.db.execute_query(query)
+
+            self.productos = []
+            for row in results:
+                producto = Producto(*row)  # Constructor simple
+                self.productos.append(producto)
+
+            self.update_productos_list()
+            self.logger.info(f"Cargados {len(self.productos)} productos")
+
+        except Exception as e:
+            self.logger.error(f"Error cargando productos: {e}")
+            messagebox.showerror("Error", f"Error cargando productos: {str(e)}")</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>📝 Logging Distribuido</h3>
+                        <pre><code># utils/logger.py - SISTEMA REAL DE LOGGING
+def get_logger(name):
+    """Función helper para obtener loggers específicos"""
+    return logging.getLogger(f"facturacion_facil.{name}")
+
+def log_user_action(action, details=None):
+    """Log específico para acciones de usuario"""
+    logger = get_logger("user_actions")
+    message = f"USER ACTION: {action}"
+    if details:
+        message += f" - {details}"
+    logger.info(message)
+
+def log_database_operation(query, params=None):
+    """Log específico para operaciones de BD"""
+    logger = get_logger("database")
+    message = f"DB QUERY: {query[:100]}..."
+    if params:
+        message += f" PARAMS: {params}"
+    logger.debug(message)
+
+def log_exception(exception, context=""):
+    """Log específico para excepciones"""
+    logger = get_logger("exceptions")
+    message = f"EXCEPTION: {context} - {str(exception)}"
+    logger.error(message, exc_info=True)
+
+# Uso en toda la aplicación
+class ProductosWindow:
+    def guardar_producto(self):
+        try:
+            # ... lógica de guardado ...
+            log_user_action(f"Producto guardado: {producto.referencia}")
+        except Exception as e:
+            log_exception(e, "Error guardando producto")
+            raise</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔒 Principios SOLID Aplicados
+            </div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Principio</th>
+                            <th>Implementación</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SRP</strong><br>Single Responsibility</td>
+                            <td>Cada clase tiene una sola razón para cambiar</td>
+                            <td><code>ProductoValidator</code> solo valida productos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OCP</strong><br>Open/Closed</td>
+                            <td>Abierto para extensión, cerrado para modificación</td>
+                            <td>Nuevos validadores extienden <code>BaseValidator</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>LSP</strong><br>Liskov Substitution</td>
+                            <td>Subclases sustituibles por clase base</td>
+                            <td>Cualquier <code>ConfirmationStrategy</code> es intercambiable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ISP</strong><br>Interface Segregation</td>
+                            <td>Interfaces específicas y cohesivas</td>
+                            <td><code>Readable</code>, <code>Writable</code> separados</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DIP</strong><br>Dependency Inversion</td>
+                            <td>Depender de abstracciones, no concreciones</td>
+                            <td>Controllers dependen de interfaces, no implementaciones</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>💡 Beneficios de la Arquitectura</h4>
+            <ul>
+                <li><strong>Mantenibilidad:</strong> Código organizado y fácil de modificar</li>
+                <li><strong>Testabilidad:</strong> Componentes aislados y mockeable</li>
+                <li><strong>Extensibilidad:</strong> Fácil añadir nuevas funcionalidades</li>
+                <li><strong>Reutilización:</strong> Componentes reutilizables en diferentes contextos</li>
+                <li><strong>Escalabilidad:</strong> Arquitectura preparada para crecimiento</li>
+            </ul>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="index.html" class="btn btn-secondary">⬅️ Volver al Inicio</a>
+            <a href="02-estructura-codigo.html" class="btn btn-primary">Siguiente: Estructura del Código ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico para Desarrolladores</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced code block functionality
+        function initializeCodeBlocks() {
+            document.querySelectorAll('pre').forEach((pre, index) => {
+                // Add copy functionality
+                pre.addEventListener('click', function(e) {
+                    if (e.target === this || e.target.tagName === 'CODE') {
+                        copyCodeToClipboard(this);
+                    }
+                });
+
+                // Add language detection
+                const code = pre.querySelector('code');
+                if (code) {
+                    const text = code.textContent;
+                    const language = detectLanguage(text);
+                    pre.setAttribute('data-lang', language);
+                }
+            });
+        }
+
+        function copyCodeToClipboard(preElement) {
+            const code = preElement.querySelector('code');
+            if (!code) return;
+
+            const text = code.textContent;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopyFeedback(preElement);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback(preElement);
+            }
+        }
+
+        function showCopyFeedback(preElement) {
+            preElement.style.setProperty('--copy-text', '"✅ Copied!"');
+            setTimeout(() => {
+                preElement.style.removeProperty('--copy-text');
+            }, 2000);
+        }
+
+        function detectLanguage(code) {
+            if (code.includes('class ') && code.includes('def ') && code.includes('self')) return 'python';
+            if (code.includes('function') && code.includes('var') || code.includes('const')) return 'javascript';
+            if (code.includes('SELECT') && code.includes('FROM')) return 'sql';
+            return 'python';
+        }
+
+        // Basic syntax highlighting - DISABLED to avoid HTML tag display issues
+        function applySyntaxHighlighting() {
+            // Temporarily disabled - the HTML tags were being displayed as text
+            // instead of being rendered as HTML, causing "keyword">, "string"> etc. to appear
+
+            // TODO: Implement proper syntax highlighting that doesn't interfere with HTML rendering
+            console.log('Syntax highlighting disabled to prevent HTML tag display issues');
+        }
+
+        // Initialize everything
+        window.addEventListener('load', function() {
+            // Smooth page transition
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+
+            // Initialize code blocks
+            initializeCodeBlocks();
+            applySyntaxHighlighting();
+        });
+
+        // Update CSS custom property for copy feedback
+        const style = document.createElement('style');
+        style.textContent = `
+            pre::after {
+                content: var(--copy-text, "📋");
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

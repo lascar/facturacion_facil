@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Syntax Fix - Tutorial Técnico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Test de Corrección de Sintaxis</h1>
+            <p>Verificación de que no aparecen "keyword">, "string">, etc.</p>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>✅ Problema Identificado y Corregido</h4>
+            <p>El problema de las etiquetas HTML visibles como <code>"keyword"&gt;</code>, <code>"string"&gt;</code> ha sido <strong>completamente resuelto</strong> deshabilitando la coloration syntaxique problemática.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🐛 Explicación del Problema
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>❌ Qué Causaba el Problema</h3>
+                        <ol>
+                            <li><strong>JavaScript obtenía</strong> <code>innerHTML</code> del bloque de código</li>
+                            <li><strong>Aplicaba replace()</strong> para añadir etiquetas HTML como <code>&lt;span class="keyword"&gt;</code></li>
+                            <li><strong>Establecía innerHTML</strong> con el nuevo contenido</li>
+                            <li><strong>El navegador interpretaba</strong> las nuevas etiquetas como texto, no como HTML</li>
+                            <li><strong>Resultado:</strong> Se veían literalmente <code>"keyword"&gt;</code>, <code>"string"&gt;</code></li>
+                        </ol>
+                    </div>
+                    <div class="col">
+                        <h3>✅ Cómo se Solucionó</h3>
+                        <ol>
+                            <li><strong>Deshabilitamos</strong> la función <code>applySyntaxHighlighting()</code></li>
+                            <li><strong>Comentamos</strong> los estilos CSS de coloration</li>
+                            <li><strong>Mantenemos</strong> el diseño visual atractivo de los bloques</li>
+                            <li><strong>Preservamos</strong> todas las otras funcionalidades (copia, detección de lenguaje)</li>
+                            <li><strong>Resultado:</strong> Código limpio sin artefactos visuales</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Test de Código Python - Debe estar LIMPIO
+            </div>
+            <div class="card-body">
+                <p>Este bloque de código Python NO debe mostrar "keyword">, "string">, etc.:</p>
+                <pre><code>class ProductoController:
+    def __init__(self, db_manager):
+        self.db = db_manager
+        self.validator = ProductoValidator()
+        self.logger = logging.getLogger(__name__)
+    
+    def crear_producto(self, datos):
+        """Crear nuevo producto con validación"""
+        try:
+            # Validar datos
+            errores = self.validator.validate(datos)
+            if errores:
+                raise ValidationError(errores)
+            
+            # Crear producto
+            producto = Producto.create(**datos)
+            
+            # Log de auditoría
+            self.logger.info(f"Producto creado: {producto.referencia}")
+            
+            return producto
+            
+        except Exception as e:
+            self.logger.error(f"Error creando producto: {e}")
+            raise</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Test de Código JavaScript - Debe estar LIMPIO
+            </div>
+            <div class="card-body">
+                <p>Este bloque de código JavaScript NO debe mostrar etiquetas HTML:</p>
+                <pre><code>function initializeCodeBlocks() {
+    document.querySelectorAll('pre').forEach((pre, index) => {
+        // Add copy functionality
+        pre.addEventListener('click', function(e) {
+            if (e.target === this || e.target.tagName === 'CODE') {
+                copyCodeToClipboard(this);
+            }
+        });
+        
+        // Add language detection
+        const code = pre.querySelector('code');
+        if (code) {
+            const text = code.textContent;
+            const language = detectLanguage(text);
+            pre.setAttribute('data-lang', language);
+        }
+    });
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Test de Código SQL - Debe estar LIMPIO
+            </div>
+            <div class="card-body">
+                <p>Este bloque de código SQL NO debe mostrar artefactos:</p>
+                <pre><code>SELECT p.nombre, p.precio, s.cantidad_actual
+FROM productos p
+LEFT JOIN stock s ON p.id = s.producto_id
+WHERE p.categoria = 'Electrónica'
+  AND s.cantidad_actual > 0
+ORDER BY p.nombre ASC
+LIMIT 50;</code></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ✅ Funcionalidades que SÍ Funcionan
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🎨 Diseño Visual</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Fondo degradado</strong> - Tema oscuro atractivo</li>
+                            <li><span class="status-ok">✅</span> <strong>Bordes y sombras</strong> - Efectos visuales</li>
+                            <li><span class="status-ok">✅</span> <strong>Fuentes monospace</strong> - Tipografía profesional</li>
+                            <li><span class="status-ok">✅</span> <strong>Efectos hover</strong> - Interactividad visual</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Funcionalidades</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Copia en un clic</strong> - Funciona perfectamente</li>
+                            <li><span class="status-ok">✅</span> <strong>Detección de lenguaje</strong> - Atributo data-lang</li>
+                            <li><span class="status-ok">✅</span> <strong>Feedback visual</strong> - "Copied!" al copiar</li>
+                            <li><span class="status-ok">✅</span> <strong>Responsive design</strong> - Adaptación móvil</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>💡 Alternativas Futuras para Syntax Highlighting</h4>
+            <p>Si en el futuro queremos implementar coloration syntaxique, podríamos usar:</p>
+            <ul>
+                <li><strong>Prism.js</strong> - Librería especializada y robusta</li>
+                <li><strong>Highlight.js</strong> - Detección automática de lenguajes</li>
+                <li><strong>CodeMirror</strong> - Editor de código completo</li>
+                <li><strong>CSS-only highlighting</strong> - Usando pseudo-elementos avanzados</li>
+            </ul>
+            <p>Por ahora, el código es <strong>perfectamente legible</strong> sin coloration, y todas las otras funcionalidades funcionan correctamente.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎯 Verificación Manual
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>✅ Lista de Verificación</h4>
+                    <p>Confirma que en TODOS los bloques de código de esta página:</p>
+                    <ul>
+                        <li><span class="status-ok">✅</span> <strong>NO aparece</strong> <code>"keyword"&gt;</code></li>
+                        <li><span class="status-ok">✅</span> <strong>NO aparece</strong> <code>"string"&gt;</code></li>
+                        <li><span class="status-ok">✅</span> <strong>NO aparece</strong> <code>"comment"&gt;</code></li>
+                        <li><span class="status-ok">✅</span> <strong>NO aparece</strong> <code>"function"&gt;</code></li>
+                        <li><span class="status-ok">✅</span> <strong>NO aparece</strong> <code>"number"&gt;</code></li>
+                        <li><span class="status-ok">✅</span> <strong>El código se ve</strong> limpio y profesional</li>
+                        <li><span class="status-ok">✅</span> <strong>La funcionalidad de copia</strong> funciona al hacer clic</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📊 Código de Ejemplo Complejo
+            </div>
+            <div class="card-body">
+                <p>Test final con código complejo que anteriormente mostraba muchos artefactos:</p>
+                <pre><code>class Database:
+    """Singleton para gestión de base de datos"""
+    _instance = None
+    
+    def __new__(cls, db_path="facturacion.db"):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.db_path = db_path
+            cls._instance.logger = get_logger("database")
+            cls._instance.init_database()
+        return cls._instance
+    
+    def execute_query(self, query, params=None):
+        """Ejecuta una consulta y devuelve los resultados"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            log_database_operation(query, params)
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            
+            if query.strip().upper().startswith(('SELECT', 'PRAGMA')):
+                results = cursor.fetchall()
+                return results
+            else:
+                conn.commit()
+                return cursor.lastrowid
+                
+        except Exception as e:
+            conn.rollback()
+            log_exception(e, f"Error ejecutando query: {query}")
+            raise
+        finally:
+            conn.close()</code></pre>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Test de Corrección de Sintaxis</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+    
+    <script>
+        // Verificación adicional
+        window.addEventListener('load', function() {
+            console.log('Testing syntax fix...');
+            
+            // Verificar que no hay etiquetas HTML visibles en el código
+            document.querySelectorAll('pre code').forEach((code, index) => {
+                const text = code.textContent;
+                const hasHtmlTags = text.includes('keyword">') || text.includes('string">') || 
+                                   text.includes('comment">') || text.includes('function">');
+                
+                if (hasHtmlTags) {
+                    console.error(`Code block ${index} still has HTML tag artifacts!`);
+                } else {
+                    console.log(`Code block ${index} is clean ✅`);
+                }
+            });
+            
+            console.log('Syntax fix verification complete');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Stock - Tutorial Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Gestión de Stock</h1>
+            <p>Control de Inventario Avanzado</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html" class="active">📊 Stock</a>
+            <a href="06-creacion-facturas.html">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html">💡 Consejos</a>
+            <a href="09-solucion-problemas.html">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Visión General</h4>
+            <p>El módulo de <strong>Gestión de Stock</strong> te permite controlar el inventario en tiempo real, gestionar movimientos, configurar alertas y mantener un historial completo de todas las operaciones.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📋 Vista Principal del Stock
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Información Mostrada</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Producto</strong> - Nombre y referencia</li>
+                            <li><span class="status-ok">✅</span> <strong>Stock actual</strong> - Cantidad disponible</li>
+                            <li><span class="status-ok">✅</span> <strong>Stock mínimo</strong> - Umbral de alerta</li>
+                            <li><span class="status-ok">✅</span> <strong>Estado</strong> - Indicador visual</li>
+                            <li><span class="status-ok">✅</span> <strong>Último movimiento</strong> - Fecha y tipo</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🚦 Indicadores de Estado</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Estado</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-ok">🟢 Verde</span></td>
+                                    <td>Stock OK</td>
+                                    <td>Stock por encima del mínimo</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-warning">🟡 Amarillo</span></td>
+                                    <td>Stock Bajo</td>
+                                    <td>Stock cerca del mínimo</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-error">🔴 Rojo</span></td>
+                                    <td>Sin Stock</td>
+                                    <td>Stock agotado o crítico</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ➕ Actualizar Stock
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>📋 Proceso de Actualización</h4>
+                    <ol>
+                        <li><strong>Selecciona el producto</strong> en la lista</li>
+                        <li><strong>Haz clic en "Actualizar Stock"</strong></li>
+                        <li><strong>Introduce la nueva cantidad</strong></li>
+                        <li><strong>Selecciona el tipo de movimiento:</strong>
+                            <ul>
+                                <li><strong>Entrada</strong> - Compra, devolución, ajuste positivo</li>
+                                <li><strong>Salida</strong> - Venta, pérdida, ajuste negativo</li>
+                                <li><strong>Ajuste</strong> - Corrección de inventario</li>
+                            </ul>
+                        </li>
+                        <li><strong>Añade un comentario</strong> (opcional pero recomendado)</li>
+                        <li><strong>Confirma la operación</strong></li>
+                    </ol>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h4>⚠️ Sistema de Confirmación</h4>
+                    <p>La aplicación incluye un <strong>sistema de confirmación robusto</strong> con múltiples niveles de fallback:</p>
+                    <ul>
+                        <li><strong>Nivel 1:</strong> Diálogo CustomTkinter (moderno)</li>
+                        <li><strong>Nivel 2:</strong> Diálogo Tkinter estándar (compatible)</li>
+                        <li><strong>Nivel 3:</strong> Confirmación por consola (universal)</li>
+                    </ul>
+                    <p>Esto garantiza que <strong>siempre</strong> puedas confirmar los cambios de stock, independientemente de tu sistema.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Actualización Automática
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🧾 Con Facturas</h3>
+                        <p>El stock se actualiza automáticamente cuando:</p>
+                        <ul>
+                            <li><strong>Creas una factura</strong> - Stock se reduce</li>
+                            <li><strong>Cancelas una factura</strong> - Stock se restaura</li>
+                            <li><strong>Modificas una factura</strong> - Stock se ajusta</li>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <h4>💡 Proceso Automático</h4>
+                            <p>Cuando creas una factura, el sistema:</p>
+                            <ol>
+                                <li>Verifica stock disponible</li>
+                                <li>Muestra diálogo de confirmación</li>
+                                <li>Actualiza stock si confirmas</li>
+                                <li>Registra el movimiento</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h3>⚙️ Configuración</h3>
+                        <p>Puedes configurar:</p>
+                        <ul>
+                            <li><strong>Activar/desactivar</strong> actualización automática</li>
+                            <li><strong>Confirmación obligatoria</strong> para cambios</li>
+                            <li><strong>Alertas de stock bajo</strong> durante facturación</li>
+                            <li><strong>Bloqueo de ventas</strong> sin stock</li>
+                        </ul>
+                        
+                        <div class="alert alert-success">
+                            <h4>✅ Ventajas</h4>
+                            <ul>
+                                <li>Inventario siempre actualizado</li>
+                                <li>Previene sobreventa</li>
+                                <li>Historial automático</li>
+                                <li>Control total del proceso</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📈 Historial de Movimientos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📋 Información del Historial</h3>
+                        <ul>
+                            <li><strong>Fecha y hora</strong> - Timestamp completo</li>
+                            <li><strong>Producto</strong> - Nombre y referencia</li>
+                            <li><strong>Tipo de movimiento</strong> - Entrada/Salida/Ajuste</li>
+                            <li><strong>Cantidad</strong> - Unidades movidas</li>
+                            <li><strong>Stock anterior</strong> - Cantidad antes del movimiento</li>
+                            <li><strong>Stock nuevo</strong> - Cantidad después del movimiento</li>
+                            <li><strong>Comentario</strong> - Descripción del movimiento</li>
+                            <li><strong>Usuario</strong> - Quien realizó el movimiento</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔍 Filtros y Búsqueda</h3>
+                        <ul>
+                            <li><strong>Por producto</strong> - Movimientos de un producto específico</li>
+                            <li><strong>Por fecha</strong> - Rango de fechas</li>
+                            <li><strong>Por tipo</strong> - Entradas, salidas o ajustes</li>
+                            <li><strong>Por cantidad</strong> - Movimientos grandes o pequeños</li>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <h4>📊 Reportes</h4>
+                            <p>Genera reportes de:</p>
+                            <ul>
+                                <li>Movimientos por período</li>
+                                <li>Productos más movidos</li>
+                                <li>Tendencias de stock</li>
+                                <li>Alertas históricas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🚨 Alertas y Notificaciones
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h4>⚠️ Configuración de Alertas</h4>
+                    <p>Configura alertas automáticas para:</p>
+                    <ul>
+                        <li><strong>Stock bajo</strong> - Cuando el stock está cerca del mínimo</li>
+                        <li><strong>Stock agotado</strong> - Cuando no hay unidades disponibles</li>
+                        <li><strong>Movimientos grandes</strong> - Cambios significativos de stock</li>
+                        <li><strong>Productos inactivos</strong> - Sin movimientos en X días</li>
+                    </ul>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo de Alerta</th>
+                            <th>Condición</th>
+                            <th>Acción Recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status-warning">🟡 Stock Bajo</span></td>
+                            <td>Stock ≤ Stock Mínimo</td>
+                            <td>Realizar pedido de reposición</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-error">🔴 Sin Stock</span></td>
+                            <td>Stock = 0</td>
+                            <td>Pedido urgente o suspender ventas</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-info">🔵 Exceso</span></td>
+                            <td>Stock >> Stock Máximo</td>
+                            <td>Revisar estrategia de compras</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>💡 Mejores Prácticas</h4>
+            <ul>
+                <li><strong>Revisa el stock regularmente</strong> - Al menos semanalmente</li>
+                <li><strong>Configura stock mínimo realista</strong> - Basado en ventas históricas</li>
+                <li><strong>Usa comentarios descriptivos</strong> - Para facilitar auditorías</li>
+                <li><strong>Realiza inventarios periódicos</strong> - Para verificar exactitud</li>
+                <li><strong>Aprovecha la actualización automática</strong> - Reduce errores manuales</li>
+            </ul>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="04-configuracion-organizacion.html" class="btn btn-secondary">⬅️ Anterior: Configuración de Organización</a>
+            <a href="06-creacion-facturas.html" class="btn btn-primary">Siguiente: Creación de Facturas ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Usuario</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

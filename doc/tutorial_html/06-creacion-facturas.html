@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Facturas - Tutorial Técnico Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧾 Creación de Facturas</h1>
+            <p>Arquitectura de Facturación y Generación de PDFs</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html">📊 Stock</a>
+            <a href="06-creacion-facturas.html" class="active">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html">💡 Consejos</a>
+            <a href="09-solucion-problemas.html">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Arquitectura del Sistema de Facturación</h4>
+            <p>El módulo de facturación implementa un patrón <strong>MVC</strong> con separación clara entre lógica de negocio, persistencia y presentación. Utiliza <strong>SQLite</strong> con ORM personalizado y generación de PDFs con <strong>ReportLab</strong>.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura de Clases
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📋 Modelos de Datos</h3>
+                        <pre><code>class Factura(BaseModel):
+    numero: str
+    fecha: datetime
+    cliente_id: int
+    subtotal: Decimal
+    iva_total: Decimal
+    total: Decimal
+    estado: str = "pendiente"
+    
+    # Relaciones
+    items: List[FacturaItem]
+    cliente: Cliente
+    
+class FacturaItem(BaseModel):
+    factura_id: int
+    producto_id: int
+    cantidad: int
+    precio_unitario: Decimal
+    iva_aplicado: Decimal
+    subtotal: Decimal
+    total: Decimal</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎛️ Controladores</h3>
+                        <pre><code>class FacturaController:
+    def __init__(self, db_manager):
+        self.db = db_manager
+        self.pdf_generator = PDFGenerator()
+        self.stock_manager = StockManager()
+    
+    def crear_factura(self, datos_cliente, items):
+        # Validación de datos
+        # Verificación de stock
+        # Creación de factura
+        # Actualización de stock
+        # Generación de PDF
+        
+    def calcular_totales(self, items):
+        # Algoritmo de cálculo
+        # Manejo de múltiples IVAs
+        # Redondeo según configuración</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Flujo de Creación de Facturas
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>📋 Pipeline de Procesamiento</h4>
+                    <ol>
+                        <li><strong>Validación de Entrada</strong>
+                            <pre><code>def validar_datos_factura(self, datos):
+    validator = FacturaValidator()
+    return validator.validate(datos)</code></pre>
+                        </li>
+                        <li><strong>Verificación de Stock</strong>
+                            <pre><code>def verificar_stock_disponible(self, items):
+    for item in items:
+        stock_actual = self.stock_manager.get_stock(item.producto_id)
+        if stock_actual < item.cantidad:
+            raise InsufficientStockError(item.producto_id)</code></pre>
+                        </li>
+                        <li><strong>Transacción Atómica</strong>
+                            <pre><code>@transaction
+def crear_factura_completa(self, datos):
+    factura = self.crear_factura(datos)
+    self.actualizar_stock(factura.items)
+    self.generar_pdf(factura)
+    return factura</code></pre>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧮 Sistema de Cálculos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>💰 Algoritmos de Cálculo</h3>
+                        <pre><code>class CalculadoraFactura:
+    def __init__(self, precision=2):
+        self.precision = precision
+        self.context = decimal.Context(
+            prec=28, 
+            rounding=decimal.ROUND_HALF_UP
+        )
+    
+    def calcular_linea(self, cantidad, precio, iva_pct):
+        with decimal.localcontext(self.context):
+            subtotal = Decimal(cantidad) * Decimal(precio)
+            iva_amount = subtotal * (Decimal(iva_pct) / 100)
+            total = subtotal + iva_amount
+            
+            return {
+                'subtotal': self.redondear(subtotal),
+                'iva_amount': self.redondear(iva_amount),
+                'total': self.redondear(total)
+            }
+    
+    def redondear(self, valor):
+        return valor.quantize(
+            Decimal('0.01'), 
+            rounding=decimal.ROUND_HALF_UP
+        )</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>📊 Agregaciones</h3>
+                        <pre><code>def calcular_totales_factura(self, items):
+    totales = {
+        'subtotal': Decimal('0'),
+        'iva_total': Decimal('0'),
+        'total': Decimal('0'),
+        'ivas_desglosados': {}
+    }
+    
+    for item in items:
+        linea = self.calcular_linea(
+            item.cantidad, 
+            item.precio_unitario, 
+            item.iva_aplicado
+        )
+        
+        totales['subtotal'] += linea['subtotal']
+        totales['iva_total'] += linea['iva_amount']
+        totales['total'] += linea['total']
+        
+        # Desglose por tipo de IVA
+        iva_key = str(item.iva_aplicado)
+        if iva_key not in totales['ivas_desglosados']:
+            totales['ivas_desglosados'][iva_key] = {
+                'base': Decimal('0'),
+                'iva': Decimal('0')
+            }
+        
+        totales['ivas_desglosados'][iva_key]['base'] += linea['subtotal']
+        totales['ivas_desglosados'][iva_key]['iva'] += linea['iva_amount']
+    
+    return totales</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📄 Generación de PDFs
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🎨 PDFGenerator Class</h3>
+                        <pre><code>class PDFGenerator:
+    def __init__(self, config_manager):
+        self.config = config_manager
+        self.template_engine = TemplateEngine()
+        
+    def generar_factura_pdf(self, factura, output_path):
+        # Crear documento
+        doc = SimpleDocTemplate(
+            output_path,
+            pagesize=A4,
+            rightMargin=2*cm,
+            leftMargin=2*cm,
+            topMargin=2*cm,
+            bottomMargin=2*cm
+        )
+        
+        # Construir contenido
+        story = []
+        story.extend(self._crear_header(factura))
+        story.extend(self._crear_datos_empresa())
+        story.extend(self._crear_datos_cliente(factura.cliente))
+        story.extend(self._crear_tabla_items(factura.items))
+        story.extend(self._crear_totales(factura))
+        story.extend(self._crear_footer())
+        
+        # Generar PDF
+        doc.build(story)
+        
+    def _crear_tabla_items(self, items):
+        data = [['Producto', 'Cant.', 'Precio', 'IVA', 'Total']]
+        
+        for item in items:
+            data.append([
+                item.producto.nombre,
+                str(item.cantidad),
+                f"{item.precio_unitario:.2f}€",
+                f"{item.iva_aplicado:.1f}%",
+                f"{item.total:.2f}€"
+            ])
+        
+        table = Table(data, colWidths=[8*cm, 2*cm, 3*cm, 2*cm, 3*cm])
+        table.setStyle(self._get_table_style())
+        
+        return [table]</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Optimizaciones</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Template Engine</strong> - Reutilización de layouts</li>
+                            <li><span class="status-ok">✅</span> <strong>Lazy Loading</strong> - Carga bajo demanda</li>
+                            <li><span class="status-ok">✅</span> <strong>Caching</strong> - Cache de estilos y configuraciones</li>
+                            <li><span class="status-ok">✅</span> <strong>Async Generation</strong> - Generación no bloqueante</li>
+                        </ul>
+                        
+                        <pre><code>@lru_cache(maxsize=128)
+def get_table_style(self):
+    return TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 14),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+async def generar_pdf_async(self, factura, callback=None):
+    loop = asyncio.get_event_loop()
+    result = await loop.run_in_executor(
+        None, 
+        self.generar_factura_pdf, 
+        factura, 
+        output_path
+    )
+    if callback:
+        callback(result)
+    return result</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Integración con Stock
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h4>⚙️ Sistema de Confirmación Robusto</h4>
+                    <p>Implementación de múltiples niveles de fallback para garantizar la confirmación del usuario:</p>
+                    <pre><code>class StockConfirmationManager:
+    def __init__(self):
+        self.confirmation_strategies = [
+            CustomTkinterConfirmation(),
+            TkinterConfirmation(),
+            ConsoleConfirmation()
+        ]
+    
+    def confirmar_actualizacion_stock(self, items):
+        mensaje = self._generar_mensaje_confirmacion(items)
+        
+        for strategy in self.confirmation_strategies:
+            try:
+                if strategy.is_available():
+                    return strategy.confirm(mensaje)
+            except Exception as e:
+                logger.warning(f"Estrategia {strategy.__class__.__name__} falló: {e}")
+                continue
+        
+        # Fallback final - asumir confirmación
+        logger.error("Todas las estrategias de confirmación fallaron")
+        return True
+    
+    def _generar_mensaje_confirmacion(self, items):
+        total_items = len(items)
+        productos_afectados = [item.producto.nombre for item in items]
+        
+        return f"""
+        ¿Confirmar actualización de stock?
+        
+        Productos afectados: {total_items}
+        - {chr(10).join(productos_afectados)}
+        
+        Esta acción reducirá el stock disponible.
+        """</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 Testing y Validación
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🔬 Tests Unitarios</h3>
+                        <pre><code>class TestFacturaController(unittest.TestCase):
+    def setUp(self):
+        self.db = TestDatabaseManager()
+        self.controller = FacturaController(self.db)
+        
+    def test_crear_factura_con_stock_suficiente(self):
+        # Arrange
+        producto = self.crear_producto_test()
+        self.stock_manager.set_stock(producto.id, 10)
+        
+        items = [FacturaItem(
+            producto_id=producto.id,
+            cantidad=3,
+            precio_unitario=Decimal('100.00'),
+            iva_aplicado=Decimal('21.0')
+        )]
+        
+        # Act
+        factura = self.controller.crear_factura(
+            self.datos_cliente_test(), 
+            items
+        )
+        
+        # Assert
+        self.assertIsNotNone(factura.numero)
+        self.assertEqual(factura.total, Decimal('363.00'))
+        self.assertEqual(
+            self.stock_manager.get_stock(producto.id), 
+            7
+        )
+    
+    def test_crear_factura_stock_insuficiente(self):
+        # Arrange
+        producto = self.crear_producto_test()
+        self.stock_manager.set_stock(producto.id, 2)
+        
+        items = [FacturaItem(
+            producto_id=producto.id,
+            cantidad=5,  # Más que el stock disponible
+            precio_unitario=Decimal('100.00'),
+            iva_aplicado=Decimal('21.0')
+        )]
+        
+        # Act & Assert
+        with self.assertRaises(InsufficientStockError):
+            self.controller.crear_factura(
+                self.datos_cliente_test(), 
+                items
+            )</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔍 Tests de Integración</h3>
+                        <pre><code>class TestFacturaIntegration(IntegrationTestCase):
+    def test_flujo_completo_facturacion(self):
+        # Crear producto con stock
+        producto = self.crear_producto_con_stock(
+            nombre="Laptop Test",
+            stock_inicial=5
+        )
+        
+        # Crear cliente
+        cliente = self.crear_cliente_test()
+        
+        # Crear factura
+        factura_data = {
+            'cliente_id': cliente.id,
+            'items': [{
+                'producto_id': producto.id,
+                'cantidad': 2,
+                'precio_unitario': 599.99
+            }]
+        }
+        
+        # Ejecutar flujo completo
+        with patch('ui.dialogs.confirmar_stock') as mock_confirm:
+            mock_confirm.return_value = True
+            
+            factura = self.controller.crear_factura_completa(
+                factura_data
+            )
+        
+        # Verificaciones
+        self.assertIsNotNone(factura.numero)
+        self.assertEqual(factura.total, Decimal('1451.98'))
+        
+        # Verificar stock actualizado
+        stock_actual = self.stock_manager.get_stock(producto.id)
+        self.assertEqual(stock_actual, 3)
+        
+        # Verificar PDF generado
+        pdf_path = f"facturas/{factura.numero}.pdf"
+        self.assertTrue(os.path.exists(pdf_path))
+        
+        # Verificar movimiento de stock registrado
+        movimientos = self.stock_manager.get_movimientos(
+            producto.id
+        )
+        self.assertEqual(len(movimientos), 1)
+        self.assertEqual(movimientos[0].tipo, 'salida')
+        self.assertEqual(movimientos[0].cantidad, -2)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-error">
+            <h4>⚠️ Consideraciones de Rendimiento</h4>
+            <ul>
+                <li><strong>Transacciones:</strong> Usa transacciones atómicas para operaciones complejas</li>
+                <li><strong>Índices:</strong> Asegúrate de tener índices en campos de búsqueda frecuente</li>
+                <li><strong>Lazy Loading:</strong> Carga datos bajo demanda para listas grandes</li>
+                <li><strong>Caching:</strong> Cachea configuraciones y datos estáticos</li>
+                <li><strong>Async Operations:</strong> Usa operaciones asíncronas para PDFs grandes</li>
+            </ul>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="05-gestion-stock.html" class="btn btn-secondary">⬅️ Anterior: Gestión de Stock</a>
+            <a href="07-busqueda-avanzada.html" class="btn btn-primary">Siguiente: Búsqueda Avanzada ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico para Desarrolladores</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Syntax highlighting for code blocks
+        document.querySelectorAll('pre code').forEach(block => {
+            block.style.backgroundColor = '#f8f9fa';
+            block.style.border = '1px solid #e9ecef';
+            block.style.borderRadius = '4px';
+            block.style.padding = '1rem';
+            block.style.fontSize = '0.875rem';
+            block.style.lineHeight = '1.4';
+        });
+    </script>
+</body>
+</html>

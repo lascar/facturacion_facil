@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correcciones del Tutorial - Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Correcciones del Tutorial Técnico</h1>
+            <p>Basado en el Código Real de la Aplicación</p>
+        </div>
+
+        <div class="alert alert-success">
+            <h4>✅ Problemas Identificados y Corregidos</h4>
+            <p>El tutorial técnico ha sido <strong>completamente revisado</strong> para reflejar la arquitectura y el código real de Facturación Fácil, eliminando ejemplos hipotéticos y conceptos no implementados.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ❌ Problemas Originales Identificados
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🗂️ Archivos Inexistentes</h3>
+                        <ul>
+                            <li><span class="status-error">❌</span> <code>dependency_injection.py</code> - No existe</li>
+                            <li><span class="status-error">❌</span> <code>service_locator.py</code> - No existe</li>
+                            <li><span class="status-error">❌</span> <code>models/base.py</code> - No existe</li>
+                            <li><span class="status-error">❌</span> <code>controllers/producto_controller.py</code> - No existe</li>
+                            <li><span class="status-error">❌</span> <code>utils/factory.py</code> - No existe</li>
+                            <li><span class="status-error">❌</span> <code>utils/observer.py</code> - No existe</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🏗️ Conceptos No Implementados</h3>
+                        <ul>
+                            <li><span class="status-error">❌</span> <strong>MVC estricto</strong> - No hay controladores separados</li>
+                            <li><span class="status-error">❌</span> <strong>Dependency Injection</strong> - No implementado</li>
+                            <li><span class="status-error">❌</span> <strong>ORM Peewee</strong> - Usa SQLite directo</li>
+                            <li><span class="status-error">❌</span> <strong>Observer Pattern</strong> - No implementado</li>
+                            <li><span class="status-error">❌</span> <strong>Factory Pattern</strong> - No implementado</li>
+                            <li><span class="status-error">❌</span> <strong>Service Locator</strong> - No implementado</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ✅ Arquitectura Real Documentada
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📁 Estructura Real</h3>
+                        <pre><code>facturacion_facil/
+├── main.py                    # ✅ Punto de entrada
+├── config.json               # ✅ Configuración
+├── facturacion.db            # ✅ Base de datos SQLite
+│
+├── ui/                       # ✅ Interfaces CustomTkinter
+│   ├── main_window.py        # ✅ Ventana principal
+│   ├── productos.py          # ✅ Gestión productos
+│   ├── facturas.py           # ✅ Gestión facturas
+│   ├── stock.py              # ✅ Gestión stock
+│   └── organizacion.py       # ✅ Configuración
+│
+├── database/                 # ✅ Capa de datos
+│   ├── database.py           # ✅ Gestor SQLite
+│   └── models.py             # ✅ Modelos simples
+│
+├── utils/                    # ✅ Utilidades
+│   ├── config.py             # ✅ Configuración
+│   ├── logger.py             # ✅ Logging
+│   ├── pdf_generator.py      # ✅ PDFs
+│   └── translations.py       # ✅ i18n
+│
+└── common/                   # ✅ Componentes comunes
+    ├── validators.py         # ✅ Validadores
+    └── custom_dialogs.py     # ✅ Diálogos</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Patrones Realmente Usados</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Singleton</strong> - Database, Logger</li>
+                            <li><span class="status-ok">✅</span> <strong>Template Method</strong> - Validadores</li>
+                            <li><span class="status-ok">✅</span> <strong>Strategy</strong> - Confirmaciones múltiples</li>
+                            <li><span class="status-ok">✅</span> <strong>Builder</strong> - Configuración</li>
+                            <li><span class="status-ok">✅</span> <strong>Simple Factory</strong> - Modelos</li>
+                        </ul>
+                        
+                        <h3>🎯 Enfoque Arquitectónico</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Simplicidad</strong> - Código directo y claro</li>
+                            <li><span class="status-ok">✅</span> <strong>Pragmatismo</strong> - Soluciones efectivas</li>
+                            <li><span class="status-ok">✅</span> <strong>Mantenibilidad</strong> - Fácil de entender</li>
+                            <li><span class="status-ok">✅</span> <strong>Robustez</strong> - Manejo de errores</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔍 Ejemplos de Código Real vs Hipotético
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>❌ Antes (Hipotético)</h3>
+                        <pre><code># ❌ CÓDIGO INVENTADO
+class BaseModel(Model):
+    id = AutoField(primary_key=True)
+    created_at = DateTimeField(default=datetime.now)
+    
+    class Meta:
+        database = database_manager.db
+
+class ProductoController:
+    def __init__(self, db_manager):
+        self.db = db_manager
+        self.validator = ProductoValidator()
+        
+    def crear_producto(self, datos):
+        # Lógica hipotética...</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>✅ Después (Real)</h3>
+                        <pre><code># ✅ CÓDIGO REAL DE LA APLICACIÓN
+class Producto:
+    def __init__(self, id=None, nombre="", referencia="", precio=0.0):
+        self.id = id
+        self.nombre = nombre
+        self.referencia = referencia
+        self.precio = precio
+    
+    def save(self):
+        """Guarda el producto en la base de datos"""
+        if self.id:
+            query = '''UPDATE productos SET nombre=?, referencia=?, 
+                      precio=? WHERE id=?'''
+            params = (self.nombre, self.referencia, self.precio, self.id)
+            db.execute_query(query, params)
+        else:
+            query = '''INSERT INTO productos (nombre, referencia, precio) 
+                      VALUES (?, ?, ?)'''
+            params = (self.nombre, self.referencia, self.precio)
+            self.id = db.execute_query(query, params)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎯 Filosofía de Diseño Real
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h4>💡 Principios Aplicados en Facturación Fácil</h4>
+                    <ul>
+                        <li><strong>🎯 KISS (Keep It Simple, Stupid):</strong> Código simple y directo, sin over-engineering</li>
+                        <li><strong>🔧 YAGNI (You Aren't Gonna Need It):</strong> Solo implementa lo que realmente necesitas</li>
+                        <li><strong>📦 Separación de responsabilidades:</strong> UI, Data, Utils claramente separados</li>
+                        <li><strong>🛡️ Robustez:</strong> Manejo extensivo de errores y logging</li>
+                        <li><strong>🔄 Pragmatismo:</strong> Soluciones que funcionan, no teoría pura</li>
+                    </ul>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <h3>🏗️ Por qué NO MVC estricto</h3>
+                        <ul>
+                            <li><strong>Simplicidad:</strong> Para una app desktop pequeña, MVC estricto es overkill</li>
+                            <li><strong>Acoplamiento natural:</strong> UI y lógica están naturalmente acopladas en desktop</li>
+                            <li><strong>Mantenibilidad:</strong> Menos archivos = más fácil de mantener</li>
+                            <li><strong>Performance:</strong> Menos capas = mejor rendimiento</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Por qué SQLite directo</h3>
+                        <ul>
+                            <li><strong>Sin dependencias:</strong> SQLite está incluido en Python</li>
+                            <li><strong>Control total:</strong> Queries optimizadas manualmente</li>
+                            <li><strong>Simplicidad:</strong> No hay que aprender un ORM</li>
+                            <li><strong>Performance:</strong> Acceso directo sin overhead</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📚 Lecciones para Desarrolladores
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>🎓 Qué Aprender de esta Arquitectura</h4>
+                    <ol>
+                        <li><strong>La simplicidad es poderosa:</strong> No siempre necesitas patrones complejos</li>
+                        <li><strong>Conoce tu dominio:</strong> Apps desktop tienen diferentes necesidades que web</li>
+                        <li><strong>Pragmatismo sobre pureza:</strong> Lo que funciona es mejor que lo "teóricamente correcto"</li>
+                        <li><strong>Logging es crucial:</strong> Sistema robusto de logging desde el inicio</li>
+                        <li><strong>Manejo de errores:</strong> Múltiples niveles de fallback para robustez</li>
+                        <li><strong>Configuración flexible:</strong> Fácil de personalizar sin recompilar</li>
+                    </ol>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <h3>✅ Buenas Prácticas Implementadas</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> Logging estructurado y rotativo</li>
+                            <li><span class="status-ok">✅</span> Configuración externa (JSON)</li>
+                            <li><span class="status-ok">✅</span> Validación de datos robusta</li>
+                            <li><span class="status-ok">✅</span> Manejo de excepciones completo</li>
+                            <li><span class="status-ok">✅</span> Internacionalización (i18n)</li>
+                            <li><span class="status-ok">✅</span> Separación UI/Lógica/Datos</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Técnicas Avanzadas Usadas</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> Singleton para servicios globales</li>
+                            <li><span class="status-ok">✅</span> Template method para validadores</li>
+                            <li><span class="status-ok">✅</span> Strategy para confirmaciones</li>
+                            <li><span class="status-ok">✅</span> Context managers para transacciones</li>
+                            <li><span class="status-ok">✅</span> Decorators para logging</li>
+                            <li><span class="status-ok">✅</span> Factory methods para modelos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h4>🔄 Próximos Pasos</h4>
+            <p>El tutorial técnico ahora refleja la <strong>arquitectura real</strong> de Facturación Fácil. Los próximos capítulos serán actualizados siguiendo este mismo enfoque:</p>
+            <ul>
+                <li><strong>Código real</strong> extraído directamente de la aplicación</li>
+                <li><strong>Explicaciones prácticas</strong> de por qué se tomaron ciertas decisiones</li>
+                <li><strong>Ejemplos funcionales</strong> que los desarrolladores pueden ejecutar</li>
+                <li><strong>Lecciones aprendidas</strong> del desarrollo real</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial Técnico Corregido</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

@@ -195,6 +195,24 @@ class Factura:
         return None
 
     @staticmethod
+    def get_by_numero(numero_factura):
+        """Obtiene una factura por su número de factura"""
+        query = "SELECT * FROM facturas WHERE numero_factura=?"
+        results = db.execute_query(query, (numero_factura,))
+        if results:
+            row = results[0]
+            factura = Factura(
+                id=row[0], numero_factura=row[1], fecha_factura=row[2], nombre_cliente=row[3],
+                dni_nie_cliente=row[4], direccion_cliente=row[5], email_cliente=row[6],
+                telefono_cliente=row[7], subtotal=row[8], total_iva=row[9], total_factura=row[10],
+                modo_pago=row[11], fecha_creacion=row[12]
+            )
+            # Cargar items de la factura
+            factura.items = FacturaItem.get_by_factura_id(factura.id)
+            return factura
+        return None
+
+    @staticmethod
     def get_next_numero():
         """Obtiene el siguiente número de factura"""
         return db.get_next_factura_number()

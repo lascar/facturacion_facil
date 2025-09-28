@@ -289,27 +289,29 @@ class CopyableConfirmDialog(CopyableMessageDialog):
             )
             copy_btn.pack(side="left", padx=10, pady=10)
             
-            # Bouton No
+            # Bouton Cancelar
             no_btn = ctk.CTkButton(
                 buttons_frame,
-                text="No",
+                text="❌ Cancelar",
                 command=self.no_clicked,
-                width=100,
-                height=30,
-                fg_color="gray",
-                hover_color="darkgray"
+                width=120,
+                height=35,
+                fg_color="#DC143C",
+                hover_color="#B22222",
+                font=ctk.CTkFont(size=12, weight="bold")
             )
             no_btn.pack(side="right", padx=(5, 10), pady=10)
-            
-            # Bouton Sí
+
+            # Bouton Confirmación
             yes_btn = ctk.CTkButton(
                 buttons_frame,
-                text="Sí",
+                text="✅ Confirmación",
                 command=self.yes_clicked,
-                width=100,
-                height=30,
-                fg_color=self.color["fg"],
-                hover_color=self.color["hover"]
+                width=120,
+                height=35,
+                fg_color="#2E8B57",
+                hover_color="#228B22",
+                font=ctk.CTkFont(size=12, weight="bold")
             )
             yes_btn.pack(side="right", padx=5, pady=10)
             
@@ -329,6 +331,128 @@ class CopyableConfirmDialog(CopyableMessageDialog):
         """Maneja el clic en No"""
         self.result = False
         self.dialog.destroy()
+
+class StockConfirmationDialog(CopyableMessageDialog):
+    """Dialogue spécifique pour confirmation de stock avec boutons très clairs"""
+
+    def __init__(self, parent, title, message):
+        super().__init__(parent, title, message, "warning")
+        self.result = None
+
+    def create_widgets(self):
+        """Crée les widgets du dialogue de confirmation de stock"""
+        # Frame principal
+        main_frame = ctk.CTkFrame(self.dialog)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Icône et titre
+        header_frame = ctk.CTkFrame(main_frame)
+        header_frame.pack(fill="x", pady=(0, 15))
+
+        icon_label = ctk.CTkLabel(
+            header_frame,
+            text="📦",
+            font=ctk.CTkFont(size=24)
+        )
+        icon_label.pack(side="left", padx=(10, 5))
+
+        title_label = ctk.CTkLabel(
+            header_frame,
+            text=self.title,
+            font=ctk.CTkFont(size=16, weight="bold"),
+            text_color=self.color["text"]
+        )
+        title_label.pack(side="left", padx=5)
+
+        # Área de texto scrollable y seleccionable
+        text_frame = ctk.CTkFrame(main_frame)
+        text_frame.pack(fill="both", expand=True, pady=(0, 15))
+
+        self.text_widget = ctk.CTkTextbox(
+            text_frame,
+            height=200,
+            font=ctk.CTkFont(size=11, family="Consolas"),
+            wrap="word"
+        )
+        self.text_widget.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Insertar el mensaje
+        self.text_widget.insert("1.0", self.message)
+        self.text_widget.configure(state="disabled")  # Solo lectura pero seleccionable
+
+        # Frame de botones
+        buttons_frame = ctk.CTkFrame(main_frame)
+        buttons_frame.pack(fill="x", pady=(0, 10))
+
+        # Botón Copiar (izquierda)
+        copy_btn = ctk.CTkButton(
+            buttons_frame,
+            text="📋 Copiar",
+            command=self.copy_message,
+            width=100,
+            height=35,
+            fg_color="gray",
+            hover_color="darkgray",
+            font=ctk.CTkFont(size=11)
+        )
+        copy_btn.pack(side="left", padx=15, pady=10)
+
+        # Botón CANCELAR (derecha)
+        cancelar_btn = ctk.CTkButton(
+            buttons_frame,
+            text="❌ CANCELAR",
+            command=self.cancelar_clicked,
+            width=140,
+            height=40,
+            fg_color="#DC143C",
+            hover_color="#B22222",
+            font=ctk.CTkFont(size=13, weight="bold")
+        )
+        cancelar_btn.pack(side="right", padx=(5, 15), pady=10)
+
+        # Botón CONFIRMAR (derecha)
+        confirmar_btn = ctk.CTkButton(
+            buttons_frame,
+            text="✅ CONFIRMAR",
+            command=self.confirmar_clicked,
+            width=140,
+            height=40,
+            fg_color="#2E8B57",
+            hover_color="#228B22",
+            font=ctk.CTkFont(size=13, weight="bold")
+        )
+        confirmar_btn.pack(side="right", padx=5, pady=10)
+
+        # Focus en CONFIRMAR por defecto
+        confirmar_btn.focus()
+
+        # Bind teclas
+        self.dialog.bind("<Return>", lambda e: self.confirmar_clicked())
+        self.dialog.bind("<Escape>", lambda e: self.cancelar_clicked())
+
+    def confirmar_clicked(self):
+        """Maneja el clic en CONFIRMAR"""
+        self.result = True
+        self.dialog.destroy()
+
+    def cancelar_clicked(self):
+        """Maneja el clic en CANCELAR"""
+        self.result = False
+        self.dialog.destroy()
+
+    def copy_message(self):
+        """Copie le message dans le presse-papiers"""
+        try:
+            # Copier dans le presse-papiers
+            self.dialog.clipboard_clear()
+            self.dialog.clipboard_append(self.message)
+            self.dialog.update()
+
+            # Feedback visuel
+            self.logger.info("Mensaje de stock copiado al portapapeles")
+
+        except Exception as e:
+            self.logger.error(f"Error copiando mensaje de stock: {e}")
 
 # Funciones de conveniencia
 def show_copyable_info(parent, title, message):
@@ -354,4 +478,9 @@ def show_copyable_error(parent, title, message):
 def show_copyable_confirm(parent, title, message):
     """Muestra un diálogo de confirmación con texto copiable"""
     dialog = CopyableConfirmDialog(parent, title, message)
+    return dialog.show()
+
+def show_stock_confirmation_dialog(parent, title, message):
+    """Muestra un diálogo específico para confirmación de stock con botones claros"""
+    dialog = StockConfirmationDialog(parent, title, message)
     return dialog.show()

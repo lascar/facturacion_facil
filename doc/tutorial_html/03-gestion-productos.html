@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - Tutorial Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Gestión de Productos</h1>
+            <p>CRUD Completo con Imágenes y Validaciones</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html" class="active">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html">📊 Stock</a>
+            <a href="06-creacion-facturas.html">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html">💡 Consejos</a>
+            <a href="09-solucion-problemas.html">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Visión General</h4>
+            <p>El módulo de <strong>Gestión de Productos</strong> te permite crear, editar, eliminar y organizar todos los productos de tu empresa. Incluye soporte para imágenes, categorías, precios e IVA.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🚀 Acceso al Módulo
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🖱️ Desde la Ventana Principal</h3>
+                        <ol>
+                            <li>Haz clic en el botón <strong>📦 Productos</strong> (azul)</li>
+                            <li>Se abrirá la ventana de gestión de productos</li>
+                            <li>Verás la lista de productos existentes</li>
+                        </ol>
+                    </div>
+                    <div class="col">
+                        <h3>⌨️ Atajo de Teclado</h3>
+                        <div class="alert alert-success">
+                            <p><strong>Atajo rápido:</strong> <code>Ctrl + P</code></p>
+                            <p>Desde cualquier ventana de la aplicación</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎨 Interfaz del Módulo
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📋 Panel Izquierdo - Lista</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Lista de productos</strong> - Todos los productos</li>
+                            <li><span class="status-ok">✅</span> <strong>Búsqueda rápida</strong> - Filtro en tiempo real</li>
+                            <li><span class="status-ok">✅</span> <strong>Selección múltiple</strong> - Para operaciones en lote</li>
+                            <li><span class="status-ok">✅</span> <strong>Scroll automático</strong> - Para listas largas</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>📝 Panel Derecho - Formulario</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Campos de datos</strong> - Información del producto</li>
+                            <li><span class="status-ok">✅</span> <strong>Validación en tiempo real</strong> - Errores inmediatos</li>
+                            <li><span class="status-ok">✅</span> <strong>Vista previa de imagen</strong> - Imagen del producto</li>
+                            <li><span class="status-ok">✅</span> <strong>Botones de acción</strong> - Guardar, limpiar, eliminar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ➕ Crear Nuevo Producto
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>📋 Proceso Paso a Paso</h4>
+                    <ol>
+                        <li><strong>Haz clic en "Nuevo Producto"</strong>
+                            <ul><li>Se limpiará el formulario</li></ul>
+                        </li>
+                        <li><strong>Completa los campos obligatorios:</strong>
+                            <ul>
+                                <li><strong>Nombre:</strong> Nombre descriptivo del producto</li>
+                                <li><strong>Referencia:</strong> Código único (ej: PROD-001)</li>
+                                <li><strong>Precio:</strong> Precio unitario sin IVA</li>
+                            </ul>
+                        </li>
+                        <li><strong>Completa los campos opcionales:</strong>
+                            <ul>
+                                <li><strong>Categoría:</strong> Clasificación del producto</li>
+                                <li><strong>IVA:</strong> Porcentaje de IVA (por defecto 21%)</li>
+                                <li><strong>Descripción:</strong> Información adicional</li>
+                            </ul>
+                        </li>
+                        <li><strong>Añade una imagen (opcional):</strong>
+                            <ul><li>Haz clic en "Seleccionar Imagen"</li></ul>
+                        </li>
+                        <li><strong>Guarda el producto:</strong>
+                            <ul><li>Haz clic en "Guardar" o <code>Ctrl + S</code></li></ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📝 Campos del Formulario
+            </div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Obligatorio</th>
+                            <th>Validación</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Nombre</strong></td>
+                            <td>Texto</td>
+                            <td><span class="status-error">✅ Sí</span></td>
+                            <td>Mínimo 2 caracteres</td>
+                            <td>Laptop HP Pavilion</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Referencia</strong></td>
+                            <td>Texto</td>
+                            <td><span class="status-error">✅ Sí</span></td>
+                            <td>Único, alfanumérico</td>
+                            <td>LAP-HP-001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precio</strong></td>
+                            <td>Decimal</td>
+                            <td><span class="status-error">✅ Sí</span></td>
+                            <td>Mayor que 0</td>
+                            <td>599.99</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Categoría</strong></td>
+                            <td>Texto</td>
+                            <td><span class="status-ok">❌ No</span></td>
+                            <td>Texto libre</td>
+                            <td>Informática</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IVA</strong></td>
+                            <td>Decimal</td>
+                            <td><span class="status-ok">❌ No</span></td>
+                            <td>0-100%</td>
+                            <td>21.0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Descripción</strong></td>
+                            <td>Texto largo</td>
+                            <td><span class="status-ok">❌ No</span></td>
+                            <td>Hasta 500 caracteres</td>
+                            <td>Laptop para uso profesional...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Imagen</strong></td>
+                            <td>Archivo</td>
+                            <td><span class="status-ok">❌ No</span></td>
+                            <td>JPG, PNG, GIF</td>
+                            <td>laptop.jpg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ✏️ Editar Producto Existente
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Proceso de Edición</h3>
+                        <ol>
+                            <li><strong>Selecciona el producto</strong>
+                                <ul><li>Haz clic en la lista de productos</li></ul>
+                            </li>
+                            <li><strong>Los datos se cargan automáticamente</strong>
+                                <ul><li>El formulario se rellena</li></ul>
+                            </li>
+                            <li><strong>Modifica los campos necesarios</strong>
+                                <ul><li>Cambia cualquier valor</li></ul>
+                            </li>
+                            <li><strong>Guarda los cambios</strong>
+                                <ul><li>Haz clic en "Guardar"</li></ul>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-warning">
+                            <h4>⚠️ Consideraciones Importantes</h4>
+                            <ul>
+                                <li><strong>Referencia única:</strong> No puede repetirse</li>
+                                <li><strong>Productos en facturas:</strong> Cambios afectan historial</li>
+                                <li><strong>Stock vinculado:</strong> Se mantiene la relación</li>
+                                <li><strong>Imagen anterior:</strong> Se reemplaza si seleccionas nueva</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🖼️ Gestión de Imágenes
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📸 Añadir Imagen</h3>
+                        <ol>
+                            <li><strong>Haz clic en "Seleccionar Imagen"</strong></li>
+                            <li><strong>Navega hasta tu archivo</strong></li>
+                            <li><strong>Selecciona la imagen</strong> (JPG, PNG, GIF)</li>
+                            <li><strong>La imagen se muestra en vista previa</strong></li>
+                            <li><strong>Guarda el producto</strong> para confirmar</li>
+                        </ol>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Gestión Avanzada</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Vista previa</strong> - Imagen redimensionada</li>
+                            <li><span class="status-ok">✅</span> <strong>Formatos soportados</strong> - JPG, PNG, GIF</li>
+                            <li><span class="status-ok">✅</span> <strong>Tamaño automático</strong> - Optimización automática</li>
+                            <li><span class="status-ok">✅</span> <strong>Quitar imagen</strong> - Botón para eliminar</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h4>💡 Consejos para Imágenes</h4>
+                    <ul>
+                        <li><strong>Tamaño recomendado:</strong> 300x300 píxeles</li>
+                        <li><strong>Formato preferido:</strong> JPG para fotos, PNG para logos</li>
+                        <li><strong>Peso máximo:</strong> 2MB por imagen</li>
+                        <li><strong>Nombres descriptivos:</strong> Usa nombres claros para los archivos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🗑️ Eliminar Productos
+            </div>
+            <div class="card-body">
+                <div class="alert alert-error">
+                    <h4>⚠️ Proceso de Eliminación</h4>
+                    <ol>
+                        <li><strong>Selecciona el producto</strong> en la lista</li>
+                        <li><strong>Haz clic en "Eliminar"</strong></li>
+                        <li><strong>Confirma la eliminación</strong> en el diálogo</li>
+                        <li><strong>El producto se elimina permanentemente</strong></li>
+                    </ol>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h4>🚨 Restricciones de Eliminación</h4>
+                    <p>No puedes eliminar un producto si:</p>
+                    <ul>
+                        <li><strong>Está en facturas existentes</strong> - Mantiene integridad histórica</li>
+                        <li><strong>Tiene movimientos de stock</strong> - Preserva trazabilidad</li>
+                        <li><strong>Está en facturas pendientes</strong> - Evita inconsistencias</li>
+                    </ul>
+                    <p><strong>Solución:</strong> En lugar de eliminar, puedes marcar como "inactivo" o cambiar la categoría a "Descontinuado".</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="02-ventana-principal.html" class="btn btn-secondary">⬅️ Anterior: Ventana Principal</a>
+            <a href="04-configuracion-organizacion.html" class="btn btn-primary">Siguiente: Configuración de Organización ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Usuario</p>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth transitions
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

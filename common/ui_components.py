@@ -35,26 +35,55 @@ class BaseWindow:
         self.imagen_path = ""
     
     def _show_message(self, message_type, title, message):
-        """Helper para mostrar mensajes con el parent correcto"""
+        """Helper para mostrar mensajes copiables con el parent correcto"""
         try:
+            # Importar las funciones de diálogos copiables
+            from common.custom_dialogs import (
+                show_copyable_info, show_copyable_error,
+                show_copyable_warning, show_copyable_confirm
+            )
+
             # Asegurar que la ventana esté al frente
             if hasattr(self, 'window') and self.window.winfo_exists():
                 self.window.lift()
                 self.window.focus_force()
-            
-            if message_type == "info":
-                messagebox.showinfo(title, message, parent=self.window)
-            elif message_type == "error":
-                messagebox.showerror(title, message, parent=self.window)
-            elif message_type == "warning":
-                messagebox.showwarning(title, message, parent=self.window)
-            elif message_type == "yesno":
-                return messagebox.askyesno(title, message, parent=self.window)
-            
+
+                # Usar diálogos copiables en lugar de messagebox estándar
+                if message_type == "info":
+                    return show_copyable_info(self.window, title, message)
+                elif message_type == "error":
+                    return show_copyable_error(self.window, title, message)
+                elif message_type == "warning":
+                    return show_copyable_warning(self.window, title, message)
+                elif message_type == "yesno":
+                    return show_copyable_confirm(self.window, title, message)
+            else:
+                # Fallback con messagebox estándar si la ventana no existe
+                if message_type == "info":
+                    messagebox.showinfo(title, message)
+                elif message_type == "error":
+                    messagebox.showerror(title, message)
+                elif message_type == "warning":
+                    messagebox.showwarning(title, message)
+                elif message_type == "yesno":
+                    return messagebox.askyesno(title, message)
+
         except Exception as e:
-            self.logger.error(f"Error al mostrar mensaje: {e}")
-            # Fallback básico
-            print(f"{title}: {message}")
+            self.logger.error(f"Error al mostrar mensaje copiable: {e}")
+            # Fallback con messagebox estándar
+            try:
+                if message_type == "info":
+                    messagebox.showinfo(title, message, parent=self.window if hasattr(self, 'window') else None)
+                elif message_type == "error":
+                    messagebox.showerror(title, message, parent=self.window if hasattr(self, 'window') else None)
+                elif message_type == "warning":
+                    messagebox.showwarning(title, message, parent=self.window if hasattr(self, 'window') else None)
+                elif message_type == "yesno":
+                    return messagebox.askyesno(title, message, parent=self.window if hasattr(self, 'window') else None)
+            except Exception as fallback_error:
+                self.logger.error(f"Error en fallback: {fallback_error}")
+                # Último recurso: imprimir en consola
+                print(f"{title}: {message}")
     
     def setup_scrollable_frame(self, width=1150, height=750):
         """Configura un frame scrollable con scroll de rueda del ratón"""

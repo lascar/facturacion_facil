@@ -1,0 +1,646 @@
+/* Estilos para el Tutorial Técnico de Facturación Fácil */
+
+/* Import modern monospace fonts */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Fira+Code:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    min-height: 100vh;
+}
+
+/* Header - Enhanced for better readability */
+.header {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+    margin: -20px -20px 30px -20px;
+    border-radius: 0 0 15px 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add subtle pattern overlay for depth */
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-shadow:
+        0 2px 4px rgba(0,0,0,0.5),
+        0 4px 8px rgba(0,0,0,0.3),
+        0 0 20px rgba(255,255,255,0.2);
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.5px;
+}
+
+.header p {
+    font-size: 1.2em;
+    opacity: 0.95;
+    font-weight: 400;
+    text-shadow:
+        0 1px 2px rgba(0,0,0,0.4),
+        0 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1;
+    margin-top: 5px;
+}
+
+/* Navigation */
+.nav {
+    background-color: #e9ecef;
+    padding: 15px;
+    margin: 20px -20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.nav a {
+    display: inline-block;
+    margin: 5px 10px;
+    padding: 10px 20px;
+    background-color: #1f538d;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav a:hover {
+    background-color: #4169E1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.nav a.active {
+    background-color: #2E8B57;
+}
+
+/* Typography */
+h1 {
+    color: #1f538d;
+    font-size: 2.2em;
+    margin: 30px 0 20px 0;
+    border-bottom: 3px solid #4169E1;
+    padding-bottom: 10px;
+}
+
+h2 {
+    color: #2E8B57;
+    font-size: 1.8em;
+    margin: 25px 0 15px 0;
+    padding-left: 10px;
+    border-left: 4px solid #2E8B57;
+}
+
+h3 {
+    color: #1f538d;
+    font-size: 1.4em;
+    margin: 20px 0 10px 0;
+}
+
+h4 {
+    color: #4169E1;
+    font-size: 1.2em;
+    margin: 15px 0 8px 0;
+}
+
+h5 {
+    color: #666;
+    font-size: 1.1em;
+    margin: 12px 0 6px 0;
+}
+
+/* Paragraphs and text */
+p {
+    margin: 10px 0;
+    text-align: justify;
+}
+
+/* Lists */
+ul, ol {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+li {
+    margin: 8px 0;
+}
+
+/* Code and preformatted text - Enhanced for technical tutorial */
+code {
+    background-color: #f1f3f4;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', 'Courier New', monospace;
+    color: #c7254e;
+    border: 1px solid #e1e5e9;
+    font-size: 0.9em;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+pre {
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d30 100%);
+    color: #d4d4d4;
+    padding: 20px 24px;
+    border-radius: 12px;
+    border: 1px solid #3c3c3c;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border-left: 4px solid #007acc;
+    transition: all 0.3s ease;
+}
+
+pre:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    border-radius: 0;
+}
+
+/* Syntax highlighting colors - DISABLED to prevent HTML tag display issues */
+/* These styles were causing "keyword">, "string"> etc. to appear in code blocks */
+/*
+pre .comment { color: #6a9955; font-style: italic; }
+pre .keyword { color: #569cd6; font-weight: bold; }
+pre .string { color: #ce9178; }
+pre .number { color: #b5cea8; }
+pre .function { color: #dcdcaa; }
+pre .class { color: #4ec9b0; }
+pre .variable { color: #9cdcfe; }
+pre .operator { color: #d4d4d4; }
+pre .punctuation { color: #cccccc; }
+pre .decorator { color: #ffd700; }
+pre .builtin { color: #4fc1ff; }
+*/
+
+/* Simple, clean code blocks without syntax highlighting */
+pre code {
+    color: #d4d4d4; /* Light gray text on dark background */
+}
+
+/* Code block with language indicator */
+pre[data-lang]:before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 122, 204, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+/* Scrollbar styling for code blocks */
+pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: #2d2d30;
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: #007acc;
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+    background: #1177bb;
+}
+
+/* Copy button functionality */
+pre {
+    position: relative;
+}
+
+pre::after {
+    content: "📋";
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 122, 204, 0.7);
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0;
+    z-index: 10;
+}
+
+pre:hover::after {
+    opacity: 1;
+}
+
+pre::after:hover {
+    background: rgba(0, 122, 204, 1);
+    transform: scale(1.1);
+}
+
+/* Special styling for different code types */
+pre.terminal {
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+    border-left-color: #00ff00;
+}
+
+pre.terminal code {
+    color: #00ff00;
+}
+
+pre.sql {
+    background: linear-gradient(135deg, #2d1b69 0%, #3d2b79 100%);
+    border-left-color: #ff6b6b;
+}
+
+pre.json {
+    background: linear-gradient(135deg, #1a2332 0%, #2a3442 100%);
+    border-left-color: #ffd93d;
+}
+
+pre.html {
+    background: linear-gradient(135deg, #2d1810 0%, #3d2820 100%);
+    border-left-color: #ff8c42;
+}
+
+pre.css {
+    background: linear-gradient(135deg, #1a2d32 0%, #2a3d42 100%);
+    border-left-color: #42a5f5;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+th {
+    background-color: #1f538d;
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Buttons and links */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #1f538d;
+    color: white;
+}
+
+.btn-success {
+    background-color: #2E8B57;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Alert boxes */
+.alert {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+/* Cards */
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    color: white;
+    padding: 15px 20px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Grid system */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.col {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.col-2 {
+    flex: 0 0 50%;
+    padding: 0 10px;
+}
+
+/* Emoji and icons */
+.emoji {
+    font-size: 1.2em;
+    margin-right: 8px;
+}
+
+/* Status indicators */
+.status-ok {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-warning {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.status-error {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.status-info {
+    color: #17a2b8;
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin: 40px -20px -20px -20px;
+    border-radius: 15px 15px 0 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        padding: 30px 0;
+    }
+
+    .header h1 {
+        font-size: 2em;
+        text-shadow:
+            0 2px 4px rgba(0,0,0,0.6),
+            0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .header p {
+        font-size: 1.1em;
+    }
+    
+    .nav a {
+        display: block;
+        margin: 5px 0;
+    }
+    
+    .row {
+        flex-direction: column;
+    }
+    
+    .col, .col-2 {
+        flex: 1;
+        padding: 10px 0;
+    }
+}
+
+/* Print styles */
+@media print {
+    .nav, .footer {
+        display: none;
+    }
+    
+    .container {
+        box-shadow: none;
+        max-width: none;
+    }
+    
+    .header {
+        background: none;
+        color: black;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+    background-color: #4169E1;
+    color: white;
+}
+
+/* Focus styles for accessibility */
+a:focus, button:focus {
+    outline: 2px solid #4169E1;
+    outline-offset: 2px;
+}
+
+/* Enhanced code block interactions */
+.code-header {
+    background: #007acc;
+    color: white;
+    padding: 8px 16px;
+    margin: -20px -24px 16px -24px;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code-language {
+    opacity: 0.8;
+}
+
+.copy-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.copy-button.copied {
+    background: #28a745;
+}
+
+/* Line numbers for code blocks */
+.line-numbers {
+    counter-reset: line;
+}
+
+.line-numbers code {
+    counter-increment: line;
+}
+
+.line-numbers code::before {
+    content: counter(line);
+    display: inline-block;
+    width: 2em;
+    margin-right: 1em;
+    text-align: right;
+    color: #6a9955;
+    opacity: 0.6;
+    user-select: none;
+}
+
+/* Mobile responsive improvements for code */
+@media (max-width: 768px) {
+    pre {
+        padding: 16px;
+        font-size: 0.8rem;
+        margin: 16px 0;
+        border-radius: 8px;
+    }
+
+    pre::after {
+        top: 8px;
+        right: 8px;
+        padding: 6px;
+        font-size: 0.7rem;
+    }
+
+    code {
+        font-size: 0.85em;
+        padding: 2px 6px;
+    }
+}

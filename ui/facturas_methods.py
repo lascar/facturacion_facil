@@ -8,7 +8,7 @@ from tkinter import messagebox, simpledialog
 from common.custom_dialogs import (
     show_copyable_confirm, show_copyable_error,
     show_copyable_info, show_copyable_warning,
-    show_copyable_success
+    show_copyable_success, show_stock_confirmation_dialog
 )
 from utils.pdf_generator import PDFGenerator
 from utils.translations import get_text
@@ -119,6 +119,166 @@ class FacturasMethodsMixin:
 
         return errors
 
+    def show_stock_confirmation_dialog_direct(self, title, message):
+        """Muestra diálogo de confirmación de stock con botones CONFIRMAR/CANCELAR"""
+        try:
+            # Crear diálogo personalizado directamente
+            dialog = ctk.CTkToplevel()
+            dialog.title(title)
+            dialog.geometry("600x400")
+
+            # Hacer que esté siempre encima
+            dialog.attributes('-topmost', True)
+            dialog.lift()
+            dialog.focus_force()
+
+            # Variable para el resultado
+            result = None
+
+            # Frame principal
+            main_frame = ctk.CTkFrame(dialog)
+            main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+            # Título con icono
+            title_frame = ctk.CTkFrame(main_frame)
+            title_frame.pack(fill="x", pady=(0, 15))
+
+            title_label = ctk.CTkLabel(
+                title_frame,
+                text=f"📦 {title}",
+                font=ctk.CTkFont(size=16, weight="bold")
+            )
+            title_label.pack(pady=10)
+
+            # Área de texto
+            text_widget = ctk.CTkTextbox(
+                main_frame,
+                height=200,
+                font=ctk.CTkFont(size=11, family="Consolas")
+            )
+            text_widget.pack(fill="both", expand=True, pady=(0, 15))
+            text_widget.insert("1.0", message)
+            text_widget.configure(state="disabled")
+
+            # Frame de botones
+            buttons_frame = ctk.CTkFrame(main_frame)
+            buttons_frame.pack(fill="x")
+
+            def confirmar_clicked():
+                nonlocal result
+                result = True
+                dialog.destroy()
+
+            def cancelar_clicked():
+                nonlocal result
+                result = False
+                dialog.destroy()
+
+            def copiar_clicked():
+                try:
+                    dialog.clipboard_clear()
+                    dialog.clipboard_append(message)
+                    dialog.update()
+                except:
+                    pass
+
+            # Botón Copiar (izquierda)
+            copiar_btn = ctk.CTkButton(
+                buttons_frame,
+                text="📋 Copiar",
+                command=copiar_clicked,
+                width=100,
+                height=35,
+                fg_color="gray",
+                hover_color="darkgray"
+            )
+            copiar_btn.pack(side="left", padx=15, pady=15)
+
+            # Botón CANCELAR (derecha)
+            cancelar_btn = ctk.CTkButton(
+                buttons_frame,
+                text="❌ CANCELAR",
+                command=cancelar_clicked,
+                width=140,
+                height=40,
+                fg_color="#DC143C",
+                hover_color="#B22222",
+                font=ctk.CTkFont(size=13, weight="bold")
+            )
+            cancelar_btn.pack(side="right", padx=(5, 15), pady=15)
+
+            # Botón CONFIRMAR (derecha)
+            confirmar_btn = ctk.CTkButton(
+                buttons_frame,
+                text="✅ CONFIRMAR",
+                command=confirmar_clicked,
+                width=140,
+                height=40,
+                fg_color="#2E8B57",
+                hover_color="#228B22",
+                font=ctk.CTkFont(size=13, weight="bold")
+            )
+            confirmar_btn.pack(side="right", padx=5, pady=15)
+
+            # Focus en CONFIRMAR
+            confirmar_btn.focus()
+
+            # Bind teclas
+            dialog.bind("<Return>", lambda e: confirmar_clicked())
+            dialog.bind("<Escape>", lambda e: cancelar_clicked())
+
+            # Centrar el diálogo
+            dialog.update_idletasks()
+            x = (dialog.winfo_screenwidth() // 2) - (600 // 2)
+            y = (dialog.winfo_screenheight() // 2) - (400 // 2)
+            dialog.geometry(f"600x400+{x}+{y}")
+
+            # Esperar resultado
+            dialog.wait_window()
+
+            return result
+
+        except Exception as e:
+            self.logger.error(f"Error creando diálogo directo: {e}")
+            return None
+
+    def show_simple_confirmation_dialog(self, message):
+        """Diálogo de confirmación simple usando tkinter estándar"""
+        try:
+            import tkinter as tk
+            from tkinter import messagebox
+
+            # Crear ventana temporal para el messagebox
+            root = tk.Tk()
+            root.withdraw()  # Ocultar la ventana principal
+            root.attributes('-topmost', True)
+
+            # Mostrar diálogo con botones personalizados
+            result = messagebox.askyesno(
+                "Confirmar Procesamiento de Factura",
+                f"{message}\n\n¿Desea continuar y procesar la factura?\n\n"
+                f"• SÍ = Confirmar y procesar\n"
+                f"• NO = Cancelar operación",
+                icon='question'
+            )
+
+            root.destroy()
+
+            self.logger.info(f"🔧 DEBUG: Resultado diálogo simple: {result}")
+            return result
+
+        except Exception as e:
+            self.logger.error(f"Error con diálogo simple: {e}")
+            # Último recurso: preguntar por consola
+            print(f"\n📦 CONFIRMACIÓN DE STOCK:")
+            print(message)
+            print(f"\n¿Desea continuar y procesar la factura? (s/n): ", end="")
+            try:
+                response = input().lower().strip()
+                return response in ['s', 'si', 'sí', 'y', 'yes']
+            except:
+                return False
+
     def show_stock_impact_summary(self):
         """Muestra un resumen del impacto en stock antes de guardar la factura"""
         try:
@@ -152,16 +312,34 @@ class FacturasMethodsMixin:
                     f"  Estado: {estado}\n"
                 )
 
-            summary_lines.append("\n¿Desea continuar y guardar la factura?")
+            summary_lines.append("\n" + "="*50)
+            summary_lines.append("🔄 ACCIÓN A REALIZAR:")
+            summary_lines.append("• Se guardará la factura")
+            summary_lines.append("• Se actualizará automáticamente el stock")
+            summary_lines.append("• Se registrarán los movimientos de stock")
+            summary_lines.append("\n¿Desea continuar y procesar la factura?")
             summary_message = "\n".join(summary_lines)
 
-            # Mostrar diálogo de confirmación con texto copiable
+            # Mostrar diálogo específico de confirmación de stock
+            self.logger.info("🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...")
             try:
-                return show_copyable_confirm(self.window, "Confirmar Impacto en Stock", summary_message)
+                result = self.show_stock_confirmation_dialog_direct("Confirmar Procesamiento de Factura", summary_message)
+                self.logger.info(f"🔧 DEBUG: Resultado del diálogo directo: {result}")
+
+                # Si el resultado es None, significa que hubo un error
+                if result is None:
+                    self.logger.warning("🔧 DEBUG: Diálogo directo retornó None, usando fallback...")
+                    return self.show_simple_confirmation_dialog(summary_message)
+
+                return result
             except Exception as e:
-                self.logger.error(f"Error mostrando diálogo de confirmación: {e}")
-                # Fallback con messagebox estándar
-                return self._show_message("yesno", "Confirmar Impacto en Stock", summary_message)
+                self.logger.error(f"🔧 DEBUG: Error con diálogo directo: {e}")
+                import traceback
+                self.logger.error(f"🔧 DEBUG: Traceback: {traceback.format_exc()}")
+
+                # Fallback con diálogo simple
+                self.logger.info("🔧 DEBUG: Usando fallback diálogo simple...")
+                return self.show_simple_confirmation_dialog(summary_message)
 
         except Exception as e:
             self.logger.error(f"Error mostrando resumen de stock: {e}")
@@ -182,10 +360,10 @@ class FacturasMethodsMixin:
                 producto_id, cantidad, precio_unitario, iva_aplicado, descuento = result
                 
                 # Verificar stock disponible
-                stock = Stock.get_by_product(producto_id)
-                if stock and stock.cantidad_disponible < cantidad:
-                    if not messagebox.askyesno("Stock Insuficiente", 
-                                             f"Stock disponible: {stock.cantidad_disponible}\n"
+                stock_disponible = Stock.get_by_product(producto_id)
+                if stock_disponible < cantidad:
+                    if not messagebox.askyesno("Stock Insuficiente",
+                                             f"Stock disponible: {stock_disponible}\n"
                                              f"Cantidad solicitada: {cantidad}\n\n"
                                              "¿Desea continuar de todos modos?",
                                              parent=self.window):
@@ -326,8 +504,15 @@ class FacturasMethodsMixin:
                 return
 
             # Mostrar resumen de impacto en stock antes de guardar
-            if not self.show_stock_impact_summary():
+            self.logger.info("🔧 DEBUG: Mostrando resumen de impacto en stock...")
+            stock_summary_result = self.show_stock_impact_summary()
+            self.logger.info(f"🔧 DEBUG: Resultado del resumen de stock: {stock_summary_result}")
+
+            if not stock_summary_result:
+                self.logger.info("🔧 DEBUG: Usuario CANCELÓ el diálogo de confirmación de stock")
                 return  # Usuario canceló
+
+            self.logger.info("🔧 DEBUG: Usuario CONFIRMÓ continuar con la factura")
             
             # Crear o actualizar factura
             if not self.current_factura:
@@ -350,11 +535,15 @@ class FacturasMethodsMixin:
             self.current_factura.calculate_totals()
             
             # Guardar en base de datos
+            self.logger.info(f"💾 Guardando factura {self.current_factura.numero_factura} en base de datos...")
             self.current_factura.save()
-            
+            self.logger.info(f"✅ Factura guardada con ID: {self.current_factura.id}")
+
             # Actualizar stock
+            self.logger.info(f"📊 Iniciando actualización de stock para factura {self.current_factura.numero_factura}...")
             self.update_stock_after_save()
-            
+            self.logger.info(f"✅ Actualización de stock completada")
+
             # Actualizar servicio de numeración
             factura_numbering_service.update_next_numero_after_save(self.current_factura.numero_factura)
 
@@ -378,23 +567,56 @@ class FacturasMethodsMixin:
     def update_stock_after_save(self):
         """Actualiza el stock después de guardar la factura"""
         try:
-            for item in self.factura_items:
+            self.logger.info(f"🔄 INICIANDO actualización de stock para factura {self.current_factura.numero_factura}")
+            self.logger.info(f"📦 Número de items a procesar: {len(self.factura_items)}")
+
+            if not self.factura_items:
+                self.logger.warning("⚠️ No hay items en la factura para actualizar stock")
+                return
+
+            for i, item in enumerate(self.factura_items, 1):
+                self.logger.info(f"📊 Procesando item {i}/{len(self.factura_items)}")
+                self.logger.info(f"   - Producto ID: {item.producto_id}")
+                self.logger.info(f"   - Cantidad a descontar: {item.cantidad}")
+
+                # Obtener stock antes de la actualización
+                stock_antes = Stock.get_by_product(item.producto_id)
+                self.logger.info(f"   - Stock antes: {stock_antes}")
+
                 # Usar el método mejorado que registra movimientos automáticamente
                 Stock.update_stock(item.producto_id, item.cantidad)
+
+                # Verificar stock después de la actualización
+                stock_despues = Stock.get_by_product(item.producto_id)
+                self.logger.info(f"   - Stock después: {stock_despues}")
+
+                # Verificar que la actualización fue correcta
+                stock_esperado = max(0, stock_antes - item.cantidad)
+                if stock_despues == stock_esperado:
+                    self.logger.info(f"   ✅ Stock actualizado correctamente")
+                else:
+                    self.logger.error(f"   ❌ Error en actualización: esperado {stock_esperado}, obtenido {stock_despues}")
 
                 # Obtener información del producto para el log
                 producto = item.get_producto()
                 producto_nombre = producto.nombre if producto else f"ID:{item.producto_id}"
 
                 log_database_operation("UPDATE", "stock",
-                                     f"Producto {producto_nombre}: -{item.cantidad} (Factura: {self.current_factura.numero_factura})")
+                                     f"Producto {producto_nombre}: {stock_antes}→{stock_despues} (Factura: {self.current_factura.numero_factura})")
 
-                self.logger.info(f"Stock actualizado para producto {producto_nombre}: -{item.cantidad} unidades")
+                self.logger.info(f"Stock actualizado para producto {producto_nombre}: -{item.cantidad} unidades ({stock_antes}→{stock_despues})")
+
+            self.logger.info(f"✅ COMPLETADA actualización de stock para factura {self.current_factura.numero_factura}")
 
         except Exception as e:
             log_exception(e, "update_stock_after_save")
-            # No mostrar error al usuario, solo loggear
-            self.logger.error(f"Error actualizando stock después de guardar factura: {e}")
+            # Mostrar error al usuario para que sea visible
+            self.logger.error(f"❌ Error actualizando stock después de guardar factura: {e}")
+            self._show_message("error", "Error de Stock",
+                             f"Error al actualizar stock después de guardar factura:\n{str(e)}\n\n"
+                             f"La factura se guardó correctamente, pero el stock no se actualizó.")
+            # Re-lanzar la excepción para debugging
+            raise
     
     def eliminar_factura(self):
         """Elimina la factura seleccionada"""
@@ -427,6 +649,9 @@ class FacturasMethodsMixin:
     def exportar_pdf(self):
         """Exporta la factura seleccionada a PDF"""
         try:
+            self.logger.info(f"🔍 DEBUG PDF: selected_factura = {self.selected_factura}")
+            self.logger.info(f"🔍 DEBUG PDF: hasattr selected_factura = {hasattr(self, 'selected_factura')}")
+
             if not self.selected_factura:
                 mensaje_seleccion = """⚠️ Seleccione una factura para exportar
 
