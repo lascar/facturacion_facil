@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Configuración - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Sistema de Configuración</h1>
+            <p>Gestión Avanzada de Settings y Configuración Dinámica</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html" class="active">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html">🧪 Testing</a>
+            <a href="08-patrones-diseno.html">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía de Configuración</h4>
+            <p>El sistema de configuración implementa un <strong>patrón híbrido</strong> que combina configuración externa (JSON), configuración en base de datos y configuración en tiempo de ejecución. Prioriza la flexibilidad sin sacrificar la simplicidad.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura del Sistema de Configuración
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Capas de Configuración</h3>
+                        <pre><code>┌─────────────────────────────────┐
+│     🎛️ RUNTIME CONFIG           │
+│  (Configuración en memoria)     │
+├─────────────────────────────────┤
+│     🗄️ DATABASE CONFIG          │
+│  (Organización, Facturas)       │
+├─────────────────────────────────┤
+│     📄 JSON CONFIG              │
+│  (config.json - Aplicación)     │
+├─────────────────────────────────┤
+│     🔧 DEFAULT CONFIG           │
+│  (Valores por defecto)          │
+└─────────────────────────────────┘</code></pre>
+                        
+                        <h4>🔄 Jerarquía de Precedencia</h4>
+                        <ol>
+                            <li><strong>Runtime Config</strong> - Configuración temporal en memoria</li>
+                            <li><strong>Database Config</strong> - Configuración persistente del usuario</li>
+                            <li><strong>JSON Config</strong> - Configuración de aplicación</li>
+                            <li><strong>Default Config</strong> - Valores fallback seguros</li>
+                        </ol>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Tipos de Configuración</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Almacenamiento</th>
+                                    <th>Uso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>App Settings</strong></td>
+                                    <td>config.json</td>
+                                    <td>Configuración técnica</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>User Preferences</strong></td>
+                                    <td>Base de datos</td>
+                                    <td>Preferencias usuario</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Business Rules</strong></td>
+                                    <td>Base de datos</td>
+                                    <td>Reglas de negocio</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Runtime State</strong></td>
+                                    <td>Memoria</td>
+                                    <td>Estado temporal</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📄 Configuración JSON: Patrón Singleton con Lazy Loading
+            </div>
+            <div class="card-body">
+                <h3>🔧 Implementación del Config Manager</h3>
+                <p>La clase <code>Config</code> implementa un patrón Singleton con carga perezosa y auto-guardado:</p>
+                
+                <pre><code># utils/config.py - Sistema de Configuración Principal
+class Config:
+    """Clase para manejar la configuración de la aplicación"""
+    
+    def __init__(self):
+        self.config_file = "config.json"
+        self.default_config = {
+            # Configuración de imágenes
+            "default_image_directory": str(Path.home() / "Pictures"),
+            "assets_directory": "assets/images",
+            "max_image_size": 1024 * 1024,  # 1MB
+            "supported_image_formats": [".png", ".jpg", ".jpeg", ".gif", ".bmp"],
+            "image_display_size": (150, 150),
+            
+            # Configuración de numeración de facturas
+            "factura_numero_inicial": 1,
+            "factura_auto_increment": True,
+            "factura_prefijo": "",
+            "factura_sufijo": "",
+            "factura_formato": "{prefijo}{numero}{sufijo}"
+        }
+        self.config = self.load_config()
+    
+    def load_config(self):
+        """Carga la configuración desde el archivo con merge inteligente"""
+        if os.path.exists(self.config_file):
+            try:
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                # Fusionar con la configuración por defecto para nuevas claves
+                merged_config = self.default_config.copy()
+                merged_config.update(config)
+                return merged_config
+            except (json.JSONDecodeError, IOError):
+                return self.default_config.copy()
+        else:
+            return self.default_config.copy()
+    
+    def save_config(self):
+        """Guarda la configuración con manejo de errores"""
+        try:
+            with open(self.config_file, 'w', encoding='utf-8') as f:
+                json.dump(self.config, f, indent=2, ensure_ascii=False)
+        except IOError:
+            pass  # Ignora errores de guardado para no interrumpir la app
+    
+    def get(self, key, default=None):
+        """Obtiene una valor de configuración con fallback"""
+        return self.config.get(key, default)
+    
+    def set(self, key, value):
+        """Establece un valor y guarda automáticamente"""
+        self.config[key] = value
+        self.save_config()
+
+# Instancia singleton global
+app_config = Config()</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Características Avanzadas</h3>
+                        <ul>
+                            <li><strong>Merge Inteligente:</strong> Combina configuración existente con nuevos defaults</li>
+                            <li><strong>Auto-Save:</strong> Guardado automático en cada cambio</li>
+                            <li><strong>Fallback Seguro:</strong> Valores por defecto si falla la carga</li>
+                            <li><strong>Encoding UTF-8:</strong> Soporte completo para caracteres especiales</li>
+                            <li><strong>Error Resilience:</strong> Continúa funcionando aunque falle el guardado</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Métodos Especializados</h3>
+                        <pre><code># Métodos específicos por dominio
+def get_default_image_directory(self):
+    """Obtiene directorio con validación de existencia"""
+    directory = self.get("default_image_directory")
+    if os.path.exists(directory):
+        return directory
+    else:
+        # Fallback al directorio home
+        return str(Path.home())
+
+def set_factura_numero_inicial(self, numero):
+    """Establece número inicial con validación"""
+    if isinstance(numero, int) and numero > 0:
+        self.set("factura_numero_inicial", numero)
+        return True
+    return False
+
+def get_factura_formato(self):
+    """Obtiene formato con template string"""
+    return self.get("factura_formato", "{prefijo}{numero}{sufijo}")</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🗄️ Configuración en Base de Datos: Modelo Organizacion
+            </div>
+            <div class="card-body">
+                <h3>🏢 Configuración de Negocio Persistente</h3>
+                <p>La configuración específica del negocio se almacena en la tabla <code>organizacion</code> usando un patrón Singleton de base de datos:</p>
+                
+                <pre><code># database/models.py - Configuración de Organización
+class Organizacion:
+    """Modelo de organización con configuración de negocio"""
+    
+    def __init__(self, nombre="", direccion="", telefono="", email="", cif="",
+                 logo_path="", directorio_imagenes_defecto="", numero_factura_inicial=1,
+                 directorio_descargas_pdf="", visor_pdf_personalizado=""):
+        self.nombre = nombre
+        self.direccion = direccion
+        self.telefono = telefono
+        self.email = email
+        self.cif = cif
+        self.logo_path = logo_path
+        self.directorio_imagenes_defecto = directorio_imagenes_defecto
+        self.numero_factura_inicial = numero_factura_inicial
+        self.directorio_descargas_pdf = directorio_descargas_pdf
+        self.visor_pdf_personalizado = visor_pdf_personalizado
+    
+    def save(self):
+        """Guarda configuración con patrón UPSERT"""
+        # Verificar si ya existe una organización
+        existing = Organizacion.get()
+        if existing and existing.nombre:  # Si existe y no está vacía
+            query = '''UPDATE organizacion SET nombre=?, direccion=?, telefono=?,
+                      email=?, cif=?, logo_path=?, directorio_imagenes_defecto=?,
+                      numero_factura_inicial=?, directorio_descargas_pdf=?, 
+                      visor_pdf_personalizado=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                      WHERE id=1'''
+        else:
+            query = '''INSERT INTO organizacion (id, nombre, direccion, telefono,
+                      email, cif, logo_path, directorio_imagenes_defecto, 
+                      numero_factura_inicial, directorio_descargas_pdf, 
+                      visor_pdf_personalizado)
+                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+        
+        params = (self.nombre, self.direccion, self.telefono, self.email, 
+                 self.cif, self.logo_path, self.directorio_imagenes_defecto,
+                 self.numero_factura_inicial, self.directorio_descargas_pdf, 
+                 self.visor_pdf_personalizado)
+        
+        db.execute_query(query, params)
+    
+    @staticmethod
+    def get():
+        """Obtiene la configuración de organización (Singleton)"""
+        query = "SELECT * FROM organizacion WHERE id=1"
+        results = db.execute_query(query)
+        if results:
+            row = results[0]
+            return Organizacion(
+                nombre=row['nombre'], direccion=row['direccion'],
+                telefono=row['telefono'], email=row['email'],
+                cif=row['cif'], logo_path=row['logo_path'],
+                directorio_imagenes_defecto=row['directorio_imagenes_defecto'],
+                numero_factura_inicial=row['numero_factura_inicial'],
+                directorio_descargas_pdf=row['directorio_descargas_pdf'],
+                visor_pdf_personalizado=row['visor_pdf_personalizado']
+            )
+        return Organizacion()  # Retorna instancia vacía si no existe</code></pre>
+
+                <div class="alert alert-success">
+                    <h4>🎯 Patrón Singleton de Base de Datos</h4>
+                    <p>La tabla <code>organizacion</code> implementa un Singleton a nivel de base de datos:</p>
+                    <ul>
+                        <li><strong>ID Fijo:</strong> Siempre usa <code>id=1</code> para garantizar una sola instancia</li>
+                        <li><strong>UPSERT Pattern:</strong> INSERT si no existe, UPDATE si existe</li>
+                        <li><strong>Configuración Centralizada:</strong> Toda la configuración de negocio en un lugar</li>
+                        <li><strong>Timestamp Automático:</strong> Tracking de cambios con <code>fecha_actualizacion</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔧 Configuración Especializada: Numeración de Facturas
+            </div>
+            <div class="card-body">
+                <h3>🧮 Sistema de Numeración Avanzado</h3>
+                <p>El sistema implementa un servicio especializado para la numeración de facturas con templates configurables:</p>
+                
+                <pre><code># utils/factura_numbering.py - Servicio de Numeración
+class FacturaNumberingService:
+    """Servicio para generar y gestionar números de factura"""
+    
+    def __init__(self):
+        self.db = Database()
+        self.config = app_config
+    
+    def get_next_numero(self):
+        """Obtiene el siguiente número de factura"""
+        # Obtener configuración actual
+        org = Organizacion.get()
+        numero_inicial = org.numero_factura_inicial or 1
+        
+        # Buscar el último número usado
+        query = """SELECT MAX(CAST(numero_factura AS INTEGER)) as max_numero 
+                   FROM facturas WHERE numero_factura REGEXP '^[0-9]+$'"""
+        result = self.db.execute_query(query)
+        
+        if result and result[0]['max_numero']:
+            return result[0]['max_numero'] + 1
+        else:
+            return numero_inicial
+    
+    def format_numero_factura(self, numero):
+        """Formatea el número según la configuración"""
+        org = Organizacion.get()
+        prefijo = org.factura_prefijo or self.config.get_factura_prefijo()
+        sufijo = org.factura_sufijo or self.config.get_factura_sufijo()
+        formato = self.config.get_factura_formato()
+        
+        return formato.format(
+            prefijo=prefijo,
+            numero=numero,
+            sufijo=sufijo
+        )
+    
+    def generate_numero_factura(self):
+        """Genera un número de factura completo"""
+        numero = self.get_next_numero()
+        return self.format_numero_factura(numero)</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>📋 Configuración de Templates</h3>
+                        <pre><code># Ejemplo de configuración en config.json
+{
+  "factura_numero_inicial": 500,
+  "factura_auto_increment": true,
+  "factura_prefijo": "FACT",
+  "factura_sufijo": "-2024",
+  "factura_formato": "{prefijo}{numero}{sufijo}"
+}
+
+# Resultado: FACT500-2024, FACT501-2024, etc.</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Características del Sistema</h3>
+                        <ul>
+                            <li><strong>Templates Flexibles:</strong> Formato configurable con placeholders</li>
+                            <li><strong>Auto-incremento:</strong> Numeración automática secuencial</li>
+                            <li><strong>Prefijos/Sufijos:</strong> Personalización completa</li>
+                            <li><strong>Validación:</strong> Verificación de números únicos</li>
+                            <li><strong>Fallback:</strong> Valores por defecto seguros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎛️ Configuración en Runtime: Patrón Observer
+            </div>
+            <div class="card-body">
+                <h3>🔄 Configuración Dinámica y Reactiva</h3>
+                <p>Para configuraciones que necesitan cambios en tiempo real, se implementa un patrón Observer simplificado:</p>
+                
+                <pre><code># utils/config_manager.py - Configuración Reactiva
+class ConfigManager:
+    """Gestor de configuración con notificaciones de cambios"""
+    
+    def __init__(self):
+        self._observers = {}
+        self._runtime_config = {}
+    
+    def subscribe(self, key, callback):
+        """Suscribe un callback a cambios de configuración"""
+        if key not in self._observers:
+            self._observers[key] = []
+        self._observers[key].append(callback)
+    
+    def set_runtime_config(self, key, value):
+        """Establece configuración runtime y notifica cambios"""
+        old_value = self._runtime_config.get(key)
+        self._runtime_config[key] = value
+        
+        # Notificar a los observers si el valor cambió
+        if old_value != value and key in self._observers:
+            for callback in self._observers[key]:
+                try:
+                    callback(key, value, old_value)
+                except Exception as e:
+                    logger.error(f"Error en observer para {key}: {e}")
+    
+    def get_effective_config(self, key, default=None):
+        """Obtiene configuración con precedencia runtime > db > json > default"""
+        # 1. Runtime config (mayor precedencia)
+        if key in self._runtime_config:
+            return self._runtime_config[key]
+        
+        # 2. Database config
+        if hasattr(self, '_db_config_cache'):
+            if key in self._db_config_cache:
+                return self._db_config_cache[key]
+        
+        # 3. JSON config
+        json_value = app_config.get(key)
+        if json_value is not None:
+            return json_value
+        
+        # 4. Default fallback
+        return default
+
+# Ejemplo de uso
+config_manager = ConfigManager()
+
+# Suscribirse a cambios de tema
+def on_theme_change(key, new_value, old_value):
+    print(f"Tema cambiado de {old_value} a {new_value}")
+    # Actualizar UI, recargar estilos, etc.
+
+config_manager.subscribe("ui_theme", on_theme_change)</code></pre>
+
+                <div class="alert alert-info">
+                    <h4>🎯 Casos de Uso de Configuración Runtime</h4>
+                    <ul>
+                        <li><strong>Cambios de Tema:</strong> Actualización inmediata de la UI</li>
+                        <li><strong>Configuración de Debug:</strong> Activar/desactivar logging detallado</li>
+                        <li><strong>Configuración de Performance:</strong> Ajustar cache, timeouts, etc.</li>
+                        <li><strong>Configuración de Usuario:</strong> Preferencias temporales de sesión</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📊 Ejemplo Real: Configuración Actual del Sistema
+            </div>
+            <div class="card-body">
+                <h3>🔧 Archivo config.json en Producción</h3>
+                <p>Este es el archivo de configuración real utilizado en el sistema:</p>
+
+                <pre><code>{
+  "default_image_directory": "/home/pascal/Documents",
+  "assets_directory": "assets/images",
+  "max_image_size": 1048576,
+  "supported_image_formats": [
+    ".png", ".jpg", ".jpeg", ".gif", ".bmp"
+  ],
+  "image_display_size": [150, 150],
+  "factura_numero_inicial": 500,
+  "factura_auto_increment": true,
+  "factura_prefijo": "FACT",
+  "factura_sufijo": "-2024",
+  "factura_formato": "{prefijo}{numero}{sufijo}"
+}</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Análisis de la Configuración</h3>
+                        <ul>
+                            <li><strong>Directorio Personalizado:</strong> Usuario configuró su directorio de documentos</li>
+                            <li><strong>Límite de Tamaño:</strong> 1MB máximo para imágenes (performance)</li>
+                            <li><strong>Formatos Múltiples:</strong> Soporte amplio de formatos de imagen</li>
+                            <li><strong>Numeración Personalizada:</strong> Facturas empiezan en 500 con formato FACT500-2024</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔄 Evolución de la Configuración</h3>
+                        <ul>
+                            <li><strong>Merge Automático:</strong> Nuevas configuraciones se añaden sin perder las existentes</li>
+                            <li><strong>Backward Compatibility:</strong> Configuraciones antiguas siguen funcionando</li>
+                            <li><strong>Validación:</strong> Valores se validan antes de aplicar</li>
+                            <li><strong>Fallback:</strong> Valores por defecto si la configuración es inválida</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="01-arquitectura-codigo.html" class="btn btn-secondary">⬅️ Arquitectura del Código</a>
+            <a href="03-base-datos-avanzada.html" class="btn btn-primary">Siguiente: Base de Datos Avanzada ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

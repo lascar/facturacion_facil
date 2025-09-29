@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrones de Diseño - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Patrones de Diseño</h1>
+            <p>Implementación Real de Patrones GoF y Arquitectónicos</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html">🧪 Testing</a>
+            <a href="08-patrones-diseno.html" class="active">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía de Patrones Pragmáticos</h4>
+            <p>Facturación Fácil implementa <strong>patrones de diseño de forma pragmática</strong>, priorizando la simplicidad y mantenibilidad sobre la complejidad teórica. Cada patrón resuelve un problema real y específico de la aplicación.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Mapa de Patrones Implementados
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Patrones Creacionales</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patrón</th>
+                                    <th>Implementación</th>
+                                    <th>Propósito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Singleton</strong></td>
+                                    <td>Database, AppLogger, Config</td>
+                                    <td>Una sola instancia global</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Factory Method</strong></td>
+                                    <td>Dialog Factory, PDF Generator</td>
+                                    <td>Creación de objetos especializados</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Builder</strong></td>
+                                    <td>FormHelper, FacturaBuilder</td>
+                                    <td>Construcción compleja paso a paso</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <h3>🔗 Patrones Estructurales</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patrón</th>
+                                    <th>Implementación</th>
+                                    <th>Propósito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Facade</strong></td>
+                                    <td>BaseWindow, FormHelper</td>
+                                    <td>Interfaz simplificada</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Adapter</strong></td>
+                                    <td>ImageUtils, PDFGenerator</td>
+                                    <td>Adaptación de interfaces</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Decorator</strong></td>
+                                    <td>Performance Monitor</td>
+                                    <td>Funcionalidad adicional</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>⚙️ Patrones Comportamentales</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patrón</th>
+                                    <th>Implementación</th>
+                                    <th>Propósito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Observer</strong></td>
+                                    <td>Config Manager, Event System</td>
+                                    <td>Notificación de cambios</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Strategy</strong></td>
+                                    <td>Validation Strategies</td>
+                                    <td>Algoritmos intercambiables</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Template Method</strong></td>
+                                    <td>BaseWindow, FormValidator</td>
+                                    <td>Esqueleto de algoritmo</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Command</strong></td>
+                                    <td>User Actions, Database Ops</td>
+                                    <td>Encapsulación de operaciones</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <h3>🏛️ Patrones Arquitectónicos</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patrón</th>
+                                    <th>Implementación</th>
+                                    <th>Propósito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>MVC</strong></td>
+                                    <td>UI/Database/Utils separation</td>
+                                    <td>Separación de responsabilidades</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Repository</strong></td>
+                                    <td>Database Models</td>
+                                    <td>Abstracción de persistencia</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Active Record</strong></td>
+                                    <td>Producto, Factura, Stock</td>
+                                    <td>Objetos que se persisten</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏭 Patrón Singleton: Implementaciones Múltiples
+            </div>
+            <div class="card-body">
+                <h3>🗄️ Database Singleton - Gestión de Conexiones</h3>
+                <p>La clase <code>Database</code> implementa un Singleton clásico para garantizar una sola conexión a la base de datos:</p>
+                
+                <pre><code># database/database.py - Singleton Clásico
+class Database:
+    """Singleton para gestión de base de datos SQLite"""
+    _instance = None
+
+    def __new__(cls, db_path="facturacion.db"):
+        if cls._instance is None:
+            cls._instance = super(Database, cls).__new__(cls)
+            cls._instance.db_path = db_path
+            cls._instance.logger = get_logger("database")
+            cls._instance.init_database()
+        return cls._instance
+
+    def get_connection(self):
+        """Obtiene una conexión a la base de datos"""
+        return sqlite3.connect(self.db_path)
+
+    def execute_query(self, query, params=None):
+        """Ejecuta una query con manejo de errores"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            
+            if query.strip().upper().startswith(('SELECT', 'PRAGMA')):
+                results = cursor.fetchall()
+                conn.close()
+                return results
+            else:
+                conn.commit()
+                lastrowid = cursor.lastrowid
+                conn.close()
+                return lastrowid
+                
+        except sqlite3.Error as e:
+            self.logger.error(f"Error SQLite: {str(e)}")
+            raise
+
+# Instancia singleton global
+db = Database()</code></pre>
+
+                <h3>📝 AppLogger Singleton - Sistema de Logging</h3>
+                <pre><code># utils/logger.py - Singleton con Inicialización Lazy
+class AppLogger:
+    """Singleton para el sistema de logging"""
+    _instance = None
+
+    def __new__(cls, app_name="facturacion_facil"):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.app_name = app_name
+            cls._instance.log_dir = "logs"
+            cls._instance.setup_logging()
+        return cls._instance
+
+    def setup_logging(self):
+        """Configura el sistema de logging una sola vez"""
+        # Crear directorio de logs si no existe
+        os.makedirs(self.log_dir, exist_ok=True)
+        
+        # Configurar logger principal
+        self.logger = logging.getLogger(self.app_name)
+        self.logger.setLevel(logging.DEBUG)
+        
+        # Evitar duplicar handlers
+        if self.logger.handlers:
+            return
+        
+        # Configurar handlers (archivo, errores, consola)
+        self._setup_handlers()
+
+# Instancia singleton global
+app_logger = AppLogger()</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Ventajas del Singleton</h3>
+                        <ul>
+                            <li><strong>Única Instancia:</strong> Garantiza una sola conexión DB</li>
+                            <li><strong>Acceso Global:</strong> Disponible desde cualquier módulo</li>
+                            <li><strong>Inicialización Lazy:</strong> Se crea solo cuando se necesita</li>
+                            <li><strong>Estado Compartido:</strong> Configuración consistente</li>
+                            <li><strong>Control de Recursos:</strong> Evita múltiples conexiones</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>⚠️ Consideraciones de Implementación</h3>
+                        <ul>
+                            <li><strong>Thread Safety:</strong> No implementado (single-threaded app)</li>
+                            <li><strong>Testing:</strong> Complicado para unit tests</li>
+                            <li><strong>Dependency Injection:</strong> Dificulta la inyección</li>
+                            <li><strong>Global State:</strong> Puede crear acoplamiento</li>
+                            <li><strong>Alternativas:</strong> Considerar DI container para apps grandes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Patrón Template Method: BaseWindow
+            </div>
+            <div class="card-body">
+                <h3>📋 Implementación del Template Method</h3>
+                <p>La clase <code>BaseWindow</code> define un esqueleto común para todas las ventanas, permitiendo que las subclases personalicen pasos específicos:</p>
+                
+                <pre><code># common/ui_components.py - Template Method Pattern
+class BaseWindow:
+    """Clase base que define el template para ventanas"""
+    
+    def __init__(self, parent, title, geometry="800x600"):
+        # 1. Crear ventana (paso común)
+        self.window = ctk.CTkToplevel(parent)
+        self.window.title(title)
+        self.window.geometry(geometry)
+        self.window.transient(parent)
+        
+        # 2. Configurar foco (paso común)
+        self.setup_window_focus()
+        
+        # 3. Inicializar logger (paso común)
+        self.logger = get_logger(self.__class__.__name__.lower())
+        
+        # 4. Variables comunes
+        self.imagen_path = ""
+    
+    def setup_window_focus(self):
+        """Paso común: configurar foco de ventana"""
+        self.window.lift()
+        self.window.focus_force()
+        self.window.attributes('-topmost', True)
+        self.window.after(100, lambda: self.window.attributes('-topmost', False))
+    
+    def setup_scrollable_frame(self, width=1150, height=750):
+        """Paso común: configurar frame scrollable"""
+        self.main_frame = ctk.CTkScrollableFrame(self.window)
+        self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self.main_frame.configure(width=width, height=height)
+        
+        self.configure_mousewheel_scrolling()
+        return self.main_frame
+    
+    def configure_mousewheel_scrolling(self):
+        """Paso común: configurar scroll de rueda"""
+        def _on_mousewheel(event):
+            if hasattr(self, 'main_frame') and self.main_frame.winfo_exists():
+                if event.delta:
+                    delta = -1 * (event.delta / 120)  # Windows
+                else:
+                    if event.num == 4:
+                        delta = -1  # Linux scroll up
+                    elif event.num == 5:
+                        delta = 1   # Linux scroll down
+                    else:
+                        return
+                
+                try:
+                    self.main_frame._parent_canvas.yview_scroll(int(delta), "units")
+                except (AttributeError, tk.TclError):
+                    pass
+
+        # Bind eventos multiplataforma
+        self.window.bind("<MouseWheel>", _on_mousewheel)
+        self.window.bind("<Button-4>", _on_mousewheel)
+        self.window.bind("<Button-5>", _on_mousewheel)
+    
+    # MÉTODOS TEMPLATE - Para ser sobrescritos por subclases
+    def create_widgets(self):
+        """Template method: crear widgets específicos"""
+        raise NotImplementedError("Subclases deben implementar create_widgets")
+    
+    def load_data(self):
+        """Template method: cargar datos específicos"""
+        pass  # Implementación por defecto vacía
+    
+    def setup_bindings(self):
+        """Template method: configurar eventos específicos"""
+        pass  # Implementación por defecto vacía</code></pre>
+
+                <h3>🎯 Uso del Template Method en Subclases</h3>
+                <pre><code># ui/productos.py - Implementación Específica
+class ProductosWindow(BaseWindow):
+    """Ventana de productos que extiende BaseWindow"""
+    
+    def __init__(self, parent):
+        # Llamar al template base
+        super().__init__(parent, "Gestión de Productos", "1200x800")
+        
+        # Ejecutar pasos específicos del template
+        self.create_widgets()    # Implementación específica
+        self.load_data()         # Implementación específica
+        self.setup_bindings()    # Implementación específica
+    
+    def create_widgets(self):
+        """Implementación específica: widgets de productos"""
+        # Configurar frame scrollable usando método base
+        self.setup_scrollable_frame()
+        
+        # Crear widgets específicos de productos
+        self.create_form_widgets()
+        self.create_list_widgets()
+        self.create_button_widgets()
+    
+    def load_data(self):
+        """Implementación específica: cargar productos"""
+        self.productos = Producto.get_all()
+        self.update_productos_display()
+    
+    def setup_bindings(self):
+        """Implementación específica: eventos de productos"""
+        self.productos_tree.bind("<<TreeviewSelect>>", self.on_producto_select)
+        self.search_var.trace('w', self.filter_productos)</code></pre>
+
+                <div class="alert alert-success">
+                    <h4>🎯 Beneficios del Template Method</h4>
+                    <ul>
+                        <li><strong>Reutilización de Código:</strong> Funcionalidad común centralizada</li>
+                        <li><strong>Consistencia:</strong> Todas las ventanas siguen el mismo patrón</li>
+                        <li><strong>Extensibilidad:</strong> Fácil añadir nuevas ventanas</li>
+                        <li><strong>Mantenibilidad:</strong> Cambios en BaseWindow afectan todas las ventanas</li>
+                        <li><strong>Polimorfismo:</strong> Comportamiento específico en cada subclase</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎭 Patrón Strategy: Validación Dinámica
+            </div>
+            <div class="card-body">
+                <h3>⚙️ Implementación del Patrón Strategy</h3>
+                <p>El sistema de validación implementa el patrón Strategy para permitir diferentes algoritmos de validación intercambiables:</p>
+                
+                <pre><code># common/validators.py - Strategy Pattern para Validación
+class ValidationStrategy:
+    """Interfaz base para estrategias de validación"""
+    
+    def validate(self, value, context=None):
+        """Método que debe implementar cada estrategia"""
+        raise NotImplementedError("Subclases deben implementar validate")
+
+class RequiredFieldStrategy(ValidationStrategy):
+    """Estrategia para campos obligatorios"""
+    
+    def validate(self, value, context=None):
+        if not value or not value.strip():
+            return False, "Este campo es obligatorio"
+        return True, ""
+
+class NumericRangeStrategy(ValidationStrategy):
+    """Estrategia para validación de rangos numéricos"""
+    
+    def __init__(self, min_value=None, max_value=None):
+        self.min_value = min_value
+        self.max_value = max_value
+    
+    def validate(self, value, context=None):
+        try:
+            num_value = float(value)
+            
+            if self.min_value is not None and num_value < self.min_value:
+                return False, f"Valor debe ser mayor o igual a {self.min_value}"
+            
+            if self.max_value is not None and num_value > self.max_value:
+                return False, f"Valor debe ser menor o igual a {self.max_value}"
+            
+            return True, ""
+        except ValueError:
+            return False, "Debe ser un número válido"
+
+class EmailFormatStrategy(ValidationStrategy):
+    """Estrategia para validación de email"""
+    
+    def validate(self, value, context=None):
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        
+        if not value:
+            return True, ""  # Email opcional
+        
+        if re.match(email_pattern, value):
+            return True, ""
+        else:
+            return False, "Formato de email inválido"
+
+class FormValidator:
+    """Contexto que utiliza las estrategias de validación"""
+    
+    def __init__(self):
+        self.field_strategies = {}
+    
+    def add_field_strategy(self, field_name, strategy):
+        """Añade una estrategia para un campo específico"""
+        if field_name not in self.field_strategies:
+            self.field_strategies[field_name] = []
+        self.field_strategies[field_name].append(strategy)
+    
+    def validate_field(self, field_name, value, context=None):
+        """Valida un campo usando sus estrategias"""
+        if field_name not in self.field_strategies:
+            return True, ""
+        
+        for strategy in self.field_strategies[field_name]:
+            is_valid, message = strategy.validate(value, context)
+            if not is_valid:
+                return False, message
+        
+        return True, ""
+    
+    def validate_form(self, form_data):
+        """Valida todo el formulario"""
+        errors = {}
+        
+        for field_name, value in form_data.items():
+            is_valid, message = self.validate_field(field_name, value)
+            if not is_valid:
+                errors[field_name] = message
+        
+        return len(errors) == 0, errors</code></pre>
+
+                <h3>🎯 Uso del Patrón Strategy</h3>
+                <pre><code># ui/productos.py - Uso de Estrategias de Validación
+class ProductosWindow(BaseWindow):
+    
+    def __init__(self, parent):
+        super().__init__(parent, "Gestión de Productos")
+        self.setup_validation()
+    
+    def setup_validation(self):
+        """Configura las estrategias de validación"""
+        self.validator = FormValidator()
+        
+        # Campo nombre: obligatorio
+        self.validator.add_field_strategy("nombre", RequiredFieldStrategy())
+        
+        # Campo referencia: obligatorio
+        self.validator.add_field_strategy("referencia", RequiredFieldStrategy())
+        
+        # Campo precio: obligatorio y rango numérico
+        self.validator.add_field_strategy("precio", RequiredFieldStrategy())
+        self.validator.add_field_strategy("precio", NumericRangeStrategy(min_value=0.01, max_value=999999.99))
+        
+        # Campo IVA: rango numérico
+        self.validator.add_field_strategy("iva", NumericRangeStrategy(min_value=0.0, max_value=100.0))
+    
+    def validate_form(self):
+        """Valida el formulario usando las estrategias"""
+        form_data = {
+            "nombre": self.nombre_entry.get(),
+            "referencia": self.referencia_entry.get(),
+            "precio": self.precio_entry.get(),
+            "iva": self.iva_entry.get()
+        }
+        
+        is_valid, errors = self.validator.validate_form(form_data)
+        
+        if not is_valid:
+            # Mostrar errores específicos
+            error_messages = []
+            for field, message in errors.items():
+                error_messages.append(f"{field.title()}: {message}")
+            
+            self._show_message("error", "Errores de Validación", "\n".join(error_messages))
+            return False
+        
+        return True</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Ventajas del Strategy Pattern</h3>
+                        <ul>
+                            <li><strong>Flexibilidad:</strong> Algoritmos intercambiables en runtime</li>
+                            <li><strong>Extensibilidad:</strong> Fácil añadir nuevas validaciones</li>
+                            <li><strong>Reutilización:</strong> Estrategias reutilizables entre formularios</li>
+                            <li><strong>Testabilidad:</strong> Cada estrategia se puede testear independientemente</li>
+                            <li><strong>Principio Abierto/Cerrado:</strong> Abierto para extensión, cerrado para modificación</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Estrategias Implementadas</h3>
+                        <ul>
+                            <li><strong>RequiredFieldStrategy:</strong> Campos obligatorios</li>
+                            <li><strong>NumericRangeStrategy:</strong> Rangos numéricos</li>
+                            <li><strong>EmailFormatStrategy:</strong> Formato de email</li>
+                            <li><strong>PhoneFormatStrategy:</strong> Formato de teléfono</li>
+                            <li><strong>UniqueFieldStrategy:</strong> Campos únicos en DB</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="07-testing-avanzado.html" class="btn btn-secondary">⬅️ Testing Avanzado</a>
+            <a href="09-optimizacion-performance.html" class="btn btn-primary">Siguiente: Optimización & Performance ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Avanzado - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Testing Avanzado</h1>
+            <p>Suite Completa de Tests con Pytest, Coverage y Mocking</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html" class="active">🧪 Testing</a>
+            <a href="08-patrones-diseno.html">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía de Testing Profesional</h4>
+            <p>Facturación Fácil implementa una <strong>suite de testing de nivel empresarial</strong> con 243+ tests organizados por categorías, markers pytest personalizados, coverage del 22%+ y herramientas avanzadas de mocking. El sistema está diseñado para garantizar la calidad y prevenir regresiones.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura del Sistema de Testing
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Estructura de Tests</h3>
+                        <pre><code>test/
+├── unit/                    # Tests unitarios (rápidos)
+│   ├── test_models.py      # Tests de modelos de datos
+│   ├── test_validators.py  # Tests de validación
+│   ├── test_logging_system.py # Tests de logging
+│   ├── test_security.py    # Tests de seguridad
+│   └── test_pytest_markers.py # Tests de configuración
+├── integration/            # Tests de integración
+│   ├── test_facturas_integration.py
+│   ├── test_stock_facturacion_integration.py
+│   └── test_complete_functionality.py
+├── ui/                     # Tests de interfaz
+│   ├── test_productos_interface.py
+│   ├── test_stock_interface.py
+│   └── test_window_management.py
+├── performance/            # Tests de rendimiento
+│   ├── test_database_performance.py
+│   └── test_query_optimization.py
+├── regression/             # Tests de regresión
+│   └── test_bug_fixes.py
+├── conftest.py            # Configuración pytest
+├── pytest.ini            # Configuración markers
+└── .coveragerc           # Configuración coverage</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🏷️ Markers Pytest Personalizados</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Marker</th>
+                                    <th>Descripción</th>
+                                    <th>Uso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>@pytest.mark.unit</strong></td>
+                                    <td>Tests unitarios rápidos</td>
+                                    <td>pytest -m unit</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@pytest.mark.integration</strong></td>
+                                    <td>Tests de integración</td>
+                                    <td>pytest -m integration</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@pytest.mark.ui</strong></td>
+                                    <td>Tests de interfaz</td>
+                                    <td>pytest -m ui</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@pytest.mark.slow</strong></td>
+                                    <td>Tests lentos</td>
+                                    <td>pytest -m slow</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@pytest.mark.performance</strong></td>
+                                    <td>Tests de rendimiento</td>
+                                    <td>pytest -m performance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@pytest.mark.regression</strong></td>
+                                    <td>Tests de regresión</td>
+                                    <td>pytest -m regression</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ⚙️ Configuración Pytest Avanzada
+            </div>
+            <div class="card-body">
+                <h3>🔧 pytest.ini - Configuración Principal</h3>
+                <p>El archivo <code>pytest.ini</code> configura el comportamiento completo del sistema de testing:</p>
+                
+                <pre><code># test/pytest.ini - Configuración Completa de Pytest
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts =
+    --cov=.                    # Coverage de todo el proyecto
+    --cov-report=html          # Reporte HTML de coverage
+    --cov-report=term-missing  # Reporte en terminal con líneas faltantes
+    --cov-config=.coveragerc   # Archivo de configuración de coverage
+    -v                         # Verbose output
+    --tb=short                 # Traceback corto
+    --import-mode=importlib    # Modo de importación moderno
+filterwarnings =
+    ignore::ResourceWarning
+    ignore::DeprecationWarning
+    ignore::pytest.PytestCollectionWarning
+    ignore:.*CTkLabel Warning.*:UserWarning
+markers =
+    unit: Unit tests
+    integration: Integration tests
+    ui: UI tests
+    slow: Slow running tests that may take longer to execute
+    performance: Performance and benchmark tests
+    regression: Regression tests to prevent bugs from reappearing</code></pre>
+
+                <h3>📊 .coveragerc - Configuración de Coverage</h3>
+                <pre><code># .coveragerc - Configuración de Coverage
+[run]
+source = .
+omit = 
+    tests/*
+    test_*.py
+    */__pycache__/*
+    */venv/*
+    */env/*
+    setup.py
+    conftest.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
+
+[html]
+directory = htmlcov</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Características de Configuración</h3>
+                        <ul>
+                            <li><strong>Coverage Automático:</strong> Se ejecuta en cada test run</li>
+                            <li><strong>Reportes Múltiples:</strong> HTML + Terminal con líneas faltantes</li>
+                            <li><strong>Filtros de Warnings:</strong> Suprime warnings irrelevantes</li>
+                            <li><strong>Markers Personalizados:</strong> Categorización avanzada</li>
+                            <li><strong>Exclusiones Inteligentes:</strong> Omite archivos de test y cache</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>📋 Comandos de Testing</h3>
+                        <pre><code># Tests rápidos (sin slow)
+pytest -m 'not slow'
+
+# Solo tests unitarios
+pytest -m unit
+
+# Tests con coverage detallado
+pytest --cov=database --cov=utils --cov-report=html
+
+# Tests específicos
+pytest test/unit/test_models.py -v
+
+# Tests en paralelo
+pytest -n auto</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧪 conftest.py - Fixtures Avanzadas
+            </div>
+            <div class="card-body">
+                <h3>🏗️ Sistema de Fixtures Reutilizables</h3>
+                <p>El archivo <code>conftest.py</code> proporciona fixtures avanzadas para testing aislado:</p>
+                
+                <pre><code># test/conftest.py - Fixtures Avanzadas
+import pytest
+import os
+import sys
+import tempfile
+import sqlite3
+from faker import Faker
+
+# Configurar Faker en español
+fake = Faker('es_ES')
+
+@pytest.fixture(scope="session")
+def faker_instance():
+    """Instancia de Faker configurada en español"""
+    return fake
+
+@pytest.fixture(scope="function")
+def temp_db():
+    """Base de datos temporal para cada test"""
+    # Crear archivo temporal
+    fd, temp_path = tempfile.mkstemp(suffix='.db')
+    os.close(fd)
+    
+    try:
+        # Crear instancia de base de datos temporal
+        from database.database import Database
+        temp_database = Database(temp_path)
+        temp_database.init_database()
+        
+        yield temp_database
+        
+    finally:
+        # Limpiar archivo temporal
+        try:
+            os.unlink(temp_path)
+        except OSError:
+            pass
+
+@pytest.fixture(autouse=True)
+def setup_test_environment(monkeypatch, temp_db, request):
+    """Configurar entorno de test automáticamente"""
+    # Obtener el nombre del test
+    test_name = request.node.name if hasattr(request, 'node') else 'unknown'
+
+    # Usar base de datos temporal
+    monkeypatch.setattr('database.database.db', temp_db)
+    monkeypatch.setattr('database.models.db', temp_db)
+
+    # Crear directorio temporal para assets
+    test_assets_dir = test_db_manager.create_test_directory(f"{test_name}_assets")
+    monkeypatch.setattr('os.makedirs', lambda path, exist_ok=True: None)
+
+    yield
+
+    # El cleanup es automático
+
+@pytest.fixture
+def isolated_db(request):
+    """Base de datos completamente aislada para tests especiales"""
+    test_name = request.node.name if hasattr(request, 'node') else 'isolated'
+
+    with isolated_test_db(test_name) as db:
+        yield db
+
+@pytest.fixture
+def clean_db(temp_db):
+    """Base de datos limpia antes de cada test"""
+    # Resetear la base de datos
+    test_db_manager.reset_database(temp_db)
+    yield temp_db
+
+@pytest.fixture
+def mock_messagebox(mocker):
+    """Mock para tkinter.messagebox"""
+    return mocker.patch('tkinter.messagebox')
+
+@pytest.fixture
+def mock_filedialog(mocker):
+    """Mock para tkinter.filedialog"""
+    return mocker.patch('tkinter.filedialog')
+
+# Hooks pytest para cleanup automático
+def pytest_runtest_teardown(item, nextitem):
+    """Cleanup después de cada test"""
+    test_db_manager.cleanup_test_resources()
+
+def pytest_sessionfinish(session, exitstatus):
+    """Cleanup al final de todos los tests"""
+    test_db_manager.cleanup_all_test_resources()
+    
+    # Mostrar estadísticas finales
+    stats = test_db_manager.get_test_stats()
+    if stats['total_databases'] > 0:
+        print(f"\n🧹 Cleanup final: {stats['total_databases']} DBs limpiadas")
+
+def pytest_configure(config):
+    """Configuración pytest"""
+    # Variables de entorno para tests
+    os.environ['PYTEST_RUNNING'] = '1'
+    os.environ['DISABLE_PDF_OPEN'] = '1'
+    
+    # Añadir markers personalizados
+    config.addinivalue_line(
+        "markers", "isolated_db: tests que requieren DB completamente aislada"
+    )</code></pre>
+
+                <div class="alert alert-success">
+                    <h4>🎯 Beneficios de las Fixtures Avanzadas</h4>
+                    <ul>
+                        <li><strong>Aislamiento Completo:</strong> Cada test tiene su propia DB temporal</li>
+                        <li><strong>Cleanup Automático:</strong> Recursos limpiados automáticamente</li>
+                        <li><strong>Mocking Integrado:</strong> Mocks para UI components</li>
+                        <li><strong>Faker Integration:</strong> Datos de prueba realistas en español</li>
+                        <li><strong>Environment Control:</strong> Variables de entorno para tests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔬 Tests Unitarios Avanzados
+            </div>
+            <div class="card-body">
+                <h3>🧪 Ejemplo de Test Unitario Completo</h3>
+                <p>Los tests unitarios implementan mocking avanzado y validación exhaustiva:</p>
+                
+                <pre><code># test/unit/test_models.py - Tests Unitarios Avanzados
+import pytest
+from unittest.mock import Mock, patch
+from database.models import Producto, Factura, Stock
+
+class TestProductoModel:
+    """Suite de tests para el modelo Producto"""
+    
+    @pytest.mark.unit
+    def test_producto_creation(self, temp_db):
+        """Test creación básica de producto"""
+        producto = Producto(
+            nombre="Test Product",
+            referencia="TEST-001",
+            precio=10.50,
+            categoria="Test Category",
+            descripcion="Test Description",
+            iva_recomendado=21.0
+        )
+        
+        # Verificar atributos
+        assert producto.nombre == "Test Product"
+        assert producto.referencia == "TEST-001"
+        assert producto.precio == 10.50
+        assert producto.iva_recomendado == 21.0
+    
+    @pytest.mark.unit
+    def test_producto_save_new(self, temp_db):
+        """Test guardado de producto nuevo"""
+        producto = Producto(
+            nombre="New Product",
+            referencia="NEW-001",
+            precio=15.75
+        )
+        
+        # Guardar producto
+        producto_id = producto.save()
+        
+        # Verificar que se asignó ID
+        assert producto_id is not None
+        assert producto.id == producto_id
+        
+        # Verificar que se puede recuperar
+        retrieved = Producto.get_by_id(producto_id)
+        assert retrieved is not None
+        assert retrieved.nombre == "New Product"
+        assert retrieved.referencia == "NEW-001"
+    
+    @pytest.mark.unit
+    def test_producto_save_update(self, temp_db):
+        """Test actualización de producto existente"""
+        # Crear y guardar producto
+        producto = Producto(nombre="Original", referencia="ORIG-001", precio=10.0)
+        original_id = producto.save()
+        
+        # Modificar producto
+        producto.nombre = "Modified"
+        producto.precio = 20.0
+        updated_id = producto.save()
+        
+        # Verificar que es actualización, no creación
+        assert updated_id == original_id
+        
+        # Verificar cambios
+        retrieved = Producto.get_by_id(original_id)
+        assert retrieved.nombre == "Modified"
+        assert retrieved.precio == 20.0
+    
+    @pytest.mark.unit
+    def test_producto_validation(self, temp_db):
+        """Test validación de datos de producto"""
+        # Test con datos inválidos
+        with pytest.raises(ValueError):
+            producto = Producto(nombre="", referencia="", precio=-1.0)
+            producto.validate()
+        
+        # Test con datos válidos
+        producto = Producto(
+            nombre="Valid Product",
+            referencia="VALID-001",
+            precio=10.0
+        )
+        assert producto.validate() == True
+    
+    @pytest.mark.unit
+    @patch('database.database.db.execute_query')
+    def test_producto_get_all_with_mock(self, mock_execute):
+        """Test get_all con mock de base de datos"""
+        # Configurar mock
+        mock_execute.return_value = [
+            {
+                'id': 1, 'nombre': 'Product 1', 'referencia': 'P001',
+                'precio': 10.0, 'categoria': 'Cat1', 'descripcion': 'Desc1',
+                'imagen_path': '', 'iva_recomendado': 21.0
+            },
+            {
+                'id': 2, 'nombre': 'Product 2', 'referencia': 'P002',
+                'precio': 20.0, 'categoria': 'Cat2', 'descripcion': 'Desc2',
+                'imagen_path': '', 'iva_recomendado': 21.0
+            }
+        ]
+        
+        # Ejecutar método
+        productos = Producto.get_all()
+        
+        # Verificar resultados
+        assert len(productos) == 2
+        assert productos[0].nombre == 'Product 1'
+        assert productos[1].nombre == 'Product 2'
+        
+        # Verificar que se llamó al mock
+        mock_execute.assert_called_once_with("SELECT * FROM productos ORDER BY nombre")</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Técnicas de Testing Unitario</h3>
+                        <ul>
+                            <li><strong>Isolation:</strong> Cada test es independiente</li>
+                            <li><strong>Mocking:</strong> Mock de dependencias externas</li>
+                            <li><strong>Assertions:</strong> Verificaciones exhaustivas</li>
+                            <li><strong>Edge Cases:</strong> Test de casos límite</li>
+                            <li><strong>Error Handling:</strong> Test de manejo de errores</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>📊 Cobertura de Tests</h3>
+                        <ul>
+                            <li><strong>Models:</strong> 85%+ coverage</li>
+                            <li><strong>Utils:</strong> 75%+ coverage</li>
+                            <li><strong>Database:</strong> 70%+ coverage</li>
+                            <li><strong>UI Components:</strong> 45%+ coverage</li>
+                            <li><strong>Total:</strong> 22%+ y creciendo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔗 Tests de Integración
+            </div>
+            <div class="card-body">
+                <h3>🌐 Testing de Workflows Completos</h3>
+                <p>Los tests de integración verifican el funcionamiento conjunto de múltiples componentes:</p>
+                
+                <pre><code># test/integration/test_facturas_integration.py - Tests de Integración
+import pytest
+from database.models import Producto, Factura, FacturaItem, Stock
+
+class TestFacturasIntegration:
+    """Tests de integración para el workflow completo de facturas"""
+    
+    @pytest.mark.integration
+    def test_complete_factura_workflow(self, temp_db):
+        """Test del workflow completo de creación de factura"""
+        
+        # 1. Crear productos
+        producto1 = Producto(
+            nombre="Laptop Dell",
+            referencia="DELL-001",
+            precio=800.0,
+            iva_recomendado=21.0
+        )
+        producto1.save()
+        
+        producto2 = Producto(
+            nombre="Mouse Logitech",
+            referencia="LOG-001",
+            precio=25.0,
+            iva_recomendado=21.0
+        )
+        producto2.save()
+        
+        # 2. Crear stock inicial
+        stock1 = Stock(producto_id=producto1.id, cantidad_disponible=10)
+        stock1.save()
+        
+        stock2 = Stock(producto_id=producto2.id, cantidad_disponible=50)
+        stock2.save()
+        
+        # 3. Crear factura
+        factura = Factura(
+            numero_factura="FACT-001",
+            fecha_factura="2024-12-01",
+            nombre_cliente="Cliente Test",
+            subtotal=0.0,
+            total_iva=0.0,
+            total_factura=0.0,
+            modo_pago="efectivo"
+        )
+        factura.save()
+        
+        # 4. Añadir items a la factura
+        item1 = FacturaItem(
+            factura_id=factura.id,
+            producto_id=producto1.id,
+            cantidad=2,
+            precio_unitario=800.0,
+            iva_porcentaje=21.0
+        )
+        item1.calculate_totals()
+        item1.save()
+        
+        item2 = FacturaItem(
+            factura_id=factura.id,
+            producto_id=producto2.id,
+            cantidad=3,
+            precio_unitario=25.0,
+            iva_porcentaje=21.0
+        )
+        item2.calculate_totals()
+        item2.save()
+        
+        # 5. Actualizar totales de factura
+        factura.calculate_totals()
+        factura.save()
+        
+        # 6. Actualizar stock
+        stock1.cantidad_disponible -= 2
+        stock1.save()
+        
+        stock2.cantidad_disponible -= 3
+        stock2.save()
+        
+        # 7. Verificaciones del workflow completo
+        
+        # Verificar factura
+        factura_saved = Factura.get_by_id(factura.id)
+        assert factura_saved.numero_factura == "FACT-001"
+        assert factura_saved.subtotal == 1675.0  # (800*2) + (25*3)
+        assert factura_saved.total_iva == 351.75  # 21% de 1675
+        assert factura_saved.total_factura == 2026.75  # 1675 + 351.75
+        
+        # Verificar items
+        items = FacturaItem.get_by_factura_id(factura.id)
+        assert len(items) == 2
+        
+        # Verificar stock actualizado
+        stock1_updated = Stock.get_by_producto_id(producto1.id)
+        assert stock1_updated.cantidad_disponible == 8  # 10 - 2
+        
+        stock2_updated = Stock.get_by_producto_id(producto2.id)
+        assert stock2_updated.cantidad_disponible == 47  # 50 - 3
+    
+    @pytest.mark.integration
+    @pytest.mark.slow
+    def test_bulk_factura_creation(self, temp_db, faker_instance):
+        """Test de creación masiva de facturas (test lento)"""
+        
+        # Crear productos base
+        productos = []
+        for i in range(10):
+            producto = Producto(
+                nombre=faker_instance.word(),
+                referencia=f"BULK-{i:03d}",
+                precio=faker_instance.pyfloat(left_digits=2, right_digits=2, positive=True),
+                iva_recomendado=21.0
+            )
+            producto.save()
+            productos.append(producto)
+        
+        # Crear 100 facturas
+        facturas_created = []
+        for i in range(100):
+            factura = Factura(
+                numero_factura=f"BULK-{i:04d}",
+                fecha_factura=faker_instance.date(),
+                nombre_cliente=faker_instance.name(),
+                subtotal=0.0,
+                total_iva=0.0,
+                total_factura=0.0,
+                modo_pago=faker_instance.random_element(["efectivo", "tarjeta", "transferencia"])
+            )
+            factura.save()
+            facturas_created.append(factura)
+        
+        # Verificar que todas se crearon
+        all_facturas = Factura.get_all()
+        assert len(all_facturas) >= 100
+        
+        # Verificar integridad de datos
+        for factura in facturas_created[:10]:  # Verificar las primeras 10
+            retrieved = Factura.get_by_id(factura.id)
+            assert retrieved is not None
+            assert retrieved.numero_factura == factura.numero_factura</code></pre>
+
+                <div class="alert alert-warning">
+                    <h4>🎯 Características de Tests de Integración</h4>
+                    <ul>
+                        <li><strong>Workflows Completos:</strong> Test de procesos end-to-end</li>
+                        <li><strong>Múltiples Componentes:</strong> Interacción entre modelos</li>
+                        <li><strong>Datos Realistas:</strong> Uso de Faker para datos de prueba</li>
+                        <li><strong>Performance Testing:</strong> Tests de carga con marker @slow</li>
+                        <li><strong>Data Integrity:</strong> Verificación de integridad referencial</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="06-logging-debugging.html" class="btn btn-secondary">⬅️ Logging & Debugging</a>
+            <a href="08-patrones-diseno.html" class="btn btn-primary">Siguiente: Patrones de Diseño ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

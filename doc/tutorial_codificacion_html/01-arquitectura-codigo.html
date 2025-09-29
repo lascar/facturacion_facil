@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura del Código - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Arquitectura del Código</h1>
+            <p>Análisis Profundo de la Estructura y Patrones de Diseño</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html" class="active">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html">🧪 Testing</a>
+            <a href="08-patrones-diseno.html">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía Arquitectónica</h4>
+            <p>Facturación Fácil implementa una <strong>arquitectura por capas pragmática</strong> que prioriza la simplicidad, mantenibilidad y escalabilidad. No utiliza frameworks complejos, sino patrones de diseño bien establecidos aplicados de manera inteligente.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Estructura Arquitectónica Real
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📁 Organización de Directorios</h3>
+                        <pre><code>facturacion_facil/
+├── main.py                     # 🚀 Punto de entrada
+├── requirements.txt            # 📦 Dependencias
+├── config.json                # ⚙️ Configuración externa
+├── facturacion.db             # 🗄️ Base de datos SQLite
+│
+├── database/                   # 🗄️ CAPA DE DATOS
+│   ├── __init__.py
+│   ├── database.py            # Gestor de conexiones
+│   ├── models.py              # Modelos de dominio
+│   └── optimized_models.py    # Modelos optimizados
+│
+├── ui/                        # 🎨 CAPA DE PRESENTACIÓN
+│   ├── __init__.py
+│   ├── main_window.py         # Ventana principal
+│   ├── productos.py           # Gestión productos
+│   ├── facturas.py            # Gestión facturas
+│   ├── organizacion.py        # Configuración empresa
+│   ├── stock.py               # Gestión inventario
+│   └── search_window.py       # Búsqueda avanzada
+│
+├── utils/                     # 🔧 CAPA DE SERVICIOS
+│   ├── __init__.py
+│   ├── config.py              # Gestión configuración
+│   ├── logger.py              # Sistema logging
+│   ├── translations.py        # Internacionalización
+│   └── pdf_generator.py       # Generación PDFs
+│
+├── common/                    # 🔄 COMPONENTES COMUNES
+│   ├── __init__.py
+│   ├── ui_components.py       # Componentes UI base
+│   ├── validators.py          # Validadores de datos
+│   └── custom_dialogs.py      # Diálogos personalizados
+│
+├── tests/                     # 🧪 TESTING
+│   ├── unit/                  # Tests unitarios
+│   ├── integration/           # Tests integración
+│   └── ui/                    # Tests interfaz
+│
+└── assets/                    # 📁 RECURSOS
+    ├── images/                # Imágenes productos
+    └── logos/                 # Logos empresa</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎯 Principios Arquitectónicos</h3>
+                        <ul>
+                            <li><span class="status-ok">✅</span> <strong>Separación de Responsabilidades</strong><br>
+                                <small>Cada capa tiene una responsabilidad específica y bien definida</small></li>
+                            <li><span class="status-ok">✅</span> <strong>Bajo Acoplamiento</strong><br>
+                                <small>Las capas se comunican a través de interfaces claras</small></li>
+                            <li><span class="status-ok">✅</span> <strong>Alta Cohesión</strong><br>
+                                <small>Elementos relacionados están agrupados lógicamente</small></li>
+                            <li><span class="status-ok">✅</span> <strong>Inversión de Dependencias</strong><br>
+                                <small>Las capas superiores no dependen de implementaciones concretas</small></li>
+                            <li><span class="status-ok">✅</span> <strong>Principio DRY</strong><br>
+                                <small>Código común centralizado en módulos reutilizables</small></li>
+                            <li><span class="status-ok">✅</span> <strong>Configuración Externa</strong><br>
+                                <small>Comportamiento configurable sin recompilación</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🚀 Punto de Entrada: main.py
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>📋 Análisis del Código de Entrada</h4>
+                    <p>El archivo <code>main.py</code> implementa un patrón de inicialización robusto con manejo de errores completo:</p>
+                </div>
+                
+                <pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Facturación Fácil
+Aplicación de facturación simple con gestión de productos, stock y clientes.
+"""
+
+import sys
+import os
+
+# Agregar el directorio actual al path para importar módulos
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from ui.main_window import MainWindow
+from database.database import db
+from utils.logger import app_logger, log_info, log_error, log_exception
+
+def main():
+    """Función principal de la aplicación"""
+    try:
+        # Inicializar logging
+        app_logger.log_startup_info()
+        log_info("=== Iniciando aplicación Facturación Fácil ===")
+
+        # Inicializar la base de datos
+        log_info("Inicializando base de datos...")
+        db.init_database()
+        log_info("Base de datos inicializada correctamente")
+
+        # Crear y ejecutar la aplicación
+        log_info("Creando ventana principal")
+        app = MainWindow()
+
+        log_info("Iniciando bucle principal de la aplicación")
+        app.run()
+
+        log_info("Aplicación cerrada normalmente")
+
+    except Exception as e:
+        log_exception(e, "main")
+        log_error(f"Error crítico al iniciar la aplicación: {str(e)}")
+
+        # Mostrar error al usuario si es posible
+        try:
+            import tkinter.messagebox as messagebox
+            messagebox.showerror(
+                "Error Crítico",
+                f"Error inesperado en la aplicación:\n{str(e)}\n\n"
+                f"Revisa los logs en el directorio 'logs' para más detalles."
+            )
+        except:
+            print(f"Error crítico: {str(e)}")
+
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🔍 Características Técnicas</h3>
+                        <ul>
+                            <li><strong>Gestión de Path:</strong> Configuración automática del PYTHONPATH</li>
+                            <li><strong>Logging Temprano:</strong> Inicialización del sistema de logs antes que nada</li>
+                            <li><strong>Inicialización Secuencial:</strong> Base de datos → UI → Bucle principal</li>
+                            <li><strong>Manejo de Errores:</strong> Captura y logging de excepciones críticas</li>
+                            <li><strong>Graceful Shutdown:</strong> Cierre controlado de la aplicación</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🛡️ Robustez y Seguridad</h3>
+                        <ul>
+                            <li><strong>Try-Catch Global:</strong> Captura de errores no manejados</li>
+                            <li><strong>Logging Detallado:</strong> Trazabilidad completa de la ejecución</li>
+                            <li><strong>Fallback UI:</strong> Mensaje de error incluso si la UI falla</li>
+                            <li><strong>Exit Codes:</strong> Códigos de salida apropiados para scripts</li>
+                            <li><strong>Encoding UTF-8:</strong> Soporte completo para caracteres especiales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🗄️ Capa de Datos: Arquitectura de Persistencia
+            </div>
+            <div class="card-body">
+                <h3>📊 Patrón Repository Implementado</h3>
+                <p>La capa de datos implementa un patrón Repository simplificado que abstrae el acceso a SQLite:</p>
+                
+                <pre><code># database/database.py - Gestor de Base de Datos
+class DatabaseManager:
+    """Gestor singleton de la base de datos SQLite"""
+    
+    _instance = None
+    _connection = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(DatabaseManager, cls).__new__(cls)
+        return cls._instance
+    
+    def __init__(self):
+        if not hasattr(self, 'initialized'):
+            self.db_path = "facturacion.db"
+            self.logger = get_logger("database")
+            self.initialized = True
+    
+    def get_connection(self):
+        """Obtiene una conexión a la base de datos"""
+        if self._connection is None:
+            self._connection = sqlite3.connect(
+                self.db_path, 
+                check_same_thread=False,
+                timeout=30.0
+            )
+            self._connection.row_factory = sqlite3.Row
+        return self._connection
+    
+    def execute_query(self, query, params=None):
+        """Ejecuta una query con manejo de errores y logging"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            
+            if query.strip().upper().startswith(('INSERT', 'UPDATE', 'DELETE')):
+                conn.commit()
+                return cursor.lastrowid
+            else:
+                return cursor.fetchall()
+                
+        except sqlite3.Error as e:
+            self.logger.error(f"Error en query: {query[:100]}... - {str(e)}")
+            raise
+        except Exception as e:
+            self.logger.error(f"Error inesperado en query: {str(e)}")
+            raise
+
+# Instancia singleton global
+db = DatabaseManager()</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Características del Patrón</h3>
+                        <ul>
+                            <li><strong>Singleton:</strong> Una sola instancia de conexión</li>
+                            <li><strong>Connection Pooling:</strong> Reutilización de conexiones</li>
+                            <li><strong>Row Factory:</strong> Acceso por nombre de columna</li>
+                            <li><strong>Timeout:</strong> Prevención de bloqueos</li>
+                            <li><strong>Thread Safety:</strong> Configuración para múltiples hilos</li>
+                            <li><strong>Logging:</strong> Trazabilidad de todas las operaciones</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Ventajas de la Implementación</h3>
+                        <ul>
+                            <li><strong>Simplicidad:</strong> No requiere ORM complejo</li>
+                            <li><strong>Performance:</strong> Acceso directo a SQLite</li>
+                            <li><strong>Control:</strong> Queries optimizadas manualmente</li>
+                            <li><strong>Debugging:</strong> Fácil de debuggear y optimizar</li>
+                            <li><strong>Portabilidad:</strong> Sin dependencias externas</li>
+                            <li><strong>Escalabilidad:</strong> Fácil migración a otros SGBD</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📋 Modelos de Dominio: Active Record Pattern
+            </div>
+            <div class="card-body">
+                <h3>🏗️ Implementación del Patrón Active Record</h3>
+                <p>Los modelos implementan una versión simplificada del patrón Active Record, donde cada objeto conoce cómo persistirse:</p>
+                
+                <pre><code># database/models.py - Modelo Producto
+class Producto:
+    """Modelo de producto con patrón Active Record"""
+    
+    def __init__(self, id=None, nombre="", referencia="", precio=0.0, 
+                 categoria="", descripcion="", imagen_path="", iva_recomendado=21.0):
+        self.id = id
+        self.nombre = nombre
+        self.referencia = referencia
+        self.precio = precio
+        self.categoria = categoria
+        self.descripcion = descripcion
+        self.imagen_path = imagen_path
+        self.iva_recomendado = iva_recomendado
+    
+    def save(self):
+        """Guarda el producto en la base de datos"""
+        if self.id:
+            # UPDATE - Producto existente
+            query = '''UPDATE productos SET nombre=?, referencia=?, precio=?, 
+                      categoria=?, descripcion=?, imagen_path=?, iva_recomendado=?
+                      WHERE id=?'''
+            params = (self.nombre, self.referencia, self.precio, 
+                     self.categoria, self.descripcion, self.imagen_path, 
+                     self.iva_recomendado, self.id)
+            db.execute_query(query, params)
+        else:
+            # INSERT - Nuevo producto
+            query = '''INSERT INTO productos (nombre, referencia, precio, 
+                      categoria, descripcion, imagen_path, iva_recomendado) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?)'''
+            params = (self.nombre, self.referencia, self.precio, 
+                     self.categoria, self.descripcion, self.imagen_path, 
+                     self.iva_recomendado)
+            self.id = db.execute_query(query, params)
+        return self.id
+    
+    def delete(self):
+        """Elimina el producto de la base de datos"""
+        if self.id:
+            query = "DELETE FROM productos WHERE id=?"
+            db.execute_query(query, (self.id,))
+            self.id = None
+    
+    @staticmethod
+    def get_all():
+        """Obtiene todos los productos"""
+        query = "SELECT * FROM productos ORDER BY nombre"
+        results = db.execute_query(query)
+        productos = []
+        for row in results:
+            producto = Producto(
+                id=row['id'], nombre=row['nombre'], 
+                referencia=row['referencia'], precio=row['precio'],
+                categoria=row['categoria'], descripcion=row['descripcion'],
+                imagen_path=row['imagen_path'], iva_recomendado=row['iva_recomendado']
+            )
+            productos.append(producto)
+        return productos
+    
+    @staticmethod
+    def get_by_id(producto_id):
+        """Obtiene un producto por su ID"""
+        query = "SELECT * FROM productos WHERE id=?"
+        results = db.execute_query(query, (producto_id,))
+        if results:
+            row = results[0]
+            return Producto(
+                id=row['id'], nombre=row['nombre'], 
+                referencia=row['referencia'], precio=row['precio'],
+                categoria=row['categoria'], descripcion=row['descripcion'],
+                imagen_path=row['imagen_path'], iva_recomendado=row['iva_recomendado']
+            )
+        return None</code></pre>
+
+                <div class="alert alert-warning">
+                    <h4>🎯 Ventajas del Active Record en este Contexto</h4>
+                    <ul>
+                        <li><strong>Simplicidad:</strong> Cada objeto sabe cómo persistirse</li>
+                        <li><strong>Intuitividad:</strong> API natural para desarrolladores</li>
+                        <li><strong>Menos Código:</strong> No requiere mappers separados</li>
+                        <li><strong>Debugging Fácil:</strong> Lógica de persistencia visible</li>
+                        <li><strong>Prototipado Rápido:</strong> Desarrollo ágil de funcionalidades</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="index.html" class="btn btn-secondary">⬅️ Volver al Inicio</a>
+            <a href="02-configuracion-sistema.html" class="btn btn-primary">Siguiente: Sistema de Configuración ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

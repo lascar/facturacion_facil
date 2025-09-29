@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solución de Problemas - Tutorial Facturación Fácil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🆘</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🆘 Solución de Problemas</h1>
+            <p>Guía de Troubleshooting y Soporte</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-introduccion.html">🚀 Introducción</a>
+            <a href="02-ventana-principal.html">🏠 Ventana Principal</a>
+            <a href="03-gestion-productos.html">📦 Productos</a>
+            <a href="04-configuracion-organizacion.html">🏢 Organización</a>
+            <a href="05-gestion-stock.html">📊 Stock</a>
+            <a href="06-creacion-facturas.html">🧾 Facturas</a>
+            <a href="07-busqueda-avanzada.html">🔍 Búsqueda</a>
+            <a href="08-consejos-trucos.html">💡 Consejos</a>
+            <a href="09-solucion-problemas.html" class="active">🆘 Problemas</a>
+        </div>
+
+        <div class="alert alert-warning">
+            <h4>🚨 ¿Tienes un problema?</h4>
+            <p>Esta guía te ayudará a <strong>identificar y resolver</strong> los problemas más comunes que puedes encontrar al usar Facturación Fácil. Sigue los pasos en orden para una resolución efectiva.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔧 Problemas Comunes y Soluciones
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🚫 Problemas de Inicio</h3>
+                        <div class="alert alert-error">
+                            <h4>❌ La aplicación no inicia</h4>
+                            <p><strong>Síntomas:</strong> Error al ejecutar, pantalla en blanco, cierre inesperado</p>
+                            <p><strong>Soluciones:</strong></p>
+                            <ol>
+                                <li>Verificar que Python 3.8+ esté instalado</li>
+                                <li>Reinstalar dependencias: <code>pip install -r requirements.txt</code></li>
+                                <li>Verificar permisos de escritura en la carpeta</li>
+                                <li>Ejecutar como administrador si es necesario</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h3>💾 Problemas de Base de Datos</h3>
+                        <div class="alert alert-warning">
+                            <h4>⚠️ Error de base de datos</h4>
+                            <p><strong>Síntomas:</strong> "Database locked", datos no se guardan, errores SQL</p>
+                            <p><strong>Soluciones:</strong></p>
+                            <ol>
+                                <li>Cerrar completamente la aplicación</li>
+                                <li>Verificar que no hay otras instancias ejecutándose</li>
+                                <li>Hacer backup de <code>facturacion.db</code></li>
+                                <li>Reiniciar la aplicación</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📦 Problemas con Productos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>🖼️ Imágenes no se muestran</h3>
+                        <ul>
+                            <li><span class="status-error">❌</span> <strong>Verificar formato:</strong> Solo JPG, PNG, GIF</li>
+                            <li><span class="status-error">❌</span> <strong>Tamaño máximo:</strong> 5MB por imagen</li>
+                            <li><span class="status-error">❌</span> <strong>Ruta válida:</strong> Archivo debe existir</li>
+                            <li><span class="status-ok">✅</span> <strong>Solución:</strong> Reseleccionar imagen válida</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>💰 Problemas con precios</h3>
+                        <ul>
+                            <li><span class="status-error">❌</span> <strong>Formato incorrecto:</strong> Usar punto decimal (12.50)</li>
+                            <li><span class="status-error">❌</span> <strong>Valores negativos:</strong> No permitidos</li>
+                            <li><span class="status-error">❌</span> <strong>Demasiados decimales:</strong> Máximo 2</li>
+                            <li><span class="status-ok">✅</span> <strong>Solución:</strong> Formato: 0.00 a 999999.99</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧾 Problemas con Facturas
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📄 PDF no se genera</h3>
+                        <div class="alert alert-info">
+                            <h4>🔍 Diagnóstico paso a paso:</h4>
+                            <ol>
+                                <li><strong>Verificar datos de organización:</strong> Deben estar completos</li>
+                                <li><strong>Comprobar productos:</strong> Al menos un producto válido</li>
+                                <li><strong>Verificar permisos:</strong> Carpeta de destino escribible</li>
+                                <li><strong>Espacio en disco:</strong> Suficiente para generar PDF</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h3>🧮 Cálculos incorrectos</h3>
+                        <div class="alert alert-success">
+                            <h4>✅ Verificaciones:</h4>
+                            <ul>
+                                <li><strong>IVA configurado:</strong> Porcentaje correcto por producto</li>
+                                <li><strong>Cantidades:</strong> Números enteros positivos</li>
+                                <li><strong>Descuentos:</strong> Entre 0% y 100%</li>
+                                <li><strong>Redondeo:</strong> Automático a 2 decimales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔍 Problemas de Rendimiento
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h4>⚡ La aplicación va lenta</h4>
+                    <p><strong>Causas comunes y soluciones:</strong></p>
+                    <div class="row">
+                        <div class="col">
+                            <h3>🗄️ Base de datos grande</h3>
+                            <ul>
+                                <li>Hacer limpieza de datos antiguos</li>
+                                <li>Optimizar búsquedas con filtros</li>
+                                <li>Cerrar ventanas no utilizadas</li>
+                            </ul>
+                        </div>
+                        <div class="col">
+                            <h3>💻 Recursos del sistema</h3>
+                            <ul>
+                                <li>Cerrar otras aplicaciones pesadas</li>
+                                <li>Verificar memoria RAM disponible</li>
+                                <li>Reiniciar la aplicación periódicamente</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📞 Soporte y Contacto
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-info">
+                            <h4>🆘 ¿Necesitas más ayuda?</h4>
+                            <p>Si no encuentras la solución a tu problema:</p>
+                            <ul>
+                                <li><strong>📧 Email:</strong> soporte@facturacion-facil.com</li>
+                                <li><strong>📱 Teléfono:</strong> +34 900 123 456</li>
+                                <li><strong>🌐 Web:</strong> www.facturacion-facil.com/soporte</li>
+                                <li><strong>💬 Chat:</strong> Disponible en la web</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-success">
+                            <h4>📋 Información útil para soporte</h4>
+                            <p>Cuando contactes, incluye:</p>
+                            <ul>
+                                <li><strong>Versión:</strong> Número de versión de la app</li>
+                                <li><strong>Sistema:</strong> Windows/Mac/Linux + versión</li>
+                                <li><strong>Error:</strong> Mensaje exacto del error</li>
+                                <li><strong>Pasos:</strong> Qué estabas haciendo cuando ocurrió</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Mantenimiento Preventivo
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h4>✅ Consejos para evitar problemas</h4>
+                    <div class="row">
+                        <div class="col">
+                            <h3>📅 Rutina semanal</h3>
+                            <ul>
+                                <li>Hacer backup de la base de datos</li>
+                                <li>Limpiar archivos temporales</li>
+                                <li>Verificar actualizaciones</li>
+                                <li>Revisar logs de errores</li>
+                            </ul>
+                        </div>
+                        <div class="col">
+                            <h3>🛡️ Buenas prácticas</h3>
+                            <ul>
+                                <li>No cerrar bruscamente la aplicación</li>
+                                <li>Mantener datos organizados</li>
+                                <li>Usar nombres descriptivos</li>
+                                <li>Validar datos antes de guardar</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="08-consejos-trucos.html" class="btn btn-secondary">⬅️ Consejos y Trucos</a>
+            <a href="index.html" class="btn btn-primary">🏠 Volver al Inicio</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Usuario</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

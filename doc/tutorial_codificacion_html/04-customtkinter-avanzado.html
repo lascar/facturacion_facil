@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CustomTkinter Avanzado - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 CustomTkinter Avanzado</h1>
+            <p>Componentes Personalizados, Theming y Responsive Design</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html" class="active">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html">🧪 Testing</a>
+            <a href="08-patrones-diseno.html">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía de UI Moderna</h4>
+            <p>Facturación Fácil utiliza <strong>CustomTkinter 5.2+</strong> para crear interfaces modernas y responsivas. La arquitectura UI implementa componentes reutilizables, theming dinámico y un sistema de layout adaptativo que funciona en diferentes resoluciones.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura de Componentes UI
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Jerarquía de Componentes</h3>
+                        <pre><code>┌─────────────────────────────────┐
+│        MainWindow               │
+│    (Ventana Principal)          │
+├─────────────────────────────────┤
+│ ┌─────────────────────────────┐ │
+│ │      BaseWindow             │ │
+│ │   (Clase Base Común)        │ │
+│ ├─────────────────────────────┤ │
+│ │ • ProductosWindow           │ │
+│ │ • FacturasWindow            │ │
+│ │ • StockWindow               │ │
+│ │ • OrganizacionWindow        │ │
+│ │ • SearchWindow              │ │
+│ └─────────────────────────────┘ │
+└─────────────────────────────────┘
+           │
+           │ Utiliza
+           ▼
+┌─────────────────────────────────┐
+│     Componentes Comunes         │
+├─────────────────────────────────┤
+│ • ImageSelector                 │
+│ • FormHelper                    │
+│ • ScrollableFrame               │
+│ • CustomDialogs                 │
+│ • ResponsiveGrid                │
+└─────────────────────────────────┘</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🎨 Sistema de Theming</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Elemento</th>
+                                    <th>Color Principal</th>
+                                    <th>Color Hover</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Botones Primarios</strong></td>
+                                    <td>#1f538d (Azul)</td>
+                                    <td>#14375e</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Búsqueda</strong></td>
+                                    <td>#4169E1 (Royal Blue)</td>
+                                    <td>#0000CD</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nueva Factura</strong></td>
+                                    <td>#2E8B57 (Sea Green)</td>
+                                    <td>#228B22</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Salir/Eliminar</strong></td>
+                                    <td>#DC143C (Crimson)</td>
+                                    <td>#B22222</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏠 MainWindow: Ventana Principal Responsiva
+            </div>
+            <div class="card-body">
+                <h3>🎯 Implementación de la Ventana Principal</h3>
+                <p>La <code>MainWindow</code> implementa un diseño responsivo con grid layout y gestión inteligente de ventanas secundarias:</p>
+                
+                <pre><code># ui/main_window.py - Ventana Principal Moderna
+class MainWindow:
+    """Ventana principal con diseño responsivo y gestión de ventanas"""
+    
+    def __init__(self):
+        # Configuración global de CustomTkinter
+        ctk.set_appearance_mode("light")  # light, dark, system
+        ctk.set_default_color_theme("blue")  # blue, green, dark-blue
+        
+        # Ventana principal
+        self.root = ctk.CTk()
+        self.root.title(get_text("app_title"))
+        self.root.geometry("800x600")
+        self.root.resizable(True, True)
+        
+        # Centrar la ventana automáticamente
+        self.center_window()
+        
+        # Crear la interfaz
+        self.create_widgets()
+        
+        # Variables para gestión de ventanas secundarias
+        self.productos_window = None
+        self.organizacion_window = None
+        self.stock_window = None
+        self.facturas_window = None
+        self.search_window = None
+    
+    def center_window(self):
+        """Centra la ventana en la pantalla automáticamente"""
+        self.root.update_idletasks()
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height // 2)
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
+    
+    def create_widgets(self):
+        """Crea la interfaz con diseño responsivo"""
+        # Frame principal con padding
+        main_frame = ctk.CTkFrame(self.root)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        # Título con fuente escalable
+        title_label = ctk.CTkLabel(
+            main_frame,
+            text=get_text("app_title"),
+            font=ctk.CTkFont(size=32, weight="bold")
+        )
+        title_label.pack(pady=(30, 50))
+        
+        # Frame para botones con grid responsivo
+        buttons_frame = ctk.CTkFrame(main_frame)
+        buttons_frame.pack(fill="both", expand=True, padx=40, pady=20)
+        
+        # Configurar grid responsivo (2 columnas, 4 filas)
+        buttons_frame.grid_columnconfigure((0, 1), weight=1)
+        buttons_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        
+        # Botones principales con colores temáticos
+        self.create_main_buttons(buttons_frame)
+        
+        # Frame inferior para botón salir
+        bottom_frame = ctk.CTkFrame(main_frame)
+        bottom_frame.pack(fill="x", padx=40, pady=(0, 20))
+        
+        # Botón Salir con color distintivo
+        salir_btn = ctk.CTkButton(
+            bottom_frame,
+            text=get_text("salir"),
+            font=ctk.CTkFont(size=16),
+            height=40,
+            fg_color="#DC143C",
+            hover_color="#B22222",
+            command=self.root.quit
+        )
+        salir_btn.pack(pady=10)</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Características del Diseño</h3>
+                        <ul>
+                            <li><strong>Grid Responsivo:</strong> Layout 2x4 que se adapta al tamaño</li>
+                            <li><strong>Centrado Automático:</strong> Ventana siempre centrada en pantalla</li>
+                            <li><strong>Colores Temáticos:</strong> Cada función tiene su color distintivo</li>
+                            <li><strong>Fuentes Escalables:</strong> Tamaños de fuente apropiados para cada elemento</li>
+                            <li><strong>Padding Consistente:</strong> Espaciado uniforme en toda la interfaz</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Gestión de Ventanas Secundarias</h3>
+                        <pre><code>def open_productos(self):
+    """Abre ventana de productos con gestión inteligente"""
+    if (self.productos_window is None or 
+        not self.productos_window.window.winfo_exists()):
+        # Crear nueva ventana
+        self.productos_window = ProductosWindow(self.root)
+    else:
+        # Traer ventana existente al frente
+        self.productos_window.window.lift()
+        self.productos_window.window.focus_force()
+        self.productos_window.window.attributes('-topmost', True)
+        self.productos_window.window.after(100, 
+            lambda: self.productos_window.window.attributes('-topmost', False))</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🧩 BaseWindow: Clase Base para Componentes Comunes
+            </div>
+            <div class="card-body">
+                <h3>🏗️ Patrón Template Method para Ventanas</h3>
+                <p>La clase <code>BaseWindow</code> implementa funcionalidades comunes usando el patrón Template Method:</p>
+                
+                <pre><code># common/ui_components.py - Clase Base Reutilizable
+class BaseWindow:
+    """Clase base para ventanas con funcionalidades comunes"""
+    
+    def __init__(self, parent, title, geometry="800x600"):
+        # Crear ventana modal
+        self.window = ctk.CTkToplevel(parent)
+        self.window.title(title)
+        self.window.geometry(geometry)
+        self.window.transient(parent)  # Modal behavior
+        
+        # Configurar ventana al frente (patrón de configuración)
+        self.setup_window_focus()
+        
+        # Logger específico por clase
+        self.logger = get_logger(self.__class__.__name__.lower())
+        
+        # Variables comunes
+        self.imagen_path = ""
+    
+    def setup_window_focus(self):
+        """Configura el foco de ventana con patrón temporal"""
+        self.window.lift()
+        self.window.focus_force()
+        self.window.attributes('-topmost', True)
+        # Quitar topmost después de 100ms para permitir interacción normal
+        self.window.after(100, lambda: self.window.attributes('-topmost', False))
+    
+    def setup_scrollable_frame(self, width=1150, height=750):
+        """Configura frame scrollable con scroll de rueda optimizado"""
+        # Frame principal scrollable
+        self.main_frame = ctk.CTkScrollableFrame(self.window)
+        self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self.main_frame.configure(width=width, height=height)
+        
+        # Configurar scroll de rueda del ratón
+        self.configure_mousewheel_scrolling()
+        
+        return self.main_frame
+    
+    def configure_mousewheel_scrolling(self):
+        """Implementa scroll de rueda del ratón multiplataforma"""
+        def _on_mousewheel(event):
+            if hasattr(self, 'main_frame') and self.main_frame.winfo_exists():
+                # Detectar tipo de evento (Windows vs Linux/Mac)
+                if event.delta:
+                    delta = -1 * (event.delta / 120)  # Windows
+                else:
+                    if event.num == 4:
+                        delta = -1  # Linux scroll up
+                    elif event.num == 5:
+                        delta = 1   # Linux scroll down
+                    else:
+                        return
+                
+                try:
+                    # Scroll del canvas interno
+                    self.main_frame._parent_canvas.yview_scroll(int(delta), "units")
+                except (AttributeError, tk.TclError):
+                    pass
+
+        # Bind eventos multiplataforma
+        self.window.bind("<MouseWheel>", _on_mousewheel)  # Windows
+        self.window.bind("<Button-4>", _on_mousewheel)    # Linux scroll up
+        self.window.bind("<Button-5>", _on_mousewheel)    # Linux scroll down
+        
+        # Aplicar recursivamente a todos los widgets hijos
+        self.bind_mousewheel_to_children(self.window)
+    
+    def _show_message(self, message_type, title, message):
+        """Sistema de mensajes con diálogos copiables"""
+        try:
+            from common.custom_dialogs import (
+                show_copyable_info, show_copyable_error,
+                show_copyable_warning, show_copyable_confirm
+            )
+
+            # Asegurar que la ventana esté al frente
+            if hasattr(self, 'window') and self.window.winfo_exists():
+                self.window.lift()
+                self.window.focus_force()
+
+                # Usar diálogos copiables personalizados
+                if message_type == "info":
+                    return show_copyable_info(self.window, title, message)
+                elif message_type == "error":
+                    return show_copyable_error(self.window, title, message)
+                elif message_type == "warning":
+                    return show_copyable_warning(self.window, title, message)
+                elif message_type == "yesno":
+                    return show_copyable_confirm(self.window, title, message)
+        except Exception as e:
+            # Fallback a messagebox estándar
+            self.logger.error(f"Error en diálogo personalizado: {e}")
+            if message_type == "info":
+                messagebox.showinfo(title, message)
+            elif message_type == "error":
+                messagebox.showerror(title, message)</code></pre>
+
+                <div class="alert alert-success">
+                    <h4>🎯 Beneficios del Patrón BaseWindow</h4>
+                    <ul>
+                        <li><strong>Reutilización:</strong> Funcionalidades comunes en una sola clase</li>
+                        <li><strong>Consistencia:</strong> Comportamiento uniforme en todas las ventanas</li>
+                        <li><strong>Mantenibilidad:</strong> Cambios centralizados afectan todas las ventanas</li>
+                        <li><strong>Extensibilidad:</strong> Fácil añadir nuevas funcionalidades comunes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🖼️ ImageSelector: Componente Avanzado de Imágenes
+            </div>
+            <div class="card-body">
+                <h3>📸 Gestión Avanzada de Imágenes</h3>
+                <p>El componente <code>ImageSelector</code> maneja la selección, validación y display de imágenes con optimizaciones:</p>
+                
+                <pre><code># common/ui_components.py - Selector de Imágenes Avanzado
+class ImageSelector:
+    """Componente para selección y manejo de imágenes con optimizaciones"""
+    
+    def __init__(self, parent_window, logger=None):
+        self.parent_window = parent_window
+        self.logger = logger or get_logger("image_selector")
+        self.imagen_path = ""
+        self.imagen_display = None
+        self.imagen_label = None
+        
+        # Configuración desde config
+        self.max_size = app_config.get("max_image_size", 1024 * 1024)  # 1MB
+        self.supported_formats = app_config.get_supported_formats()
+        self.display_size = app_config.get_image_display_size()
+    
+    def select_image(self):
+        """Selecciona imagen con validación avanzada"""
+        try:
+            # Obtener directorio inicial desde configuración
+            initial_dir = app_config.get_default_image_directory()
+            
+            # Crear filtros de archivo dinámicos
+            filetypes = [
+                ("Imágenes", " ".join(f"*{fmt}" for fmt in self.supported_formats)),
+                ("Todos los archivos", "*.*")
+            ]
+            
+            # Diálogo de selección
+            file_path = filedialog.askopenfilename(
+                parent=self.parent_window,
+                title="Seleccionar imagen",
+                initialdir=initial_dir,
+                filetypes=filetypes
+            )
+            
+            if file_path:
+                # Validar imagen seleccionada
+                if self.validate_image(file_path):
+                    self.imagen_path = file_path
+                    self.update_image_display()
+                    return True
+                else:
+                    return False
+            
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Error al seleccionar imagen: {e}")
+            return False
+    
+    def validate_image(self, file_path):
+        """Validación completa de imagen"""
+        try:
+            # 1. Verificar que el archivo existe
+            if not os.path.exists(file_path):
+                self.show_error("Archivo no encontrado", 
+                              f"El archivo {file_path} no existe.")
+                return False
+            
+            # 2. Verificar extensión
+            _, ext = os.path.splitext(file_path.lower())
+            if ext not in self.supported_formats:
+                self.show_error("Formato no soportado", 
+                              f"Formato {ext} no soportado.\n"
+                              f"Formatos válidos: {', '.join(self.supported_formats)}")
+                return False
+            
+            # 3. Verificar tamaño de archivo
+            file_size = os.path.getsize(file_path)
+            if file_size > self.max_size:
+                size_mb = file_size / (1024 * 1024)
+                max_mb = self.max_size / (1024 * 1024)
+                self.show_error("Archivo demasiado grande", 
+                              f"Tamaño: {size_mb:.1f}MB\n"
+                              f"Máximo permitido: {max_mb:.1f}MB")
+                return False
+            
+            # 4. Verificar que es una imagen válida
+            try:
+                with Image.open(file_path) as img:
+                    img.verify()  # Verificar integridad
+                return True
+            except Exception as e:
+                self.show_error("Imagen corrupta", 
+                              f"No se puede abrir la imagen:\n{str(e)}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error en validación de imagen: {e}")
+            self.show_error("Error de validación", 
+                          f"Error inesperado: {str(e)}")
+            return False
+    
+    def update_image_display(self):
+        """Actualiza el display de imagen con optimización"""
+        if not self.imagen_path or not self.imagen_label:
+            return
+        
+        try:
+            # Cargar y redimensionar imagen
+            with Image.open(self.imagen_path) as img:
+                # Mantener aspect ratio
+                img.thumbnail(self.display_size, Image.Resampling.LANCZOS)
+                
+                # Convertir para CustomTkinter
+                photo = ctk.CTkImage(
+                    light_image=img,
+                    dark_image=img,
+                    size=img.size
+                )
+                
+                # Actualizar label
+                self.imagen_label.configure(image=photo, text="")
+                self.imagen_label.image = photo  # Mantener referencia
+                
+                self.logger.info(f"Imagen actualizada: {self.imagen_path}")
+                
+        except Exception as e:
+            self.logger.error(f"Error al actualizar display de imagen: {e}")
+            # Mostrar placeholder en caso de error
+            self.imagen_label.configure(image=None, text="Error al cargar imagen")</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🔧 Características Avanzadas</h3>
+                        <ul>
+                            <li><strong>Validación Múltiple:</strong> Formato, tamaño, integridad</li>
+                            <li><strong>Configuración Dinámica:</strong> Límites desde config.json</li>
+                            <li><strong>Optimización de Memoria:</strong> Thumbnail automático</li>
+                            <li><strong>Aspect Ratio:</strong> Mantiene proporciones originales</li>
+                            <li><strong>Error Handling:</strong> Manejo robusto de errores</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>📊 Configuración de Imágenes</h3>
+                        <pre><code># config.json - Configuración de imágenes
+{
+  "max_image_size": 1048576,  // 1MB
+  "supported_image_formats": [
+    ".png", ".jpg", ".jpeg", ".gif", ".bmp"
+  ],
+  "image_display_size": [150, 150],
+  "default_image_directory": "/home/user/Pictures"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="03-base-datos-avanzada.html" class="btn btn-secondary">⬅️ Base de Datos Avanzada</a>
+            <a href="05-sistema-ventanas.html" class="btn btn-primary">Siguiente: Sistema de Ventanas ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>

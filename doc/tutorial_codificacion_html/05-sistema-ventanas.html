@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventanas - Tutorial Codificación Avanzada</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪟</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🪟 Sistema de Ventanas</h1>
+            <p>Gestión Avanzada de Ventanas Múltiples y Modal Dialogs</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="01-arquitectura-codigo.html">🏗️ Arquitectura</a>
+            <a href="02-configuracion-sistema.html">⚙️ Configuración</a>
+            <a href="03-base-datos-avanzada.html">🗄️ Base de Datos</a>
+            <a href="04-customtkinter-avanzado.html">🎨 CustomTkinter</a>
+            <a href="05-sistema-ventanas.html" class="active">🪟 Sistema Ventanas</a>
+            <a href="06-logging-debugging.html">🐛 Logging & Debug</a>
+            <a href="07-testing-avanzado.html">🧪 Testing</a>
+            <a href="08-patrones-diseno.html">🔧 Patrones</a>
+            <a href="09-optimizacion-performance.html">⚡ Performance</a>
+        </div>
+
+        <div class="alert alert-info">
+            <h4>🎯 Filosofía de Gestión de Ventanas</h4>
+            <p>El sistema implementa un <strong>patrón de gestión inteligente</strong> que evita duplicación de ventanas, maneja el foco correctamente y proporciona una experiencia de usuario fluida. Utiliza técnicas avanzadas de lifecycle management y modal dialogs.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🏗️ Arquitectura del Sistema de Ventanas
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>📊 Jerarquía de Ventanas</h3>
+                        <pre><code>┌─────────────────────────────────┐
+│        MainWindow               │
+│     (CTk - Root Window)         │
+├─────────────────────────────────┤
+│ ┌─────────────────────────────┐ │
+│ │    Secondary Windows        │ │
+│ │   (CTkToplevel)             │ │
+│ ├─────────────────────────────┤ │
+│ │ • ProductosWindow           │ │
+│ │ • FacturasWindow            │ │
+│ │ • StockWindow               │ │
+│ │ • OrganizacionWindow        │ │
+│ │ • SearchWindow              │ │
+│ └─────────────────────────────┘ │
+└─────────────────────────────────┘
+           │
+           │ Spawns
+           ▼
+┌─────────────────────────────────┐
+│       Modal Dialogs             │
+│   (CTkToplevel + Modal)         │
+├─────────────────────────────────┤
+│ • CopyableMessageDialog        │
+│ • ProductoFacturaDialog        │
+│ • ConfiguracionFacturas        │
+│ • ImageSelector Dialog         │
+└─────────────────────────────────┘</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔄 Estados de Ventana</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Estado</th>
+                                    <th>Descripción</th>
+                                    <th>Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>None</strong></td>
+                                    <td>Ventana no creada</td>
+                                    <td>Crear nueva instancia</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exists</strong></td>
+                                    <td>Ventana activa</td>
+                                    <td>Reutilizar y traer al frente</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Destroyed</strong></td>
+                                    <td>Ventana cerrada</td>
+                                    <td>Crear nueva instancia</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Modal</strong></td>
+                                    <td>Diálogo modal activo</td>
+                                    <td>Bloquear ventana padre</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔄 Patrón de Reutilización de Ventanas
+            </div>
+            <div class="card-body">
+                <h3>🎯 Window Lifecycle Management</h3>
+                <p>El sistema implementa un patrón de reutilización que evita la duplicación de ventanas y optimiza el uso de memoria:</p>
+                
+                <pre><code># ui/main_window.py - Patrón de Reutilización Inteligente
+class MainWindow:
+    """Ventana principal con gestión inteligente de ventanas secundarias"""
+    
+    def __init__(self):
+        # Variables para ventanas secundarias (Singleton per type)
+        self.productos_window = None
+        self.organizacion_window = None
+        self.stock_window = None
+        self.facturas_window = None
+        self.search_window = None
+    
+    def open_productos(self):
+        """Abre ventana de productos con patrón de reutilización"""
+        # Verificar si la ventana existe y está activa
+        if (self.productos_window is None or 
+            not self.productos_window.window.winfo_exists()):
+            # Crear nueva ventana solo si no existe
+            self.productos_window = ProductosWindow(self.root)
+        else:
+            # Reutilizar ventana existente y traerla al frente
+            self.bring_window_to_front(self.productos_window.window)
+    
+    def bring_window_to_front(self, window):
+        """Trae una ventana al frente con técnica topmost temporal"""
+        try:
+            # Secuencia de foco optimizada
+            window.lift()                           # Elevar en Z-order
+            window.focus_force()                    # Forzar foco
+            window.attributes('-topmost', True)     # Temporal topmost
+            
+            # Programar remoción de topmost para permitir interacción normal
+            window.after(100, lambda: window.attributes('-topmost', False))
+            
+        except tk.TclError:
+            # Ventana fue destruida, limpiar referencia
+            self.cleanup_window_reference(window)
+    
+    def cleanup_window_reference(self, window):
+        """Limpia referencias a ventanas destruidas"""
+        # Identificar qué ventana fue destruida y limpiar referencia
+        if hasattr(self, 'productos_window') and self.productos_window:
+            if self.productos_window.window == window:
+                self.productos_window = None
+        # ... similar para otras ventanas
+    
+    def open_facturas(self):
+        """Abre ventana de facturas con parámetros opcionales"""
+        if (self.facturas_window is None or 
+            not self.facturas_window.window.winfo_exists()):
+            self.facturas_window = FacturasWindow(self.root)
+        else:
+            self.bring_window_to_front(self.facturas_window.window)
+    
+    def open_nueva_factura(self):
+        """Abre ventana de facturas en modo 'nueva factura'"""
+        if (self.facturas_window is None or 
+            not self.facturas_window.window.winfo_exists()):
+            # Crear con parámetro específico
+            self.facturas_window = FacturasWindow(self.root, nueva_factura=True)
+        else:
+            # Reutilizar y activar modo nueva factura
+            self.bring_window_to_front(self.facturas_window.window)
+            self.facturas_window.nueva_factura()  # Método específico</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Beneficios del Patrón</h3>
+                        <ul>
+                            <li><strong>Memoria Optimizada:</strong> Una sola instancia por tipo de ventana</li>
+                            <li><strong>Estado Preservado:</strong> Los datos del usuario se mantienen</li>
+                            <li><strong>UX Consistente:</strong> Comportamiento predecible</li>
+                            <li><strong>Performance:</strong> No recreación innecesaria de ventanas</li>
+                            <li><strong>Focus Management:</strong> Ventanas siempre visibles</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Técnicas Implementadas</h3>
+                        <ul>
+                            <li><strong>winfo_exists():</strong> Verificación de estado de ventana</li>
+                            <li><strong>Topmost Temporal:</strong> Foco garantizado sin bloqueo</li>
+                            <li><strong>Reference Cleanup:</strong> Limpieza automática de referencias</li>
+                            <li><strong>Lazy Creation:</strong> Ventanas creadas solo cuando se necesitan</li>
+                            <li><strong>State Preservation:</strong> Mantiene estado entre aperturas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎭 Sistema de Modal Dialogs
+            </div>
+            <div class="card-body">
+                <h3>🔒 Implementación de Diálogos Modales Avanzados</h3>
+                <p>El sistema incluye diálogos modales personalizados con texto copiable y gestión avanzada de foco:</p>
+                
+                <pre><code># common/custom_dialogs.py - Diálogos Modales Personalizados
+class CopyableMessageDialog:
+    """Diálogo modal con texto seleccionable y copiable"""
+    
+    def __init__(self, parent, title, message, dialog_type="info"):
+        self.parent = parent
+        self.title = title
+        self.message = message
+        self.dialog_type = dialog_type
+        self.result = None
+        
+        # Crear ventana modal
+        self.dialog = ctk.CTkToplevel(parent)
+        self.dialog.title(title)
+        self.dialog.geometry("500x300")
+        self.dialog.transient(parent)  # Establecer como ventana hija
+        
+        # Configurar apariencia según tipo
+        self.setup_dialog_appearance()
+        
+        # Crear interfaz
+        self.create_widgets()
+        
+        # Configurar comportamiento modal
+        self.setup_modal_behavior()
+    
+    def setup_modal_behavior(self):
+        """Configura el comportamiento modal avanzado"""
+        try:
+            # Secuencia de foco modal
+            self.dialog.lift()                      # Elevar ventana
+            self.dialog.focus_force()               # Forzar foco
+            self.dialog.attributes('-topmost', True) # Temporal topmost
+            self.dialog.grab_set()                  # Capturar eventos (modal)
+            
+            # Centrar diálogo en la ventana padre
+            self.center_dialog()
+            
+            # Programar remoción de topmost pero mantener modal
+            self.dialog.after(500, lambda: self.dialog.attributes('-topmost', False))
+            
+            # Bind teclas de escape
+            self.dialog.bind("<Escape>", lambda e: self.close_dialog())
+            
+        except Exception as e:
+            self.logger.error(f"Error configurando comportamiento modal: {e}")
+    
+    def center_dialog(self):
+        """Centra el diálogo en la ventana padre"""
+        try:
+            # Actualizar geometría
+            self.dialog.update_idletasks()
+            
+            # Obtener dimensiones
+            dialog_width = self.dialog.winfo_width()
+            dialog_height = self.dialog.winfo_height()
+            parent_x = self.parent.winfo_x()
+            parent_y = self.parent.winfo_y()
+            parent_width = self.parent.winfo_width()
+            parent_height = self.parent.winfo_height()
+            
+            # Calcular posición centrada
+            x = parent_x + (parent_width // 2) - (dialog_width // 2)
+            y = parent_y + (parent_height // 2) - (dialog_height // 2)
+            
+            # Aplicar posición
+            self.dialog.geometry(f"{dialog_width}x{dialog_height}+{x}+{y}")
+            
+        except Exception as e:
+            self.logger.error(f"Error centrando diálogo: {e}")
+    
+    def create_widgets(self):
+        """Crea la interfaz del diálogo con texto copiable"""
+        # Frame principal
+        main_frame = ctk.CTkFrame(self.dialog)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        # Icono según tipo de diálogo
+        icon_label = ctk.CTkLabel(
+            main_frame,
+            text=self.get_icon_for_type(),
+            font=ctk.CTkFont(size=32)
+        )
+        icon_label.pack(pady=(10, 20))
+        
+        # Título
+        title_label = ctk.CTkLabel(
+            main_frame,
+            text=self.title,
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        title_label.pack(pady=(0, 15))
+        
+        # Texto del mensaje (seleccionable y copiable)
+        message_text = ctk.CTkTextbox(
+            main_frame,
+            height=120,
+            wrap="word"
+        )
+        message_text.pack(fill="both", expand=True, pady=(0, 20))
+        message_text.insert("1.0", self.message)
+        message_text.configure(state="disabled")  # Solo lectura pero seleccionable
+        
+        # Frame de botones
+        buttons_frame = ctk.CTkFrame(main_frame)
+        buttons_frame.pack(fill="x")
+        
+        # Botón Copiar
+        copy_btn = ctk.CTkButton(
+            buttons_frame,
+            text="📋 Copiar",
+            command=lambda: self.copy_to_clipboard(self.message),
+            width=80,
+            height=35
+        )
+        copy_btn.pack(side="left", padx=10, pady=10)
+        
+        # Botón OK
+        ok_btn = ctk.CTkButton(
+            buttons_frame,
+            text="✅ OK",
+            command=self.close_dialog,
+            width=80,
+            height=35,
+            fg_color=self.get_color_for_type()
+        )
+        ok_btn.pack(side="right", padx=10, pady=10)
+        
+        # Focus en botón OK
+        ok_btn.focus()
+    
+    def copy_to_clipboard(self, text):
+        """Copia texto al portapapeles"""
+        try:
+            self.dialog.clipboard_clear()
+            self.dialog.clipboard_append(text)
+            # Feedback visual temporal
+            self.show_copy_feedback()
+        except Exception as e:
+            self.logger.error(f"Error copiando al portapapeles: {e}")
+    
+    def show(self):
+        """Muestra el diálogo y espera resultado"""
+        # Esperar hasta que el diálogo se cierre
+        self.dialog.wait_window()
+        return self.result</code></pre>
+
+                <div class="alert alert-success">
+                    <h4>🎯 Características Avanzadas de los Diálogos</h4>
+                    <ul>
+                        <li><strong>Texto Copiable:</strong> Los usuarios pueden seleccionar y copiar mensajes</li>
+                        <li><strong>Centrado Inteligente:</strong> Siempre centrado en la ventana padre</li>
+                        <li><strong>Comportamiento Modal:</strong> Bloquea interacción con ventana padre</li>
+                        <li><strong>Keyboard Navigation:</strong> Soporte completo para teclado</li>
+                        <li><strong>Theming Dinámico:</strong> Colores según tipo de mensaje</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🎯 Focus Management Avanzado
+            </div>
+            <div class="card-body">
+                <h3>⚡ Técnicas de Gestión de Foco</h3>
+                <p>El sistema implementa técnicas avanzadas para garantizar que las ventanas siempre aparezcan correctamente:</p>
+                
+                <pre><code># common/ui_components.py - Focus Management Avanzado
+class BaseWindow:
+    """Clase base con gestión avanzada de foco"""
+    
+    def setup_window_focus(self):
+        """Configura el foco de ventana con patrón temporal optimizado"""
+        try:
+            # Secuencia de foco en orden específico
+            self.window.lift()                      # 1. Elevar en Z-order
+            self.window.focus_force()               # 2. Forzar foco del teclado
+            self.window.attributes('-topmost', True) # 3. Temporal topmost
+            
+            # Programar remoción de topmost para permitir interacción normal
+            # Usar delay de 100ms para garantizar visibilidad
+            self.window.after(100, self._remove_topmost)
+            
+        except tk.TclError as e:
+            self.logger.error(f"Error configurando foco de ventana: {e}")
+    
+    def _remove_topmost(self):
+        """Remueve el atributo topmost de forma segura"""
+        try:
+            if self.window.winfo_exists():
+                self.window.attributes('-topmost', False)
+        except tk.TclError:
+            # Ventana fue destruida, ignorar
+            pass
+    
+    def setup_modal_window_focus(self, modal_window):
+        """Configura una ventana modal para que aparezca correctamente"""
+        try:
+            # Configuraciones específicas para modal
+            modal_window.lift()
+            modal_window.focus_force()
+            modal_window.attributes('-topmost', True)
+            modal_window.grab_set()  # Capturar eventos (comportamiento modal)
+
+            # Centrar la ventana modal
+            self.center_modal_window(modal_window)
+
+            # Programar remoción de topmost pero mantener grab_set
+            modal_window.after(500, lambda: self._remove_modal_topmost(modal_window))
+            
+        except Exception as e:
+            self.logger.error(f"Error configurando ventana modal: {e}")
+    
+    def _remove_modal_topmost(self, modal_window):
+        """Remueve topmost de modal pero mantiene comportamiento modal"""
+        try:
+            if modal_window.winfo_exists():
+                modal_window.attributes('-topmost', False)
+                # grab_set se mantiene para comportamiento modal
+        except tk.TclError:
+            pass
+    
+    def center_modal_window(self, modal_window):
+        """Centra una ventana modal en su padre"""
+        try:
+            # Actualizar geometría
+            modal_window.update_idletasks()
+            self.window.update_idletasks()
+            
+            # Obtener dimensiones
+            modal_width = modal_window.winfo_width()
+            modal_height = modal_window.winfo_height()
+            parent_x = self.window.winfo_x()
+            parent_y = self.window.winfo_y()
+            parent_width = self.window.winfo_width()
+            parent_height = self.window.winfo_height()
+            
+            # Calcular posición centrada
+            x = parent_x + (parent_width // 2) - (modal_width // 2)
+            y = parent_y + (parent_height // 2) - (modal_height // 2)
+            
+            # Asegurar que la ventana esté dentro de la pantalla
+            screen_width = modal_window.winfo_screenwidth()
+            screen_height = modal_window.winfo_screenheight()
+            
+            x = max(0, min(x, screen_width - modal_width))
+            y = max(0, min(y, screen_height - modal_height))
+            
+            # Aplicar posición
+            modal_window.geometry(f"{modal_width}x{modal_height}+{x}+{y}")
+            
+        except Exception as e:
+            self.logger.error(f"Error centrando ventana modal: {e}")</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🔧 Técnicas de Focus</h3>
+                        <ul>
+                            <li><strong>lift():</strong> Eleva ventana en Z-order</li>
+                            <li><strong>focus_force():</strong> Fuerza foco de teclado</li>
+                            <li><strong>topmost temporal:</strong> Garantiza visibilidad sin bloqueo</li>
+                            <li><strong>grab_set():</strong> Comportamiento modal real</li>
+                            <li><strong>Centrado inteligente:</strong> Posicionamiento óptimo</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>⚡ Optimizaciones</h3>
+                        <ul>
+                            <li><strong>Delay Timing:</strong> 100ms para ventanas, 500ms para modales</li>
+                            <li><strong>Error Handling:</strong> Manejo de ventanas destruidas</li>
+                            <li><strong>Screen Bounds:</strong> Ventanas siempre dentro de pantalla</li>
+                            <li><strong>Update Idletasks:</strong> Geometría actualizada antes de cálculos</li>
+                            <li><strong>Safe Removal:</strong> Remoción segura de atributos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <a href="04-customtkinter-avanzado.html" class="btn btn-secondary">⬅️ CustomTkinter Avanzado</a>
+            <a href="06-logging-debugging.html" class="btn btn-primary">Siguiente: Logging & Debugging ➡️</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Facturación Fácil - Tutorial de Codificación Avanzada</p>
+        </div>
+    </div>
+
+    <script src="enhance_code_blocks.js"></script>
+</body>
+</html>
