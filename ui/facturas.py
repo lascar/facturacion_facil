@@ -7,6 +7,7 @@ from database.models import Factura, FacturaItem, Producto, Organizacion, Stock
 from database.optimized_models import OptimizedFactura, OptimizedProducto
 from common.ui_components import BaseWindow, FormHelper
 from common.validators import FormValidator, CalculationHelper
+from common.treeview_sorter import add_sorting_to_treeview
 from ui.facturas_methods import FacturasMethodsMixin
 from ui.producto_factura_dialog import ProductoFacturaDialog
 from ui.configuracion_facturas import ConfiguracionFacturasDialog
@@ -105,6 +106,9 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
 
         self.facturas_tree.pack(side="left", fill="both", expand=True)
         scrollbar_facturas.pack(side="right", fill="y")
+
+        # Configurar ordenación por columnas
+        self.facturas_tree_sorter = add_sorting_to_treeview(self.facturas_tree)
 
         # Bind para selección
         self.facturas_tree.bind("<<TreeviewSelect>>", self.on_factura_select)

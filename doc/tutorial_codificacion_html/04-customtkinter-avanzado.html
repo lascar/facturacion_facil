@@ -500,6 +500,83 @@ class ImageSelector:
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-header">
+                🔄 Sistema de Tri par Colonnes TreeView
+            </div>
+            <div class="card-body">
+                <h3>📊 TreeViewSorter: Tri Intelligent par Colonnes</h3>
+                <p>Le système de tri par colonnes permet aux utilisateurs d'ordonner les données en cliquant sur les en-têtes de colonnes :</p>
+
+                <pre><code># common/treeview_sorter.py - Système de Tri Avancé
+from common.treeview_sorter import add_sorting_to_treeview
+
+# Ajouter le tri à n'importe quel TreeView en une ligne
+tree = ttk.Treeview(parent, columns=('nom', 'prix', 'date'))
+sorter = add_sorting_to_treeview(tree)
+
+# Le système détecte automatiquement les types de données :
+# - Texte : tri alphabétique (insensible à la casse)
+# - Nombres : tri numérique avec support décimaux
+# - Monedas : €25.50, $100.00, £75.25 → tri par valeur
+# - Dates : 2024-01-15, 15/01/2024 → tri chronologique</code></pre>
+
+                <div class="row">
+                    <div class="col">
+                        <h3>🎯 Implémentation dans les Fenêtres</h3>
+                        <pre><code># ui/productos.py - TreeView avec Tri
+columns = ('nombre', 'referencia', 'precio', 'categoria')
+self.productos_tree = ttk.Treeview(container, columns=columns)
+
+# Configurar encabezados
+self.productos_tree.heading('nombre', text='Nombre')
+self.productos_tree.heading('precio', text='Precio')
+
+# ✨ Ajouter tri en une ligne
+self.tree_sorter = add_sorting_to_treeview(self.productos_tree)</code></pre>
+                    </div>
+                    <div class="col">
+                        <h3>🔧 Indicateurs Visuels</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Indicateur</th>
+                                    <th>Signification</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>↕</strong></td>
+                                    <td>Colonne triable</td>
+                                    <td>État initial</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>↑</strong></td>
+                                    <td>Tri ascendant</td>
+                                    <td>Premier clic</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>↓</strong></td>
+                                    <td>Tri descendant</td>
+                                    <td>Second clic</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h4>🎯 Fenêtres avec Tri Implémenté</h4>
+                    <ul>
+                        <li><strong>Productos:</strong> Tri par nom, référence, prix, catégorie</li>
+                        <li><strong>Facturas:</strong> Tri par numéro, date, client, total</li>
+                        <li><strong>Stock:</strong> Tri par produit, référence, stock, état, date</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="navigation-buttons">
             <a href="03-base-datos-avanzada.html" class="btn btn-secondary">⬅️ Base de Datos Avanzada</a>
             <a href="05-sistema-ventanas.html" class="btn btn-primary">Siguiente: Sistema de Ventanas ➡️</a>

@@ -24878,3 +24878,43 @@ ValueError: Test exception
 2025-09-28 18:22:13 - facturacion_facil.productos - DEBUG - productos.py:587 - Actualizando display de imagen. Path: ''
 2025-09-28 18:22:13 - facturacion_facil.productos - DEBUG - productos.py:618 - No hay imagen para mostrar
 2025-09-28 18:22:18 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/for_django/facturacion_facil/logs
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/for_django/facturacion_facil
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-09-29 14:35:28 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:28 - Inicializando ventana de gestión de productos
+2025-09-29 14:35:30 - facturacion_facil.productos - DEBUG - productos.py:181 - Frame principal scrollable creado con tamaño mínimo configurado
+2025-09-29 14:35:30 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-09-29 14:35:30 - facturacion_facil.productos - DEBUG - productos.py:347 - Frame de botones del formulario creado y packed
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:360 - Frame inferior de botones creado: .!ctktoplevel.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:373 - Botón 'Guardar' creado: .!ctktoplevel.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2.!ctkbutton en frame .!ctktoplevel.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:386 - Botón 'Cancelar' creado: .!ctktoplevel.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2.!ctkbutton2 en frame .!ctktoplevel.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-09-29 14:35:30 - facturacion_facil.productos - DEBUG - productos.py:60 - Comportamiento de scrolling configurado
+2025-09-29 14:35:30 - facturacion_facil.productos - DEBUG - productos.py:117 - Scroll de rueda del ratón configurado para todos los widgets
+2025-09-29 14:35:30 - facturacion_facil.productos - DEBUG - productos.py:391 - Cargando lista de productos desde la base de datos
+2025-09-29 14:35:30 - facturacion_facil - DEBUG - logger.py:100 - DB SELECT en productos: Cargados 50 productos
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:418 - Lista de productos actualizada: 50 productos
+2025-09-29 14:35:30 - facturacion_facil.productos - INFO - productos.py:46 - Ventana de productos inicializada correctamente con scrolling habilitado
+2025-09-29 14:35:32 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna nombre (text), reverse=False
+2025-09-29 14:35:33 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna nombre (text), reverse=True
+2025-09-29 14:35:34 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna referencia (text), reverse=False
+2025-09-29 14:35:36 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna referencia (text), reverse=True
+2025-09-29 14:35:36 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna referencia (text), reverse=False
+2025-09-29 14:35:37 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna precio (currency), reverse=False
+2025-09-29 14:35:38 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna categoria (text), reverse=False
+2025-09-29 14:35:39 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna categoria (text), reverse=True
+2025-09-29 14:35:40 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna categoria (text), reverse=False
+2025-09-29 14:35:47 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-09-29 14:35:47 - facturacion_facil.facturaswindow - INFO - facturas.py:380 - Cargadas 39 facturas (OPTIMIZADO - résumé)
+2025-09-29 14:35:47 - facturacion_facil.facturaswindow - INFO - facturas.py:412 - Cargados 50 productos disponibles con información de stock (OPTIMIZADO)
+2025-09-29 14:35:47 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-09-29 14:35:48 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna Total (text), reverse=False
+2025-09-29 14:35:49 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna Total (text), reverse=True
+2025-09-29 14:35:51 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna Número (text), reverse=False
+2025-09-29 14:35:51 - facturacion_facil.treeview_sorter - DEBUG - treeview_sorter.py:74 - Ordenado por columna Número (text), reverse=True

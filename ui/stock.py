@@ -1,10 +1,11 @@
 import customtkinter as ctk
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox, simpledialog, ttk
 from utils.translations import get_text
 from database.models import Stock, Producto, StockMovement
 from database.optimized_models import OptimizedStock
 from common.ui_components import BaseWindow
+from common.treeview_sorter import add_sorting_to_treeview
 from common.custom_dialogs import (
     show_copyable_info, show_copyable_success,
     show_copyable_warning, show_copyable_error,
@@ -271,36 +272,67 @@ class StockWindow:
         self.create_stock_table(main_frame)
 
     def create_stock_table(self, parent):
-        """Crea la tabla de stock"""
-        # Frame contenedor con scroll
+        """Crea la tabla de stock con TreeView ordenable"""
+        # Frame contenedor
         table_frame = ctk.CTkFrame(parent)
         table_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
-        # Encabezados
-        headers_frame = ctk.CTkFrame(table_frame)
-        headers_frame.pack(fill="x", padx=10, pady=(10, 0))
+        # TreeView para stock con columnas ordenables
+        tree_container = tk.Frame(table_frame)
+        tree_container.pack(fill="both", expand=True, padx=10, pady=10)
 
-        headers = [
-            ("Producto", 0.25),
-            ("Referencia", 0.15),
-            ("Stock Actual", 0.12),
-            ("Estado", 0.12),
-            ("Última Actualización", 0.16),
-            ("Acciones", 0.20)
-        ]
+        # Configurar TreeView con columnas
+        columns = ('producto', 'referencia', 'stock_actual', 'estado', 'ultima_actualizacion')
+        self.stock_tree = ttk.Treeview(tree_container, columns=columns, show='headings', height=20)
 
-        for header, width in headers:
-            label = ctk.CTkLabel(
-                headers_frame,
-                text=header,
-                font=ctk.CTkFont(weight="bold")
-            )
-            label.pack(side="left", fill="x", expand=True if width > 0.2 else False,
-                      padx=5, pady=5)
+        # Configurar encabezados de columnas
+        self.stock_tree.heading('producto', text='Producto')
+        self.stock_tree.heading('referencia', text='Referencia')
+        self.stock_tree.heading('stock_actual', text='Stock Actual')
+        self.stock_tree.heading('estado', text='Estado')
+        self.stock_tree.heading('ultima_actualizacion', text='Última Actualización')
 
-        # Frame scrollable para los datos
-        self.scrollable_frame = ctk.CTkScrollableFrame(table_frame)
-        self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        # Configurar ancho de columnas
+        self.stock_tree.column('producto', width=250, minwidth=200)
+        self.stock_tree.column('referencia', width=150, minwidth=120)
+        self.stock_tree.column('stock_actual', width=120, minwidth=100)
+        self.stock_tree.column('estado', width=120, minwidth=100)
+        self.stock_tree.column('ultima_actualizacion', width=160, minwidth=140)
+
+        # Scrollbar para TreeView
+        scrollbar = ttk.Scrollbar(tree_container, orient="vertical", command=self.stock_tree.yview)
+        self.stock_tree.configure(yscrollcommand=scrollbar.set)
+
+        self.stock_tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Configurar ordenación por columnas
+        self.stock_tree_sorter = add_sorting_to_treeview(self.stock_tree)
+
+        # Bind para selección y doble click
+        self.stock_tree.bind("<<TreeviewSelect>>", self.on_stock_select)
+        self.stock_tree.bind("<Double-1>", self.on_stock_double_click)
+
+        # Frame para botones de acción
+        actions_frame = ctk.CTkFrame(table_frame)
+        actions_frame.pack(fill="x", padx=10, pady=(0, 10))
+
+        # Botones de acción
+        actualizar_btn = ctk.CTkButton(
+            actions_frame,
+            text="Actualizar Stock",
+            command=self.actualizar_stock_selected,
+            fg_color="#2E8B57",
+            hover_color="#228B22"
+        )
+        actualizar_btn.pack(side="left", padx=5)
+
+        historial_btn = ctk.CTkButton(
+            actions_frame,
+            text="Ver Historial",
+            command=self.ver_historial_selected
+        )
+        historial_btn.pack(side="left", padx=5)
 
     def load_stock_data(self):
         """Carga los datos de stock desde la base de datos (OPTIMIZADO)"""
@@ -348,41 +380,131 @@ class StockWindow:
                 self.show_error_message("Error", f"Error cargando datos de stock: {e}")
 
     def update_stock_display(self):
-        """Actualiza la visualización de la tabla de stock"""
+        """Actualiza la visualización del TreeView de stock"""
         try:
             self.logger.debug(f"Actualizando display stock: {len(self.filtered_data)} elementos")
 
-            # Limpiar frame scrollable
-            for widget in self.scrollable_frame.winfo_children():
-                widget.destroy()
+            # Limpiar TreeView
+            for item in self.stock_tree.get_children():
+                self.stock_tree.delete(item)
 
             if not self.filtered_data:
-                self.logger.debug("No hay datos filtrados, mostrando mensaje")
-                no_data_label = ctk.CTkLabel(
-                    self.scrollable_frame,
-                    text="No hay productos en stock",
-                    font=ctk.CTkFont(size=16)
-                )
-                no_data_label.pack(pady=50)
+                self.logger.debug("No hay datos filtrados")
                 return
 
-            # Crear filas de datos
-            self.logger.debug(f"Creando {len(self.filtered_data)} filas de stock")
-            for i, item in enumerate(self.filtered_data):
-                self.create_stock_row(item, i)
+            # Insertar datos en TreeView
+            for item in self.filtered_data:
+                # Determinar estado del stock
+                stock_actual = item.get('cantidad_disponible', 0)
+                if stock_actual <= 0:
+                    estado = "Sin stock"
+                    estado_color = "red"
+                elif stock_actual <= 5:
+                    estado = "Stock bajo"
+                    estado_color = "orange"
+                else:
+                    estado = "Disponible"
+                    estado_color = "green"
+
+                # Formatear fecha
+                fecha_actualizacion = item.get('fecha_actualizacion', 'N/A')
+                if fecha_actualizacion and fecha_actualizacion != 'N/A':
+                    try:
+                        from datetime import datetime
+                        if isinstance(fecha_actualizacion, str):
+                            fecha_obj = datetime.strptime(fecha_actualizacion, '%Y-%m-%d %H:%M:%S')
+                        else:
+                            fecha_obj = fecha_actualizacion
+                        fecha_display = fecha_obj.strftime('%d/%m/%Y %H:%M')
+                    except:
+                        fecha_display = str(fecha_actualizacion)
+                else:
+                    fecha_display = 'N/A'
+
+                # Insertar en TreeView
+                tree_item = self.stock_tree.insert('', 'end', values=(
+                    item.get('producto_nombre', 'N/A'),
+                    item.get('referencia', 'N/A'),
+                    str(stock_actual),
+                    estado,
+                    fecha_display
+                ), tags=(str(item.get('producto_id', 0)), estado_color))
 
             self.logger.debug("Display stock actualizado correctamente")
 
         except Exception as e:
             self.logger.error(f"Error actualizando display stock: {e}")
-            # Mostrar mensaje de error en la interfaz
-            error_label = ctk.CTkLabel(
-                self.scrollable_frame,
-                text=f"Error mostrando datos: {e}",
-                font=ctk.CTkFont(size=16),
-                text_color="red"
-            )
-            error_label.pack(pady=50)
+
+    def on_stock_select(self, event):
+        """Maneja la selección de un item en el TreeView de stock"""
+        try:
+            selection = self.stock_tree.selection()
+            if selection:
+                item = selection[0]
+                tags = self.stock_tree.item(item, 'tags')
+                if tags:
+                    self.selected_producto_id = int(tags[0])
+                    values = self.stock_tree.item(item, 'values')
+                    self.logger.info(f"Stock seleccionado: {values[0]} (ID: {self.selected_producto_id})")
+        except Exception as e:
+            self.logger.error(f"Error en selección de stock: {e}")
+
+    def on_stock_double_click(self, event):
+        """Maneja el doble click en un item del TreeView"""
+        try:
+            selection = self.stock_tree.selection()
+            if selection:
+                self.actualizar_stock_selected()
+        except Exception as e:
+            self.logger.error(f"Error en doble click de stock: {e}")
+
+    def actualizar_stock_selected(self):
+        """Actualiza el stock del producto seleccionado"""
+        try:
+            if not hasattr(self, 'selected_producto_id'):
+                show_copyable_warning(self.window, "Advertencia", "Por favor, selecciona un producto primero.")
+                return
+
+            # Buscar el item seleccionado en los datos
+            selected_item = None
+            for item in self.filtered_data:
+                if item.get('producto_id') == self.selected_producto_id:
+                    selected_item = item
+                    break
+
+            if not selected_item:
+                show_copyable_error(self.window, "Error", "No se encontró el producto seleccionado.")
+                return
+
+            self.actualizar_stock(selected_item)
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando stock seleccionado: {e}")
+            show_copyable_error(self.window, "Error", f"Error actualizando stock: {e}")
+
+    def ver_historial_selected(self):
+        """Muestra el historial del producto seleccionado"""
+        try:
+            if not hasattr(self, 'selected_producto_id'):
+                show_copyable_warning(self.window, "Advertencia", "Por favor, selecciona un producto primero.")
+                return
+
+            # Buscar el item seleccionado en los datos
+            selected_item = None
+            for item in self.filtered_data:
+                if item.get('producto_id') == self.selected_producto_id:
+                    selected_item = item
+                    break
+
+            if not selected_item:
+                show_copyable_error(self.window, "Error", "No se encontró el producto seleccionado.")
+                return
+
+            self.mostrar_historial_movimientos(selected_item)
+
+        except Exception as e:
+            self.logger.error(f"Error mostrando historial seleccionado: {e}")
+            show_copyable_error(self.window, "Error", f"Error mostrando historial: {e}")
 
     def create_stock_row(self, item, row_index):
         """Crea una fila de la tabla de stock"""

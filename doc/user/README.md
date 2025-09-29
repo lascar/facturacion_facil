@@ -10,6 +10,8 @@ user/
 ├── GUIDE_UTILISATEUR_PDF_DOWNLOAD.md       # Guide téléchargement PDF
 ├── GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md  # Guide visor PDF complet
 ├── GUIDE_MINI_IMAGES_FACTURAS.md           # Guide mini images facturas
+├── GUIDE_UTILISATEUR_TRI_COLONNES.md       # Guide tri par colonnes
+├── ../TREEVIEW_SORTING.md                  # Guide technique tri (référence)
 └── [futurs guides utilisateur]
 ```
 
@@ -99,6 +101,33 @@ cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 
 # Tests de la fonctionnalité
 ./run_organized_tests.sh ui -k mini_images
+```
+
+### **🔄 Guide Tri par Colonnes** (`GUIDE_UTILISATEUR_TRI_COLONNES.md`)
+**Description** : Guide d'utilisation du système de tri par colonnes
+**Public** : Utilisateurs finaux
+**Contenu** :
+- Utilisation du tri par clic sur les en-têtes
+- Types de données supportés (texte, nombres, dates, prix)
+- Indicateurs visuels et navigation
+- Conseils d'utilisation et dépannage
+
+**Fonctionnalités couvertes** :
+- ✅ Tri ascendant/descendant par clic
+- ✅ Détection automatique des types de données
+- ✅ Indicateurs visuels (↕, ↑, ↓)
+- ✅ Support dans toutes les fenêtres (productos, facturas, stock)
+
+**Utilisation** :
+```bash
+# Consulter le guide
+cat doc/user/GUIDE_UTILISATEUR_TRI_COLONNES.md
+
+# Démonstration interactive
+python test/demo/demo_treeview_sorting.py
+
+# Tests de la fonctionnalité
+python -m pytest test/ui/test_treeview_sorting.py -v
 ```
 
 ## 🚀 **Utilisation des Guides Utilisateur**

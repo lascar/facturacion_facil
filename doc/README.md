@@ -5,6 +5,7 @@
 ```
 doc/
 ├── 📚 README.md                 # Ce guide principal
+├── 🔄 TREEVIEW_SORTING.md       # ✅ Guide du système de tri par colonnes
 ├── 👥 user/                     # Documentation utilisateur
 │   ├── 📄 README.md             # ✅ Guide des documents utilisateur
 │   ├── GUIDE_UTILISATEUR_PDF_DOWNLOAD.md
@@ -16,8 +17,19 @@ doc/
 │   ├── FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 │   ├── RESUME_FINAL_FONCTIONNALITES_PDF.md
 │   └── MINI_IMAGES_FACTURAS_RESUME.md
-└── 🔌 api/                      # Documentation API
-    └── 📄 README.md             # ✅ Guide des APIs et modules
+├── 🔌 api/                      # Documentation API
+│   └── 📄 README.md             # ✅ Guide des APIs et modules
+└── 📚 tutorial_codificacion_html/ # Tutorial de codificación avanzada
+    ├── index.html               # ✅ Tutorial completo (9 chapitres)
+    ├── 01-arquitectura-codigo.html
+    ├── 02-configuracion-sistema.html
+    ├── 03-base-datos-avanzada.html
+    ├── 04-customtkinter-avanzado.html
+    ├── 05-sistema-ventanas.html
+    ├── 06-logging-debugging.html
+    ├── 07-testing-avanzado.html
+    ├── 08-patrones-diseno.html
+    └── 09-optimizacion-performance.html
 ```
 
 ## 📖 **Documentation Organisée par Répertoire**
@@ -60,6 +72,15 @@ Chaque répertoire dispose maintenant de sa propre documentation complète :
 - Configuration et utilisation
 - Optimisation et performance
 - Dépannage et conseils
+
+#### **🔄 Guide Tri par Colonnes**
+**Fichier** : `TREEVIEW_SORTING.md`
+**Description** : Guide complet du système de tri par colonnes dans les TreeView
+**Contenu** :
+- Implémentation du tri par clic sur les en-têtes
+- Support pour différents types de données (texte, nombres, dates, monedas)
+- Indicateurs visuels et UX améliorée
+- API et exemples d'utilisation
 
 ### **Utilisation des Guides**
 

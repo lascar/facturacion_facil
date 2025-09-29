@@ -24,6 +24,7 @@
 - 📱 **Diseño responsivo** que se adapta al tamaño de ventana
 - 🎨 **Colores diferenciados** para cada función
 - 🔍 **Búsqueda avanzada** en todos los módulos
+- 🔄 **Tri par colonnes** avec indicateurs visuels dans toutes les listes
 
 ---
 
@@ -117,6 +118,20 @@ Haz clic en el botón **"Productos"** en la ventana principal.
 2. Haz clic en **"Eliminar"**
 3. Confirma la eliminación
 4. El producto se elimina permanentemente
+
+#### 🔄 Ordenar Lista de Productos
+1. **Clic simple** en cualquier en-tête de colonne (Nom, Référence, Prix, Catégorie)
+2. **Tri ascendant** : Les données s'ordonnent de A-Z, 1-100, etc.
+3. **Clic double** sur la même colonne pour **tri descendant** (Z-A, 100-1)
+4. **Indicateurs visuels** :
+   - ↕ : Colonne triable
+   - ↑ : Tri ascendant actif
+   - ↓ : Tri descendant actif
+
+**Exemples d'utilisation** :
+- Cliquer sur "Prix" → Voir les produits du moins cher au plus cher
+- Double-clic sur "Nom" → Ordre alphabétique inverse
+- Cliquer sur "Catégorie" → Grouper par catégorie
 
 ### Validaciones
 - **Nombre y Referencia**: No pueden estar vacíos

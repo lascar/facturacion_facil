@@ -11,7 +11,7 @@ technical/
 ├── FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md   # Résumé fonctionnalité PDF
 ├── RESUME_FINAL_FONCTIONNALITES_PDF.md     # Résumé final PDF complet
 ├── MINI_IMAGES_FACTURAS_RESUME.md          # Résumé mini images facturas
-└── [futurs documents techniques]
+└── ../TREEVIEW_SORTING.md                  # Guide système tri par colonnes
 ```
 
 ## 🎯 **Objectifs de la Documentation Technique**
@@ -101,6 +101,26 @@ cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
 # Tester les mini images
 ./run_organized_tests.sh ui -k mini_images
 ./run_organized_tests.sh demo -k mini_images
+```
+
+### **🔄 Guide Système de Tri par Colonnes** (`../TREEVIEW_SORTING.md`)
+**Description** : Documentation complète du système de tri par colonnes
+**Contenu** :
+- Architecture du système TreeViewSorter
+- Implémentation dans les fenêtres (productos, facturas, stock)
+- API et utilisation avancée
+- Tests et démonstrations
+
+**Utilisation** :
+```bash
+# Consulter le guide
+cat doc/TREEVIEW_SORTING.md
+
+# Tester le système
+python -m pytest test/ui/test_treeview_sorting.py -v
+
+# Démonstration interactive
+python test/demo/demo_treeview_sorting.py
 ```
 
 ## 🔧 **Utilisation de la Documentation Technique**

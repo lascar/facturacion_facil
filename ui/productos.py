@@ -1,10 +1,11 @@
 import customtkinter as ctk
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 from utils.translations import get_text
 from utils.config import app_config
 from utils.logger import get_logger, log_user_action, log_file_operation, log_exception, log_database_operation
 from database.models import Producto
+from common.treeview_sorter import add_sorting_to_treeview
 import os
 import shutil
 from PIL import Image, ImageTk
@@ -199,18 +200,42 @@ class ProductosWindow:
         list_label = ctk.CTkLabel(left_frame, text="Lista de Productos", font=ctk.CTkFont(size=16, weight="bold"))
         list_label.pack(pady=(10, 5))
         
-        # Frame para la lista con scrollbar
+        # Frame para la lista con TreeView ordenable
         list_frame = ctk.CTkFrame(left_frame)
         list_frame.pack(fill="both", expand=True, padx=10, pady=5)
-        
-        self.productos_listbox = tk.Listbox(list_frame, font=("Arial", 10))
-        scrollbar = tk.Scrollbar(list_frame, orient="vertical", command=self.productos_listbox.yview)
-        self.productos_listbox.configure(yscrollcommand=scrollbar.set)
-        
-        self.productos_listbox.pack(side="left", fill="both", expand=True)
+
+        # TreeView para productos con columnas ordenables
+        tree_container = tk.Frame(list_frame)
+        tree_container.pack(fill="both", expand=True, padx=5, pady=5)
+
+        # Configurar TreeView con columnas
+        columns = ('nombre', 'referencia', 'precio', 'categoria')
+        self.productos_tree = ttk.Treeview(tree_container, columns=columns, show='headings', height=15)
+
+        # Configurar encabezados de columnas
+        self.productos_tree.heading('nombre', text='Nombre')
+        self.productos_tree.heading('referencia', text='Referencia')
+        self.productos_tree.heading('precio', text='Precio')
+        self.productos_tree.heading('categoria', text='Categoría')
+
+        # Configurar ancho de columnas
+        self.productos_tree.column('nombre', width=200, minwidth=150)
+        self.productos_tree.column('referencia', width=120, minwidth=100)
+        self.productos_tree.column('precio', width=80, minwidth=70)
+        self.productos_tree.column('categoria', width=150, minwidth=100)
+
+        # Scrollbar para TreeView
+        scrollbar = ttk.Scrollbar(tree_container, orient="vertical", command=self.productos_tree.yview)
+        self.productos_tree.configure(yscrollcommand=scrollbar.set)
+
+        self.productos_tree.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
-        
-        self.productos_listbox.bind("<<ListboxSelect>>", self.on_producto_select)
+
+        # Configurar ordenación por columnas
+        self.tree_sorter = add_sorting_to_treeview(self.productos_tree)
+
+        # Bind para selección
+        self.productos_tree.bind("<<TreeviewSelect>>", self.on_producto_select)
         
         # Botones de lista
         buttons_frame = ctk.CTkFrame(left_frame)
@@ -370,27 +395,25 @@ class ProductosWindow:
                 self.logger.warning("Ventana no existe, cancelando carga de productos")
                 return
 
-            if not hasattr(self, 'productos_listbox'):
-                self.logger.warning("productos_listbox no existe, cancelando carga")
+            if not hasattr(self, 'productos_tree'):
+                self.logger.warning("productos_tree no existe, cancelando carga")
                 return
 
             self.productos = Producto.get_all()
             log_database_operation("SELECT", "productos", f"Cargados {len(self.productos)} productos")
 
-            # Verificar que el listbox aún existe antes de manipularlo
-            try:
-                self.productos_listbox.delete(0, tk.END)
-            except tk.TclError as tcl_error:
-                self.logger.warning(f"Error al acceder al listbox: {tcl_error}")
-                return
+            # Limpiar TreeView
+            for item in self.productos_tree.get_children():
+                self.productos_tree.delete(item)
 
+            # Insertar productos en TreeView
             for producto in self.productos:
-                display_text = f"{producto.nombre} - {producto.referencia} - €{producto.precio:.2f}"
-                try:
-                    self.productos_listbox.insert(tk.END, display_text)
-                except tk.TclError as tcl_error:
-                    self.logger.warning(f"Error al insertar en listbox: {tcl_error}")
-                    break
+                self.productos_tree.insert('', 'end', values=(
+                    producto.nombre,
+                    producto.referencia,
+                    f"€{producto.precio:.2f}",
+                    producto.categoria or "Sin categoría"
+                ), tags=(str(producto.id),))
 
             self.logger.info(f"Lista de productos actualizada: {len(self.productos)} productos")
         except Exception as e:
@@ -400,17 +423,25 @@ class ProductosWindow:
             self._show_message("error", get_text("error"), f"Error al cargar productos: {str(e)}")
     
     def on_producto_select(self, event):
-        """Maneja la selección de un producto en la lista"""
+        """Maneja la selección de un producto en el TreeView"""
         try:
-            selection = self.productos_listbox.curselection()
+            selection = self.productos_tree.selection()
             if selection:
-                index = selection[0]
-                self.selected_producto = self.productos[index]
-                self.logger.info(f"Producto seleccionado: {self.selected_producto.nombre} (ID: {getattr(self.selected_producto, 'id', 'N/A')})")
-                self.logger.debug(f"Imagen del producto: {getattr(self.selected_producto, 'imagen_path', 'N/A')}")
-                self.load_producto_to_form()
+                item = selection[0]
+                # Obtener el ID del producto desde los tags
+                tags = self.productos_tree.item(item, 'tags')
+                if tags:
+                    producto_id = int(tags[0])
+                    # Buscar el producto por ID
+                    self.selected_producto = next((p for p in self.productos if p.id == producto_id), None)
+                    if self.selected_producto:
+                        self.logger.info(f"Producto seleccionado: {self.selected_producto.nombre} (ID: {self.selected_producto.id})")
+                        self.logger.debug(f"Imagen del producto: {getattr(self.selected_producto, 'imagen_path', 'N/A')}")
+                        self.load_producto_to_form()
+                    else:
+                        self.logger.warning(f"No se encontró producto con ID: {producto_id}")
             else:
-                self.logger.debug("No hay selección en la lista")
+                self.logger.debug("No hay selección en el TreeView")
         except Exception as e:
             log_exception(e, "on_producto_select")
             self.logger.error(f"Error al seleccionar producto: {str(e)}")
