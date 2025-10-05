@@ -13,7 +13,7 @@ from database.database import db
 from database.models import Producto, Stock, Factura, FacturaItem
 from utils.logger import get_logger
 
-def test_simple_stock_problem():
+def demo_simple_stock_problem():
     """Test simple pour reproduire le problème"""
     
     print("🧪 TEST SIMPLE - Problème de Stock")
@@ -138,7 +138,7 @@ def test_simple_stock_problem():
         traceback.print_exc()
         return False
 
-def test_stock_update_method():
+def demo_stock_update_method():
     """Test isolé de la méthode Stock.update_stock"""
     print("\n🔬 TEST ISOLÉ - Stock.update_stock")
     print("-" * 40)
@@ -191,11 +191,11 @@ if __name__ == "__main__":
     
     # Test 1: Méthode isolée
     print("FASE 1: Test de la méthode Stock.update_stock")
-    success1 = test_stock_update_method()
+    success1 = demo_stock_update_method()
     
     print("\n" + "=" * 60)
     print("FASE 2: Test du problème complet")
-    success2 = test_simple_stock_problem()
+    success2 = demo_simple_stock_problem()
     
     print("\n" + "=" * 60)
     print("📊 RÉSULTATS:")

@@ -133,7 +133,7 @@ def debug_inheritance():
     except Exception as e:
         print(f"   ❌ Erreur lors de la vérification des imports: {e}")
 
-def test_method_resolution():
+def demo_method_resolution():
     """Tester la résolution de méthodes avec un exemple simple"""
     
     print("\n🧪 TEST - Résolution de Méthodes")
@@ -222,7 +222,7 @@ if __name__ == "__main__":
     debug_inheritance()
     
     # Test 2: Test de résolution de méthodes
-    success1 = test_method_resolution()
+    success1 = demo_method_resolution()
     
     # Test 3: Vérification de l'intégrité du mixin
     success2 = check_mixin_integrity()

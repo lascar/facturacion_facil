@@ -132,7 +132,7 @@ def create_direct_stock_dialog(parent, title, message):
         print(f"Error creando diálogo directo: {e}")
         return None
 
-def test_direct_dialog():
+def demo_direct_dialog():
     """Test del diálogo directo"""
     
     print("🧪 TEST - Diálogo Directo con Botones CONFIRMAR/CANCELAR")
@@ -247,7 +247,7 @@ if __name__ == "__main__":
     print("🚀 INICIANDO TEST DE DIÁLOGO DIRECTO")
     print("=" * 70)
     
-    result = test_direct_dialog()
+    result = demo_direct_dialog()
     
     print("\n" + "=" * 70)
     print("📊 RESUMEN:")

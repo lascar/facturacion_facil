@@ -133,7 +133,7 @@ def monitor_stock_changes(productos_data, duration=120):
     
     return cambios_totales
 
-def test_interface_with_debug():
+def demo_interface_with_debug():
     """Test con interfaz gráfica y debug activado"""
     
     print("🧪 TEST INTERFAZ CON DEBUG - Problema de Stock")
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     print("🚀 INICIANDO TEST DE INTERFAZ CON DEBUG")
     print("=" * 70)
     
-    success = test_interface_with_debug()
+    success = demo_interface_with_debug()
     
     print("\n" + "=" * 70)
     if success:

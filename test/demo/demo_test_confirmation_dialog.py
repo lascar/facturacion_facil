@@ -27,7 +27,7 @@ class TestFacturasMethodsMixin(FacturasMethodsMixin):
         """Simuler l'affichage de messages"""
         print(f"[{msg_type.upper()}] {title}: {message}")
 
-def test_confirmation_dialog():
+def demo_confirmation_dialog():
     """Test du dialogue de confirmation"""
     
     print("🧪 TEST - Dialogue de Confirmation de Stock")
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     print("🚀 INICIANDO TEST DE DIÁLOGO DE CONFIRMACIÓN")
     print("=" * 70)
     
-    success = test_confirmation_dialog()
+    success = demo_confirmation_dialog()
     
     print("\n" + "=" * 70)
     if success:

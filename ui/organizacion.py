@@ -76,15 +76,27 @@ class OrganizacionWindow:
                 self.window.attributes('-topmost', False)
             except:
                 pass
-            # Fallback sin parent
-            if msg_type == "info":
-                return messagebox.showinfo(title, message)
-            elif msg_type == "error":
-                return messagebox.showerror(title, message)
-            elif msg_type == "question":
-                return messagebox.askyesno(title, message)
-            else:
-                return messagebox.showinfo(title, message)
+            # Fallback sin parent - usar diálogos copiables
+            try:
+                from common.custom_dialogs import show_copyable_info, show_copyable_error, show_copyable_confirm
+                if msg_type == "info":
+                    return show_copyable_info(None, title, message)
+                elif msg_type == "error":
+                    return show_copyable_error(None, title, message)
+                elif msg_type == "question":
+                    return show_copyable_confirm(None, title, message)
+                else:
+                    return show_copyable_info(None, title, message)
+            except Exception as fallback_error:
+                # Último fallback con messagebox estándar
+                if msg_type == "info":
+                    return messagebox.showinfo(title, message)
+                elif msg_type == "error":
+                    return messagebox.showerror(title, message)
+                elif msg_type == "question":
+                    return messagebox.askyesno(title, message)
+                else:
+                    return messagebox.showinfo(title, message)
 
     def create_widgets(self):
         """Crear todos los widgets de la interfaz"""
@@ -413,16 +425,68 @@ class OrganizacionWindow:
             FormHelper.set_entry_value(self.visor_pdf_entry, self.organizacion.visor_pdf_personalizado)
             FormHelper.set_entry_value(self.numero_inicial_entry, str(self.organizacion.numero_factura_inicial))
 
-            # Cargar logo si existe
-            if self.organizacion.logo_path and os.path.exists(self.organizacion.logo_path):
-                self.logo_path = self.organizacion.logo_path
-                self.load_logo_image(self.logo_path)
+            # Cargar logo con manejo robusto de archivos faltantes
+            if self.organizacion.logo_path:
+                if os.path.exists(self.organizacion.logo_path):
+                    self.logo_path = self.organizacion.logo_path
+                    self.load_logo_image(self.logo_path)
+                else:
+                    # Logo configurado pero archivo faltante
+                    self.logger.warning(f"Logo configurado pero archivo faltante: {self.organizacion.logo_path}")
+                    self._handle_missing_logo_file()
+            else:
+                # No hay logo configurado
+                self.logo_path = ""
 
             self.logger.info("Datos de organización cargados correctamente")
 
         except Exception as e:
             log_exception(e, "load_organizacion_data")
             self.logger.error(f"Error cargando datos de organización: {e}")
+
+    def _handle_missing_logo_file(self):
+        """Manejar archivo de logo faltante con opciones de recuperación"""
+        try:
+            # Buscar logos disponibles en el directorio
+            available_logos = self.logo_manager.list_logos()
+
+            if available_logos:
+                # Usar el primer logo disponible como fallback
+                fallback_logo = available_logos[0]
+                self.logger.info(f"Usando logo de fallback: {os.path.basename(fallback_logo)}")
+
+                # Actualizar la organización con el logo de fallback
+                self.organizacion.logo_path = fallback_logo
+                self.organizacion.save()
+
+                # Cargar el logo de fallback
+                self.logo_path = fallback_logo
+                self.load_logo_image(self.logo_path)
+
+                # Mostrar mensaje informativo al usuario
+                self._show_message("info", "Logo Recuperado",
+                    f"El logo anterior no estaba disponible.\n"
+                    f"Se ha configurado automáticamente: {os.path.basename(fallback_logo)}")
+            else:
+                # No hay logos disponibles, limpiar configuración
+                self.logger.warning("No hay logos disponibles, limpiando configuración")
+                self.organizacion.logo_path = ""
+                self.organizacion.save()
+                self.logo_path = ""
+
+                # Mostrar estado sin logo
+                self.remove_logo()
+
+                # Mostrar mensaje informativo
+                self._show_message("warning", "Logo No Disponible",
+                    "El logo configurado no está disponible y no se encontraron logos alternativos.\n"
+                    "Puedes seleccionar un nuevo logo usando el botón 'Seleccionar Logo'.")
+
+        except Exception as e:
+            self.logger.error(f"Error manejando logo faltante: {e}")
+            # En caso de error, simplemente limpiar la configuración
+            self.logo_path = ""
+            self.remove_logo()
 
     def select_logo(self):
         """Seleccionar archivo de logo"""
@@ -482,9 +546,15 @@ class OrganizacionWindow:
     def load_logo_image(self, image_path):
         """Cargar y mostrar imagen del logo con manejo robusto de errores TclError"""
         try:
+            if not image_path:
+                self.logger.warning("Ruta de imagen vacía")
+                self.remove_logo()
+                return
+
             if not os.path.exists(image_path):
                 self.logger.warning(f"Archivo de logo no existe: {image_path}")
-                self.remove_logo()
+                # Intentar manejar archivo faltante
+                self._handle_missing_logo_file()
                 return
 
             # Actualizar la ruta del logo ANTES de cualquier operación

@@ -8,6 +8,7 @@ import tkinter as tk
 from tkinter import messagebox
 from utils.translations import get_text
 from utils.logger import get_logger
+from common.custom_dialogs import show_copyable_error, show_copyable_info
 
 logger = get_logger(__name__)
 from utils.factura_numbering import factura_numbering_service
@@ -231,16 +232,19 @@ class ConfiguracionFacturasDialog:
             # Validar número inicial
             numero_inicial_str = self.numero_inicial_var.get().strip()
             if not numero_inicial_str:
-                messagebox.showerror("Error", "El número inicial es obligatorio")
+                show_copyable_error(self.dialog, "Error de Validación",
+                                  "El número inicial es obligatorio.\n\nPor favor, ingrese un número inicial para la numeración de facturas.")
                 return
-            
+
             try:
                 numero_inicial = int(numero_inicial_str)
                 if numero_inicial <= 0:
-                    messagebox.showerror("Error", "El número inicial debe ser mayor que 0")
+                    show_copyable_error(self.dialog, "Error de Validación",
+                                      "El número inicial debe ser mayor que 0.\n\nPor favor, ingrese un número positivo.")
                     return
             except ValueError:
-                messagebox.showerror("Error", "El número inicial debe ser un número válido")
+                show_copyable_error(self.dialog, "Error de Validación",
+                                  f"El número inicial debe ser un número válido.\n\nValor ingresado: '{numero_inicial_str}'\nPor favor, ingrese solo números.")
                 return
             
             # Obtener valores
@@ -256,14 +260,17 @@ class ConfiguracionFacturasDialog:
             
             if success:
                 self.result = True
-                messagebox.showinfo("Éxito", "Configuración guardada correctamente")
+                show_copyable_info(self.dialog, "Configuración Guardada",
+                                 "✅ Configuración guardada correctamente.\n\nLa nueva configuración de numeración se aplicará a las próximas facturas.")
                 self.dialog.destroy()
             else:
-                messagebox.showerror("Error", "Error al guardar la configuración")
-                
+                show_copyable_error(self.dialog, "Error al Guardar",
+                                  "❌ Error al guardar la configuración.\n\nPor favor, verifique los datos ingresados e intente nuevamente.")
+
         except Exception as e:
             logger.error(f"Error guardando configuración: {e}")
-            messagebox.showerror("Error", f"Error al guardar: {str(e)}")
+            show_copyable_error(self.dialog, "Error Técnico",
+                              f"❌ Error técnico al guardar la configuración:\n\n{str(e)}\n\nPor favor, contacte al soporte técnico si el problema persiste.")
 
     def establecer_nueva_serie(self):
         """Establecer una nueva serie de numeración personalizada"""
@@ -271,24 +278,28 @@ class ConfiguracionFacturasDialog:
             numero_serie = self.serie_personalizada_var.get().strip()
 
             if not numero_serie:
-                messagebox.showerror("Error", "Debe ingresar un número para la nueva serie")
+                show_copyable_error(self.dialog, "Error de Validación",
+                                  "Debe ingresar un número para la nueva serie.\n\nPor favor, especifique el número inicial para la nueva serie de numeración.")
                 return
 
             # Usar el servicio de numeración para establecer la nueva serie
             success, message = factura_numbering_service.set_nueva_serie_numeracion(numero_serie)
 
             if success:
-                messagebox.showinfo("Éxito", message)
+                show_copyable_info(self.dialog, "Nueva Serie Establecida",
+                                 f"✅ {message}\n\nLa nueva serie de numeración ha sido configurada correctamente.")
                 # Limpiar el campo de serie personalizada
                 self.serie_personalizada_var.set("")
                 # Actualizar la configuración mostrada
                 self.load_current_config()
             else:
-                messagebox.showerror("Error", message)
+                show_copyable_error(self.dialog, "Error al Establecer Serie",
+                                  f"❌ {message}\n\nNo se pudo establecer la nueva serie de numeración.")
 
         except Exception as e:
             logger.error(f"Error estableciendo nueva serie: {e}")
-            messagebox.showerror("Error", f"Error al establecer nueva serie: {str(e)}")
+            show_copyable_error(self.dialog, "Error Técnico",
+                              f"❌ Error técnico al establecer nueva serie:\n\n{str(e)}\n\nPor favor, contacte al soporte técnico si el problema persiste.")
 
     def cancel(self):
         """Cancelar el diálogo"""

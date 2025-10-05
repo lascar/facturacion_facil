@@ -36,13 +36,13 @@ class TestTreeViewSorter:
         tree.heading('fecha', text='Fecha')
         tree.heading('cantidad', text='Cantidad')
         
-        # Datos de ejemplo
+        # Datos de ejemplo (en orden no alfabético para probar sorting)
         sample_data = [
+            ('Producto E', '€45.99', '2024-02-28', '15'),
             ('Producto A', '€25.50', '2024-01-15', '10'),
-            ('Producto B', '€15.75', '2024-02-20', '5'),
-            ('Producto C', '€35.00', '2024-01-10', '20'),
             ('Producto D', '€8.25', '2024-03-05', '2'),
-            ('Producto E', '€45.99', '2024-02-28', '15')
+            ('Producto B', '€15.75', '2024-02-20', '5'),
+            ('Producto C', '€35.00', '2024-01-10', '20')
         ]
         
         for data in sample_data:

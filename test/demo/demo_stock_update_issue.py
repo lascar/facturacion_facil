@@ -195,7 +195,7 @@ def demo_stock_update_issue():
         print(f"\n❌ Error durante el diagnóstico: {e}")
         return False
 
-def test_stock_update_method():
+def demo_stock_update_method():
     """Test específico del método Stock.update_stock"""
     print("\n🧪 TEST ESPECÍFICO - Método Stock.update_stock")
     print("-" * 50)
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     print()
     
     success1 = demo_stock_update_issue()
-    success2 = test_stock_update_method()
+    success2 = demo_stock_update_method()
     
     if success1 and success2:
         print("\n🎯 DIAGNÓSTICO COMPLETADO")

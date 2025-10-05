@@ -152,7 +152,7 @@ class TestLogoPersistenceRealApp:
             print(f"   💡 Solution: sélectionner un nouveau logo dans l'interface")
             return False
     
-    def test_create_demo_logo_for_testing(self):
+    def test_create_logo_for_testing(self):
         """Créer un logo de démonstration pour tester la persistance"""
         print(f"\n🎨 Création d'un logo de démonstration")
         print(f"=" * 40)

@@ -58,15 +58,26 @@ class BaseWindow:
                 elif message_type == "yesno":
                     return show_copyable_confirm(self.window, title, message)
             else:
-                # Fallback con messagebox estándar si la ventana no existe
-                if message_type == "info":
-                    messagebox.showinfo(title, message)
-                elif message_type == "error":
-                    messagebox.showerror(title, message)
-                elif message_type == "warning":
-                    messagebox.showwarning(title, message)
-                elif message_type == "yesno":
-                    return messagebox.askyesno(title, message)
+                # Fallback con diálogos copiables sin parent
+                try:
+                    if message_type == "info":
+                        return show_copyable_info(None, title, message)
+                    elif message_type == "error":
+                        return show_copyable_error(None, title, message)
+                    elif message_type == "warning":
+                        return show_copyable_warning(None, title, message)
+                    elif message_type == "yesno":
+                        return show_copyable_confirm(None, title, message)
+                except Exception:
+                    # Último fallback con messagebox estándar
+                    if message_type == "info":
+                        messagebox.showinfo(title, message)
+                    elif message_type == "error":
+                        messagebox.showerror(title, message)
+                    elif message_type == "warning":
+                        messagebox.showwarning(title, message)
+                    elif message_type == "yesno":
+                        return messagebox.askyesno(title, message)
 
         except Exception as e:
             self.logger.error(f"Error al mostrar mensaje copiable: {e}")

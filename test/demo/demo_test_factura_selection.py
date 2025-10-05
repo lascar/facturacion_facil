@@ -13,7 +13,7 @@ from database.database import db
 from database.models import Factura, FacturaItem, Producto, Stock
 from utils.logger import get_logger
 
-def test_factura_selection():
+def demo_factura_selection():
     """Test de la sélection de factura"""
     
     print("🧪 TEST - Sélection de Factura et Exportation PDF")
@@ -239,7 +239,7 @@ if __name__ == "__main__":
     print("🚀 INICIANDO TEST DE SELECCIÓN DE FACTURA")
     print("=" * 70)
     
-    success = test_factura_selection()
+    success = demo_factura_selection()
     
     if success:
         print("\n✅ TEST EXITOSO")

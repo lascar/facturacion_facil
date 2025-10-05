@@ -38,7 +38,7 @@ def run_test_with_timeout(script_path, description, timeout=30):
         print(f"❌ ERROR: {e}")
         return False
 
-def test_complete_solution():
+def demo_complete_solution():
     """Test completo de toda la solución"""
     
     print("🧪 TEST COMPLETO - Solución Stock + PDF")
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     print("   • ✅ Exportación de facturas a PDF")
     print("   • ✅ Integración completa del sistema")
     
-    success = test_complete_solution()
+    success = demo_complete_solution()
     
     print("\n" + "=" * 70)
     print("🏁 RESULTADO FINAL:")

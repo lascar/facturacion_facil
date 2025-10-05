@@ -254,12 +254,12 @@ class FacturasMethodsMixin:
             root.attributes('-topmost', True)
 
             # Mostrar diálogo con botones personalizados
-            result = messagebox.askyesno(
+            result = show_copyable_confirm(
+                root,
                 "Confirmar Procesamiento de Factura",
                 f"{message}\n\n¿Desea continuar y procesar la factura?\n\n"
                 f"• SÍ = Confirmar y procesar\n"
-                f"• NO = Cancelar operación",
-                icon='question'
+                f"• NO = Cancelar operación"
             )
 
             root.destroy()
@@ -362,11 +362,13 @@ class FacturasMethodsMixin:
                 # Verificar stock disponible
                 stock_disponible = Stock.get_by_product(producto_id)
                 if stock_disponible < cantidad:
-                    if not messagebox.askyesno("Stock Insuficiente",
-                                             f"Stock disponible: {stock_disponible}\n"
-                                             f"Cantidad solicitada: {cantidad}\n\n"
-                                             "¿Desea continuar de todos modos?",
-                                             parent=self.window):
+                    if not show_copyable_confirm(self.window, "Stock Insuficiente",
+                                               f"⚠️ Stock insuficiente detectado:\n\n"
+                                               f"📦 Stock disponible: {stock_disponible}\n"
+                                               f"📋 Cantidad solicitada: {cantidad}\n"
+                                               f"❌ Faltante: {cantidad - stock_disponible}\n\n"
+                                               "¿Desea continuar de todos modos?\n\n"
+                                               "💡 Nota: Esto puede generar stock negativo."):
                         return
                 
                 # Crear item de factura

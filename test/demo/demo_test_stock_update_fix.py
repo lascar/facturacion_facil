@@ -28,7 +28,7 @@ class TestFacturasMethodsMixin(FacturasMethodsMixin):
         """Simuler l'affichage de messages"""
         print(f"[{msg_type.upper()}] {title}: {message}")
 
-def test_stock_update_with_logging():
+def demo_stock_update_with_logging():
     """Test complet avec logging détaillé"""
     
     print("🧪 TEST - Correction de mise à jour du stock avec logging")
@@ -165,7 +165,7 @@ def test_stock_update_with_logging():
         traceback.print_exc()
         return False
 
-def test_direct_method_call():
+def demo_direct_method_call():
     """Test directo del método Stock.update_stock"""
     print("\n🔬 TEST DIRECTO - Método Stock.update_stock")
     print("-" * 50)
@@ -215,10 +215,10 @@ if __name__ == "__main__":
     print()
     
     # Test 1: Méthode directe
-    success1 = test_direct_method_call()
+    success1 = demo_direct_method_call()
     
     # Test 2: Avec logging complet
-    success2 = test_stock_update_with_logging()
+    success2 = demo_stock_update_with_logging()
     
     print("\n📊 RESUMEN DE TESTS:")
     print(f"   Test método directo: {'✅ ÉXITO' if success1 else '❌ FALLO'}")

@@ -65,7 +65,7 @@ def demo_stock_error_fix():
         print("\n3️⃣ Test de la méthode corrigée...")
         
         # Simuler l'utilisation correcte dans facturas_methods.py
-        def test_stock_verification_corrected(producto_id, cantidad_solicitada):
+        def demo_stock_verification_corrected(producto_id, cantidad_solicitada):
             """Simulation de la méthode corrigée"""
             # AVANT (INCORRECT): stock.cantidad_disponible
             # APRÈS (CORRECT): stock_disponible directement
@@ -83,7 +83,7 @@ def demo_stock_error_fix():
         
         # Test avec stock insuficiente
         print("   🧪 Test con stock insuficiente (0 < 5):")
-        result1 = test_stock_verification_corrected(producto_test.id, 5)
+        result1 = demo_stock_verification_corrected(producto_test.id, 5)
         assert not result1, "Debería retornar False para stock insuficiente"
         
         # Agregar stock
@@ -96,7 +96,7 @@ def demo_stock_error_fix():
         
         # Test con stock suficiente
         print("   🧪 Test con stock suficiente (10 >= 5):")
-        result2 = test_stock_verification_corrected(producto_test.id, 5)
+        result2 = demo_stock_verification_corrected(producto_test.id, 5)
         assert result2, "Debería retornar True para stock suficiente"
         
         print("\n5️⃣ Verificación de métodos Stock...")
@@ -150,7 +150,7 @@ def demo_stock_error_fix():
         print(f"\n❌ Error durante la demostración: {e}")
         return False
 
-def test_all_stock_methods():
+def demo_all_stock_methods():
     """Test adicional de todos los métodos de Stock"""
     print("\n🧪 TEST ADICIONAL - Todos los métodos Stock")
     print("-" * 50)
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     print()
     
     success1 = demo_stock_error_fix()
-    success2 = test_all_stock_methods()
+    success2 = demo_all_stock_methods()
     
     if success1 and success2:
         print("\n🎉 ¡TODAS LAS PRUEBAS EXITOSAS!")

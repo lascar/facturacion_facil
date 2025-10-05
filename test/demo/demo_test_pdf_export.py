@@ -15,7 +15,7 @@ from database.models import Factura
 from ui.facturas import FacturasWindow
 from utils.logger import get_logger
 
-def test_pdf_export_with_gui():
+def demo_pdf_export_with_gui():
     """Test de l'exportation PDF avec interface graphique"""
     
     print("🧪 TEST - Exportation PDF avec Interface Graphique")
@@ -165,7 +165,7 @@ def test_pdf_export_with_gui():
         traceback.print_exc()
         return False
 
-def test_direct_pdf_method():
+def demo_direct_pdf_method():
     """Test directo del método de exportación PDF"""
     
     print("\n🔬 TEST DIRECTO - Método exportar_pdf")
@@ -229,12 +229,12 @@ if __name__ == "__main__":
     
     # Test 1: Método directo
     print("FASE 1: Test directo del método")
-    success1 = test_direct_pdf_method()
+    success1 = demo_direct_pdf_method()
     
     if success1:
         print("\n" + "=" * 70)
         print("FASE 2: Test con interfaz gráfica")
-        success2 = test_pdf_export_with_gui()
+        success2 = demo_pdf_export_with_gui()
     else:
         print("\n❌ Test directo falló - No continuar con interfaz gráfica")
         success2 = False

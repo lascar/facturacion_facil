@@ -8,6 +8,7 @@ from utils.translations import get_text
 from utils.logger import get_logger
 from common.validators import FormValidator, CalculationHelper
 from common.ui_components import FormHelper
+from common.simple_producto_autocomplete import SimpleProductoAutocomplete
 from database.models import Stock
 
 class ProductoFacturaDialog:
@@ -32,6 +33,14 @@ class ProductoFacturaDialog:
         self.precio_inicial = precio_inicial
         self.iva_inicial = iva_inicial
         self.descuento_inicial = descuento_inicial
+
+        # Initialize attributes that might be needed by tests
+        self.producto_autocomplete = None
+        self.info_label = None
+        self.precio_entry = None
+        self.iva_entry = None
+        self.cantidad_entry = None
+        self.descuento_entry = None
 
         self.create_widgets()
 
@@ -88,55 +97,170 @@ class ProductoFacturaDialog:
                 self.on_producto_selected(productos_names[0])
 
     def create_producto_selection(self, parent):
-        """Crea la sección de selección de producto"""
+        """Crea la sección de selección de producto con autocompletado"""
         selection_frame = ctk.CTkFrame(parent)
         selection_frame.pack(fill="x", padx=10, pady=10)
-        
-        ctk.CTkLabel(selection_frame, text="Seleccionar Producto:",
+
+        ctk.CTkLabel(selection_frame, text="Buscar Producto:",
                    font=ctk.CTkFont(size=14, weight="bold")).pack(pady=(10, 5))
-        
-        # ComboBox para productos con información de stock
-        productos_names = []
-        for p in self.productos_disponibles:
-            stock_actual = Stock.get_by_product(p.id)
-            stock_info = f"Stock: {stock_actual}"
-            if stock_actual == 0:
-                stock_info = "🔴 Sin Stock"
-            elif stock_actual <= 5:
-                stock_info = f"🟠 Stock Bajo: {stock_actual}"
-            elif stock_actual <= 10:
-                stock_info = f"🟡 Stock: {stock_actual}"
-            else:
-                stock_info = f"🟢 Stock: {stock_actual}"
 
-            producto_text = f"{p.nombre} ({p.referencia}) - {CalculationHelper.format_currency(p.precio)} - {stock_info}"
-            productos_names.append(producto_text)
-        
-        self.producto_combo = ctk.CTkComboBox(selection_frame, values=productos_names,
-                                            command=self.on_producto_selected, width=400)
-        self.producto_combo.pack(padx=10, pady=5)
+        # Widget de autocompletado para productos
+        self.producto_autocomplete = SimpleProductoAutocomplete(
+            selection_frame,
+            placeholder_text="Escriba el nombre o referencia del producto...",
+            include_stock_info=True,
+            width=450
+        )
+        self.producto_autocomplete.pack(fill="x", padx=10, pady=5)
 
-        # Información del producto seleccionado (crear antes de la inicialización)
+        # Configurar callback para cuando se selecciona un producto
+        self.producto_autocomplete.set_on_select_callback(self.on_producto_autocomplete_selected)
+
+        # Información del producto seleccionado
         self.info_frame = ctk.CTkFrame(selection_frame)
         self.info_frame.pack(fill="x", padx=10, pady=5)
 
-        self.info_label = ctk.CTkLabel(self.info_frame, text="Seleccione un producto para ver detalles",
+        self.info_label = ctk.CTkLabel(self.info_frame, text="Escriba para buscar y seleccionar un producto",
                                      wraplength=400)
         self.info_label.pack(pady=10)
 
-        # Botón para actualizar stock
-        refresh_btn = ctk.CTkButton(
-            selection_frame,
-            text="🔄 Actualizar Stock",
-            command=self.refresh_stock_info,
-            width=150,
-            height=25
-        )
-        refresh_btn.pack(pady=5)
+        # Frame para botones de acción
+        buttons_frame = ctk.CTkFrame(selection_frame)
+        buttons_frame.pack(fill="x", padx=10, pady=5)
 
-        # Marcar que necesitamos inicializar el primer producto después
-        self._needs_auto_init = not self.producto_seleccionado and productos_names
-    
+        # Botón para actualizar datos
+        refresh_btn = ctk.CTkButton(
+            buttons_frame,
+            text="🔄 Actualizar Datos",
+            command=self.refresh_productos_data,
+            width=150,
+            height=30
+        )
+        refresh_btn.pack(side="left", padx=5, pady=5)
+
+        # Botón para limpiar selección
+        clear_btn = ctk.CTkButton(
+            buttons_frame,
+            text="🗑️ Limpiar",
+            command=self.clear_producto_selection,
+            width=100,
+            height=30,
+            fg_color="gray"
+        )
+        clear_btn.pack(side="left", padx=5, pady=5)
+
+        # Inicializar con producto seleccionado si existe
+        if self.producto_seleccionado:
+            self.set_initial_producto()
+
+    def on_producto_autocomplete_selected(self, producto_data):
+        """Callback cuando se selecciona un producto en el autocompletado"""
+        try:
+            self.logger.info(f"Producto seleccionado: {producto_data['nombre']} - {producto_data['referencia']}")
+
+            # Actualizar información del producto
+            self.update_producto_info(producto_data)
+
+            # Cargar datos en los campos de configuración
+            self.load_producto_config_data(producto_data)
+
+            # Actualizar preview de totales
+            self.update_totales_preview()
+
+        except Exception as e:
+            self.logger.error(f"Error al seleccionar producto: {e}")
+
+    def update_producto_info(self, producto_data):
+        """Actualiza la información mostrada del producto seleccionado"""
+        try:
+            info_parts = [
+                f"📦 {producto_data['nombre']}",
+                f"🏷️ Ref: {producto_data['referencia']}",
+                f"💰 Precio: {CalculationHelper.format_currency(producto_data['precio'])}",
+            ]
+
+            if producto_data['categoria']:
+                info_parts.append(f"📂 Categoría: {producto_data['categoria']}")
+
+            if producto_data['stock_info']:
+                info_parts.append(f"📊 {producto_data['stock_info'].strip()}")
+
+            if producto_data['descripcion']:
+                info_parts.append(f"📝 {producto_data['descripcion'][:100]}...")
+
+            info_text = "\n".join(info_parts)
+            self.info_label.configure(text=info_text)
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando info del producto: {e}")
+            self.info_label.configure(text="Error mostrando información del producto")
+
+    def load_producto_config_data(self, producto_data):
+        """Carga los datos del producto en los campos de configuración"""
+        try:
+            # Establecer precio si no se ha especificado uno inicial
+            if self.precio_inicial is None:
+                self.precio_entry.delete(0, tk.END)
+                self.precio_entry.insert(0, str(producto_data['precio']))
+
+            # Establecer IVA si no se ha especificado uno inicial
+            if self.iva_inicial is None:
+                self.iva_entry.delete(0, tk.END)
+                self.iva_entry.insert(0, str(producto_data['iva_recomendado']))
+
+            # Establecer cantidad inicial si no se ha especificado
+            if not self.cantidad_entry.get():
+                self.cantidad_entry.delete(0, tk.END)
+                self.cantidad_entry.insert(0, str(self.cantidad_inicial))
+
+            # Establecer descuento inicial
+            if not self.descuento_entry.get():
+                self.descuento_entry.delete(0, tk.END)
+                self.descuento_entry.insert(0, str(self.descuento_inicial))
+
+        except Exception as e:
+            self.logger.error(f"Error cargando configuración del producto: {e}")
+
+    def refresh_productos_data(self):
+        """Refresca los datos de productos en el autocompletado"""
+        try:
+            self.producto_autocomplete.refresh_data()
+            self.logger.info("Datos de productos actualizados")
+        except Exception as e:
+            self.logger.error(f"Error refrescando datos de productos: {e}")
+
+    def clear_producto_selection(self):
+        """Limpia la selección de producto"""
+        try:
+            self.producto_autocomplete.clear()
+            self.info_label.configure(text="Escriba para buscar y seleccionar un producto")
+
+            # Limpiar campos de configuración
+            self.precio_entry.delete(0, tk.END)
+            self.iva_entry.delete(0, tk.END)
+            self.cantidad_entry.delete(0, tk.END)
+            self.cantidad_entry.insert(0, "1")
+            self.descuento_entry.delete(0, tk.END)
+            self.descuento_entry.insert(0, "0")
+
+            # Actualizar preview
+            self.update_totales_preview()
+
+            self.logger.info("Selección de producto limpiada")
+        except Exception as e:
+            self.logger.error(f"Error limpiando selección: {e}")
+
+    def set_initial_producto(self):
+        """Establece el producto inicial si existe"""
+        try:
+            if self.producto_seleccionado:
+                # Buscar el producto por ID en el autocompletado
+                success = self.producto_autocomplete.set_producto_by_id(self.producto_seleccionado.id)
+                if not success:
+                    self.logger.warning(f"No se pudo establecer producto inicial con ID: {self.producto_seleccionado.id}")
+        except Exception as e:
+            self.logger.error(f"Error estableciendo producto inicial: {e}")
+
     def create_producto_config(self, parent):
         """Crea la sección de configuración del producto"""
         config_frame = ctk.CTkFrame(parent)
@@ -237,7 +361,7 @@ class ProductoFacturaDialog:
         accept_btn.pack(side="right", padx=10)
     
     def on_producto_selected(self, selection):
-        """Maneja la selección de un producto"""
+        """Maneja la selección de un producto (método de compatibilidad para tests)"""
         try:
             if not selection:
                 return
@@ -249,10 +373,11 @@ class ProductoFacturaDialog:
 
             if not producto:
                 # Fallback: usar el valor actual del combo
-                combo_value = self.producto_combo.get()
-                if combo_value:
-                    nombre_producto = combo_value.split(" (")[0]
-                    producto = next((p for p in self.productos_disponibles if p.nombre == nombre_producto), None)
+                if hasattr(self, 'producto_combo') and self.producto_combo:
+                    combo_value = self.producto_combo.get()
+                    if combo_value:
+                        nombre_producto = combo_value.split(" (")[0]
+                        producto = next((p for p in self.productos_disponibles if p.nombre == nombre_producto), None)
 
             if not producto:
                 self.logger.warning(f"No se pudo encontrar el producto: {selection}")
@@ -279,18 +404,20 @@ class ProductoFacturaDialog:
 
             if producto.descripcion:
                 info_text += f"\nDescripción: {producto.descripcion[:100]}..."
-            
-            self.info_label.configure(text=info_text)
-            
+
+            if hasattr(self, 'info_label') and self.info_label:
+                self.info_label.configure(text=info_text)
+
             # Establecer valores por defecto
-            if self.precio_inicial is None:
+            if self.precio_inicial is None and hasattr(self, 'precio_entry'):
                 FormHelper.set_entry_value(self.precio_entry, str(producto.precio))
-            
-            if self.iva_inicial is None:
+
+            if self.iva_inicial is None and hasattr(self, 'iva_entry'):
                 FormHelper.set_entry_value(self.iva_entry, str(producto.iva_recomendado))
-            
-            self.update_preview()
-            
+
+            if hasattr(self, 'update_preview'):
+                self.update_preview()
+
         except Exception as e:
             self.logger.error(f"Error al seleccionar producto: {e}")
     
@@ -334,9 +461,24 @@ class ProductoFacturaDialog:
         """Valida el formulario incluyendo verificación de stock"""
         errors = []
 
-        if not self.producto_seleccionado:
-            errors.append("Debe seleccionar un producto")
-            return errors
+        # Validar selección de producto con autocompletado
+        if self.producto_autocomplete and hasattr(self.producto_autocomplete, 'validate_selection'):
+            if not self.producto_autocomplete.validate_selection():
+                validation_error = self.producto_autocomplete.get_validation_error()
+                errors.append(validation_error)
+                return errors
+
+            # Obtener producto seleccionado
+            producto_seleccionado = self.producto_autocomplete.get_selected_producto()
+            if not producto_seleccionado:
+                errors.append("Debe seleccionar un producto válido")
+                return errors
+        else:
+            # Fallback para tests: usar producto_seleccionado directamente
+            if not self.producto_seleccionado:
+                errors.append("Debe seleccionar un producto válido")
+                return errors
+            producto_seleccionado = self.producto_seleccionado
 
         # Validar cantidad
         cantidad_str = FormHelper.get_entry_value(self.cantidad_entry)
@@ -347,11 +489,11 @@ class ProductoFacturaDialog:
             # Validar stock disponible
             try:
                 cantidad_solicitada = int(cantidad_str)
-                stock_actual = Stock.get_by_product(self.producto_seleccionado.id)
+                stock_actual = Stock.get_by_product(producto_seleccionado.id)
 
                 if cantidad_solicitada > stock_actual:
                     if stock_actual == 0:
-                        errors.append(f"El producto '{self.producto_seleccionado.nombre}' no tiene stock disponible")
+                        errors.append(f"El producto '{producto_seleccionado.nombre}' no tiene stock disponible")
                     else:
                         errors.append(f"Stock insuficiente. Disponible: {stock_actual}, Solicitado: {cantidad_solicitada}")
 
@@ -386,21 +528,54 @@ class ProductoFacturaDialog:
         """Acepta el diálogo"""
         errors = self.validate_form()
         if errors:
-            tk.messagebox.showerror("Error de Validación", "\n".join(errors), parent=self.dialog)
+            # Usar mensaje de error copiable en lugar de messagebox estándar
+            try:
+                from common.custom_dialogs import show_copyable_error
+                show_copyable_error(self.dialog, "Error de Validación", "\n".join(errors))
+            except Exception as e:
+                # Fallback con messagebox estándar si hay problemas
+                tk.messagebox.showerror("Error de Validación", "\n".join(errors), parent=self.dialog)
             return
         
         try:
+            # Obtener producto seleccionado del autocompletado o fallback
+            if self.producto_autocomplete and hasattr(self.producto_autocomplete, 'get_selected_producto'):
+                producto_seleccionado = self.producto_autocomplete.get_selected_producto()
+            else:
+                # Fallback para tests
+                producto_seleccionado = self.producto_seleccionado
+
             cantidad = int(FormHelper.get_entry_value(self.cantidad_entry))
             precio = float(FormHelper.get_entry_value(self.precio_entry))
             iva = float(FormHelper.get_entry_value(self.iva_entry))
             descuento = float(FormHelper.get_entry_value(self.descuento_entry, "0"))
-            
-            self.result = (self.producto_seleccionado.id, cantidad, precio, iva, descuento)
-            self._cleanup_bindings()
+
+            self.result = (producto_seleccionado.id, cantidad, precio, iva, descuento)
+            if hasattr(self, '_cleanup_bindings'):
+                self._cleanup_bindings()
             self.dialog.destroy()
-            
+
         except Exception as e:
-            tk.messagebox.showerror("Error", f"Error al procesar datos: {str(e)}", parent=self.dialog)
+            # Usar mensaje de error copiable con información detallada
+            try:
+                from common.custom_dialogs import show_copyable_error
+                error_message = f"""Error al procesar datos del producto:
+
+🔍 Detalles técnicos:
+{str(e)}
+
+💡 Posibles soluciones:
+1. Verificar que todos los campos estén correctamente completados
+2. Asegurar que el producto seleccionado sea válido
+3. Comprobar que los valores numéricos sean correctos
+4. Intentar cerrar y reabrir el diálogo
+
+🕒 Timestamp: {self.get_timestamp()}"""
+
+                show_copyable_error(self.dialog, "Error al Procesar Datos", error_message)
+            except Exception as fallback_error:
+                # Fallback con messagebox estándar si hay problemas
+                tk.messagebox.showerror("Error", f"Error al procesar datos: {str(e)}", parent=self.dialog)
     
     def cancel(self):
         """Cancela el diálogo"""
@@ -714,6 +889,14 @@ class ProductoFacturaDialog:
         except (AttributeError, tk.TclError):
             return False
     
+    def get_timestamp(self):
+        """Obtiene timestamp actual para mensajes de error"""
+        try:
+            from datetime import datetime
+            return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        except Exception:
+            return "N/A"
+
     def show(self):
         """Muestra el diálogo y retorna el resultado"""
         self.dialog.wait_window()

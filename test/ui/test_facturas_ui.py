@@ -190,7 +190,9 @@ class TestProductoFacturaDialog:
         """Test aceptar diálogo con formulario válido"""
         with patch('customtkinter.CTkToplevel') as mock_toplevel, \
              patch('utils.logger.get_logger'), \
-             patch.object(ProductoFacturaDialog, 'create_widgets'):
+             patch.object(ProductoFacturaDialog, 'create_widgets'), \
+             patch('common.custom_dialogs.show_copyable_error') as mock_error_dialog, \
+             patch('tkinter.messagebox.showerror') as mock_messagebox:
 
             mock_window = Mock()
             mock_toplevel.return_value = mock_window
@@ -210,7 +212,7 @@ class TestProductoFacturaDialog:
                 mock_get_value.side_effect = ["3", "25.0", "21.0", "5.0"]
 
                 dialog.accept()
-                
+
                 # Verificar resultado
                 expected_result = (sample_productos[0].id, 3, 25.0, 21.0, 5.0)
                 assert dialog.result == expected_result

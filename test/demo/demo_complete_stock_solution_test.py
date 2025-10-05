@@ -31,7 +31,7 @@ class TestCompleteStockSolution(FacturasMethodsMixin):
         print(f"[{msg_type.upper()}] {title}: {message}")
         return True if msg_type == "yesno" else None
 
-def test_complete_stock_solution():
+def demo_complete_stock_solution():
     """Test completo de la solución de stock"""
     
     print("🧪 TEST COMPLETO - Solución Robusta de Stock")
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     print("🧪 EJECUTANDO TESTS...")
     
     # Ejecutar test completo
-    success = test_complete_stock_solution()
+    success = demo_complete_stock_solution()
     
     print("\n" + "=" * 70)
     print("🏁 RESULTADO FINAL:")

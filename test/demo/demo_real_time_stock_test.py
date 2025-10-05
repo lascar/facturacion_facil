@@ -74,7 +74,7 @@ def monitor_stock_changes(producto_id, duration=60):
     else:
         print(f"   ❌ NO HAY CAMBIOS: Stock se mantuvo en {stock_inicial}")
 
-def test_real_time_stock_update():
+def demo_real_time_stock_update():
     """Test en temps réel avec interface graphique"""
     
     print("🧪 TEST EN TIEMPO REAL - Actualización de Stock")
@@ -179,7 +179,7 @@ def test_real_time_stock_update():
         traceback.print_exc()
         return False
 
-def test_direct_stock_update():
+def demo_direct_stock_update():
     """Test direct pour vérifier que Stock.update_stock fonctionne"""
     print("\n🔬 TEST DIRECTO - Verificación de Stock.update_stock")
     print("-" * 50)
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     
     # Test 1: Vérification directe
     print("FASE 1: Verificación del método Stock.update_stock")
-    success1 = test_direct_stock_update()
+    success1 = demo_direct_stock_update()
     
     if not success1:
         print("\n❌ El método básico no funciona. No continuar con test de interfaz.")
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     print("FASE 2: Test en tiempo real con interfaz gráfica")
     
     # Test 2: Interface en temps réel
-    success2 = test_real_time_stock_update()
+    success2 = demo_real_time_stock_update()
     
     print("\n" + "=" * 60)
     print("📊 RESUMEN FINAL:")

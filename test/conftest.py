@@ -153,6 +153,12 @@ def pytest_sessionfinish(session, exitstatus):
     if stats['total_databases'] > 0 or stats['total_directories'] > 0:
         print(f"\n🧹 Nettoyage final: {stats['total_databases']} DBs, {stats['total_directories']} répertoires")
 
+def pytest_ignore_collect(path, config):
+    """Ignore les fichiers de démonstration qui créent des fenêtres GUI"""
+    if "demo" in str(path):
+        return True
+    return False
+
 def pytest_configure(config):
     """Configuration pytest"""
     # Définir les variables d'environnement pour désactiver l'ouverture des PDFs

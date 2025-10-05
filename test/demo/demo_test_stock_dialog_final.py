@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 import customtkinter as ctk
 from common.custom_dialogs import show_stock_confirmation_dialog
 
-def test_final_stock_dialog():
+def demo_final_stock_dialog():
     """Test del diálogo final de confirmación de stock"""
     
     print("🧪 TEST FINAL - Diálogo de Stock con Botones CONFIRMAR/CANCELAR")
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     show_expected_appearance()
     
     # Test funcional
-    success = test_final_stock_dialog()
+    success = demo_final_stock_dialog()
     
     print("\n" + "=" * 70)
     print("📊 RESUMEN DEL TEST:")

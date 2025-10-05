@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 import tkinter as tk
 from tkinter import messagebox
 
-def test_simple_dialog():
+def demo_simple_dialog():
     """Test del diálogo simple con tkinter estándar"""
     
     print("🧪 TEST - Diálogo Simple de Confirmación")
@@ -64,7 +64,7 @@ def test_simple_dialog():
         print(f"❌ Error en diálogo simple: {e}")
         return None
 
-def test_console_fallback():
+def demo_console_fallback():
     """Test del fallback por consola"""
     
     print("\n🧪 TEST - Fallback por Consola")
@@ -102,11 +102,11 @@ if __name__ == "__main__":
     
     # Test 1: Diálogo simple con tkinter
     print("FASE 1: Diálogo simple con tkinter estándar")
-    success1 = test_simple_dialog()
+    success1 = demo_simple_dialog()
     
     # Test 2: Fallback por consola
     print("\nFASE 2: Fallback por consola")
-    success2 = test_console_fallback()
+    success2 = demo_console_fallback()
     
     print("\n" + "=" * 60)
     print("📊 RESUMEN:")

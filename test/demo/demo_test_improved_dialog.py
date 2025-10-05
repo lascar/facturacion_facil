@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 import customtkinter as ctk
 from common.custom_dialogs import show_copyable_confirm
 
-def test_improved_dialog():
+def demo_improved_dialog():
     """Test du dialogue amélioré"""
     
     print("🧪 TEST - Dialogue Amélioré avec Boutons Clairs")
@@ -131,7 +131,7 @@ def test_improved_dialog():
         traceback.print_exc()
         return None
 
-def test_dialog_appearance():
+def demo_dialog_appearance():
     """Test de la apariencia del diálogo"""
     
     print("\n🎨 TEST - Apariencia del Diálogo")
@@ -158,10 +158,10 @@ if __name__ == "__main__":
     print("=" * 70)
     
     # Test 1: Apariencia
-    success1 = test_dialog_appearance()
+    success1 = demo_dialog_appearance()
     
     # Test 2: Funcionalidad
-    success2 = test_improved_dialog()
+    success2 = demo_improved_dialog()
     
     print("\n" + "=" * 70)
     print("📊 RESUMEN DEL TEST:")

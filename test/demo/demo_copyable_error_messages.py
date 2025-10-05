@@ -31,7 +31,7 @@ def demo_copyable_error_messages():
     # Logger
     logger = get_logger("demo_copyable")
     
-    def test_error_message():
+    def demo_error_message():
         """Test d'un message d'erreur copiable"""
         try:
             # Ouvrir la fenêtre de produits
@@ -57,7 +57,7 @@ def demo_copyable_error_messages():
         except Exception as e:
             logger.error(f"❌ Erreur dans le test: {e}")
     
-    def test_success_message():
+    def demo_success_message():
         """Test d'un message de succès copiable"""
         try:
             # Ouvrir la fenêtre de produits
