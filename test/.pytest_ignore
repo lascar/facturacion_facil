@@ -1,0 +1,2 @@
+# Ignore demo files that create GUI windows and are not actual tests
+demo/
