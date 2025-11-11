@@ -565,7 +565,7 @@ class StockWindow:
                 show_copyable_error(self.window, "Error", "No se encontró el producto seleccionado.")
                 return
 
-            self.actualizar_stock(selected_item)
+            self.modify_stock(selected_item)
 
         except Exception as e:
             self.logger.error(f"Error actualizando stock seleccionado: {e}")
@@ -1027,7 +1027,7 @@ class StockWindow:
             # Asegurar que la ventana esté al frente antes del diálogo
             self.ensure_window_focus()
 
-            current_stock = item['cantidad']
+            current_stock = item.get('cantidad', item.get('cantidad_disponible', 0))
             new_stock = simpledialog.askinteger(
                 "Modificar Stock",
                 f"Stock actual de '{item['nombre']}': {current_stock}\n\nIngrese la nueva cantidad:",
@@ -1047,11 +1047,8 @@ class StockWindow:
                 descripcion = f"Ajuste manual: {current_stock} -> {new_stock}"
                 StockMovement.create(item['producto_id'], diferencia, tipo_movimiento, descripcion)
 
-                # Actualizar en memoria
-                item['cantidad'] = new_stock
-
-                # Refrescar display
-                self.update_stock_display()
+                # Recharger les données depuis la base de données pour assurer la cohérence
+                self.load_stock_data()
 
                 self.logger.info(f"Stock modificado para producto {item['producto_id']}: {current_stock} -> {new_stock}")
                 self.show_success_message("Éxito", f"Stock actualizado correctamente.\nAnterior: {current_stock}\nNuevo: {new_stock}")
@@ -1084,12 +1081,9 @@ class StockWindow:
                 descripcion = f"Entrada manual de {cantidad_agregar} unidades"
                 StockMovement.create(item['producto_id'], cantidad_agregar, "ENTRADA", descripcion)
 
-                # Actualizar en memoria
-                old_stock = item['cantidad']
-                item['cantidad'] = new_stock
-
-                # Refrescar display
-                self.update_stock_display()
+                # Recharger les données depuis la base de données pour assurer la cohérence
+                old_stock = item.get('cantidad', item.get('cantidad_disponible', 0))
+                self.load_stock_data()
 
                 self.logger.info(f"Stock agregado para producto {item['producto_id']}: +{cantidad_agregar} (total: {new_stock})")
                 self.show_success_message("Éxito", f"Stock agregado correctamente.\nAnterior: {old_stock}\nAgregado: +{cantidad_agregar}\nNuevo total: {new_stock}")
@@ -1101,7 +1095,7 @@ class StockWindow:
     def remove_stock(self, item):
         """Permite quitar stock de un producto"""
         try:
-            current_stock = item['cantidad']
+            current_stock = item.get('cantidad', item.get('cantidad_disponible', 0))
             if current_stock == 0:
                 self.show_warning_message("Advertencia", "No hay stock disponible para quitar.")
                 return
@@ -1128,11 +1122,8 @@ class StockWindow:
                 descripcion = f"Salida manual de {cantidad_quitar} unidades"
                 StockMovement.create(item['producto_id'], -cantidad_quitar, "SALIDA", descripcion)
 
-                # Actualizar en memoria
-                item['cantidad'] = new_stock
-
-                # Refrescar display
-                self.update_stock_display()
+                # Recharger les données depuis la base de données pour assurer la cohérence
+                self.load_stock_data()
 
                 self.logger.info(f"Stock removido para producto {item['producto_id']}: -{cantidad_quitar} (total: {new_stock})")
                 self.show_success_message("Éxito", f"Stock removido correctamente.\nAnterior: {current_stock}\nRemovido: -{cantidad_quitar}\nNuevo total: {new_stock}")

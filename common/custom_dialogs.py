@@ -4,8 +4,10 @@ Dialogues personnalisés avec texte sélectionnable et copiable
 """
 import customtkinter as ctk
 import tkinter as tk
+import os
 from tkinter import messagebox
 from utils.logger import get_logger
+from utils.window_manager import window_manager
 
 class CopyableMessageDialog:
     """Dialogue de message avec texte sélectionnable et copiable"""
@@ -316,21 +318,53 @@ class CopyableMessageDialog:
     
     def ok_clicked(self):
         """Maneja el clic en OK"""
-        self.result = True
-        self.dialog.destroy()
+        try:
+            print("🔍 DEBUG: ok_clicked() llamado")
+            self.result = True
+            self._close_dialog_safely()
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error en ok_clicked(): {e}")
+            self._close_dialog_safely()
+
+    def _close_dialog_safely(self):
+        """Cierra el diálogo de forma segura"""
+        try:
+            if hasattr(self, 'dialog'):
+                # Usar el gestor de ventanas para cerrar de forma segura
+                success = window_manager.close_window_safely(self.dialog)
+                if success:
+                    print("🔍 DEBUG: Diálogo cerrado exitosamente con window_manager")
+                else:
+                    print("⚠️  DEBUG: Error cerrando diálogo con window_manager")
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error cerrando diálogo: {e}")
+            # Forzar cierre si hay error
+            try:
+                if hasattr(self, 'dialog'):
+                    self.dialog.quit()
+            except:
+                pass
     
     def show(self):
         """Muestra el diálogo y retorna el resultado"""
         try:
             print("🔍 DEBUG: show() iniciado")
-            print(f"🔍 DEBUG: dialog existe: {self.dialog.winfo_exists()}")
+
+            # Verificar que el dialog existe
+            if not hasattr(self, 'dialog') or not self.dialog.winfo_exists():
+                print("❌ DEBUG: Dialog no existe o fue destruido")
+                return None
+
             print(f"🔍 DEBUG: dialog estado: {self.dialog.state()}")
 
-            # Asegurar que el diálogo sea visible
+            # Configurar el protocolo de cierre para evitar bloqueos
+            self.dialog.protocol("WM_DELETE_WINDOW", self.on_close)
+
+            # Usar el gestor de ventanas para hacer visible de forma segura
             self.dialog.deiconify()
-            self.dialog.lift()
-            self.dialog.focus_force()
-            print("🔍 DEBUG: Diálogo forzado a ser visible")
+            window_manager.make_window_visible(self.dialog, temporary_topmost=True, duration_ms=100)
+
+            print("🔍 DEBUG: Diálogo configurado para ser visible")
 
             # Centrar en pantalla si no tiene parent
             if not self.parent:
@@ -338,7 +372,19 @@ class CopyableMessageDialog:
                 print("🔍 DEBUG: Diálogo centrado en pantalla")
 
             print("🔍 DEBUG: Iniciando wait_window()...")
-            self.dialog.wait_window()
+
+            # Verificar si estamos en modo headless o test
+            if os.environ.get('HEADLESS_MODE') == '1':
+                print("🔍 DEBUG: Modo headless detectado, simulando interacción")
+                # En modo headless, simular clic en OK después de un breve delay
+                self.dialog.after(100, lambda: self.ok_clicked())
+
+            # Usar wait_window con timeout implícito
+            try:
+                self.dialog.wait_window()
+            except tk.TclError as tcl_error:
+                print(f"⚠️  DEBUG: TclError en wait_window (normal si se cerró): {tcl_error}")
+
             print("🔍 DEBUG: wait_window() completado")
 
             print(f"🔍 DEBUG: Resultado final: {self.result}")
@@ -348,7 +394,35 @@ class CopyableMessageDialog:
             print(f"❌ DEBUG: Error en show(): {e}")
             import traceback
             print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+
+            # Limpiar en caso de error
+            try:
+                if hasattr(self, 'dialog') and self.dialog.winfo_exists():
+                    self.dialog.attributes('-topmost', False)
+                    self.dialog.destroy()
+            except:
+                pass
+
             return None
+
+    def _remove_topmost_safely(self):
+        """Quita el atributo topmost de forma segura"""
+        try:
+            if hasattr(self, 'dialog') and self.dialog.winfo_exists():
+                self.dialog.attributes('-topmost', False)
+                print("🔍 DEBUG: Topmost removido exitosamente")
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error removiendo topmost: {e}")
+
+    def on_close(self):
+        """Maneja el cierre del diálogo"""
+        try:
+            print("🔍 DEBUG: on_close() llamado")
+            self.result = None
+            self._close_dialog_safely()
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error en on_close(): {e}")
+            self._close_dialog_safely()
 
 class CopyableConfirmDialog(CopyableMessageDialog):
     """Dialogue de confirmation avec texte copiable"""
@@ -429,13 +503,23 @@ class CopyableConfirmDialog(CopyableMessageDialog):
     
     def yes_clicked(self):
         """Maneja el clic en Sí"""
-        self.result = True
-        self.dialog.destroy()
-    
+        try:
+            print("🔍 DEBUG: yes_clicked() llamado")
+            self.result = True
+            self._close_dialog_safely()
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error en yes_clicked(): {e}")
+            self._close_dialog_safely()
+
     def no_clicked(self):
         """Maneja el clic en No"""
-        self.result = False
-        self.dialog.destroy()
+        try:
+            print("🔍 DEBUG: no_clicked() llamado")
+            self.result = False
+            self._close_dialog_safely()
+        except Exception as e:
+            print(f"⚠️  DEBUG: Error en no_clicked(): {e}")
+            self._close_dialog_safely()
 
 class StockConfirmationDialog(CopyableMessageDialog):
     """Dialogue spécifique pour confirmation de stock avec boutons très clairs"""

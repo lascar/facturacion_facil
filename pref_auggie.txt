@@ -1,0 +1,10 @@
+# Préférences de développement pour facturacion_facil
+
+ ## Communication et workflow
+ - **Langue** : Communiquer exclusivement en français avec tutoiement
+ - **Validation obligatoire** : Aucune modification de code ou système sans confirmation préalable explicite de l'utilisateur. Toujours expliquer en détail le code. Présenter les modifications sous la forme d'un git diff
+
+ ### Localisation
+ - **Textes en dur** : ne jamais harcoder des textes en dur dans le code
+ - **Langues obligatoires** : ES pour chaque nouveau texte
+

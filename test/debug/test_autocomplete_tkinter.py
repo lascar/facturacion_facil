@@ -133,11 +133,31 @@ def test_simple_autocomplete():
         close_btn.pack(pady=10)
         
         print("✅ Test simple creado. Cierre la ventana para continuar.")
-        
-        # Mostrar ventana por 3 segundos para verificar
-        root.after(3000, root.quit)
-        root.mainloop()
-        
+
+        # Mostrar ventana por 1 segundo pour vérifier (ou fermeture immédiate en mode headless)
+        if os.environ.get('HEADLESS_MODE') == '1':
+            # En mode headless, fermer immédiatement
+            print("🔍 Mode headless détecté, fermeture automatique")
+            root.after(100, root.quit)
+        else:
+            # En mode normal, fermer après 1 seconde
+            root.after(1000, root.quit)
+
+        # Timeout de sécurité pour éviter blocages
+        root.after(5000, lambda: root.quit() if root.winfo_exists() else None)
+
+        try:
+            root.mainloop()
+        except Exception as e:
+            print(f"⚠️  Erreur dans mainloop: {e}")
+        finally:
+            # S'assurer que la fenêtre est détruite
+            try:
+                if root.winfo_exists():
+                    root.destroy()
+            except:
+                pass
+
         return True
         
     except Exception as e:

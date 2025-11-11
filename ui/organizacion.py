@@ -9,6 +9,7 @@ from utils.logger import get_logger, log_user_action, log_exception
 from utils.logo_manager import LogoManager
 from common.ui_components import FormHelper
 from utils.config import Config
+from utils.window_manager import window_manager
 
 class OrganizacionWindow:
     def __init__(self, parent):
@@ -51,10 +52,8 @@ class OrganizacionWindow:
                 show_copyable_warning, show_copyable_confirm
             )
 
-            # Asegurar que la ventana esté al frente
-            self.window.lift()
-            self.window.focus_force()
-            self.window.attributes('-topmost', True)
+            # Usar el gestor de ventanas para hacer visible de forma segura
+            window_manager.make_window_visible(self.window, temporary_topmost=True, duration_ms=100)
 
             # Usar diálogos copiables en lugar de messagebox estándar
             if msg_type == "info":
@@ -66,8 +65,13 @@ class OrganizacionWindow:
             else:
                 result = show_copyable_info(self.window, title, message)
 
-            # Restaurar estado normal
-            self.window.attributes('-topmost', False)
+            # Asegurar que topmost esté desactivado
+            try:
+                if self.window.winfo_exists():
+                    self.window.attributes('-topmost', False)
+            except:
+                pass
+
             return result
 
         except Exception as e:

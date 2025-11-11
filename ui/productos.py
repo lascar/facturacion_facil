@@ -14,7 +14,7 @@ class ProductosWindow:
     def __init__(self, parent):
         self.window = ctk.CTkToplevel(parent)
         self.window.title(get_text("gestion_productos"))
-        self.window.geometry("900x700")  # Tamaño inicial más pequeño para demostrar scrolling
+        self.window.geometry("1100x800")  # Tamaño más grande para mostrar todos los botones
         self.window.transient(parent)
 
         # Asegurar que la ventana aparezca al frente
