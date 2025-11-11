@@ -226,12 +226,16 @@ def test_stock_interface():
         traceback.print_exc()
         return False
 
-def test_new_stock_buttons_interface(mock_interface):
+def test_new_stock_buttons_interface():
     """Test de la nouvelle interface avec boutons + et - pour modifier le stock"""
     try:
         import tkinter as tk
 
         print("   🎛️ Test de la nouvelle interface avec boutons + et -")
+
+        # Créer une fenêtre racine pour Tkinter
+        root = tk.Tk()
+        root.withdraw()  # Cacher la fenêtre
 
         # Simuler les méthodes de la nouvelle interface
         class MockStockButtonsInterface:
@@ -266,7 +270,18 @@ def test_new_stock_buttons_interface(mock_interface):
                         return True
                 return False
 
-        # Créer l'interface simulée
+        # Créer l'interface simulée avec logger, stock_data et modify_stock
+        from utils.logger import get_logger
+
+        def mock_modify_stock(self, producto_id, new_stock):
+            """Mock de la méthode modify_stock"""
+            return True  # Simuler le succès
+
+        mock_interface = type('MockInterface', (), {
+            'logger': get_logger(__name__),
+            'stock_data': [{'producto_id': 1, 'nombre': 'Test Product', 'cantidad': 10}],
+            'modify_stock': mock_modify_stock
+        })()
         buttons_interface = MockStockButtonsInterface(mock_interface)
 
         # Test 1: Augmentation du stock
@@ -329,6 +344,9 @@ def test_new_stock_buttons_interface(mock_interface):
         success = buttons_interface._save_stock_changes(test_item, original_stock, final_stock)
         assert success, "La sauvegarde de la séquence complète devrait réussir"
         print("     ✅ Séquence complète fonctionne")
+
+        # Nettoyer la fenêtre racine
+        root.destroy()
 
         print("   ✅ Nouvelle interface avec boutons + et - validée")
 

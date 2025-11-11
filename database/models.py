@@ -341,11 +341,18 @@ class Factura:
         results = db.execute_query(query, (numero_factura,))
         if results:
             row = results[0]
+
+            # Obtener índices de columnas para compatibilidad
+            indices = Factura._get_column_indices()
+            cliente_id = row[indices['cliente_id']] if indices['cliente_id'] is not None and len(row) > indices['cliente_id'] else None
+
             factura = Factura(
-                id=row[0], numero_factura=row[1], fecha_factura=row[2], nombre_cliente=row[3],
-                dni_nie_cliente=row[4], direccion_cliente=row[5], email_cliente=row[6],
-                telefono_cliente=row[7], subtotal=row[8], total_iva=row[9], total_factura=row[10],
-                modo_pago=row[11], fecha_creacion=row[12]
+                id=row[0], numero_factura=row[1], fecha_factura=row[2], cliente_id=cliente_id,
+                nombre_cliente=row[indices['nombre_cliente']], dni_nie_cliente=row[indices['dni_nie_cliente']],
+                direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
+                telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
+                total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)
