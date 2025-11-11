@@ -427,7 +427,13 @@ class OrganizacionWindow:
             FormHelper.set_entry_value(self.directorio_entry, self.organizacion.directorio_imagenes_defecto)
             FormHelper.set_entry_value(self.directorio_pdf_entry, self.organizacion.directorio_descargas_pdf)
             FormHelper.set_entry_value(self.visor_pdf_entry, self.organizacion.visor_pdf_personalizado)
-            FormHelper.set_entry_value(self.numero_inicial_entry, str(self.organizacion.numero_factura_inicial))
+            # Asegurar que el número inicial sea una cadena válida
+            numero_inicial = self.organizacion.numero_factura_inicial
+            if numero_inicial is None:
+                numero_inicial = "1"
+            elif isinstance(numero_inicial, int):
+                numero_inicial = str(numero_inicial)
+            FormHelper.set_entry_value(self.numero_inicial_entry, numero_inicial)
 
             # Cargar logo con manejo robusto de archivos faltantes
             if self.organizacion.logo_path:
@@ -870,13 +876,19 @@ class OrganizacionWindow:
         if email and "@" not in email:
             errors.append("El email no tiene un formato válido")
 
-        # Validar número inicial
-        try:
-            numero_inicial = int(self.numero_inicial_entry.get() or "1")
-            if numero_inicial < 1:
-                errors.append("El número inicial debe ser mayor que 0")
-        except ValueError:
-            errors.append("El número inicial debe ser un número válido")
+        # Validar número inicial (puede ser alfanumérico como "2025-FACT-1")
+        numero_inicial_str = self.numero_inicial_entry.get().strip()
+
+        # Validar que no esté vacío después del strip y que tenga contenido válido
+        if len(numero_inicial_str) == 0:
+            # Si está vacío, es válido (se usará "1" por defecto)
+            pass
+        elif len(numero_inicial_str) > 50:  # Límite razonable de longitud
+            errors.append("El número inicial es demasiado largo (máximo 50 caracteres)")
+        else:
+            # Verificar que contenga al menos un carácter alfanumérico
+            if not any(c.isalnum() for c in numero_inicial_str):
+                errors.append("El número inicial debe contener al menos un número o letra")
 
         return errors
 
@@ -899,7 +911,7 @@ class OrganizacionWindow:
                 email=self.email_entry.get().strip(),
                 logo_path=self.logo_path,
                 directorio_imagenes_defecto=self.directorio_entry.get().strip(),
-                numero_factura_inicial=int(self.numero_inicial_entry.get() or "1"),
+                numero_factura_inicial=self.numero_inicial_entry.get().strip() or "1",
                 directorio_descargas_pdf=self.directorio_pdf_entry.get().strip(),
                 visor_pdf_personalizado=self.visor_pdf_entry.get().strip()
             )
@@ -969,7 +981,7 @@ class OrganizacionWindow:
                 'email': self.email_entry.get().strip(),
                 'logo_path': self.logo_path,
                 'directorio_imagenes_defecto': self.directorio_entry.get().strip(),
-                'numero_factura_inicial': int(self.numero_inicial_entry.get() or "1")
+                'numero_factura_inicial': self.numero_inicial_entry.get().strip() or "1"
             }
 
             original_data = {

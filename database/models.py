@@ -1,6 +1,93 @@
 from .database import db
 from datetime import datetime
 
+class Cliente:
+    def __init__(self, id=None, nombre="", dni_nie="", direccion="", email="", telefono=""):
+        self.id = id
+        self.nombre = nombre
+        self.dni_nie = dni_nie
+        self.direccion = direccion
+        self.email = email
+        self.telefono = telefono
+
+    def save(self):
+        """Guarda el cliente en la base de datos"""
+        if self.id:
+            # Actualizar cliente existente
+            query = '''UPDATE clientes SET nombre=?, dni_nie=?, direccion=?, email=?, telefono=?,
+                      fecha_actualizacion=CURRENT_TIMESTAMP WHERE id=?'''
+            params = (self.nombre, self.dni_nie, self.direccion, self.email, self.telefono, self.id)
+            db.execute_query(query, params)
+        else:
+            # Crear nuevo cliente
+            query = '''INSERT INTO clientes (nombre, dni_nie, direccion, email, telefono)
+                      VALUES (?, ?, ?, ?, ?)'''
+            params = (self.nombre, self.dni_nie, self.direccion, self.email, self.telefono)
+            self.id = db.execute_query(query, params)
+        return self.id
+
+    def delete(self):
+        """Elimina el cliente de la base de datos"""
+        if self.id:
+            db.execute_query("DELETE FROM clientes WHERE id=?", (self.id,))
+
+    @staticmethod
+    def get_all():
+        """Obtiene todos los clientes"""
+        query = "SELECT * FROM clientes ORDER BY nombre"
+        results = db.execute_query(query)
+        clientes = []
+        for row in results:
+            cliente = Cliente(
+                id=row[0], nombre=row[1], dni_nie=row[2], direccion=row[3],
+                email=row[4], telefono=row[5]
+            )
+            clientes.append(cliente)
+        return clientes
+
+    @staticmethod
+    def get_by_id(cliente_id):
+        """Obtiene un cliente por su ID"""
+        query = "SELECT * FROM clientes WHERE id=?"
+        results = db.execute_query(query, (cliente_id,))
+        if results:
+            row = results[0]
+            return Cliente(
+                id=row[0], nombre=row[1], dni_nie=row[2], direccion=row[3],
+                email=row[4], telefono=row[5]
+            )
+        return None
+
+    @staticmethod
+    def get_by_nombre(nombre):
+        """Obtiene un cliente por su nombre"""
+        query = "SELECT * FROM clientes WHERE nombre=?"
+        results = db.execute_query(query, (nombre,))
+        if results:
+            row = results[0]
+            return Cliente(
+                id=row[0], nombre=row[1], dni_nie=row[2], direccion=row[3],
+                email=row[4], telefono=row[5]
+            )
+        return None
+
+    @staticmethod
+    def search(search_term):
+        """Busca clientes por nombre, DNI/NIE o email"""
+        query = '''SELECT * FROM clientes
+                  WHERE nombre LIKE ? OR dni_nie LIKE ? OR email LIKE ?
+                  ORDER BY nombre'''
+        search_pattern = f"%{search_term}%"
+        results = db.execute_query(query, (search_pattern, search_pattern, search_pattern))
+        clientes = []
+        for row in results:
+            cliente = Cliente(
+                id=row[0], nombre=row[1], dni_nie=row[2], direccion=row[3],
+                email=row[4], telefono=row[5]
+            )
+            clientes.append(cliente)
+        return clientes
+
 class Producto:
     def __init__(self, id=None, nombre="", referencia="", precio=0.0, 
                  categoria="", descripcion="", imagen_path="", iva_recomendado=21.0):
@@ -73,12 +160,13 @@ class Producto:
         return None
 
 class Factura:
-    def __init__(self, id=None, numero_factura="", fecha_factura="", nombre_cliente="",
+    def __init__(self, id=None, numero_factura="", fecha_factura="", cliente_id=None, nombre_cliente="",
                  dni_nie_cliente="", direccion_cliente="", email_cliente="", telefono_cliente="",
                  subtotal=0.0, total_iva=0.0, total_factura=0.0, modo_pago="", fecha_creacion=""):
         self.id = id
         self.numero_factura = numero_factura
         self.fecha_factura = fecha_factura
+        self.cliente_id = cliente_id
         self.nombre_cliente = nombre_cliente
         self.dni_nie_cliente = dni_nie_cliente
         self.direccion_cliente = direccion_cliente
@@ -95,21 +183,21 @@ class Factura:
         """Guarda la factura en la base de datos"""
         if self.id:
             # Actualizar factura existente
-            query = '''UPDATE facturas SET numero_factura=?, fecha_factura=?, nombre_cliente=?,
+            query = '''UPDATE facturas SET numero_factura=?, fecha_factura=?, cliente_id=?, nombre_cliente=?,
                       dni_nie_cliente=?, direccion_cliente=?, email_cliente=?, telefono_cliente=?,
                       subtotal=?, total_iva=?, total_factura=?, modo_pago=? WHERE id=?'''
-            params = (self.numero_factura, self.fecha_factura, self.nombre_cliente,
+            params = (self.numero_factura, self.fecha_factura, self.cliente_id, self.nombre_cliente,
                      self.dni_nie_cliente, self.direccion_cliente, self.email_cliente,
                      self.telefono_cliente, self.subtotal, self.total_iva, self.total_factura,
                      self.modo_pago, self.id)
             db.execute_query(query, params)
         else:
             # Crear nueva factura
-            query = '''INSERT INTO facturas (numero_factura, fecha_factura, nombre_cliente,
+            query = '''INSERT INTO facturas (numero_factura, fecha_factura, cliente_id, nombre_cliente,
                       dni_nie_cliente, direccion_cliente, email_cliente, telefono_cliente,
                       subtotal, total_iva, total_factura, modo_pago)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
-            params = (self.numero_factura, self.fecha_factura, self.nombre_cliente,
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+            params = (self.numero_factura, self.fecha_factura, self.cliente_id, self.nombre_cliente,
                      self.dni_nie_cliente, self.direccion_cliente, self.email_cliente,
                      self.telefono_cliente, self.subtotal, self.total_iva, self.total_factura,
                      self.modo_pago)
@@ -124,6 +212,8 @@ class Factura:
             for item in self.items:
                 item.factura_id = self.id
                 item.save()
+
+        return self.id
 
     def delete(self):
         """Elimina la factura y sus items"""
@@ -159,17 +249,60 @@ class Factura:
         self.total_factura = self.subtotal + self.total_iva
 
     @staticmethod
+    def _get_column_indices():
+        """Obtiene los índices de las columnas para compatibilidad"""
+        # Obtener información de las columnas
+        columns_info = db.execute_query("PRAGMA table_info(facturas)")
+        column_map = {col[1]: col[0] for col in columns_info}
+
+        # Determinar si cliente_id está en posición 3 (nueva DB) o 13 (antigua DB)
+        if 'cliente_id' in column_map:
+            cliente_id_pos = column_map['cliente_id']
+            if cliente_id_pos == 3:
+                # Nueva estructura: id, numero_factura, fecha_factura, cliente_id, nombre_cliente, ...
+                return {
+                    'cliente_id': 3, 'nombre_cliente': 4, 'dni_nie_cliente': 5,
+                    'direccion_cliente': 6, 'email_cliente': 7, 'telefono_cliente': 8,
+                    'subtotal': 9, 'total_iva': 10, 'total_factura': 11,
+                    'modo_pago': 12, 'fecha_creacion': 13
+                }
+            else:
+                # Antigua estructura: ..., fecha_creacion, cliente_id
+                return {
+                    'cliente_id': 13, 'nombre_cliente': 3, 'dni_nie_cliente': 4,
+                    'direccion_cliente': 5, 'email_cliente': 6, 'telefono_cliente': 7,
+                    'subtotal': 8, 'total_iva': 9, 'total_factura': 10,
+                    'modo_pago': 11, 'fecha_creacion': 12
+                }
+        else:
+            # Sin cliente_id (muy antigua)
+            return {
+                'cliente_id': None, 'nombre_cliente': 3, 'dni_nie_cliente': 4,
+                'direccion_cliente': 5, 'email_cliente': 6, 'telefono_cliente': 7,
+                'subtotal': 8, 'total_iva': 9, 'total_factura': 10,
+                'modo_pago': 11, 'fecha_creacion': 12
+            }
+
+    @staticmethod
     def get_all():
         """Obtiene todas las facturas"""
         query = "SELECT * FROM facturas ORDER BY fecha_factura DESC, numero_factura DESC"
         results = db.execute_query(query)
         facturas = []
+
+        # Obtener índices de columnas para compatibilidad
+        indices = Factura._get_column_indices()
+
         for row in results:
+            cliente_id = row[indices['cliente_id']] if indices['cliente_id'] is not None and len(row) > indices['cliente_id'] else None
+
             factura = Factura(
-                id=row[0], numero_factura=row[1], fecha_factura=row[2], nombre_cliente=row[3],
-                dni_nie_cliente=row[4], direccion_cliente=row[5], email_cliente=row[6],
-                telefono_cliente=row[7], subtotal=row[8], total_iva=row[9], total_factura=row[10],
-                modo_pago=row[11], fecha_creacion=row[12]
+                id=row[0], numero_factura=row[1], fecha_factura=row[2], cliente_id=cliente_id,
+                nombre_cliente=row[indices['nombre_cliente']], dni_nie_cliente=row[indices['dni_nie_cliente']],
+                direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
+                telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
+                total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)
@@ -183,11 +316,18 @@ class Factura:
         results = db.execute_query(query, (factura_id,))
         if results:
             row = results[0]
+
+            # Obtener índices de columnas para compatibilidad
+            indices = Factura._get_column_indices()
+            cliente_id = row[indices['cliente_id']] if indices['cliente_id'] is not None and len(row) > indices['cliente_id'] else None
+
             factura = Factura(
-                id=row[0], numero_factura=row[1], fecha_factura=row[2], nombre_cliente=row[3],
-                dni_nie_cliente=row[4], direccion_cliente=row[5], email_cliente=row[6],
-                telefono_cliente=row[7], subtotal=row[8], total_iva=row[9], total_factura=row[10],
-                modo_pago=row[11], fecha_creacion=row[12]
+                id=row[0], numero_factura=row[1], fecha_factura=row[2], cliente_id=cliente_id,
+                nombre_cliente=row[indices['nombre_cliente']], dni_nie_cliente=row[indices['dni_nie_cliente']],
+                direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
+                telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
+                total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)
@@ -297,7 +437,7 @@ class FacturaItem:
 
 class Organizacion:
     def __init__(self, nombre="", direccion="", telefono="", email="", cif="",
-                 logo_path="", directorio_imagenes_defecto="", numero_factura_inicial=1,
+                 logo_path="", directorio_imagenes_defecto="", numero_factura_inicial="1",
                  directorio_descargas_pdf="", visor_pdf_personalizado=""):
         self.nombre = nombre
         self.direccion = direccion
@@ -335,13 +475,13 @@ class Organizacion:
         results = db.execute_query(query)
         if results:
             row = results[0]
-            # Orden de columnas: id, nombre, direccion, telefono, email, cif, logo_path, fecha_actualizacion, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado
+            # Orden de columnas después de migración: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado, fecha_actualizacion
             # Manejar compatibilidad con bases de datos existentes
             logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
-            directorio_imagenes = row[8] if len(row) > 8 and row[8] is not None else ""
-            numero_inicial = row[9] if len(row) > 9 and row[9] is not None else 1
-            directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
-            visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
+            directorio_imagenes = row[7] if len(row) > 7 and row[7] is not None else ""
+            numero_inicial = row[8] if len(row) > 8 and row[8] is not None else "1"
+            directorio_pdf = row[9] if len(row) > 9 and row[9] is not None else ""
+            visor_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
 
             return Organizacion(
                 nombre=row[1], direccion=row[2], telefono=row[3],

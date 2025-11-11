@@ -8622,3 +8622,9 @@ Traceback (most recent call last):
 ValueError: Test exception
 2025-11-11 09:38:36 - facturacion_facil.stock_window - ERROR - stock.py:571 - Error actualizando stock seleccionado: 'StockWindow' object has no attribute 'actualizar_stock'
 2025-11-11 09:39:37 - facturacion_facil.stock_window - ERROR - stock.py:571 - Error actualizando stock seleccionado: 'StockWindow' object has no attribute 'actualizar_stock'
+2025-11-11 10:39:51 - facturacion_facil.stock_window - ERROR - stock.py:1080 - Error modificando stock: grab failed: window not viewable
+2025-11-11 10:48:10 - facturacion_facil.producto_factura_dialog - ERROR - producto_factura_dialog.py:171 - Error al seleccionar producto: 'ProductoFacturaDialog' object has no attribute 'update_totales_preview'
+2025-11-11 11:24:13 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:27:52 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:31:04 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:37:41 - facturacion_facil.producto_factura_dialog - ERROR - producto_factura_dialog.py:171 - Error al seleccionar producto: 'ProductoFacturaDialog' object has no attribute 'update_totales_preview'

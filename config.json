@@ -1,5 +1,5 @@
 {
-  "default_image_directory": "/home/pascal/Documents",
+  "default_image_directory": "/home/pascal/Documents/casa",
   "assets_directory": "assets/images",
   "max_image_size": 1048576,
   "supported_image_formats": [

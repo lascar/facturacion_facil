@@ -379,6 +379,50 @@ class StockWindow:
                 self.logger.error(f"Error en fallback: {fallback_error}")
                 self.show_error_message("Error", f"Error cargando datos de stock: {e}")
 
+    def force_reload_stock_data(self):
+        """Fuerza la recarga de datos de stock sin cache"""
+        try:
+            self.logger.info("Forzando recarga de datos de stock sin cache")
+
+            # Invalidar cache si existe
+            try:
+                from utils.performance_optimizer import performance_optimizer
+                performance_optimizer.clear_cache()
+                self.logger.debug("Cache invalidado")
+            except:
+                pass  # Si no hay cache, continuar
+
+            # Usar método original sin optimizaciones para asegurar datos frescos
+            query_results = Stock.get_all()
+            self.stock_data = []
+
+            for row in query_results:
+                producto_id, cantidad, nombre, referencia = row
+
+                # Obtener fecha de última actualización
+                from database.database import db
+                fecha_query = "SELECT fecha_actualizacion FROM stock WHERE producto_id=?"
+                fecha_result = db.execute_query(fecha_query, (producto_id,))
+                fecha_actualizacion = fecha_result[0][0] if fecha_result else "N/A"
+
+                self.stock_data.append({
+                    'producto_id': producto_id,
+                    'nombre': nombre,
+                    'referencia': referencia,
+                    'cantidad': cantidad,
+                    'fecha_actualizacion': fecha_actualizacion
+                })
+
+            self.filtered_data = self.stock_data.copy()
+            self.update_stock_display()
+            self.update_results_indicator()
+            self.logger.info(f"Recarga forzada completada: {len(self.stock_data)} productos")
+
+        except Exception as e:
+            self.logger.error(f"Error en recarga forzada: {e}")
+            # Fallback a método normal
+            self.load_stock_data()
+
     def update_stock_display(self):
         """Actualiza la visualización del TreeView de stock"""
         try:
@@ -394,8 +438,8 @@ class StockWindow:
 
             # Insertar datos en TreeView
             for item in self.filtered_data:
-                # Determinar estado del stock
-                stock_actual = item.get('cantidad_disponible', 0)
+                # Determinar estado del stock (compatible con ambas clés)
+                stock_actual = item.get('cantidad', item.get('cantidad_disponible', 0))
                 if stock_actual <= 0:
                     estado = "Sin stock"
                     estado_color = "red"
@@ -421,9 +465,9 @@ class StockWindow:
                 else:
                     fecha_display = 'N/A'
 
-                # Insertar en TreeView
+                # Insertar en TreeView (compatible con ambas estructuras de datos)
                 tree_item = self.stock_tree.insert('', 'end', values=(
-                    item.get('producto_nombre', 'N/A'),
+                    item.get('nombre', item.get('producto_nombre', 'N/A')),
                     item.get('referencia', 'N/A'),
                     str(stock_actual),
                     estado,
@@ -1022,40 +1066,164 @@ class StockWindow:
             self.show_error_message("Error", f"Error mostrando estadísticas: {e}")
 
     def modify_stock(self, item):
-        """Permite modificar directamente la cantidad de stock"""
+        """Permite modificar stock con botones + y -"""
         try:
             # Asegurar que la ventana esté al frente antes del diálogo
             self.ensure_window_focus()
 
             current_stock = item.get('cantidad', item.get('cantidad_disponible', 0))
-            new_stock = simpledialog.askinteger(
-                "Modificar Stock",
-                f"Stock actual de '{item['nombre']}': {current_stock}\n\nIngrese la nueva cantidad:",
-                initialvalue=current_stock,
-                minvalue=0,
-                parent=self.window
-            )
 
-            if new_stock is not None and new_stock != current_stock:
+            # Crear ventana de modificación con botones + y -
+            self._show_stock_modification_dialog(item, current_stock)
+
+        except Exception as e:
+            self.logger.error(f"Error modificando stock: {e}")
+            self.show_error_message("Error", f"Error modificando stock: {e}")
+
+    def _show_stock_modification_dialog(self, item, current_stock):
+        """Muestra diálogo con botones + y - para modificar stock"""
+        import tkinter as tk
+
+        # Crear ventana modal
+        dialog = ctk.CTkToplevel(self.window)
+        dialog.title("Modificar Stock")
+        dialog.geometry("400x350")
+
+        # Configurar la ventana antes de hacerla modal
+        try:
+            # Centrar la ventana de forma segura
+            try:
+                parent_x = self.window.winfo_x()
+                parent_y = self.window.winfo_y()
+                dialog.geometry("+{}+{}".format(parent_x + 50, parent_y + 50))
+            except Exception:
+                # Si no se puede obtener la posición del padre, centrar en pantalla
+                dialog.geometry("+300+200")
+
+            # Hacer la ventana modal de forma segura
+            dialog.transient(self.window)
+            dialog.focus_set()  # Dar foco primero
+
+            # Esperar a que la ventana sea visible antes de hacer grab_set
+            dialog.update_idletasks()
+            dialog.after(10, lambda: self._safe_grab_set(dialog))
+
+        except Exception as e:
+            self.logger.warning(f"Error configurando ventana modal: {e}")
+            # Continuar sin modalidad si hay problemas
+
+        # Variable para el stock actual
+        stock_var = tk.IntVar(value=current_stock)
+
+        # Información del producto
+        info_frame = ctk.CTkFrame(dialog)
+        info_frame.pack(fill="x", padx=20, pady=10)
+
+        ctk.CTkLabel(info_frame, text=f"Producto: {item['nombre']}",
+                    font=ctk.CTkFont(size=14, weight="bold")).pack(pady=5)
+        ctk.CTkLabel(info_frame, text=f"Referencia: {item.get('referencia', 'N/A')}").pack(pady=2)
+
+        # Frame para el stock actual
+        stock_frame = ctk.CTkFrame(dialog)
+        stock_frame.pack(fill="x", padx=20, pady=10)
+
+        ctk.CTkLabel(stock_frame, text="Stock Actual:",
+                    font=ctk.CTkFont(size=12, weight="bold")).pack(pady=5)
+
+        # Frame para los controles + y -
+        controls_frame = ctk.CTkFrame(stock_frame)
+        controls_frame.pack(pady=10)
+
+        # Botón -
+        minus_btn = ctk.CTkButton(controls_frame, text="-", width=60, height=60,
+                                 font=ctk.CTkFont(size=20, weight="bold"),
+                                 command=lambda: self._decrease_stock(stock_var, stock_label))
+        minus_btn.pack(side="left", padx=10)
+
+        # Label del stock
+        stock_label = ctk.CTkLabel(controls_frame, text=str(current_stock),
+                                  font=ctk.CTkFont(size=24, weight="bold"), width=100)
+        stock_label.pack(side="left", padx=20)
+
+        # Botón +
+        plus_btn = ctk.CTkButton(controls_frame, text="+", width=60, height=60,
+                                font=ctk.CTkFont(size=20, weight="bold"),
+                                command=lambda: self._increase_stock(stock_var, stock_label))
+        plus_btn.pack(side="left", padx=10)
+
+        # Información adicional
+        info_label = ctk.CTkLabel(dialog,
+                                 text="Usa los botones + y - para ajustar el stock\nStock mínimo: 0",
+                                 font=ctk.CTkFont(size=11))
+        info_label.pack(pady=10)
+
+        # Botones de acción
+        buttons_frame = ctk.CTkFrame(dialog)
+        buttons_frame.pack(fill="x", padx=20, pady=20)
+
+        # Botón Guardar
+        save_btn = ctk.CTkButton(buttons_frame, text="Guardar Cambios",
+                                command=lambda: self._save_stock_changes(dialog, item, current_stock, stock_var.get()))
+        save_btn.pack(side="left", padx=10, expand=True, fill="x")
+
+        # Botón Cancelar
+        cancel_btn = ctk.CTkButton(buttons_frame, text="Cancelar",
+                                  command=dialog.destroy)
+        cancel_btn.pack(side="right", padx=10, expand=True, fill="x")
+
+    def _safe_grab_set(self, dialog):
+        """Hace grab_set de forma segura, manejando errores"""
+        try:
+            if dialog.winfo_exists() and dialog.winfo_viewable():
+                dialog.grab_set()
+                dialog.lift()  # Asegurar que esté al frente
+        except Exception as e:
+            self.logger.warning(f"No se pudo hacer grab_set: {e}")
+            # La ventana funcionará sin modalidad
+
+    def _increase_stock(self, stock_var, stock_label):
+        """Aumenta el stock en 1"""
+        current = stock_var.get()
+        new_value = current + 1
+        stock_var.set(new_value)
+        stock_label.configure(text=str(new_value))
+
+    def _decrease_stock(self, stock_var, stock_label):
+        """Disminuye el stock en 1 (mínimo 0)"""
+        current = stock_var.get()
+        if current > 0:
+            new_value = current - 1
+            stock_var.set(new_value)
+            stock_label.configure(text=str(new_value))
+
+    def _save_stock_changes(self, dialog, item, original_stock, new_stock):
+        """Guarda los cambios de stock"""
+        if new_stock != original_stock:
+            try:
                 # Actualizar en base de datos
                 stock_obj = Stock(item['producto_id'], new_stock)
                 stock_obj.save()
 
                 # Registrar movimiento
-                diferencia = new_stock - current_stock
+                diferencia = new_stock - original_stock
                 tipo_movimiento = "AJUSTE_POSITIVO" if diferencia > 0 else "AJUSTE_NEGATIVO"
-                descripcion = f"Ajuste manual: {current_stock} -> {new_stock}"
+                descripcion = f"Ajuste manual: {original_stock} -> {new_stock}"
                 StockMovement.create(item['producto_id'], diferencia, tipo_movimiento, descripcion)
 
-                # Recharger les données depuis la base de données pour assurer la cohérence
-                self.load_stock_data()
+                # Recargar datos
+                self.force_reload_stock_data()
 
-                self.logger.info(f"Stock modificado para producto {item['producto_id']}: {current_stock} -> {new_stock}")
-                self.show_success_message("Éxito", f"Stock actualizado correctamente.\nAnterior: {current_stock}\nNuevo: {new_stock}")
+                self.logger.info(f"Stock modificado para producto {item['producto_id']}: {original_stock} -> {new_stock}")
+                self.show_success_message("Éxito", f"Stock actualizado correctamente.\nAnterior: {original_stock}\nNuevo: {new_stock}")
 
-        except Exception as e:
-            self.logger.error(f"Error modificando stock: {e}")
-            self.show_error_message("Error", f"Error modificando stock: {e}")
+                dialog.destroy()
+
+            except Exception as e:
+                self.logger.error(f"Error guardando cambios de stock: {e}")
+                self.show_error_message("Error", f"Error guardando cambios: {e}")
+        else:
+            # Si no hay cambios, simplemente cerrar
+            dialog.destroy()
 
     def add_stock(self, item):
         """Permite agregar stock a un producto"""
@@ -1081,9 +1249,9 @@ class StockWindow:
                 descripcion = f"Entrada manual de {cantidad_agregar} unidades"
                 StockMovement.create(item['producto_id'], cantidad_agregar, "ENTRADA", descripcion)
 
-                # Recharger les données depuis la base de données pour assurer la cohérence
+                # Forcer le rechargement sans cache pour assurer la cohérence
                 old_stock = item.get('cantidad', item.get('cantidad_disponible', 0))
-                self.load_stock_data()
+                self.force_reload_stock_data()
 
                 self.logger.info(f"Stock agregado para producto {item['producto_id']}: +{cantidad_agregar} (total: {new_stock})")
                 self.show_success_message("Éxito", f"Stock agregado correctamente.\nAnterior: {old_stock}\nAgregado: +{cantidad_agregar}\nNuevo total: {new_stock}")
@@ -1122,8 +1290,8 @@ class StockWindow:
                 descripcion = f"Salida manual de {cantidad_quitar} unidades"
                 StockMovement.create(item['producto_id'], -cantidad_quitar, "SALIDA", descripcion)
 
-                # Recharger les données depuis la base de données pour assurer la cohérence
-                self.load_stock_data()
+                # Forcer le rechargement sans cache pour assurer la cohérence
+                self.force_reload_stock_data()
 
                 self.logger.info(f"Stock removido para producto {item['producto_id']}: -{cantidad_quitar} (total: {new_stock})")
                 self.show_success_message("Éxito", f"Stock removido correctamente.\nAnterior: {current_stock}\nRemovido: -{cantidad_quitar}\nNuevo total: {new_stock}")

@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from utils.translations import get_text
 from utils.logger import get_logger, log_user_action, log_database_operation, log_exception
-from database.models import Factura, FacturaItem, Producto, Organizacion, Stock
+from database.models import Factura, FacturaItem, Producto, Organizacion, Stock, Cliente
 from database.optimized_models import OptimizedFactura, OptimizedProducto
 from common.ui_components import BaseWindow, FormHelper
 from common.validators import FormValidator, CalculationHelper
@@ -16,13 +16,15 @@ import os
 
 class FacturasWindow(BaseWindow, FacturasMethodsMixin):
     def __init__(self, parent, nueva_factura=False):
-        super().__init__(parent, get_text("facturas"), "1200x800")
+        super().__init__(parent, get_text("facturas"), "1000x900")
 
         # Variables específicas de facturas
         self.facturas = []
         self.selected_factura = None
         self.current_factura = None
         self.factura_items = []
+        self.selected_cliente = None
+        self.clientes_window = None
         self.productos_disponibles = []
 
         # Crear interfaz
@@ -31,6 +33,7 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         # Cargar datos
         self.load_facturas()
         self.load_productos_disponibles()
+        self.load_clientes_combobox()
 
         if nueva_factura:
             self.nueva_factura()
@@ -39,8 +42,8 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
 
     def create_widgets(self):
         """Crea los widgets de la ventana"""
-        # Configurar frame scrollable
-        main_frame = self.setup_scrollable_frame(1400, 900)
+        # Configurar frame scrollable con nueva geometría más compacta
+        main_frame = self.setup_scrollable_frame(1000, 900)
 
         # Título
         title_label = ctk.CTkLabel(
@@ -54,17 +57,18 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         content_frame = ctk.CTkFrame(main_frame)
         content_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Frame izquierdo - Lista de facturas
-        left_frame = ctk.CTkFrame(content_frame)
-        left_frame.pack(side="left", fill="both", expand=True, padx=(0, 5))
+        # Frame superior - Lista de facturas (hauteur fixe)
+        top_frame = ctk.CTkFrame(content_frame)
+        top_frame.pack(side="top", fill="x", pady=(0, 5))
+        top_frame.configure(height=300)  # Hauteur fixe pour la liste
 
-        self.create_facturas_list(left_frame)
+        self.create_facturas_list(top_frame)
 
-        # Frame derecho - Formulario de factura
-        right_frame = ctk.CTkFrame(content_frame)
-        right_frame.pack(side="right", fill="both", expand=True, padx=(5, 0))
+        # Frame inferior - Formulario de factura (prend l'espace restant)
+        bottom_frame = ctk.CTkFrame(content_frame)
+        bottom_frame.pack(side="bottom", fill="both", expand=True, pady=(5, 0))
 
-        self.create_factura_form(right_frame)
+        self.create_factura_form(bottom_frame)
 
     def create_facturas_list(self, parent):
         """Crea la lista de facturas"""
@@ -84,9 +88,9 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         list_frame = ctk.CTkFrame(parent)
         list_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-        # Crear Treeview para mostrar facturas
+        # Crear Treeview para mostrar facturas (hauteur réduite pour layout vertical)
         columns = ("Número", "Fecha", "Cliente", "Total")
-        self.facturas_tree = ttk.Treeview(list_frame, columns=columns, show="headings", height=15)
+        self.facturas_tree = ttk.Treeview(list_frame, columns=columns, show="headings", height=8)
 
         # Configurar columnas
         self.facturas_tree.heading("Número", text="Número")
@@ -217,10 +221,35 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         left_col = ctk.CTkFrame(fields_frame)
         left_col.pack(side="left", fill="both", expand=True, padx=(0, 5))
 
-        # Nombre del cliente
+        # Selección de cliente existente
+        ctk.CTkLabel(left_col, text="Cliente existente").pack(anchor="w", padx=10, pady=(10, 0))
+
+        # Frame para dropdown y botón
+        cliente_select_frame = ctk.CTkFrame(left_col)
+        cliente_select_frame.pack(fill="x", padx=10, pady=5)
+
+        self.cliente_combobox = ctk.CTkComboBox(
+            cliente_select_frame,
+            values=["-- Seleccionar cliente --"],
+            command=self.on_cliente_selected,
+            width=200
+        )
+        self.cliente_combobox.pack(side="left", fill="x", expand=True, padx=(0, 5))
+
+        # Botón para gestionar clientes
+        self.gestionar_clientes_btn = ctk.CTkButton(
+            cliente_select_frame,
+            text="👥",
+            width=30,
+            command=self.open_clientes_window
+        )
+        self.gestionar_clientes_btn.pack(side="right")
+
+        # Nombre del cliente (editable)
         ctk.CTkLabel(left_col, text=get_text("nombre_cliente") + "*").pack(anchor="w", padx=10, pady=(10, 0))
         self.nombre_cliente_entry = ctk.CTkEntry(left_col, placeholder_text="Nombre completo del cliente")
         self.nombre_cliente_entry.pack(fill="x", padx=10, pady=5)
+        self.nombre_cliente_entry.bind("<KeyRelease>", self.on_nombre_cliente_changed)
 
         # DNI/NIE
         ctk.CTkLabel(left_col, text=get_text("dni_nie")).pack(anchor="w", padx=10, pady=(10, 0))
@@ -610,3 +639,123 @@ class FacturasWindow(BaseWindow, FacturasMethodsMixin):
         except Exception as e:
             log_exception(e, "load_factura_to_form")
             self._show_message("error", get_text("error"), f"Error al cargar factura: {str(e)}")
+
+    def load_clientes_combobox(self):
+        """Carga la lista de clientes en el combobox"""
+        try:
+            clientes = Cliente.get_all()
+            cliente_names = ["-- Seleccionar cliente --"] + [cliente.nombre for cliente in clientes]
+            self.cliente_combobox.configure(values=cliente_names)
+            self.cliente_combobox.set("-- Seleccionar cliente --")
+
+            self.logger.debug(f"Cargados {len(clientes)} clientes en combobox")
+
+        except Exception as e:
+            self.logger.error(f"Error cargando clientes: {e}")
+
+    def on_cliente_selected(self, selected_name):
+        """Maneja la selección de un cliente del combobox"""
+        if selected_name == "-- Seleccionar cliente --":
+            self.selected_cliente = None
+            return
+
+        try:
+            # Buscar el cliente por nombre
+            cliente = Cliente.get_by_nombre(selected_name)
+            if cliente:
+                self.selected_cliente = cliente
+
+                # Cargar datos del cliente en el formulario
+                FormHelper.set_entry_value(self.nombre_cliente_entry, cliente.nombre)
+                FormHelper.set_entry_value(self.dni_nie_entry, cliente.dni_nie or "")
+                FormHelper.set_entry_value(self.email_cliente_entry, cliente.email or "")
+                FormHelper.set_text_value(self.direccion_cliente_text, cliente.direccion or "")
+                FormHelper.set_entry_value(self.telefono_cliente_entry, cliente.telefono or "")
+
+                self.logger.debug(f"Cliente seleccionado: {cliente.nombre}")
+
+        except Exception as e:
+            self.logger.error(f"Error seleccionando cliente: {e}")
+
+    def on_nombre_cliente_changed(self, event=None):
+        """Maneja cambios en el nombre del cliente"""
+        # Si el usuario está escribiendo, deseleccionar el cliente del combobox
+        current_name = self.nombre_cliente_entry.get().strip()
+        if self.selected_cliente and current_name != self.selected_cliente.nombre:
+            self.selected_cliente = None
+            self.cliente_combobox.set("-- Seleccionar cliente --")
+
+    def open_clientes_window(self):
+        """Abre la ventana de gestión de clientes"""
+        try:
+            from ui.clientes import ClientesWindow
+
+            if self.clientes_window is None or not self.clientes_window.window.winfo_exists():
+                self.clientes_window = ClientesWindow(self.window)
+                # Callback para recargar clientes cuando se cierre la ventana
+                self.clientes_window.window.protocol("WM_DELETE_WINDOW", self.on_clientes_window_closed)
+            else:
+                self.clientes_window.window.lift()
+                self.clientes_window.window.focus_force()
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo ventana de clientes: {e}")
+            self._show_message("error", "Error", f"Error abriendo ventana de clientes: {e}")
+
+    def on_clientes_window_closed(self):
+        """Callback cuando se cierra la ventana de clientes"""
+        try:
+            if self.clientes_window:
+                self.clientes_window.window.destroy()
+                self.clientes_window = None
+
+            # Recargar la lista de clientes
+            self.load_clientes_combobox()
+
+        except Exception as e:
+            self.logger.error(f"Error cerrando ventana de clientes: {e}")
+
+    def auto_add_cliente_if_new(self):
+        """Añade automáticamente un cliente si es nuevo"""
+        try:
+            nombre = self.nombre_cliente_entry.get().strip()
+
+            # Si no hay nombre, no hacer nada
+            if not nombre:
+                return None
+
+            # Si ya hay un cliente seleccionado, usar ese
+            if self.selected_cliente and self.selected_cliente.nombre == nombre:
+                return self.selected_cliente.id
+
+            # Buscar si el cliente ya existe
+            cliente_existente = Cliente.get_by_nombre(nombre)
+            if cliente_existente:
+                return cliente_existente.id
+
+            # Crear nuevo cliente con los datos del formulario
+            nuevo_cliente = Cliente(
+                nombre=nombre,
+                dni_nie=self.dni_nie_entry.get().strip(),
+                email=self.email_cliente_entry.get().strip(),
+                telefono=self.telefono_cliente_entry.get().strip(),
+                direccion=self.direccion_cliente_text.get("1.0", "end-1c").strip()
+            )
+
+            cliente_id = nuevo_cliente.save()
+
+            # Recargar la lista de clientes
+            self.load_clientes_combobox()
+
+            # Seleccionar el nuevo cliente en el combobox
+            self.cliente_combobox.set(nombre)
+            self.selected_cliente = nuevo_cliente
+
+            self.logger.info(f"Nuevo cliente creado automáticamente: {nombre}")
+            log_user_action(f"Cliente creado automáticamente: {nombre}")
+
+            return cliente_id
+
+        except Exception as e:
+            self.logger.error(f"Error creando cliente automáticamente: {e}")
+            return None

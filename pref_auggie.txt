@@ -8,3 +8,5 @@
  - **Textes en dur** : ne jamais harcoder des textes en dur dans le code
  - **Langues obligatoires** : ES pour chaque nouveau texte
 
+ ### Tests
+ - ** les tests doivent être intégrés comme test de régression ou d'integration dans la suite de test et non supprimer

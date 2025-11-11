@@ -519,10 +519,14 @@ class FacturasMethodsMixin:
             # Crear o actualizar factura
             if not self.current_factura:
                 self.current_factura = Factura()
-            
+
+            # Gestionar cliente (añadir automáticamente si es nuevo)
+            cliente_id = self.auto_add_cliente_if_new()
+
             # Asignar datos básicos
             self.current_factura.numero_factura = FormHelper.get_entry_value(self.numero_entry)
             self.current_factura.fecha_factura = FormHelper.get_entry_value(self.fecha_entry)
+            self.current_factura.cliente_id = cliente_id
             self.current_factura.nombre_cliente = FormHelper.get_entry_value(self.nombre_cliente_entry)
             self.current_factura.dni_nie_cliente = FormHelper.get_entry_value(self.dni_nie_entry)
             self.current_factura.direccion_cliente = FormHelper.get_text_value(self.direccion_cliente_text)

@@ -4,6 +4,7 @@ from ui.productos import ProductosWindow
 from ui.organizacion import OrganizacionWindow
 from ui.stock import StockWindow
 from ui.facturas import FacturasWindow
+from ui.clientes import ClientesWindow
 from ui.search_window import SearchWindow
 
 class MainWindow:
@@ -29,6 +30,7 @@ class MainWindow:
         self.organizacion_window = None
         self.stock_window = None
         self.facturas_window = None
+        self.clientes_window = None
         self.search_window = None
     
     def center_window(self):
@@ -101,7 +103,17 @@ class MainWindow:
             command=self.open_facturas
         )
         facturas_btn.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
-        
+
+        # Botón Clientes
+        clientes_btn = ctk.CTkButton(
+            buttons_frame,
+            text="👥 Clientes",
+            font=ctk.CTkFont(size=18, weight="bold"),
+            height=80,
+            command=self.open_clientes
+        )
+        clientes_btn.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
+
         # Botón Búsqueda Avanzada
         search_btn = ctk.CTkButton(
             buttons_frame,
@@ -112,7 +124,7 @@ class MainWindow:
             hover_color="#0000CD",
             command=self.open_search
         )
-        search_btn.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
+        search_btn.grid(row=2, column=1, padx=20, pady=20, sticky="ew")
 
         # Botón Nueva Factura (destacado)
         nueva_factura_btn = ctk.CTkButton(
@@ -185,7 +197,18 @@ class MainWindow:
             self.facturas_window.window.focus_force()
             self.facturas_window.window.attributes('-topmost', True)
             self.facturas_window.window.attributes('-topmost', False)
-    
+
+    def open_clientes(self):
+        """Abre la ventana de gestión de clientes"""
+        if self.clientes_window is None or not self.clientes_window.window.winfo_exists():
+            self.clientes_window = ClientesWindow(self.root)
+        else:
+            # Traer la ventana al frente y darle foco
+            self.clientes_window.window.lift()
+            self.clientes_window.window.focus_force()
+            self.clientes_window.window.attributes('-topmost', True)
+            self.clientes_window.window.attributes('-topmost', False)
+
     def open_search(self):
         """Abre la ventana de búsqueda avanzada"""
         if self.search_window is None or not self.search_window.window.winfo_exists():

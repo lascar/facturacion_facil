@@ -2437,3 +2437,1148 @@ ValueError: Test exception
 2025-11-11 09:45:13 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
 2025-11-11 09:45:13 - facturacion_facil.stock_window - INFO - stock.py:905 - Mostrando 2 productos con stock bajo
 2025-11-11 09:45:14 - facturacion_facil.stock_window - INFO - stock.py:1018 - Ventana de estadísticas de rendimiento mostrada
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:13:30 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:13:30 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:13:30 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:13:32 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:13:32 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:13:32 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:13:32 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:13:34 - facturacion_facil.stock_window - INFO - stock.py:448 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:13:34 - facturacion_facil.stock_window - INFO - stock.py:507 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:13:34 - facturacion_facil.stock_window - INFO - stock.py:512 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:13:34 - facturacion_facil.stock_window - INFO - stock.py:516 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:13:34 - facturacion_facil.stock_window - INFO - stock.py:555 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:13:39 - facturacion_facil.stock_window - INFO - stock.py:448 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:13:39 - facturacion_facil.stock_window - INFO - stock.py:507 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:13:39 - facturacion_facil.stock_window - INFO - stock.py:512 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:13:39 - facturacion_facil.stock_window - INFO - stock.py:516 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:13:39 - facturacion_facil.stock_window - INFO - stock.py:555 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:13:44 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:13:44 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:13:44 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:13:44 - facturacion_facil.stock_window - INFO - stock.py:1053 - Stock modificado para producto 1: 5 -> 6
+2025-11-11 10:13:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:13:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:13:47 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:13:53 - facturacion_facil.stock_window - INFO - stock.py:448 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:13:54 - facturacion_facil.stock_window - INFO - stock.py:448 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:13:54 - facturacion_facil.stock_window - INFO - stock.py:507 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:13:54 - facturacion_facil.stock_window - INFO - stock.py:512 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:13:54 - facturacion_facil.stock_window - INFO - stock.py:516 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:13:54 - facturacion_facil.stock_window - INFO - stock.py:555 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:14:01 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:14:01 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:14:01 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:14:01 - facturacion_facil.stock_window - INFO - stock.py:1053 - Stock modificado para producto 1: 6 -> 7
+2025-11-11 10:14:01 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:14:01 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:15:16 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:15:17 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:15:17 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:15:17 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:15:18 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:15:18 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:15:18 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:15:19 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:15:19 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:15:19 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:15:58 - facturacion_facil.stock_window - INFO - stock.py:448 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:15:58 - facturacion_facil.stock_window - INFO - stock.py:507 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:15:58 - facturacion_facil.stock_window - INFO - stock.py:512 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:15:58 - facturacion_facil.stock_window - INFO - stock.py:516 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:15:58 - facturacion_facil.stock_window - INFO - stock.py:555 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:16:06 - facturacion_facil.stock_window - DEBUG - stock.py:385 - Actualizando display stock: 2 elementos
+2025-11-11 10:16:06 - facturacion_facil.stock_window - DEBUG - stock.py:433 - Display stock actualizado correctamente
+2025-11-11 10:16:06 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:16:06 - facturacion_facil.stock_window - INFO - stock.py:1053 - Stock modificado para producto 1: 7 -> 8
+2025-11-11 10:16:06 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel3
+2025-11-11 10:16:06 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel3
+2025-11-11 10:16:14 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel3
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:17:10 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:17:10 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:17:10 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:17:12 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:17:12 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 2 elementos
+2025-11-11 10:17:12 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:17:12 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:17:14 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:17:15 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:17:16 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:17:16 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:17:16 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:17:16 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:17:21 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: N/A (ID: 1)
+2025-11-11 10:17:21 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:17:21 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:17:21 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 1
+2025-11-11 10:17:21 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:17:26 - facturacion_facil.stock_window - INFO - stock.py:385 - Forzando recarga de datos de stock sin cache
+2025-11-11 10:17:26 - facturacion_facil.stock_window - DEBUG - stock.py:391 - Cache invalidado
+2025-11-11 10:17:26 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 2 elementos
+2025-11-11 10:17:26 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:17:26 - facturacion_facil.stock_window - INFO - stock.py:419 - Recarga forzada completada: 2 productos
+2025-11-11 10:17:26 - facturacion_facil.stock_window - INFO - stock.py:1097 - Stock modificado para producto 1: 8 -> 7
+2025-11-11 10:17:26 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:17:26 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:17:32 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:18:54 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-11-11 10:19:15 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:19:15 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:20:45 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:20:45 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:20:53 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:20:53 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_structure_consistency_d3wrsk3r.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_structure_consistency_assets_temd66qq
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_structure_consistency_d3wrsk3r.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_structure_consistency_assets_temd66qq
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_conversion_9u178r85.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_conversion_assets__kljn1cl
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_conversion_9u178r85.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_conversion_assets__kljn1cl
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_display_compatibility_mpwgt9jt.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_display_compatibility_assets__w06g2t4
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_display_compatibility_mpwgt9jt.db
+2025-11-11 10:20:53 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_display_compatibility_assets__w06g2t4
+2025-11-11 10:20:56 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:21:40 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:21:40 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_structure_consistency_vl64pgf2.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_structure_consistency_assets_hi77m458
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_structure_consistency_vl64pgf2.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_structure_consistency_assets_hi77m458
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_conversion_amm7npfq.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_conversion_assets_z7armx5c
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_conversion_amm7npfq.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_conversion_assets_z7armx5c
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_display_compatibility_88v8b7by.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_display_compatibility_assets_bs70c0al
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_display_compatibility_88v8b7by.db
+2025-11-11 10:21:40 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_display_compatibility_assets_bs70c0al
+2025-11-11 10:21:42 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:22:05 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:22:05 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:22:05 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_display_compatibility_ihb04cao.db
+2025-11-11 10:22:05 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_display_compatibility_assets_u3xeq65f
+2025-11-11 10:22:05 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_display_compatibility_ihb04cao.db
+2025-11-11 10:22:05 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_display_compatibility_assets_u3xeq65f
+2025-11-11 10:22:07 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:22:48 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:22:48 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_structure_consistency_enu60oje.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_structure_consistency_assets_114tnh40
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_structure_consistency_enu60oje.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_structure_consistency_assets_114tnh40
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_data_conversion_o1n1r8bz.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_data_conversion_assets_4mz57jsj
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_data_conversion_o1n1r8bz.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_data_conversion_assets_4mz57jsj
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_display_compatibility_1wl6_e9i.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_display_compatibility_assets_jqhglq2f
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_display_compatibility_1wl6_e9i.db
+2025-11-11 10:22:49 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_display_compatibility_assets_jqhglq2f
+2025-11-11 10:22:50 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:23:22 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:23:22 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:24:21 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:24:21 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:24:21 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:24:22 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:24:24 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:24:24 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 4 elementos
+2025-11-11 10:24:24 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:24:24 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 4 productos en stock (OPTIMIZADO)
+2025-11-11 10:24:32 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: producto2 (ID: 2)
+2025-11-11 10:24:32 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:24:32 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:24:32 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 2
+2025-11-11 10:24:32 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:24:36 - facturacion_facil.stock_window - INFO - stock.py:385 - Forzando recarga de datos de stock sin cache
+2025-11-11 10:24:36 - facturacion_facil.stock_window - DEBUG - stock.py:391 - Cache invalidado
+2025-11-11 10:24:36 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 4 elementos
+2025-11-11 10:24:36 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:24:36 - facturacion_facil.stock_window - INFO - stock.py:419 - Recarga forzada completada: 4 productos
+2025-11-11 10:24:36 - facturacion_facil.stock_window - INFO - stock.py:1097 - Stock modificado para producto 2: 0 -> 4
+2025-11-11 10:24:36 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:24:36 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:24:39 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel
+2025-11-11 10:24:45 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-11-11 10:27:33 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:27:33 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:27:34 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:27:34 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 4 elementos
+2025-11-11 10:27:34 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:27:34 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 4 productos en stock (OPTIMIZADO)
+2025-11-11 10:33:06 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:33:06 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:33:06 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_buttons_interface_regression_5dcwzijk.db
+2025-11-11 10:33:06 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_buttons_interface_regression_assets_x58pj5aq
+2025-11-11 10:33:07 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_buttons_interface_regression_5dcwzijk.db
+2025-11-11 10:33:07 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_buttons_interface_regression_assets_x58pj5aq
+2025-11-11 10:33:09 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:33:32 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:33:32 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:33:32 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_buttons_interface_regression_evy9lqky.db
+2025-11-11 10:33:32 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_buttons_interface_regression_assets_yleajojf
+2025-11-11 10:33:33 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_buttons_interface_regression_evy9lqky.db
+2025-11-11 10:33:33 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_buttons_interface_regression_assets_yleajojf
+2025-11-11 10:33:34 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:34:06 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:34:06 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:34:06 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_buttons_interface_regression_rnnkh44q.db
+2025-11-11 10:34:06 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_buttons_interface_regression_assets_6kxjpfe8
+2025-11-11 10:34:07 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_buttons_interface_regression_rnnkh44q.db
+2025-11-11 10:34:07 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_buttons_interface_regression_assets_6kxjpfe8
+2025-11-11 10:34:08 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:34:34 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:34:34 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:34:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_buttons_interface_regression_0nf9p8qo.db
+2025-11-11 10:34:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_buttons_interface_regression_assets_asd0c0e4
+2025-11-11 10:34:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_buttons_interface_regression_0nf9p8qo.db
+2025-11-11 10:34:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_buttons_interface_regression_assets_asd0c0e4
+2025-11-11 10:34:36 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:35:22 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:35:22 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:35:22 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_buttons_interface_regression_uttubpqw.db
+2025-11-11 10:35:22 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_buttons_interface_regression_assets_4bg99b8x
+2025-11-11 10:35:22 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_buttons_interface_regression_uttubpqw.db
+2025-11-11 10:35:22 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_buttons_interface_regression_assets_4bg99b8x
+2025-11-11 10:35:24 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:35:32 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:35:32 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:35:50 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:35:50 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 2
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/2
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 6
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 2
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 8
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:35:50 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853750: 10→8 (Factura: INT-TEST-MULTI)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853750: -2 unidades (10→8)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 2/2
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 7
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 8
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 5
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:35:50 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 2: 8→5 (Factura: INT-TEST-MULTI)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 2: -3 unidades (8→5)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:35:50 - facturacion_facil.test_integration - WARNING - facturas_methods.py:114 - Stock bajo para producto Producto Integration Test 1762853750: 3 unidades
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: False
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-1762853750
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 1
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/1
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 11
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 7
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:35:50 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853750: 10→7 (Factura: INT-TEST-1762853750)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853750: -3 unidades (10→7)
+2025-11-11 10:35:50 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-1762853750
+2025-11-11 10:36:41 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:36:41 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 2
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/2
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 15
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 2
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 8
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:36:41 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853801: 10→8 (Factura: INT-TEST-MULTI)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853801: -2 unidades (10→8)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 2/2
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 16
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 8
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 5
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:36:41 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 2: 8→5 (Factura: INT-TEST-MULTI)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 2: -3 unidades (8→5)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:36:41 - facturacion_facil.test_integration - WARNING - facturas_methods.py:114 - Stock bajo para producto Producto Integration Test 1762853801: 3 unidades
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: False
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-1762853801
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 1
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/1
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 20
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 7
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:36:41 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853801: 10→7 (Factura: INT-TEST-1762853801)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853801: -3 unidades (10→7)
+2025-11-11 10:36:41 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-1762853801
+2025-11-11 10:37:39 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:37:39 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 2
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/2
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 24
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 2
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 8
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:39 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853859: 10→8 (Factura: INT-TEST-MULTI)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853859: -2 unidades (10→8)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 2/2
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 25
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 8
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 5
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:39 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 2: 8→5 (Factura: INT-TEST-MULTI)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 2: -3 unidades (8→5)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:37:39 - facturacion_facil.test_integration - WARNING - facturas_methods.py:114 - Stock bajo para producto Producto Integration Test 1762853859: 3 unidades
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: False
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-1762853859
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 1
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/1
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 29
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 7
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:39 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853859: 10→7 (Factura: INT-TEST-1762853859)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853859: -3 unidades (10→7)
+2025-11-11 10:37:39 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-1762853859
+2025-11-11 10:37:58 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:37:58 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 2
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/2
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 33
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 2
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 8
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:59 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853879: 10→8 (Factura: INT-TEST-MULTI)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853879: -2 unidades (10→8)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 2/2
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 34
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 8
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 5
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:59 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 2: 8→5 (Factura: INT-TEST-MULTI)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 2: -3 unidades (8→5)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-MULTI
+2025-11-11 10:37:59 - facturacion_facil.test_integration - WARNING - facturas_methods.py:114 - Stock bajo para producto Producto Integration Test 1762853879: 3 unidades
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: False
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura INT-TEST-1762853879
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 1
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:580 - 📊 Procesando item 1/1
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:581 -    - Producto ID: 38
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 3
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:586 -    - Stock antes: 10
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:593 -    - Stock después: 7
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:37:59 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Integration Test 1762853879: 10→7 (Factura: INT-TEST-1762853879)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Integration Test 1762853879: -3 unidades (10→7)
+2025-11-11 10:37:59 - facturacion_facil.test_integration - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura INT-TEST-1762853879
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:39:45 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:39:45 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:39:45 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:39:48 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:39:48 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 2 elementos
+2025-11-11 10:39:48 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:39:48 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 2 productos en stock (OPTIMIZADO)
+2025-11-11 10:39:49 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 1 (ID: 39)
+2025-11-11 10:39:50 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 1 (ID: 39)
+2025-11-11 10:39:51 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 1 (ID: 39)
+2025-11-11 10:39:51 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:39:51 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:39:51 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 39
+2025-11-11 10:39:51 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:39:51 - facturacion_facil.stock_window - ERROR - stock.py:1080 - Error modificando stock: grab failed: window not viewable
+2025-11-11 10:39:51 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:39:51 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:40:09 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:41:20 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:41:20 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:41:20 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:41:20 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:41:20 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:41:20 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 3 productos en stock (OPTIMIZADO)
+2025-11-11 10:41:50 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:41:50 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:41:50 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_dialog_grab_error_fix_df7nhrnc.db
+2025-11-11 10:41:50 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_dialog_grab_error_fix_assets_dymnc73d
+2025-11-11 10:41:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_dialog_grab_error_fix_df7nhrnc.db
+2025-11-11 10:41:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_dialog_grab_error_fix_assets_dymnc73d
+2025-11-11 10:41:53 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:42:27 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:42:27 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:42:28 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:42:57 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:42:57 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:42:58 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_dialog_grab_error_fix_qe4fplcv.db
+2025-11-11 10:42:58 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_dialog_grab_error_fix_assets_wt8r3byt
+2025-11-11 10:42:58 - facturacion_facil.mock_stock_window - WARNING - test_ui_improvements.py:374 - No se pudo hacer grab_set: grab failed: window not viewable
+2025-11-11 10:42:58 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_dialog_grab_error_fix_qe4fplcv.db
+2025-11-11 10:42:58 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_dialog_grab_error_fix_assets_wt8r3byt
+2025-11-11 10:43:00 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:44:24 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:44:24 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_safe_grab_set_method_exists_ilry2do3.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_safe_grab_set_method_exists_assets_7xirkngg
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_safe_grab_set_method_exists_ilry2do3.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_safe_grab_set_method_exists_assets_7xirkngg
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_safe_grab_set_with_valid_window_up6a772i.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_safe_grab_set_with_valid_window_assets_8p9_rzq1
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_safe_grab_set_with_valid_window_up6a772i.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_safe_grab_set_with_valid_window_assets_8p9_rzq1
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_safe_grab_set_with_invalid_window_vkx71729.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_safe_grab_set_with_invalid_window_assets_yvf7gmpx
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_safe_grab_set_with_invalid_window_vkx71729.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_safe_grab_set_with_invalid_window_assets_yvf7gmpx
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_safe_grab_set_handles_grab_exceptions_1qjp58h5.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_safe_grab_set_handles_grab_exceptions_assets_no4hcfkh
+2025-11-11 10:44:24 - facturacion_facil.mock_stock_window - WARNING - test_stock_grab_error_fix.py:141 - No se pudo hacer grab_set: grab failed: window not viewable
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_safe_grab_set_handles_grab_exceptions_1qjp58h5.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_safe_grab_set_handles_grab_exceptions_assets_no4hcfkh
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_stock_dialog_positioning_safety_g1_yky9n.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_stock_dialog_positioning_safety_assets_9azgr23k
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_stock_dialog_positioning_safety_g1_yky9n.db
+2025-11-11 10:44:24 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_stock_dialog_positioning_safety_assets_9azgr23k
+2025-11-11 10:44:26 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:46:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:46:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:46:25 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:46:28 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:46:28 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:46:28 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:46:28 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 3 productos en stock (OPTIMIZADO)
+2025-11-11 10:46:30 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 1 (ID: 39)
+2025-11-11 10:46:31 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:46:31 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:46:31 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 39
+2025-11-11 10:46:31 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:46:35 - facturacion_facil.stock_window - INFO - stock.py:385 - Forzando recarga de datos de stock sin cache
+2025-11-11 10:46:35 - facturacion_facil.stock_window - DEBUG - stock.py:391 - Cache invalidado
+2025-11-11 10:46:35 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:46:35 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:46:35 - facturacion_facil.stock_window - INFO - stock.py:419 - Recarga forzada completada: 3 productos
+2025-11-11 10:46:35 - facturacion_facil.stock_window - INFO - stock.py:1216 - Stock modificado para producto 39: 12 -> 13
+2025-11-11 10:46:35 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:46:35 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:46:38 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel2
+2025-11-11 10:46:42 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 2 (ID: 40)
+2025-11-11 10:46:43 - facturacion_facil.stock_window - INFO - stock.py:492 - Stock seleccionado: Producto Botones Test 2 (ID: 40)
+2025-11-11 10:46:43 - facturacion_facil.stock_window - INFO - stock.py:551 - 🚨 DEBUG: actualizar_stock_selected EJECUTADA
+2025-11-11 10:46:43 - facturacion_facil.stock_window - INFO - stock.py:556 - 🚨 DEBUG: hasattr(self, 'selected_producto_id') = True
+2025-11-11 10:46:43 - facturacion_facil.stock_window - INFO - stock.py:560 - 🚨 DEBUG: selected_producto_id = 40
+2025-11-11 10:46:43 - facturacion_facil.stock_window - INFO - stock.py:599 - 🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización
+2025-11-11 10:46:47 - facturacion_facil.stock_window - INFO - stock.py:385 - Forzando recarga de datos de stock sin cache
+2025-11-11 10:46:47 - facturacion_facil.stock_window - DEBUG - stock.py:391 - Cache invalidado
+2025-11-11 10:46:47 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:46:47 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:46:47 - facturacion_facil.stock_window - INFO - stock.py:419 - Recarga forzada completada: 3 productos
+2025-11-11 10:46:47 - facturacion_facil.stock_window - INFO - stock.py:1216 - Stock modificado para producto 40: 5 -> 4
+2025-11-11 10:46:47 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel4
+2025-11-11 10:46:47 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel4
+2025-11-11 10:46:49 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel4
+2025-11-11 10:47:00 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 5 columnas
+2025-11-11 10:47:00 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:47:00 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:47:00 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 3 productos en stock (OPTIMIZADO)
+2025-11-11 10:47:04 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 10:47:04 - facturacion_facil.facturaswindow - INFO - facturas.py:380 - Cargadas 0 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:47:04 - facturacion_facil.facturaswindow - INFO - facturas.py:412 - Cargados 3 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 10:47:04 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-11-11 10:47:16 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:47:16 - facturacion_facil.facturaswindow - DEBUG - facturas.py:575 - Formulario de factura limpiado
+2025-11-11 10:47:16 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-500-2025
+2025-11-11 10:47:16 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-500-2025
+2025-11-11 10:47:16 - facturacion_facil.facturaswindow - INFO - facturas.py:530 - Nueva factura iniciada
+2025-11-11 10:47:16 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 10:47:52 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 39: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:47:52 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 40: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:47:52 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 41: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:47:52 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:130 - Cargados 3 productos para autocompletado
+2025-11-11 10:47:53 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:688 - Interceptor de scroll basado en foco instalado
+2025-11-11 10:48:00 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:335 - Refrescando datos de productos...
+2025-11-11 10:48:00 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 39: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:48:00 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 40: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:48:00 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 41: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 10:48:00 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:130 - Cargados 3 productos para autocompletado
+2025-11-11 10:48:00 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:228 - Datos de productos actualizados
+2025-11-11 10:48:06 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 2 sugerencias para 'pr'
+2025-11-11 10:48:06 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:193 - Dropdown mostrado
+2025-11-11 10:48:07 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 2 sugerencias para 'pro'
+2025-11-11 10:48:10 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:200 - Dropdown ocultado
+2025-11-11 10:48:10 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:159 - Producto seleccionado: Producto Botones Test 2 - PBT002
+2025-11-11 10:48:10 - facturacion_facil.producto_factura_dialog - ERROR - producto_factura_dialog.py:171 - Error al seleccionar producto: 'ProductoFacturaDialog' object has no attribute 'update_totales_preview'
+2025-11-11 10:48:10 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:220 - Seleccionado: Producto Botones Test 2 - PBT002
+2025-11-11 10:48:20 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 0 sugerencias para 'Producto Botones Test 2 - PBT002'
+2025-11-11 10:48:26 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:613 - Interceptor de scroll basado en foco removido
+2025-11-11 10:48:26 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:48:26 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:167 - Item ajouté: Producto Botones Test 2
+2025-11-11 10:48:26 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:223 - Liste mise à jour avec 1 items
+2025-11-11 10:48:26 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Producto agregado a factura - Producto ID: 40, Cantidad: 2
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:431 - 🔧 DEBUG: Botón guardar presionado
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:432 - 🔧 DEBUG: Método guardar_factura disponible: True
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:433 - 🔧 DEBUG: Tipo de guardar_factura: <class 'method'>
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:436 - 🔧 DEBUG: current_factura: <database.models.Factura object at 0x7f2ede18d7f0>
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:437 - 🔧 DEBUG: factura_items: 1
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas.py:441 - 🔧 DEBUG: Llamando a guardar_factura...
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - WARNING - facturas_methods.py:114 - Stock bajo para producto Producto Botones Test 2: 4 unidades
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:509 - 🔧 DEBUG: Mostrando resumen de impacto en stock...
+2025-11-11 10:48:38 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:511 - 🔧 DEBUG: Resultado del resumen de stock: True
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:517 - 🔧 DEBUG: Usuario CONFIRMÓ continuar con la factura
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:540 - 💾 Guardando factura FACT-500-2025 en base de datos...
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:542 - ✅ Factura guardada con ID: 9
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:545 - 📊 Iniciando actualización de stock para factura FACT-500-2025...
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:572 - 🔄 INICIANDO actualización de stock para factura FACT-500-2025
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:573 - 📦 Número de items a procesar: 1
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:580 - 📊 Procesando item 1/1
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:581 -    - Producto ID: 40
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:582 -    - Cantidad a descontar: 2
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:586 -    - Stock antes: 4
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:593 -    - Stock después: 2
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:598 -    ✅ Stock actualizado correctamente
+2025-11-11 10:48:46 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Botones Test 2: 4→2 (Factura: FACT-500-2025)
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:609 - Stock actualizado para producto Producto Botones Test 2: -2 unidades (4→2)
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:611 - ✅ COMPLETADA actualización de stock para factura FACT-500-2025
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:547 - ✅ Actualización de stock completada
+2025-11-11 10:48:46 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:190 - Número de factura usado: FACT-500-2025 (número: 500)
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas.py:380 - Cargadas 1 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:48:46 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - DEBUG - facturas.py:575 - Formulario de factura limpiado
+2025-11-11 10:48:46 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-501-2025
+2025-11-11 10:48:46 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-501-2025
+2025-11-11 10:48:46 - facturacion_facil.facturaswindow - INFO - facturas.py:530 - Nueva factura iniciada
+2025-11-11 10:48:46 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 10:48:46 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel3.!ctktoplevel2
+2025-11-11 10:48:47 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel3.!ctktoplevel2
+2025-11-11 10:48:49 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel3.!ctktoplevel2
+2025-11-11 10:48:49 - facturacion_facil - DEBUG - logger.py:100 - DB INSERT/UPDATE en facturas: Factura 
+2025-11-11 10:48:49 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura guardada - Número: 
+2025-11-11 10:48:49 - facturacion_facil.facturaswindow - INFO - facturas.py:444 - 🔧 DEBUG: guardar_factura completado SIN ERRORES
+2025-11-11 10:48:53 - facturacion_facil.stock_window - DEBUG - stock.py:429 - Actualizando display stock: 3 elementos
+2025-11-11 10:48:53 - facturacion_facil.stock_window - DEBUG - stock.py:477 - Display stock actualizado correctamente
+2025-11-11 10:48:53 - facturacion_facil.stock_window - INFO - stock.py:346 - Cargados 3 productos en stock (OPTIMIZADO)
+2025-11-11 10:49:03 - facturacion_facil.facturaswindow - INFO - facturas.py:474 - 🔍 DEBUG: Buscando factura con número: FACT-500-2025
+2025-11-11 10:49:03 - facturacion_facil.facturaswindow - INFO - facturas.py:476 - 🔍 DEBUG: Factura encontrada: True
+2025-11-11 10:49:03 - facturacion_facil.facturaswindow - INFO - facturas.py:479 - 🔍 DEBUG: Factura ID: 9, Items: 1
+2025-11-11 10:49:03 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:49:03 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:167 - Item ajouté: Producto Botones Test 2
+2025-11-11 10:49:03 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:223 - Liste mise à jour avec 1 items
+2025-11-11 10:49:03 - facturacion_facil.facturaswindow - INFO - facturas.py:608 - Factura cargada en formulario: FACT-500-2025
+2025-11-11 10:49:03 - facturacion_facil.facturaswindow - INFO - facturas.py:490 - Factura seleccionada y cargada para edición: FACT-500-2025
+2025-11-11 10:49:03 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: FACT-500-2025
+2025-11-11 10:52:13 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:52:13 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:52:36 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:52:36 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:53:02 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:53:02 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:53:02 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 10:53:03 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 4 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:53:03 - facturacion_facil.facturaswindow - INFO - facturas.py:413 - Cargados 3 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 10:53:03 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-11-11 10:53:21 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:53:21 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:53:38 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:53:38 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:53:38 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 7 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - INFO - facturas.py:413 - Cargados 3 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 7 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:53:39 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - DEBUG - facturas.py:576 - Formulario de factura limpiado
+2025-11-11 10:53:39 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-1762854819-2025
+2025-11-11 10:53:39 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-1762854819-2025
+2025-11-11 10:53:39 - facturacion_facil.facturaswindow - INFO - facturas.py:531 - Nueva factura iniciada
+2025-11-11 10:53:39 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:54:28 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:54:28 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:54:28 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:55:08 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:55:08 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:55:11 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:55:29 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:55:29 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:55:31 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:56:33 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:56:33 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:56:33 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_facturas_vertical_layout_rih95x50.db
+2025-11-11 10:56:33 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_facturas_vertical_layout_assets_84y85d3p
+2025-11-11 10:56:34 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 10:56:34 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 3 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:56:34 - facturacion_facil.facturaswindow - INFO - facturas.py:413 - Cargados 0 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 10:56:34 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-11-11 10:56:35 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 3 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:56:35 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:56:35 - facturacion_facil.facturaswindow - DEBUG - facturas.py:576 - Formulario de factura limpiado
+2025-11-11 10:56:35 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-1762854819-2025
+2025-11-11 10:56:35 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-1762854819-2025
+2025-11-11 10:56:35 - facturacion_facil.facturaswindow - INFO - facturas.py:531 - Nueva factura iniciada
+2025-11-11 10:56:35 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 10:56:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_facturas_vertical_layout_rih95x50.db
+2025-11-11 10:56:35 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_facturas_vertical_layout_assets_84y85d3p
+2025-11-11 10:56:37 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 10:57:20 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 10:57:20 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 10:57:20 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 10:57:22 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 10:57:23 - facturacion_facil.facturaswindow - INFO - facturas.py:381 - Cargadas 7 facturas (OPTIMIZADO - résumé)
+2025-11-11 10:57:23 - facturacion_facil.facturaswindow - INFO - facturas.py:413 - Cargados 3 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 10:57:23 - facturacion_facil.facturaswindow - INFO - facturas.py:38 - Ventana de facturas inicializada correctamente
+2025-11-11 10:57:44 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:57:44 - facturacion_facil.facturaswindow - DEBUG - facturas.py:576 - Formulario de factura limpiado
+2025-11-11 10:57:44 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-1762854819-2025
+2025-11-11 10:57:44 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-1762854819-2025
+2025-11-11 10:57:44 - facturacion_facil.facturaswindow - INFO - facturas.py:531 - Nueva factura iniciada
+2025-11-11 10:57:44 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 10:57:47 - facturacion_facil.facturaswindow - INFO - facturas.py:475 - 🔍 DEBUG: Buscando factura con número: TEST-1762854818-003
+2025-11-11 10:57:47 - facturacion_facil.facturaswindow - INFO - facturas.py:477 - 🔍 DEBUG: Factura encontrada: True
+2025-11-11 10:57:47 - facturacion_facil.facturaswindow - INFO - facturas.py:480 - 🔍 DEBUG: Factura ID: 15, Items: 0
+2025-11-11 10:57:47 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:57:47 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:223 - Liste mise à jour avec 0 items
+2025-11-11 10:57:47 - facturacion_facil.facturaswindow - INFO - facturas.py:609 - Factura cargada en formulario: TEST-1762854818-003
+2025-11-11 10:57:47 - facturacion_facil.facturaswindow - INFO - facturas.py:491 - Factura seleccionada y cargada para edición: TEST-1762854818-003
+2025-11-11 10:57:47 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-1762854818-003
+2025-11-11 10:57:50 - facturacion_facil.facturaswindow - INFO - facturas.py:475 - 🔍 DEBUG: Buscando factura con número: TEST-1762854818-001
+2025-11-11 10:57:50 - facturacion_facil.facturaswindow - INFO - facturas.py:477 - 🔍 DEBUG: Factura encontrada: True
+2025-11-11 10:57:50 - facturacion_facil.facturaswindow - INFO - facturas.py:480 - 🔍 DEBUG: Factura ID: 13, Items: 0
+2025-11-11 10:57:50 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 10:57:50 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:223 - Liste mise à jour avec 0 items
+2025-11-11 10:57:50 - facturacion_facil.facturaswindow - INFO - facturas.py:609 - Factura cargada en formulario: TEST-1762854818-001
+2025-11-11 10:57:50 - facturacion_facil.facturaswindow - INFO - facturas.py:491 - Factura seleccionada y cargada para edición: TEST-1762854818-001
+2025-11-11 10:57:50 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura en edición automática - Número: TEST-1762854818-001
+2025-11-11 10:58:05 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 10:58:05 - facturacion_facil.organizacion - INFO - organizacion.py:445 - Datos de organización cargados correctamente
+2025-11-11 10:58:05 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 10:58:31 - facturacion_facil.file_manager_logos - INFO - file_manager.py:81 - Fichier copié: madrid_bajo_nieve.png -> Test_Org_Layout_logo_070a3737.png
+2025-11-11 10:58:31 - facturacion_facil.organizacion - DEBUG - organizacion.py:676 - Logo configurado exitosamente en intento 1
+2025-11-11 10:58:31 - facturacion_facil.organizacion - INFO - organizacion.py:580 - Logo cargado correctamente: Test_Org_Layout_logo_070a3737.png
+2025-11-11 10:58:31 - facturacion_facil.organizacion - INFO - organizacion.py:535 - Logo seleccionado y copiado: /home/pascal/Documents/madrid_bajo_nieve.png -> /home/pascal/development/for_django/facturacion_facil/data/logos/Test_Org_Layout_logo_070a3737.png
+2025-11-11 10:58:31 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Logo seleccionado - /home/pascal/development/for_django/facturacion_facil/data/logos/Test_Org_Layout_logo_070a3737.png
+2025-11-11 10:58:55 - facturacion_facil.organizacion - INFO - organizacion.py:740 - Directorio seleccionado: /home/pascal/Documents/saligny
+2025-11-11 10:58:55 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Directorio de imágenes seleccionado - /home/pascal/Documents/saligny
+2025-11-11 10:59:05 - facturacion_facil.organizacion - INFO - organizacion.py:778 - Directorio PDF seleccionado: /home/pascal/Downloads
+2025-11-11 10:59:05 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Directorio de PDF seleccionado - /home/pascal/Downloads
+2025-11-11 10:59:22 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2
+2025-11-11 10:59:22 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2
+2025-11-11 10:59:22 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2.!ctktoplevel
+2025-11-11 10:59:22 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2.!ctktoplevel
+2025-11-11 10:59:30 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel2.!ctktoplevel
+2025-11-11 10:59:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2
+2025-11-11 10:59:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2
+2025-11-11 10:59:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2.!ctktoplevel2
+2025-11-11 10:59:44 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2.!ctktoplevel2
+2025-11-11 11:01:13 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel2.!ctktoplevel2
+2025-11-11 11:01:32 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:01:32 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:01:32 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:01:32 - facturacion_facil.organizacion - INFO - organizacion.py:445 - Datos de organización cargados correctamente
+2025-11-11 11:01:32 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:02:02 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2
+2025-11-11 11:02:02 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2
+2025-11-11 11:02:02 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2.!ctktoplevel3
+2025-11-11 11:02:02 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2.!ctktoplevel3
+2025-11-11 11:02:07 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel2.!ctktoplevel3
+2025-11-11 11:06:44 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:06:44 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:06:44 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:06:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:06:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:07:35 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:07:35 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:07:35 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:07:35 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:07:35 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:00 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:08:00 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:08:21 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:08:21 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:08:38 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:08:38 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:08:43 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:08:43 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:08:43 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:43 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:43 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:43 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:43 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:44 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:44 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:44 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:08:44 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:08:44 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:09:37 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:09:37 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:09:37 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:11:29 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:11:29 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:11:29 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:11:30 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:11:32 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:11:32 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:11:32 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:11:55 - facturacion_facil.file_manager_logos - INFO - file_manager.py:81 - Fichier copié: photo_2023-03-06_08-01-44.jpg -> toto_logo_284148c9.jpg
+2025-11-11 11:11:55 - facturacion_facil.organizacion - DEBUG - organizacion.py:682 - Logo configurado exitosamente en intento 1
+2025-11-11 11:11:55 - facturacion_facil.organizacion - INFO - organizacion.py:586 - Logo cargado correctamente: toto_logo_284148c9.jpg
+2025-11-11 11:11:55 - facturacion_facil.organizacion - INFO - organizacion.py:541 - Logo seleccionado y copiado: /home/pascal/Documents/photo_2023-03-06_08-01-44.jpg -> /home/pascal/development/for_django/facturacion_facil/data/logos/toto_logo_284148c9.jpg
+2025-11-11 11:11:55 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Logo seleccionado - /home/pascal/development/for_django/facturacion_facil/data/logos/toto_logo_284148c9.jpg
+2025-11-11 11:12:13 - facturacion_facil.organizacion - INFO - organizacion.py:746 - Directorio seleccionado: /home/pascal/Documents/casa
+2025-11-11 11:12:13 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Directorio de imágenes seleccionado - /home/pascal/Documents/casa
+2025-11-11 11:12:51 - facturacion_facil.organizacion - INFO - organizacion.py:784 - Directorio PDF seleccionado: /home/pascal/Documents
+2025-11-11 11:12:51 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Directorio de PDF seleccionado - /home/pascal/Documents
+2025-11-11 11:13:17 - facturacion_facil.file_manager_logos - INFO - file_manager.py:112 - Fichier supprimé: Demo_Company_logo_9d9951d7.png
+2025-11-11 11:13:17 - facturacion_facil.file_manager_logos - INFO - file_manager.py:112 - Fichier supprimé: Ma_Super_Entreprise__6976f361.png
+2025-11-11 11:13:17 - facturacion_facil.file_manager_logos - INFO - file_manager.py:112 - Fichier supprimé: Test_Org_Layout_logo_070a3737.png
+2025-11-11 11:13:17 - facturacion_facil.file_manager_logos - INFO - file_manager.py:212 - Nettoyage: 3 fichiers orphelins supprimés
+2025-11-11 11:13:17 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel
+2025-11-11 11:13:17 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel
+2025-11-11 11:13:17 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel.!ctktoplevel
+2025-11-11 11:13:17 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel.!ctktoplevel
+2025-11-11 11:13:20 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel.!ctktoplevel
+2025-11-11 11:13:20 - facturacion_facil.organizacion - INFO - organizacion.py:937 - Configuración de organización guardada correctamente
+2025-11-11 11:13:20 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Organización guardada - Nombre: toto
+2025-11-11 11:13:23 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:13:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:13:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:13:25 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:13:27 - facturacion_facil.file_manager_logos - DEBUG - file_manager.py:41 - Répertoire: /home/pascal/development/for_django/facturacion_facil/data/logos
+2025-11-11 11:13:27 - facturacion_facil.organizacion - DEBUG - organizacion.py:682 - Logo configurado exitosamente en intento 1
+2025-11-11 11:13:27 - facturacion_facil.organizacion - INFO - organizacion.py:586 - Logo cargado correctamente: toto_logo_284148c9.jpg
+2025-11-11 11:13:27 - facturacion_facil.organizacion - INFO - organizacion.py:451 - Datos de organización cargados correctamente
+2025-11-11 11:13:27 - facturacion_facil.organizacion - INFO - organizacion.py:44 - Ventana de organización inicializada
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:28 - Inicializando ventana de gestión de productos
+2025-11-11 11:14:16 - facturacion_facil.productos - DEBUG - productos.py:192 - Frame principal scrollable creado con tamaño mínimo configurado
+2025-11-11 11:14:16 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:14:16 - facturacion_facil.productos - DEBUG - productos.py:358 - Frame de botones del formulario creado y packed
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:371 - Frame inferior de botones creado: .!ctktoplevel3.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:384 - Botón 'Guardar' creado: .!ctktoplevel3.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2.!ctkbutton en frame .!ctktoplevel3.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:397 - Botón 'Cancelar' creado: .!ctktoplevel3.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2.!ctkbutton2 en frame .!ctktoplevel3.!ctkframe.!canvas.!ctkscrollableframe.!ctkframe.!ctkframe2.!ctkframe.!ctkframe3.!ctkframe2
+2025-11-11 11:14:16 - facturacion_facil.productos - DEBUG - productos.py:60 - Comportamiento de scrolling configurado
+2025-11-11 11:14:16 - facturacion_facil.productos - DEBUG - productos.py:117 - Scroll de rueda del ratón configurado para todos los widgets
+2025-11-11 11:14:16 - facturacion_facil.productos - DEBUG - productos.py:402 - Cargando lista de productos desde la base de datos
+2025-11-11 11:14:16 - facturacion_facil - DEBUG - logger.py:100 - DB SELECT en productos: Cargados 3 productos
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:429 - Lista de productos actualizada: 3 productos
+2025-11-11 11:14:16 - facturacion_facil.productos - INFO - productos.py:46 - Ventana de productos inicializada correctamente con scrolling habilitado
+2025-11-11 11:18:20 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-11-11 11:24:07 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:24:07 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:24:12 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:24:12 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_crud_operations_pcmgurjf.db
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_crud_operations_assets_lzbnrk2a
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_crud_operations_pcmgurjf.db
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_crud_operations_assets_lzbnrk2a
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_factura_integration_gpw_y8_a.db
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_factura_integration_assets_cx4we481
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_factura_integration_gpw_y8_a.db
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_factura_integration_assets_cx4we481
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_interface_simulation_r92mspul.db
+2025-11-11 11:24:12 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_interface_simulation_assets_is4xnnb9
+2025-11-11 11:24:13 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:24:13 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 0 clientes
+2025-11-11 11:24:13 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:24:13 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:24:13 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:25:19 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:25:19 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:25:40 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:25:40 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:26:01 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:26:01 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:26:07 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:26:07 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:26:39 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:26:39 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:26:45 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:26:45 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:26:45 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_factura_integration_bo7od0wb.db
+2025-11-11 11:26:45 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_factura_integration_assets_it4us0nd
+2025-11-11 11:26:45 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_factura_integration_bo7od0wb.db
+2025-11-11 11:26:45 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_factura_integration_assets_it4us0nd
+2025-11-11 11:26:47 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 11:26:59 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:26:59 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:27:43 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:27:43 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:27:43 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_factura_integration_vx58w8pm.db
+2025-11-11 11:27:43 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_factura_integration_assets_3bmiekyr
+2025-11-11 11:27:43 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_factura_integration_vx58w8pm.db
+2025-11-11 11:27:43 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_factura_integration_assets_3bmiekyr
+2025-11-11 11:27:45 - facturacion_facil.test_database_manager - INFO - test_database_manager.py:141 - Toutes les ressources de test nettoyées
+2025-11-11 11:27:51 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:27:51 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_crud_operations_8hc7dhqs.db
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_crud_operations_assets_ko_205e8
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_crud_operations_8hc7dhqs.db
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_crud_operations_assets_ko_205e8
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_factura_integration_o6wgv082.db
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_factura_integration_assets_xiowdn2r
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:98 - Base de données supprimée: test_test_cliente_factura_integration_o6wgv082.db
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:109 - Répertoire supprimé: test_test_cliente_factura_integration_assets_xiowdn2r
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:53 - Base de données de test créée: test_test_cliente_interface_simulation_c5hnjx21.db
+2025-11-11 11:27:51 - facturacion_facil.test_database_manager - DEBUG - test_database_manager.py:78 - Répertoire de test créé: test_test_cliente_interface_simulation_assets_hv1wezcv
+2025-11-11 11:27:52 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:27:52 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 0 clientes
+2025-11-11 11:27:52 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:27:52 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:27:52 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:28:55 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:28:55 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:28:55 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:28:56 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:30:38 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:30:38 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:30:38 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:30:39 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:30:41 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:30:41 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 4 clientes
+2025-11-11 11:30:41 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:30:41 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:30:43 - facturacion_facil.ui.clientes - DEBUG - clientes.py:246 - Datos del cliente Test cargados
+2025-11-11 11:31:04 - facturacion_facil.ui.clientes - ERROR - clientes.py:334 - Error guardando cliente: type object 'FormValidator' has no attribute 'is_valid_email'
+2025-11-11 11:31:04 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:32 - 🔧 FORCE: Interceptando messagebox.showerror - 'Error': 'Error guardando cliente: type object 'FormValidato...'
+2025-11-11 11:31:04 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:37 - 🔧 FORCE: Usando show_copyable_error
+2025-11-11 11:31:04 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel2
+2025-11-11 11:31:04 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel2
+2025-11-11 11:31:33 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:39 - ✅ FORCE: show_copyable_error exitoso
+2025-11-11 11:31:33 - facturacion_facil - INFO - logger.py:138 - Aplicación cerrada normalmente
+2025-11-11 11:31:52 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:31:52 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:31:52 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:31:52 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 4 clientes
+2025-11-11 11:31:52 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:31:52 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:31:52 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 5 clientes
+2025-11-11 11:32:34 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:32:34 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:32:43 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:32:43 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:32:49 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:32:49 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:32:49 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:33:28 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:33:28 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:75 - === Iniciando facturacion_facil ===
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:76 - Directorio de logs: /home/pascal/development/for_django/facturacion_facil/logs
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:86 - Python version: 3.13.7 (main, Sep 19 2025, 17:28:11) [GCC 14.2.0]
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:87 - Directorio de trabajo: /home/pascal/development/for_django/facturacion_facil
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:88 - Argumentos: ['main.py']
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - === Iniciando aplicación Facturación Fácil ===
+2025-11-11 11:34:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:96 - 🔧 FORCE: Parche forzado aplicado a messagebox
+2025-11-11 11:34:25 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:97 - 🔧 FORCE: TODOS los messagebox ahora usan diálogos copiables
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - 🔧 Parche FORZADO de mensajes copiables aplicado correctamente
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - 🎯 GARANTÍA: Todos los messagebox tendrán botón copiar
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - Inicializando base de datos...
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - Base de datos inicializada correctamente
+2025-11-11 11:34:25 - facturacion_facil - INFO - logger.py:138 - Creando ventana principal
+2025-11-11 11:34:26 - facturacion_facil - INFO - logger.py:138 - Iniciando bucle principal de la aplicación
+2025-11-11 11:34:28 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:34:28 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 6 clientes
+2025-11-11 11:34:28 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:34:28 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:35:07 - facturacion_facil.ui.clientes - DEBUG - clientes.py:269 - Formulario de cliente limpiado
+2025-11-11 11:35:07 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nuevo cliente iniciado - 
+2025-11-11 11:35:33 - facturacion_facil.ui.clientes - DEBUG - clientes.py:269 - Formulario de cliente limpiado
+2025-11-11 11:35:33 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nuevo cliente iniciado - 
+2025-11-11 11:35:42 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:35:42 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 6 clientes
+2025-11-11 11:35:42 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:35:42 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:36:09 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 7 clientes
+2025-11-11 11:36:09 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:48 - 🔧 FORCE: Interceptando messagebox.showinfo - 'Éxito': 'Cliente creado correctamente...'
+2025-11-11 11:36:09 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:53 - 🔧 FORCE: Usando show_copyable_info
+2025-11-11 11:36:09 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel3
+2025-11-11 11:36:09 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel3
+2025-11-11 11:36:12 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel3
+2025-11-11 11:36:12 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:55 - ✅ FORCE: show_copyable_info exitoso
+2025-11-11 11:36:12 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Cliente creado: client1 - 
+2025-11-11 11:36:12 - facturacion_facil.ui.clientes - INFO - clientes.py:329 - Cliente creado: client1
+2025-11-11 11:36:12 - facturacion_facil.ui.clientes - DEBUG - clientes.py:269 - Formulario de cliente limpiado
+2025-11-11 11:36:18 - facturacion_facil.ui.clientes - DEBUG - clientes.py:246 - Datos del cliente Test cargados
+2025-11-11 11:36:20 - facturacion_facil.ui.clientes - DEBUG - clientes.py:246 - Datos del cliente Test Cliente cargados
+2025-11-11 11:36:22 - facturacion_facil.ui.clientes - DEBUG - clientes.py:246 - Datos del cliente client1 cargados
+2025-11-11 11:36:30 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 7 clientes
+2025-11-11 11:36:30 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:48 - 🔧 FORCE: Interceptando messagebox.showinfo - 'Éxito': 'Cliente actualizado correctamente...'
+2025-11-11 11:36:30 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:53 - 🔧 FORCE: Usando show_copyable_info
+2025-11-11 11:36:30 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel4
+2025-11-11 11:36:30 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel4
+2025-11-11 11:36:32 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel4
+2025-11-11 11:36:32 - facturacion_facil.force_copyable - INFO - force_copyable_dialogs.py:55 - ✅ FORCE: show_copyable_info exitoso
+2025-11-11 11:36:32 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Cliente actualizado: client1 - 
+2025-11-11 11:36:32 - facturacion_facil.ui.clientes - INFO - clientes.py:329 - Cliente actualizado: client1
+2025-11-11 11:36:36 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:36:36 - facturacion_facil.facturaswindow - INFO - facturas.py:409 - Cargadas 11 facturas (OPTIMIZADO - résumé)
+2025-11-11 11:36:36 - facturacion_facil.facturaswindow - INFO - facturas.py:441 - Cargados 3 productos disponibles con información de stock (OPTIMIZADO)
+2025-11-11 11:36:36 - facturacion_facil.facturaswindow - DEBUG - facturas.py:651 - Cargados 7 clientes en combobox
+2025-11-11 11:36:36 - facturacion_facil.facturaswindow - INFO - facturas.py:41 - Ventana de facturas inicializada correctamente
+2025-11-11 11:36:44 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 11:36:44 - facturacion_facil.facturaswindow - DEBUG - facturas.py:604 - Formulario de factura limpiado
+2025-11-11 11:36:44 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-1762854819-2025
+2025-11-11 11:36:44 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-1762854819-2025
+2025-11-11 11:36:44 - facturacion_facil.facturaswindow - INFO - facturas.py:559 - Nueva factura iniciada
+2025-11-11 11:36:44 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 11:37:30 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 39: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 11:37:30 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 40: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 11:37:30 - facturacion_facil.simple_producto_autocomplete - WARNING - simple_producto_autocomplete.py:109 - Error obteniendo stock para producto 41: type object 'Stock' has no attribute 'get_by_producto_id'
+2025-11-11 11:37:30 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:130 - Cargados 3 productos para autocompletado
+2025-11-11 11:37:30 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:688 - Interceptor de scroll basado en foco instalado
+2025-11-11 11:37:37 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 0 sugerencias para 'prc'
+2025-11-11 11:37:37 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 0 sugerencias para 'prc'
+2025-11-11 11:37:37 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:169 - Filtradas 2 sugerencias para 'pr'
+2025-11-11 11:37:37 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:193 - Dropdown mostrado
+2025-11-11 11:37:41 - facturacion_facil.simple_producto_autocomplete - DEBUG - simple_producto_autocomplete.py:200 - Dropdown ocultado
+2025-11-11 11:37:41 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:159 - Producto seleccionado: Producto Botones Test 1 - PBT001
+2025-11-11 11:37:41 - facturacion_facil.producto_factura_dialog - ERROR - producto_factura_dialog.py:171 - Error al seleccionar producto: 'ProductoFacturaDialog' object has no attribute 'update_totales_preview'
+2025-11-11 11:37:41 - facturacion_facil.simple_producto_autocomplete - INFO - simple_producto_autocomplete.py:220 - Seleccionado: Producto Botones Test 1 - PBT001
+2025-11-11 11:37:46 - facturacion_facil.producto_factura_dialog - INFO - producto_factura_dialog.py:613 - Interceptor de scroll basado en foco removido
+2025-11-11 11:37:46 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 11:37:46 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:167 - Item ajouté: Producto Botones Test 1
+2025-11-11 11:37:46 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:223 - Liste mise à jour avec 1 items
+2025-11-11 11:37:46 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Producto agregado a factura - Producto ID: 39, Cantidad: 1
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:460 - 🔧 DEBUG: Botón guardar presionado
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:461 - 🔧 DEBUG: Método guardar_factura disponible: True
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:462 - 🔧 DEBUG: Tipo de guardar_factura: <class 'method'>
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:465 - 🔧 DEBUG: current_factura: <database.models.Factura object at 0x7f5df381c830>
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:466 - 🔧 DEBUG: factura_items: 1
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas.py:470 - 🔧 DEBUG: Llamando a guardar_factura...
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:509 - 🔧 DEBUG: Mostrando resumen de impacto en stock...
+2025-11-11 11:37:52 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:324 - 🔧 DEBUG: Usando diálogo directo con botones CONFIRMAR/CANCELAR...
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:327 - 🔧 DEBUG: Resultado del diálogo directo: True
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:511 - 🔧 DEBUG: Resultado del resumen de stock: True
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:517 - 🔧 DEBUG: Usuario CONFIRMÓ continuar con la factura
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - DEBUG - facturas.py:651 - Cargados 8 clientes en combobox
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas.py:754 - Nuevo cliente creado automáticamente: toto
+2025-11-11 11:37:57 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Cliente creado automáticamente: toto - 
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:544 - 💾 Guardando factura FACT-1762854819-2025 en base de datos...
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:546 - ✅ Factura guardada con ID: 21
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:549 - 📊 Iniciando actualización de stock para factura FACT-1762854819-2025...
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:576 - 🔄 INICIANDO actualización de stock para factura FACT-1762854819-2025
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:577 - 📦 Número de items a procesar: 1
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:584 - 📊 Procesando item 1/1
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:585 -    - Producto ID: 39
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:586 -    - Cantidad a descontar: 1
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:590 -    - Stock antes: 13
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:597 -    - Stock después: 12
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:602 -    ✅ Stock actualizado correctamente
+2025-11-11 11:37:57 - facturacion_facil - DEBUG - logger.py:100 - DB UPDATE en stock: Producto Producto Botones Test 1: 13→12 (Factura: FACT-1762854819-2025)
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:613 - Stock actualizado para producto Producto Botones Test 1: -1 unidades (13→12)
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:615 - ✅ COMPLETADA actualización de stock para factura FACT-1762854819-2025
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas_methods.py:551 - ✅ Actualización de stock completada
+2025-11-11 11:37:57 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:190 - Número de factura usado: FACT-1762854819-2025 (número: 1762854819)
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas.py:409 - Cargadas 12 facturas (OPTIMIZADO - résumé)
+2025-11-11 11:37:57 - facturacion_facil.producto_list_widget - DEBUG - producto_list_widget.py:179 - Tous les items supprimés
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - DEBUG - facturas.py:604 - Formulario de factura limpiado
+2025-11-11 11:37:57 - facturacion_facil.utils.factura_numbering - INFO - factura_numbering.py:39 - Siguiente número de factura sugerido: FACT-1762854820-2025
+2025-11-11 11:37:57 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Número de factura inicializado - Número: FACT-1762854820-2025
+2025-11-11 11:37:57 - facturacion_facil.facturaswindow - INFO - facturas.py:559 - Nueva factura iniciada
+2025-11-11 11:37:57 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Nueva factura - Formulario preparado
+2025-11-11 11:37:58 - facturacion_facil.window_manager - DEBUG - window_manager.py:42 - Ventana hecha visible: .!ctktoplevel5.!ctktoplevel2
+2025-11-11 11:37:58 - facturacion_facil.window_manager - DEBUG - window_manager.py:57 - Topmost removido de ventana: .!ctktoplevel5.!ctktoplevel2
+2025-11-11 11:38:01 - facturacion_facil.window_manager - DEBUG - window_manager.py:82 - Ventana cerrada exitosamente: .!ctktoplevel5.!ctktoplevel2
+2025-11-11 11:38:01 - facturacion_facil - DEBUG - logger.py:100 - DB INSERT/UPDATE en facturas: Factura 
+2025-11-11 11:38:01 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Factura guardada - Número: 
+2025-11-11 11:38:01 - facturacion_facil.facturaswindow - INFO - facturas.py:473 - 🔧 DEBUG: guardar_factura completado SIN ERRORES
+2025-11-11 11:38:06 - facturacion_facil.treeview_sorter - INFO - treeview_sorter.py:39 - Configurado sorting para 4 columnas
+2025-11-11 11:38:06 - facturacion_facil.ui.clientes - DEBUG - clientes.py:181 - Cargados 8 clientes
+2025-11-11 11:38:06 - facturacion_facil - INFO - logger.py:96 - Acción usuario: Ventana de clientes abierta - 
+2025-11-11 11:38:06 - facturacion_facil.ui.clientes - INFO - clientes.py:22 - Ventana de clientes inicializada
+2025-11-11 11:38:08 - facturacion_facil.ui.clientes - DEBUG - clientes.py:246 - Datos del cliente toto cargados

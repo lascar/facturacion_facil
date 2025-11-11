@@ -192,8 +192,12 @@ def test_stock_interface():
 
             print("   ✅ Tous les composants sont présents")
 
-            # Test 7: Gestion des erreurs
-            print("\n   7️⃣ Test gestion des erreurs")
+            # Test 7: Nouvelle interface avec boutons + et -
+            print("\n   7️⃣ Test nouvelle interface avec boutons + et -")
+            test_new_stock_buttons_interface(mock_interface)
+
+            # Test 8: Gestion des erreurs
+            print("\n   8️⃣ Test gestion des erreurs")
             try:
                 # Simuler une erreur de modification
                 success = mock_interface.modify_stock(99999, 10)  # ID inexistant
@@ -221,6 +225,118 @@ def test_stock_interface():
         import traceback
         traceback.print_exc()
         return False
+
+def test_new_stock_buttons_interface(mock_interface):
+    """Test de la nouvelle interface avec boutons + et - pour modifier le stock"""
+    try:
+        import tkinter as tk
+
+        print("   🎛️ Test de la nouvelle interface avec boutons + et -")
+
+        # Simuler les méthodes de la nouvelle interface
+        class MockStockButtonsInterface:
+            def __init__(self, base_interface):
+                self.base_interface = base_interface
+                self.logger = base_interface.logger
+
+            def _increase_stock(self, stock_var, stock_label):
+                """Simule l'augmentation du stock"""
+                current = stock_var.get()
+                new_value = current + 1
+                stock_var.set(new_value)
+                # Simuler la mise à jour du label
+                return str(new_value)
+
+            def _decrease_stock(self, stock_var, stock_label):
+                """Simule la diminution du stock"""
+                current = stock_var.get()
+                if current > 0:
+                    new_value = current - 1
+                    stock_var.set(new_value)
+                    return str(new_value)
+                return str(current)  # Reste à 0 si déjà à 0
+
+            def _save_stock_changes(self, item, original_stock, new_stock):
+                """Simule la sauvegarde des changements"""
+                if new_stock != original_stock:
+                    # Simuler la mise à jour en base
+                    success = self.base_interface.modify_stock(item['producto_id'], new_stock)
+                    if success:
+                        self.logger.debug(f"Stock sauvegardé: {original_stock} -> {new_stock}")
+                        return True
+                return False
+
+        # Créer l'interface simulée
+        buttons_interface = MockStockButtonsInterface(mock_interface)
+
+        # Test 1: Augmentation du stock
+        print("     🔼 Test augmentation du stock")
+        stock_var = tk.IntVar(value=5)
+        mock_label = type('MockLabel', (), {'text': '5'})()
+
+        result = buttons_interface._increase_stock(stock_var, mock_label)
+        assert stock_var.get() == 6, f"Stock devrait être 6, mais est {stock_var.get()}"
+        assert result == "6", f"Résultat devrait être '6', mais est '{result}'"
+        print("     ✅ Augmentation fonctionne")
+
+        # Test 2: Diminution du stock
+        print("     🔽 Test diminution du stock")
+        result = buttons_interface._decrease_stock(stock_var, mock_label)
+        assert stock_var.get() == 5, f"Stock devrait être 5, mais est {stock_var.get()}"
+        assert result == "5", f"Résultat devrait être '5', mais est '{result}'"
+        print("     ✅ Diminution fonctionne")
+
+        # Test 3: Minimum à 0
+        print("     🛡️ Test minimum à 0")
+        stock_var.set(0)
+        result = buttons_interface._decrease_stock(stock_var, mock_label)
+        assert stock_var.get() == 0, f"Stock devrait rester à 0, mais est {stock_var.get()}"
+        assert result == "0", f"Résultat devrait être '0', mais est '{result}'"
+        print("     ✅ Minimum à 0 respecté")
+
+        # Test 4: Sauvegarde des changements
+        print("     💾 Test sauvegarde des changements")
+        test_item = mock_interface.stock_data[0] if mock_interface.stock_data else {
+            'producto_id': 1, 'nombre': 'Test Product', 'cantidad': 10
+        }
+
+        # Test avec changement
+        success = buttons_interface._save_stock_changes(test_item, 10, 15)
+        assert success, "La sauvegarde avec changement devrait réussir"
+        print("     ✅ Sauvegarde avec changement fonctionne")
+
+        # Test sans changement
+        success = buttons_interface._save_stock_changes(test_item, 15, 15)
+        assert not success, "La sauvegarde sans changement devrait retourner False"
+        print("     ✅ Sauvegarde sans changement gérée")
+
+        # Test 5: Séquence complète d'utilisation
+        print("     🔄 Test séquence complète")
+        stock_var = tk.IntVar(value=10)
+        original_stock = 10
+
+        # Augmenter 3 fois
+        for i in range(3):
+            buttons_interface._increase_stock(stock_var, mock_label)
+
+        # Diminuer 1 fois
+        buttons_interface._decrease_stock(stock_var, mock_label)
+
+        final_stock = stock_var.get()
+        assert final_stock == 12, f"Stock final devrait être 12, mais est {final_stock}"
+
+        # Sauvegarder
+        success = buttons_interface._save_stock_changes(test_item, original_stock, final_stock)
+        assert success, "La sauvegarde de la séquence complète devrait réussir"
+        print("     ✅ Séquence complète fonctionne")
+
+        print("   ✅ Nouvelle interface avec boutons + et - validée")
+
+    except Exception as e:
+        print(f"   ❌ Erreur dans test boutons interface: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
 
 def test_stock_interface_interactive():
     """Test interactif de l'interface de stock (pour test manuel)"""

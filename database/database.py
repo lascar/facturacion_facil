@@ -44,7 +44,7 @@ class Database:
                 cif TEXT,
                 logo_path TEXT,
                 directorio_imagenes_defecto TEXT,
-                numero_factura_inicial INTEGER DEFAULT 1,
+                numero_factura_inicial TEXT DEFAULT '1',
                 fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -56,7 +56,7 @@ class Database:
             pass  # La columna ya existe
 
         try:
-            cursor.execute('ALTER TABLE organizacion ADD COLUMN numero_factura_inicial INTEGER DEFAULT 1')
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN numero_factura_inicial TEXT DEFAULT \'1\'')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
 
@@ -69,6 +69,51 @@ class Database:
             cursor.execute('ALTER TABLE organizacion ADD COLUMN visor_pdf_personalizado TEXT')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
+
+        # Migración: Cambiar numero_factura_inicial de INTEGER a TEXT para soportar formatos como "2025-FACT-1"
+        try:
+            # Verificar si la columna es INTEGER
+            cursor.execute("PRAGMA table_info(organizacion)")
+            columns = cursor.fetchall()
+            numero_inicial_column = next((col for col in columns if col[1] == 'numero_factura_inicial'), None)
+
+            if numero_inicial_column and 'INTEGER' in numero_inicial_column[2]:
+                # Crear tabla temporal con el nuevo esquema
+                cursor.execute('''
+                    CREATE TABLE organizacion_temp (
+                        id INTEGER PRIMARY KEY,
+                        nombre TEXT NOT NULL,
+                        direccion TEXT,
+                        telefono TEXT,
+                        email TEXT,
+                        cif TEXT,
+                        logo_path TEXT,
+                        directorio_imagenes_defecto TEXT,
+                        numero_factura_inicial TEXT DEFAULT '1',
+                        directorio_descargas_pdf TEXT,
+                        visor_pdf_personalizado TEXT,
+                        fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                ''')
+
+                # Copiar datos existentes (convertir INTEGER a TEXT)
+                cursor.execute('''
+                    INSERT INTO organizacion_temp
+                    SELECT id, nombre, direccion, telefono, email, cif, logo_path,
+                           directorio_imagenes_defecto, CAST(numero_factura_inicial AS TEXT),
+                           directorio_descargas_pdf, visor_pdf_personalizado, fecha_actualizacion
+                    FROM organizacion
+                ''')
+
+                # Eliminar tabla antigua y renombrar la nueva
+                cursor.execute('DROP TABLE organizacion')
+                cursor.execute('ALTER TABLE organizacion_temp RENAME TO organizacion')
+
+                print("✅ Migración completada: numero_factura_inicial ahora soporta texto")
+
+        except Exception as e:
+            print(f"⚠️ Error en migración de numero_factura_inicial: {e}")
+            # Continuar sin error para no romper la aplicación
         
         # Tabla stock
         cursor.execute('''
@@ -93,12 +138,27 @@ class Database:
             )
         ''')
         
+        # Tabla clientes
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS clientes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL,
+                dni_nie TEXT,
+                direccion TEXT,
+                email TEXT,
+                telefono TEXT,
+                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+
         # Tabla facturas
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS facturas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 numero_factura TEXT UNIQUE NOT NULL,
                 fecha_factura DATE NOT NULL,
+                cliente_id INTEGER,
                 nombre_cliente TEXT NOT NULL,
                 dni_nie_cliente TEXT,
                 direccion_cliente TEXT,
@@ -108,9 +168,16 @@ class Database:
                 total_iva REAL NOT NULL,
                 total_factura REAL NOT NULL,
                 modo_pago TEXT,
-                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (cliente_id) REFERENCES clientes (id)
             )
         ''')
+
+        # Agregar columna cliente_id a facturas existentes si no existe
+        try:
+            cursor.execute('ALTER TABLE facturas ADD COLUMN cliente_id INTEGER')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
 
         # Tabla items de factura
         cursor.execute('''
