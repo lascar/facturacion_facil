@@ -18,7 +18,7 @@ crispy-bootstrap4==2024.1
 debugpy==1.8.8
 decorator==5.1.1
 defusedxml==0.7.1
-Django==5.0.6
+Django==5.1.14
 django-crispy-forms==2.3
 django-environ==0.11.2
 django-extensions==3.2.3
