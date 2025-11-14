@@ -8856,3 +8856,261 @@ Traceback (most recent call last):
   File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
     raise ValueError("Test exception")
 ValueError: Test exception
+2025-11-14 12:17:34 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 12:17:34 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 12:17:34 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 12:17:37 - facturacion_facil - ERROR - logger.py:92 - Excepción en on_producto_select: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 441, in on_producto_select
+    item = selection[0]
+           ~~~~~~~~~^^^
+TypeError: 'Mock' object is not subscriptable
+2025-11-14 12:17:39 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:39 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:39 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 12:17:43 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 12:17:43 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 571, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-11-14 12:17:45 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage11" doesn't exist
+2025-11-14 12:17:45 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 789, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-11-14 12:17:45 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 12:17:46 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 12:17:46 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 12:17:46 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 12:17:46 - facturacion_facil.basewindow - ERROR - ui_components.py:153 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-11-14 12:17:47 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp45rw2r10/test_files/test_prefix_bec419dc.txt'
+2025-11-14 12:17:47 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-11-14 12:17:47 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-11-14 14:05:12 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 14:05:12 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 14:05:12 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 14:05:16 - facturacion_facil - ERROR - logger.py:92 - Excepción en on_producto_select: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 441, in on_producto_select
+    item = selection[0]
+           ~~~~~~~~~^^^
+TypeError: 'Mock' object is not subscriptable
+2025-11-14 14:05:19 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:20 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:20 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:24 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 14:05:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 14:05:25 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 571, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-11-14 14:05:26 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage11" doesn't exist
+2025-11-14 14:05:27 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 789, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-11-14 14:05:27 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 14:05:28 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:28 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:28 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:28 - facturacion_facil.basewindow - ERROR - ui_components.py:153 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-11-14 14:05:28 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmpoln68uc1/test_files/test_prefix_410e2171.txt'
+2025-11-14 14:05:28 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-11-14 14:05:28 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
+2025-11-14 14:05:48 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:48 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:48 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 14:05:48 - facturacion_facil.basewindow - ERROR - ui_components.py:153 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-11-14 14:05:49 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen - copy: Permission denied
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 596, in seleccionar_imagen
+    shutil.copy2(file_path, dest_path)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+PermissionError: Permission denied
+2025-11-14 17:51:58 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 17:51:59 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 17:51:59 - facturacion_facil.custom_dialog - ERROR - custom_dialogs.py:243 - Error configurando focus: grab failed: another application has grab
+2025-11-14 17:52:06 - facturacion_facil - ERROR - logger.py:92 - Excepción en on_producto_select: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 441, in on_producto_select
+    item = selection[0]
+           ~~~~~~~~~^^^
+TypeError: 'Mock' object is not subscriptable
+2025-11-14 17:52:10 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:10 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:10 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil.stock_window - ERROR - stock.py:349 - Error cargando datos de stock: no such table: stock
+2025-11-14 17:52:18 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 17:52:18 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Test error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 571, in seleccionar_imagen
+    file_path = filedialog.askopenfilename(
+        title=get_text("seleccionar_imagen"),
+    ...<9 lines>...
+        ]
+    )
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Test error
+2025-11-14 17:52:20 - facturacion_facil.producto_list_widget - ERROR - producto_list_widget.py:170 - Erreur lors de l'ajout d'item: image "pyimage11" doesn't exist
+2025-11-14 17:52:21 - facturacion_facil - ERROR - logger.py:92 - Excepción en guardar_producto: Database error
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 789, in guardar_producto
+    producto.save()
+    ~~~~~~~~~~~~~^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database error
+2025-11-14 17:52:21 - facturacion_facil - ERROR - logger.py:92 - Excepción en seleccionar_imagen: Mock object has no attribute 'window'
+Traceback (most recent call last):
+  File "/home/pascal/development/for_django/facturacion_facil/ui/productos.py", line 567, in seleccionar_imagen
+    self.window.lift()
+    ^^^^^^^^^^^
+  File "/home/pascal/.pyenv/versions/3.13.7/lib/python3.13/unittest/mock.py", line 690, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'window'
+2025-11-14 17:52:22 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 17:52:22 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 17:52:22 - facturacion_facil.basewindow - ERROR - ui_components.py:83 - Error al mostrar mensaje copiable: unsupported operand type(s) for +: 'Mock' and 'int'
+2025-11-14 17:52:22 - facturacion_facil.basewindow - ERROR - ui_components.py:153 - Error al configurar scroll de rueda del ratón: 'Mock' object is not iterable
+2025-11-14 17:52:23 - facturacion_facil.file_manager_test_files - ERROR - file_manager.py:88 - Erreur sauvegarde fichier: [Errno 2] No such file or directory: '/tmp/tmp33e_i958/test_files/test_prefix_3da32771.txt'
+2025-11-14 17:52:23 - facturacion_facil - ERROR - logger.py:146 - Test de mensaje ERROR
+2025-11-14 17:52:23 - facturacion_facil - ERROR - logger.py:92 - Excepción en test_logging_functions: Test exception
+Traceback (most recent call last):
+  File "/home/pascal/for_django/facturacion_facil/test/unit/test_logging_system.py", line 95, in test_logging_functions
+    raise ValueError("Test exception")
+ValueError: Test exception
