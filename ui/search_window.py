@@ -3,7 +3,17 @@
 Ventana de búsqueda avanzada
 """
 
-import customtkinter as ctk
+# Import adapté pour PyQt6
+from gui import set_gui_framework
+set_gui_framework('pyqt6')
+
+# Utiliser l'adaptateur CustomTkinter vers PyQt6
+try:
+    import customtkinter as ctk
+except ImportError:
+    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
+    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
+    ctk = create_customtkinter_adapter()
 import tkinter as tk
 from tkinter import ttk
 import os
@@ -363,9 +373,15 @@ class SearchWindow:
 
     def update_results_columns(self, search_type):
         """Actualiza las columnas de la tabla según el tipo de búsqueda"""
-        # Limpiar columnas existentes
-        for col in self.results_tree["columns"]:
-            self.results_tree.heading(col, text="")
+        # Limpiar columnas existentes si existen
+        try:
+            current_columns = self.results_tree["columns"]
+            if current_columns:
+                for col in current_columns:
+                    self.results_tree.heading(col, text="")
+        except (KeyError, TypeError):
+            # No hay columnas definidas aún, continuar
+            pass
 
         if search_type == "facturas":
             columns = ("numero", "fecha", "cliente", "total", "estado")

@@ -29,6 +29,7 @@ show_help() {
     echo ""
     echo -e "${YELLOW}Types de tests:${NC}"
     echo -e "  ${GREEN}all${NC}              Tous les tests"
+    echo -e "  ${GREEN}pyqt6${NC}           🚀 Tests PyQt6 (recommandé)"
     echo -e "  ${GREEN}unit${NC}             Tests unitaires (test/unit/)"
     echo -e "  ${GREEN}integration${NC}      Tests d'intégration (test/integration/)"
     echo -e "  ${GREEN}ui${NC}               Tests interface utilisateur (test/ui/)"
@@ -159,6 +160,11 @@ run_tests() {
             echo -e "${BLUE}🔄 Tests CI/CD (sans performance)${NC}"
             pytest "$TEST_DIR/" --ignore="$TEST_DIR/performance/" --ignore="$TEST_DIR/demo/" --ignore="$TEST_DIR/scripts/" $pytest_args
             ;;
+        "pyqt6")
+            echo -e "${GREEN}🚀 Tests PyQt6 (Suite spécialisée)${NC}"
+            echo -e "${YELLOW}💡 Redirection vers la suite PyQt6 spécialisée...${NC}"
+            exec ./run_pyqt6_tests.sh all $pytest_args
+            ;;
         *)
             echo -e "${RED}❌ Type de test inconnu: $test_type${NC}"
             show_help
@@ -170,29 +176,95 @@ run_tests() {
 # Fonction de rapport post-exécution
 show_report() {
     local exit_code=$1
-    
+    local test_type="$2"
+    local duration="$3"
+
     echo ""
-    echo -e "${BLUE}📊 Rapport d'exécution${NC}"
-    echo "=================================="
-    
+    echo -e "${BLUE}📊 RÉSUMÉ DÉTAILLÉ DES TESTS${NC}"
+    echo "=" $(printf '=%.0s' {1..50})
+    echo ""
+
+    # Informations générales
+    echo -e "${CYAN}📋 INFORMATIONS GÉNÉRALES${NC}"
+    echo "Type de tests: $test_type"
+    echo "Durée d'exécution: ${duration}s"
+    echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "Répertoire: $PROJECT_DIR"
+    echo ""
+
+    # Résultat principal
+    echo -e "${CYAN}🎯 RÉSULTAT PRINCIPAL${NC}"
     if [[ $exit_code -eq 0 ]]; then
-        echo -e "${GREEN}✅ Tests réussis${NC}"
+        echo -e "${GREEN}✅ TOUS LES TESTS ONT RÉUSSI${NC}"
+        echo -e "${GREEN}🎉 Suite de tests '$test_type' validée !${NC}"
+        echo ""
+
+        # Messages spécifiques selon le type de test
+        case "$test_type" in
+            "all")
+                echo -e "${YELLOW}🚀 Toute la suite de tests a été validée !${NC}"
+                echo "   Votre application est prête pour la production."
+                ;;
+            "pyqt6")
+                echo -e "${YELLOW}🎨 Migration PyQt6 validée !${NC}"
+                echo "   Votre interface PyQt6 est fonctionnelle."
+                ;;
+            "unit")
+                echo -e "${YELLOW}🔧 Tests unitaires validés !${NC}"
+                echo "   Les composants individuels fonctionnent correctement."
+                ;;
+            "integration")
+                echo -e "${YELLOW}🔗 Tests d'intégration validés !${NC}"
+                echo "   Les interactions entre composants sont correctes."
+                ;;
+            "ui")
+                echo -e "${YELLOW}🎨 Tests UI validés !${NC}"
+                echo "   L'interface utilisateur fonctionne correctement."
+                ;;
+            "performance")
+                echo -e "${YELLOW}⚡ Tests de performance validés !${NC}"
+                echo "   Les performances de l'application sont acceptables."
+                ;;
+            "quick")
+                echo -e "${YELLOW}⚡ Tests rapides validés !${NC}"
+                echo "   Les fonctionnalités essentielles sont opérationnelles."
+                ;;
+        esac
+
     else
-        echo -e "${RED}❌ Tests échoués (code: $exit_code)${NC}"
+        echo -e "${RED}❌ CERTAINS TESTS ONT ÉCHOUÉ${NC}"
+        echo -e "${RED}⚠️  Code de sortie: $exit_code${NC}"
+        echo ""
+
+        echo -e "${YELLOW}💡 ACTIONS RECOMMANDÉES:${NC}"
+        echo "   1. Examinez les erreurs détaillées ci-dessus"
+        echo "   2. Corrigez les problèmes identifiés"
+        echo "   3. Relancez les tests: ./run_organized_tests.sh $test_type"
+        echo ""
+
+        echo -e "${CYAN}🔧 COMMANDES UTILES POUR LE DEBUG:${NC}"
+        echo "   ./run_organized_tests.sh $test_type -v     # Mode verbose"
+        echo "   ./run_organized_tests.sh $test_type -s     # Afficher les prints"
+        echo "   ./run_organized_tests.sh $test_type -x     # Arrêt au premier échec"
+        echo "   ./run_organized_tests.sh $test_type --lf   # Derniers tests échoués"
     fi
-    
-    # Afficher les informations de couverture si disponible
-    if [[ -d "$COVERAGE_DIR" ]]; then
-        echo -e "${BLUE}📈 Rapport de couverture disponible:${NC}"
-        echo "   file://$PROJECT_DIR/$COVERAGE_DIR/index.html"
-    fi
-    
     echo ""
-    echo -e "${YELLOW}💡 Conseils:${NC}"
-    echo "   - Pour plus de détails: ajoutez -v"
-    echo "   - Pour debug: ajoutez -s"
-    echo "   - Pour couverture: ajoutez --cov-html"
-    echo "   - Pour aide: ./run_organized_tests.sh --help"
+
+    # Informations de couverture
+    if [[ -d "$COVERAGE_DIR" ]]; then
+        echo -e "${CYAN}📈 COUVERTURE DE CODE${NC}"
+        echo -e "${BLUE}Rapport HTML disponible:${NC}"
+        echo "   file://$PROJECT_DIR/$COVERAGE_DIR/index.html"
+        echo ""
+    fi
+
+    # Conseils généraux
+    echo -e "${CYAN}💡 CONSEILS GÉNÉRAUX${NC}"
+    echo "   • Pour aide complète: ./run_organized_tests.sh --help"
+    echo "   • Tests PyQt6 spécialisés: ./run_organized_tests.sh pyqt6"
+    echo "   • Tests rapides: ./run_organized_tests.sh quick"
+    echo "   • Tous les tests: ./run_organized_tests.sh all --cov-html"
+    echo ""
 }
 
 # Fonction principale
@@ -226,10 +298,8 @@ main() {
     local duration=$((end_time - start_time))
     
     # Rapport final
-    echo ""
-    echo -e "${BLUE}⏱️  Durée d'exécution: ${duration}s${NC}"
-    show_report $exit_code
-    
+    show_report $exit_code "$test_type" $duration
+
     exit $exit_code
 }
 

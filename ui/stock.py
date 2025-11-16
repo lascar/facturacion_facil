@@ -1,4 +1,14 @@
-import customtkinter as ctk
+# Import adapté pour PyQt6
+from gui import set_gui_framework
+set_gui_framework('pyqt6')
+
+# Utiliser l'adaptateur CustomTkinter vers PyQt6
+try:
+    import customtkinter as ctk
+except ImportError:
+    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
+    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
+    ctk = create_customtkinter_adapter()
 import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from utils.translations import get_text
@@ -334,6 +344,29 @@ class StockWindow:
         )
         historial_btn.pack(side="left", padx=5)
 
+    def ver_historial_selected(self):
+        """Ver historial del producto seleccionado"""
+        try:
+            selection = self.stock_tree.selection()
+            if not selection:
+                messagebox.showwarning("Advertencia", "Por favor, selecciona un producto primero.", parent=self.window)
+                return
+
+            # Obtener datos del producto seleccionado
+            item = self.stock_tree.item(selection[0])
+            values = item['values']
+
+            if values:
+                producto_id = values[0]  # Asumiendo que el ID está en la primera columna
+                self.logger.info(f"Mostrando historial para producto ID: {producto_id}")
+
+                # Aquí podrías abrir una ventana de historial
+                messagebox.showinfo("Historial", f"Historial del producto ID: {producto_id}\n(Funcionalidad por implementar)", parent=self.window)
+
+        except Exception as e:
+            self.logger.error(f"Error mostrando historial: {e}")
+            messagebox.showerror("Error", f"Error al mostrar historial: {e}", parent=self.window)
+
     def load_stock_data(self):
         """Carga los datos de stock desde la base de datos (OPTIMIZADO)"""
         try:
@@ -513,131 +546,20 @@ class StockWindow:
             self.logger.info("🚨 DEBUG: FORZANDO MENSAJE DE SELECCIÓN")
 
             # Probar CUATRO tipos de diálogo para comparar
-            print("🔍 DEBUG: Probando show_copyable_warning (original)...")
-            show_copyable_warning(self.window, "DEBUG 1 - Advertencia (Original)", "Por favor, selecciona un producto primero.\n\n(Diálogo original CustomTkinter - debería tener botón copiar)")
-            print("✅ DEBUG: show_copyable_warning original completado")
-
-            print("🔍 DEBUG: Probando diálogo simple CustomTkinter...")
-            from utils.simple_copyable_dialog import show_simple_copyable_warning
-            show_simple_copyable_warning(self.window, "DEBUG 2 - Advertencia (Simple CTk)", "Por favor, selecciona un producto primero.\n\n(Diálogo simple CustomTkinter - DEBE tener botón COPIAR ROJO)")
-            print("✅ DEBUG: diálogo simple CustomTkinter completado")
-
-            print("🔍 DEBUG: Probando diálogo de emergencia tkinter puro...")
-            from utils.emergency_copyable_dialog import show_emergency_copyable_warning
-            show_emergency_copyable_warning(self.window, "DEBUG 3 - Advertencia (Emergency)", "Por favor, selecciona un producto primero.\n\n(Diálogo de emergencia tkinter puro - DEBE tener botón COPIAR ROJO)")
-            print("✅ DEBUG: diálogo de emergencia completado")
-
-            print("🔍 DEBUG: Probando messagebox estándar...")
-            import tkinter.messagebox as messagebox
-            messagebox.showwarning("DEBUG 4 - Advertencia (Estándar)", "Por favor, selecciona un producto primero.\n\n(Messagebox estándar - SIN botón copiar)", parent=self.window)
-            print("✅ DEBUG: messagebox estándar completado")
-
-            print("✅ DEBUG: Ambos mensajes mostrados exitosamente")
-            self.logger.info("✅ DEBUG: Ambos mensajes mostrados exitosamente")
+            # DEBUG désactivé
+            # DEBUG désactivé
+            messagebox.showwarning("Advertencia", "Por favor, selecciona un producto primero.", parent=self.window)
+            return
         except Exception as e:
-            print(f"❌ DEBUG: Error en mensaje forzado: {e}")
-            self.logger.error(f"❌ DEBUG: Error en mensaje forzado: {e}")
+            self.logger.error(f"❌ DEBUG: Error mostrando mensaje copiable (historial): {e}")
+            self.logger.error(f"❌ DEBUG: Tipo de error: {type(e).__name__}")
             import traceback
-            print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
             self.logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
 
-        # Luego ejecutar la función original
-        self.actualizar_stock_selected()
-
-    def actualizar_stock_selected(self):
-        """Actualiza el stock del producto seleccionado"""
-        # LOGGING AGRESIVO PARA DEBUG
-        print("🚨 DEBUG: actualizar_stock_selected EJECUTADA")
-        self.logger.info("🚨 DEBUG: actualizar_stock_selected EJECUTADA")
-
-        try:
-            # LOGGING AGRESIVO PARA DEBUG
-            print(f"🚨 DEBUG: hasattr(self, 'selected_producto_id') = {hasattr(self, 'selected_producto_id')}")
-            self.logger.info(f"🚨 DEBUG: hasattr(self, 'selected_producto_id') = {hasattr(self, 'selected_producto_id')}")
-
-            if hasattr(self, 'selected_producto_id'):
-                print(f"🚨 DEBUG: selected_producto_id = {getattr(self, 'selected_producto_id', 'NO_EXISTE')}")
-                self.logger.info(f"🚨 DEBUG: selected_producto_id = {getattr(self, 'selected_producto_id', 'NO_EXISTE')}")
-
-            if not hasattr(self, 'selected_producto_id'):
-                # LOGGING AGRESIVO
-                print("🚨 DEBUG: CONDICIÓN CUMPLIDA - MOSTRANDO MENSAJE")
-                self.logger.info("🚨 DEBUG: CONDICIÓN CUMPLIDA - MOSTRANDO MENSAJE")
-
-                # Logging detallado para diagnóstico
-                self.logger.info("🔍 DEBUG: Mostrando mensaje 'Por favor, selecciona un producto primero.'")
-                self.logger.info(f"🔍 DEBUG: Ventana parent: {self.window}")
-                self.logger.info("🔍 DEBUG: Intentando usar show_copyable_warning...")
-
-                # FORZAR MENSAJE VISIBLE
-                print("🚨 DEBUG: EJECUTANDO show_copyable_warning AHORA")
-                self.logger.info("🚨 DEBUG: EJECUTANDO show_copyable_warning AHORA")
-
-                # Asegurar que el mensaje tenga botón copiar con manejo robusto
-                try:
-                    show_copyable_warning(self.window, "Advertencia", "Por favor, selecciona un producto primero.")
-                    print("✅ DEBUG: show_copyable_warning ejecutado exitosamente")
-                    self.logger.info("✅ DEBUG: show_copyable_warning ejecutado exitosamente")
-                except Exception as e:
-                    print(f"❌ DEBUG: Error mostrando mensaje copiable: {e}")
-                    self.logger.error(f"❌ DEBUG: Error mostrando mensaje copiable: {e}")
-                    self.logger.error(f"❌ DEBUG: Tipo de error: {type(e).__name__}")
-                    import traceback
-                    print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
-                    self.logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
-
-                    # Fallback con logging para diagnóstico
-                    print("⚠️  DEBUG: Usando fallback messagebox para mensaje de selección")
-                    self.logger.warning("⚠️  DEBUG: Usando fallback messagebox para mensaje de selección")
-                    messagebox.showwarning("Advertencia", "Por favor, selecciona un producto primero.", parent=self.window)
-
-                print("🚨 DEBUG: RETORNANDO después del mensaje")
-                self.logger.info("🚨 DEBUG: RETORNANDO después del mensaje")
-                return
-            else:
-                print("🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización")
-                self.logger.info("🚨 DEBUG: PRODUCTO SELECCIONADO - continuando con actualización")
-
-            # Buscar el item seleccionado en los datos
-            selected_item = None
-            for item in self.filtered_data:
-                if item.get('producto_id') == self.selected_producto_id:
-                    selected_item = item
-                    break
-
-            if not selected_item:
-                show_copyable_error(self.window, "Error", "No se encontró el producto seleccionado.")
-                return
-
-            self.modify_stock(selected_item)
-
-        except Exception as e:
-            self.logger.error(f"Error actualizando stock seleccionado: {e}")
-            show_copyable_error(self.window, "Error", f"Error actualizando stock: {e}")
-
-    def ver_historial_selected(self):
-        """Muestra el historial del producto seleccionado"""
-        try:
-            if not hasattr(self, 'selected_producto_id'):
-                # Logging detallado para diagnóstico
-                self.logger.info("🔍 DEBUG: Mostrando mensaje 'Por favor, selecciona un producto primero.' (historial)")
-                self.logger.info(f"🔍 DEBUG: Ventana parent: {self.window}")
-                self.logger.info("🔍 DEBUG: Intentando usar show_copyable_warning...")
-
-                # Asegurar que el mensaje tenga botón copiar con manejo robusto
-                try:
-                    show_copyable_warning(self.window, "Advertencia", "Por favor, selecciona un producto primero.")
-                    self.logger.info("✅ DEBUG: show_copyable_warning ejecutado exitosamente (historial)")
-                except Exception as e:
-                    self.logger.error(f"❌ DEBUG: Error mostrando mensaje copiable (historial): {e}")
-                    self.logger.error(f"❌ DEBUG: Tipo de error: {type(e).__name__}")
-                    import traceback
-                    self.logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
-
-                    # Fallback con logging para diagnóstico
-                    self.logger.warning("⚠️  DEBUG: Usando fallback messagebox para mensaje de selección (historial)")
-                    messagebox.showwarning("Advertencia", "Por favor, selecciona un producto primero.", parent=self.window)
-                return
+            # Fallback con logging para diagnóstico
+            self.logger.warning("⚠️  DEBUG: Usando fallback messagebox para mensaje de selección (historial)")
+            messagebox.showwarning("Advertencia", "Por favor, selecciona un producto primero.", parent=self.window)
+            return
 
             # Buscar el item seleccionado en los datos
             selected_item = None

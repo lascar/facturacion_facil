@@ -48,7 +48,7 @@ from .abstract_components import (
 __version__ = "1.0.0"
 
 # Frameworks supportés
-SUPPORTED_FRAMEWORKS = ['customtkinter', 'tkinter']
+SUPPORTED_FRAMEWORKS = ['customtkinter', 'tkinter', 'pyqt6']
 
 # Framework par défaut
 DEFAULT_FRAMEWORK = 'customtkinter'

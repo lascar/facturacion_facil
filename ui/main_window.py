@@ -1,232 +1,302 @@
-import customtkinter as ctk
-from utils.translations import get_text
-from ui.productos import ProductosWindow
-from ui.organizacion import OrganizacionWindow
-from ui.stock import StockWindow
-from ui.facturas import FacturasWindow
-from ui.clientes import ClientesWindow
-from ui.search_window import SearchWindow
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Fenêtre principale PyQt6 native (solution au problème de layout)
+"""
 
-class MainWindow:
+import sys
+import os
+
+# Ajouter le répertoire parent au path pour les imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QGridLayout, QLabel, QPushButton
+)
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+
+from utils.translations import get_text
+# Nouvelles fenêtres PyQt6 natives
+from ui.productos_pyqt6 import ProductosPyQt6Window
+from ui.stock_pyqt6 import StockPyQt6Window
+from ui.facturas_pyqt6 import FacturasPyQt6Window
+from ui.clientes_pyqt6 import ClientesPyQt6Window
+from ui.organizacion_pyqt6 import OrganizacionPyQt6Window
+from ui.search_pyqt6 import SearchPyQt6Window
+
+# Anciennes fenêtres CustomTkinter (pour compatibilité temporaire)
+# from ui.productos import ProductosWindow
+# from ui.organizacion import OrganizacionWindow
+# from ui.stock import StockWindow
+# from ui.facturas import FacturasWindow
+# from ui.clientes import ClientesWindow
+# from ui.search_window import SearchWindow
+# from ui.pyqt6_window_adapter import create_adapter_for_pyqt6_parent
+
+class MainWindow(QMainWindow):
+    """Fenêtre principale PyQt6 native"""
+
     def __init__(self):
-        # Configuración de CustomTkinter
-        ctk.set_appearance_mode("light")
-        ctk.set_default_color_theme("blue")
-        
-        # Ventana principal
-        self.root = ctk.CTk()
-        self.root.title(get_text("app_title"))
-        self.root.geometry("800x600")
-        self.root.resizable(True, True)
-        
-        # Centrar la ventana
+        super().__init__()
+
+        # Configuration de la fenêtre
+        self.setWindowTitle(get_text("app_title"))
+        self.setGeometry(100, 100, 800, 600)
+
+        # Centrer la fenêtre
         self.center_window()
-        
-        # Crear la interfaz
-        self.create_widgets()
-        
-        # Variables para ventanas secundarias
+
+        # Variables pour fenêtres secondaires
         self.productos_window = None
         self.organizacion_window = None
         self.stock_window = None
         self.facturas_window = None
         self.clientes_window = None
         self.search_window = None
-    
+
+        # Créer l'interface
+        self.create_widgets()
+
+    def force_window_visible(self, window, window_name):
+        """Force une fenêtre CustomTkinter à être visible"""
+        try:
+            if hasattr(window, 'window'):
+                # Séquence complète pour forcer l'affichage
+                window.window.deiconify()  # S'assurer qu'elle n'est pas minimisée
+                window.window.state('normal')  # État normal
+                window.window.lift()       # Amener au premier plan
+                window.window.focus_force() # Forcer le focus
+                window.window.grab_set()   # Capturer les événements
+
+                # Forcer temporairement au-dessus de tout
+                window.window.attributes('-topmost', True)
+                window.window.update()     # Forcer la mise à jour
+
+                # Retirer le topmost après un délai
+                window.window.after(200, lambda: self._remove_topmost(window.window))
+
+                # Centrer la fenêtre si possible
+                try:
+                    window.window.geometry("800x600+100+100")
+                except:
+                    pass
+
+                print(f"✅ Fenêtre {window_name} affichée et mise au premier plan")
+                return True
+        except Exception as e:
+            print(f"Erreur affichage {window_name}: {e}")
+            return False
+        return False
+
+    def _remove_topmost(self, window):
+        """Retire l'attribut topmost d'une fenêtre"""
+        try:
+            window.attributes('-topmost', False)
+        except:
+            pass
+
     def center_window(self):
-        """Centra la ventana en la pantalla"""
-        self.root.update_idletasks()
-        width = self.root.winfo_width()
-        height = self.root.winfo_height()
-        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.root.winfo_screenheight() // 2) - (height // 2)
-        self.root.geometry(f"{width}x{height}+{x}+{y}")
-    
+        """Centre la fenêtre sur l'écran"""
+        screen = QApplication.primaryScreen().geometry()
+        x = (screen.width() - self.width()) // 2
+        y = (screen.height() - self.height()) // 2
+        self.move(x, y)
+
     def create_widgets(self):
-        """Crea los widgets de la interfaz principal"""
-        # Frame principal
-        main_frame = ctk.CTkFrame(self.root)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-        
-        # Título
-        title_label = ctk.CTkLabel(
-            main_frame,
-            text=get_text("app_title"),
-            font=ctk.CTkFont(size=32, weight="bold")
-        )
-        title_label.pack(pady=(30, 50))
-        
-        # Frame para los botones
-        buttons_frame = ctk.CTkFrame(main_frame)
-        buttons_frame.pack(fill="both", expand=True, padx=40, pady=20)
-        
-        # Configurar grid (añadimos una fila más)
-        buttons_frame.grid_columnconfigure((0, 1), weight=1)
-        buttons_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
-        
-        # Botón Productos
-        productos_btn = ctk.CTkButton(
-            buttons_frame,
-            text=get_text("productos"),
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=80,
-            command=self.open_productos
-        )
-        productos_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
-        
-        # Botón Organización
-        organizacion_btn = ctk.CTkButton(
-            buttons_frame,
-            text=get_text("organizacion"),
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=80,
-            command=self.open_organizacion
-        )
-        organizacion_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
-        
-        # Botón Stock
-        stock_btn = ctk.CTkButton(
-            buttons_frame,
-            text=get_text("stock"),
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=80,
-            command=self.open_stock
-        )
-        stock_btn.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
-        
-        # Botón Facturas
-        facturas_btn = ctk.CTkButton(
-            buttons_frame,
-            text=get_text("facturas"),
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=80,
-            command=self.open_facturas
-        )
-        facturas_btn.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
+        """Crée les widgets de l'interface"""
+        # Widget central
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
 
-        # Botón Clientes
-        clientes_btn = ctk.CTkButton(
-            buttons_frame,
-            text="👥 Clientes",
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=80,
-            command=self.open_clientes
-        )
-        clientes_btn.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
+        # Layout principal vertical
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(20)
 
-        # Botón Búsqueda Avanzada
-        search_btn = ctk.CTkButton(
-            buttons_frame,
-            text="🔍 Búsqueda Avanzada",
-            font=ctk.CTkFont(size=16, weight="bold"),
-            height=60,
-            fg_color="#4169E1",
-            hover_color="#0000CD",
-            command=self.open_search
-        )
-        search_btn.grid(row=2, column=1, padx=20, pady=20, sticky="ew")
+        # Titre
+        title_label = QLabel(get_text("app_title"))
+        title_font = QFont("Arial", 24, QFont.Weight.Bold)
+        title_label.setFont(title_font)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(title_label)
 
-        # Botón Nueva Factura (destacado)
-        nueva_factura_btn = ctk.CTkButton(
-            buttons_frame,
-            text=get_text("nueva_factura"),
-            font=ctk.CTkFont(size=20, weight="bold"),
-            height=80,
-            fg_color="#2E8B57",
-            hover_color="#228B22",
-            command=self.open_nueva_factura
-        )
-        nueva_factura_btn.grid(row=3, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
-        
-        # Frame inferior para botón salir
-        bottom_frame = ctk.CTkFrame(main_frame)
-        bottom_frame.pack(fill="x", padx=40, pady=(0, 20))
-        
-        # Botón Salir
-        salir_btn = ctk.CTkButton(
-            bottom_frame,
-            text=get_text("salir"),
-            font=ctk.CTkFont(size=16),
-            height=40,
-            fg_color="#DC143C",
-            hover_color="#B22222",
-            command=self.root.quit
-        )
-        salir_btn.pack(pady=10)
+        # Grille de boutons
+        buttons_widget = QWidget()
+        buttons_layout = QGridLayout(buttons_widget)
+        buttons_layout.setSpacing(15)
+
+        # Définir les boutons
+        buttons = [
+            (get_text("productos"), self.open_productos, 0, 0),
+            (get_text("organizacion"), self.open_organizacion, 0, 1),
+            (get_text("stock"), self.open_stock, 1, 0),
+            (get_text("facturas"), self.open_facturas, 1, 1),
+            (get_text("clientes"), self.open_clientes, 2, 0),
+            ("Buscar", self.open_search, 2, 1)
+        ]
+
+        # Créer et placer les boutons
+        for text, command, row, col in buttons:
+            button = QPushButton(text)
+            button.setFont(QFont("Arial", 14))
+            button.setMinimumSize(150, 50)
+            button.clicked.connect(command)
+            buttons_layout.addWidget(button, row, col)
+
+        # Ajouter la grille au layout principal
+        main_layout.addWidget(buttons_widget)
+
+        # Espaceur pour centrer verticalement
+        main_layout.addStretch()
     
     def open_productos(self):
-        """Abre la ventana de gestión de productos"""
-        if self.productos_window is None or not self.productos_window.window.winfo_exists():
-            self.productos_window = ProductosWindow(self.root)
+        """Ouvre la fenêtre de productos PyQt6"""
+        print("Ouverture fenêtre Productos PyQt6")
+        if self.productos_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.productos_window = ProductosPyQt6Window(self)
+                self.productos_window.show()
+                print("✅ Fenêtre Productos PyQt6 ouverte")
+
+            except Exception as e:
+                print(f"Erreur ouverture Productos PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            # Traer la ventana al frente y darle foco
-            self.productos_window.window.lift()
-            self.productos_window.window.focus_force()
-            self.productos_window.window.attributes('-topmost', True)
-            self.productos_window.window.attributes('-topmost', False)
-    
+            # Réactiver la fenêtre existante
+            self.productos_window.show()
+            self.productos_window.raise_()
+            self.productos_window.activateWindow()
+            print("✅ Fenêtre Productos PyQt6 réactivée")
+
     def open_organizacion(self):
-        """Abre la ventana de configuración de organización"""
-        if self.organizacion_window is None or not self.organizacion_window.window.winfo_exists():
-            self.organizacion_window = OrganizacionWindow(self.root)
+        """Ouvre la fenêtre de organización PyQt6"""
+        print("Ouverture fenêtre Organización PyQt6")
+        if self.organizacion_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.organizacion_window = OrganizacionPyQt6Window(self)
+                self.organizacion_window.show()
+                print("✅ Fenêtre Organización PyQt6 ouverte")
+
+            except Exception as e:
+                print(f"Erreur ouverture Organización PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            # Traer la ventana al frente y darle foco
-            self.organizacion_window.window.lift()
-            self.organizacion_window.window.focus_force()
-            self.organizacion_window.window.attributes('-topmost', True)
-            self.organizacion_window.window.attributes('-topmost', False)
-    
+            # Réactiver la fenêtre existante
+            self.organizacion_window.show()
+            self.organizacion_window.raise_()
+            self.organizacion_window.activateWindow()
+            print("✅ Fenêtre Organización PyQt6 réactivée")
+
     def open_stock(self):
-        """Abre la ventana de gestión de stock"""
-        if self.stock_window is None or not self.stock_window.window.winfo_exists():
-            self.stock_window = StockWindow(self.root)
+        """Ouvre la fenêtre de stock PyQt6"""
+        print("Ouverture fenêtre Stock PyQt6")
+        if self.stock_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.stock_window = StockPyQt6Window(self)
+                self.stock_window.show()
+                print("✅ Fenêtre Stock PyQt6 ouverte")
+
+            except Exception as e:
+                print(f"Erreur ouverture Stock PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            # Traer la ventana al frente y darle foco
-            self.stock_window.window.lift()
-            self.stock_window.window.focus_force()
-            self.stock_window.window.attributes('-topmost', True)
-            self.stock_window.window.attributes('-topmost', False)
-    
+            # Réactiver la fenêtre existante
+            self.stock_window.show()
+            self.stock_window.raise_()
+            self.stock_window.activateWindow()
+            print("✅ Fenêtre Stock PyQt6 réactivée")
+
     def open_facturas(self):
-        """Abre la ventana de gestión de facturas"""
-        if self.facturas_window is None or not self.facturas_window.window.winfo_exists():
-            self.facturas_window = FacturasWindow(self.root)
+        """Ouvre la fenêtre de facturas PyQt6"""
+        print("Ouverture fenêtre Facturas PyQt6")
+        if self.facturas_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.facturas_window = FacturasPyQt6Window(self)
+                self.facturas_window.show()
+                print("✅ Fenêtre Facturas PyQt6 ouverte")
+
+            except Exception as e:
+                print(f"Erreur ouverture Facturas PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            # Traer la ventana al frente y darle foco
-            self.facturas_window.window.lift()
-            self.facturas_window.window.focus_force()
-            self.facturas_window.window.attributes('-topmost', True)
-            self.facturas_window.window.attributes('-topmost', False)
+            # Réactiver la fenêtre existante
+            self.facturas_window.show()
+            self.facturas_window.raise_()
+            self.facturas_window.activateWindow()
+            print("✅ Fenêtre Facturas PyQt6 réactivée")
 
     def open_clientes(self):
-        """Abre la ventana de gestión de clientes"""
-        if self.clientes_window is None or not self.clientes_window.window.winfo_exists():
-            self.clientes_window = ClientesWindow(self.root)
+        """Ouvre la fenêtre de clientes PyQt6"""
+        print("Ouverture fenêtre Clientes PyQt6")
+        if self.clientes_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.clientes_window = ClientesPyQt6Window(self)
+                self.clientes_window.show()
+                print("✅ Fenêtre Clientes PyQt6 ouverte")
+
+            except Exception as e:
+                print(f"Erreur ouverture Clientes PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            # Traer la ventana al frente y darle foco
-            self.clientes_window.window.lift()
-            self.clientes_window.window.focus_force()
-            self.clientes_window.window.attributes('-topmost', True)
-            self.clientes_window.window.attributes('-topmost', False)
+            # Réactiver la fenêtre existante
+            self.clientes_window.show()
+            self.clientes_window.raise_()
+            self.clientes_window.activateWindow()
+            print("✅ Fenêtre Clientes PyQt6 réactivée")
 
     def open_search(self):
-        """Abre la ventana de búsqueda avanzada"""
-        if self.search_window is None or not self.search_window.window.winfo_exists():
-            self.search_window = SearchWindow(self.root)
-        else:
-            self.search_window.window.lift()
-            self.search_window.window.focus_force()
-            self.search_window.window.attributes('-topmost', True)
-            self.search_window.window.attributes('-topmost', False)
+        """Ouvre la fenêtre de búsqueda PyQt6"""
+        print("Ouverture fenêtre Búsqueda PyQt6")
+        if self.search_window is None:
+            try:
+                # Créer la fenêtre PyQt6 native
+                self.search_window = SearchPyQt6Window(self)
+                self.search_window.show()
+                print("✅ Fenêtre Búsqueda PyQt6 ouverte")
 
-    def open_nueva_factura(self):
-        """Abre la ventana para crear una nueva factura"""
-        if self.facturas_window is None or not self.facturas_window.window.winfo_exists():
-            self.facturas_window = FacturasWindow(self.root, nueva_factura=True)
+            except Exception as e:
+                print(f"Erreur ouverture Búsqueda PyQt6: {e}")
+                import traceback
+                traceback.print_exc()
         else:
-            self.facturas_window.window.lift()
-            self.facturas_window.nueva_factura()
-    
+            # Réactiver la fenêtre existante
+            self.search_window.show()
+            self.search_window.raise_()
+            self.search_window.activateWindow()
+            print("✅ Fenêtre Búsqueda PyQt6 réactivée")
+
+    def show(self):
+        """Affiche la fenêtre"""
+        super().show()
+
     def run(self):
-        """Ejecuta la aplicación"""
-        self.root.mainloop()
+        """Lance l'application (pour compatibilité)"""
+        self.show()
+        return QApplication.instance().exec()
+
+def main():
+    """Fonction principale"""
+    try:
+        app = MainWindowPyQt6()
+        return app.run()
+    except Exception as e:
+        print(f"Erreur lors du lancement: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())

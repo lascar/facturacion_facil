@@ -13,6 +13,11 @@ from datetime import datetime
 # Agregar el directorio actual al path para importar módulos
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from gui import set_gui_framework
+
+# Définir PyQt6 comme framework GUI
+set_gui_framework('pyqt6')
+
 from ui.main_window import MainWindow
 from database.database import db
 from utils.logger import app_logger, log_info, log_error, log_exception
@@ -44,12 +49,22 @@ def main():
         db.init_database()
         log_info("Base de datos inicializada correctamente")
 
-        # Crear y ejecutar la aplicación
+        # Crear y ejecutar la aplicación PyQt6
         log_info("Creando ventana principal")
-        app = MainWindow()
+
+        # Créer l'application PyQt6 si elle n'existe pas
+        from PyQt6.QtWidgets import QApplication
+        if not QApplication.instance():
+            qt_app = QApplication(sys.argv)
+        else:
+            qt_app = QApplication.instance()
+
+        # Créer la fenêtre principale
+        main_window = MainWindow()
+        main_window.show()
 
         log_info("Iniciando bucle principal de la aplicación")
-        app.run()
+        qt_app.exec()
 
         log_info("Aplicación cerrada normalmente")
 

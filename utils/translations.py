@@ -7,6 +7,7 @@ TEXTS = {
     "organizacion": "Organización",
     "stock": "Stock",
     "facturas": "Facturas",
+    "clientes": "Clientes",
     "nueva_factura": "Nueva Factura",
     "salir": "Salir",
     

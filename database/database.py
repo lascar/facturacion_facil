@@ -29,6 +29,8 @@ class Database:
                 descripcion TEXT,
                 imagen_path TEXT,
                 iva_recomendado REAL DEFAULT 21.0,
+                stock_actual INTEGER DEFAULT 0,
+                stock_minimo INTEGER DEFAULT 5,
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -67,6 +69,17 @@ class Database:
 
         try:
             cursor.execute('ALTER TABLE organizacion ADD COLUMN visor_pdf_personalizado TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        # Migración: Añadir columnas de stock a productos
+        try:
+            cursor.execute('ALTER TABLE productos ADD COLUMN stock_actual INTEGER DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE productos ADD COLUMN stock_minimo INTEGER DEFAULT 5')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
 
@@ -254,6 +267,1001 @@ class Database:
 
         # Si no hay facturas previas o hay error, empezar con 1
         return f"1-{year}"
+
+    def get_product_categories(self):
+        """Obtiene todas las categorías de productos"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT DISTINCT categoria FROM productos WHERE categoria IS NOT NULL AND categoria != ''")
+            categories = [row[0] for row in cursor.fetchall()]
+            conn.close()
+            return categories if categories else ["Electrónicos", "Ropa", "Hogar", "Deportes"]
+        except Exception as e:
+            self.logger.error(f"Error obteniendo categorías: {e}")
+            return ["Electrónicos", "Ropa", "Hogar", "Deportes"]
+
+    def get_all_products(self):
+        """Obtiene todos los productos"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, referencia, precio, categoria, descripcion,
+                       iva_recomendado, stock_actual, stock_minimo, fecha_creacion
+                FROM productos
+                ORDER BY nombre
+            """)
+
+            products = []
+            for row in cursor.fetchall():
+                products.append({
+                    'id': row[0],
+                    'nombre': row[1],
+                    'referencia': row[2],
+                    'precio_venta': row[3],
+                    'precio_compra': row[3] * 0.7,  # Simulado
+                    'categoria': row[4],
+                    'descripcion': row[5],
+                    'iva_recomendado': row[6],
+                    'stock_actual': row[7] or 0,
+                    'stock_minimo': row[8] or 5,
+                    'fecha_creacion': row[9]
+                })
+
+            conn.close()
+            return products
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo productos: {e}")
+            return []
+
+    def update_product_stock(self, product_id, new_stock):
+        """Actualiza el stock de un producto"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                UPDATE productos
+                SET stock_actual = ?
+                WHERE id = ?
+            """, (new_stock, product_id))
+
+            if cursor.rowcount > 0:
+                conn.commit()
+                conn.close()
+                self.logger.info(f"Stock actualizado para producto {product_id}: {new_stock}")
+                return True
+            else:
+                conn.close()
+                self.logger.warning(f"Producto {product_id} no encontrado para actualizar stock")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando stock del producto {product_id}: {e}")
+            raise e
+
+    def adjust_product_stock(self, product_id, adjustment):
+        """Ajusta el stock de un producto (+ o -)"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Obtener el stock actual
+            cursor.execute("SELECT stock_actual FROM productos WHERE id = ?", (product_id,))
+            result = cursor.fetchone()
+
+            if not result:
+                conn.close()
+                self.logger.warning(f"Producto {product_id} no encontrado")
+                return False
+
+            current_stock = result[0] or 0
+            new_stock = max(0, current_stock + adjustment)  # No permitir stock negativo
+
+            # Actualizar el stock
+            cursor.execute("""
+                UPDATE productos
+                SET stock_actual = ?
+                WHERE id = ?
+            """, (new_stock, product_id))
+
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Stock ajustado para producto {product_id}: {current_stock} → {new_stock} ({adjustment:+d})")
+            return new_stock
+
+        except Exception as e:
+            self.logger.error(f"Error ajustando stock del producto {product_id}: {e}")
+            raise e
+
+    def get_products_with_low_stock(self):
+        """Obtiene productos con stock bajo (menor al mínimo)"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT id, nombre, referencia, stock_actual, stock_minimo
+                FROM productos
+                WHERE stock_actual < stock_minimo
+                ORDER BY (stock_actual - stock_minimo) ASC
+            """)
+
+            products = []
+            for row in cursor.fetchall():
+                product = {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'referencia': row[2],
+                    'stock_actual': row[3] or 0,
+                    'stock_minimo': row[4] or 5
+                }
+                products.append(product)
+
+            conn.close()
+            return products
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo productos con stock bajo: {e}")
+            return []
+
+    def process_invoice_stock_movement(self, invoice_data, operation='subtract'):
+        """Procesa el movimiento de stock para una factura
+
+        Args:
+            invoice_data: Datos de la factura con líneas
+            operation: 'subtract' para venta (por defecto), 'add' para devolución
+        """
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            movements_processed = []
+
+            for linea in invoice_data.get('lineas', []):
+                producto_id = linea.get('producto_id')
+                cantidad = linea.get('cantidad', 0)
+
+                if not producto_id or cantidad <= 0:
+                    continue
+
+                # Obtener el stock actual
+                cursor.execute("SELECT stock_actual, nombre FROM productos WHERE id = ?", (producto_id,))
+                result = cursor.fetchone()
+
+                if not result:
+                    self.logger.warning(f"Producto {producto_id} no encontrado para movimiento de stock")
+                    continue
+
+                stock_actual, nombre_producto = result
+                stock_actual = stock_actual or 0
+
+                # Calcular el nuevo stock
+                if operation == 'subtract':
+                    nuevo_stock = max(0, stock_actual - cantidad)  # No permitir stock negativo
+                    movimiento = -cantidad
+                elif operation == 'add':
+                    nuevo_stock = stock_actual + cantidad
+                    movimiento = cantidad
+                else:
+                    raise ValueError(f"Operación no válida: {operation}")
+
+                # Actualizar el stock
+                cursor.execute("""
+                    UPDATE productos
+                    SET stock_actual = ?
+                    WHERE id = ?
+                """, (nuevo_stock, producto_id))
+
+                # Registrar el movimiento
+                movements_processed.append({
+                    'producto_id': producto_id,
+                    'nombre_producto': nombre_producto,
+                    'stock_anterior': stock_actual,
+                    'movimiento': movimiento,
+                    'stock_nuevo': nuevo_stock
+                })
+
+                self.logger.info(f"Stock actualizado - {nombre_producto}: {stock_actual} → {nuevo_stock} ({movimiento:+d})")
+
+            conn.commit()
+            conn.close()
+
+            return movements_processed
+
+        except Exception as e:
+            self.logger.error(f"Error procesando movimiento de stock: {e}")
+            raise e
+
+    def _process_invoice_stock_movement_with_connection(self, cursor, invoice_data, operation='subtract'):
+        """Procesa el movimiento de stock usando una conexión existente"""
+        try:
+            movements_processed = []
+
+            for linea in invoice_data.get('lineas', []):
+                producto_id = linea.get('producto_id')
+                cantidad = linea.get('cantidad', 0)
+
+                if not producto_id or cantidad <= 0:
+                    continue
+
+                # Obtener el stock actual
+                cursor.execute("SELECT stock_actual, nombre FROM productos WHERE id = ?", (producto_id,))
+                result = cursor.fetchone()
+
+                if not result:
+                    self.logger.warning(f"Producto {producto_id} no encontrado para movimiento de stock")
+                    continue
+
+                stock_actual, nombre_producto = result
+                stock_actual = stock_actual or 0
+
+                # Calcular el nuevo stock
+                if operation == 'subtract':
+                    nuevo_stock = max(0, stock_actual - cantidad)  # No permitir stock negativo
+                    movimiento = -cantidad
+                elif operation == 'add':
+                    nuevo_stock = stock_actual + cantidad
+                    movimiento = cantidad
+                else:
+                    raise ValueError(f"Operación no válida: {operation}")
+
+                # Actualizar el stock
+                cursor.execute("""
+                    UPDATE productos
+                    SET stock_actual = ?
+                    WHERE id = ?
+                """, (nuevo_stock, producto_id))
+
+                # Registrar el movimiento
+                movements_processed.append({
+                    'producto_id': producto_id,
+                    'nombre_producto': nombre_producto,
+                    'stock_anterior': stock_actual,
+                    'movimiento': movimiento,
+                    'stock_nuevo': nuevo_stock
+                })
+
+                self.logger.info(f"Stock actualizado - {nombre_producto}: {stock_actual} → {nuevo_stock} ({movimiento:+d})")
+
+            return movements_processed
+
+        except Exception as e:
+            self.logger.error(f"Error procesando movimiento de stock con conexión: {e}")
+            raise e
+
+    def reverse_invoice_stock_movement(self, invoice_id):
+        """Revierte el movimiento de stock de una factura (para modificaciones)"""
+        try:
+            # Obtener la factura original
+            original_invoice = self.get_invoice_by_id(invoice_id)
+            if not original_invoice:
+                return []
+
+            # Revertir el movimiento (añadir de vuelta al stock)
+            return self.process_invoice_stock_movement(original_invoice, operation='add')
+
+        except Exception as e:
+            self.logger.error(f"Error revirtiendo movimiento de stock para factura {invoice_id}: {e}")
+            raise e
+
+    def get_product_by_id(self, product_id):
+        """Obtiene un producto por su ID"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, referencia, precio, categoria, descripcion,
+                       iva_recomendado, fecha_creacion
+                FROM productos
+                WHERE id = ?
+            """, (product_id,))
+
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                return {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'referencia': row[2],
+                    'precio_venta': row[3],
+                    'precio_compra': row[3] * 0.7,  # Simulado
+                    'categoria': row[4],
+                    'descripcion': row[5],
+                    'iva_recomendado': row[6],
+                    'fecha_creacion': row[7]
+                }
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo producto {product_id}: {e}")
+            return None
+
+    def add_product(self, product_data):
+        """Añade un nuevo producto"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                product_data['nombre'],
+                product_data['referencia'],
+                product_data['precio_venta'],
+                product_data['categoria'],
+                product_data['descripcion']
+            ))
+
+            product_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Producto añadido con ID: {product_id}")
+            return product_id
+
+        except Exception as e:
+            self.logger.error(f"Error añadiendo producto: {e}")
+            raise e
+
+    def update_product(self, product_data):
+        """Actualiza un producto existente"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE productos
+                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?
+                WHERE id = ?
+            """, (
+                product_data['nombre'],
+                product_data['referencia'],
+                product_data['precio_venta'],
+                product_data['categoria'],
+                product_data['descripcion'],
+                product_data['id']
+            ))
+
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Producto {product_data['id']} actualizado")
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando producto: {e}")
+            raise e
+
+    def delete_product(self, product_id):
+        """Elimina un producto"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM productos WHERE id = ?", (product_id,))
+
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Producto {product_id} eliminado")
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando producto: {e}")
+            raise e
+
+    # ==================== MÉTODOS PARA CLIENTES ====================
+
+    def get_all_clients(self):
+        """Obtiene todos los clientes"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, dni_nie, direccion, email, telefono, fecha_creacion
+                FROM clientes
+                ORDER BY nombre
+            """)
+
+            clients = []
+            for row in cursor.fetchall():
+                client = {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'nif': row[2] or '',  # Mapear dni_nie a nif para compatibilidad
+                    'direccion': row[3] or '',
+                    'email': row[4] or '',
+                    'telefono': row[5] or '',
+                    'fecha_creacion': row[6]
+                }
+                clients.append(client)
+
+            conn.close()
+            return clients
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo clientes: {e}")
+            return []
+
+    def add_client(self, client_data):
+        """Añade un nuevo cliente"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO clientes (nombre, dni_nie, direccion, email, telefono)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                client_data['nombre'],
+                client_data.get('nif', ''),  # Mapear nif a dni_nie
+                client_data.get('direccion', ''),
+                client_data.get('email', ''),
+                client_data.get('telefono', '')
+            ))
+
+            client_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Cliente añadido con ID: {client_id}")
+            return client_id
+
+        except Exception as e:
+            self.logger.error(f"Error añadiendo cliente: {e}")
+            raise e
+
+    def update_client(self, client_data):
+        """Actualiza un cliente existente"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE clientes
+                SET nombre = ?, dni_nie = ?, direccion = ?, email = ?, telefono = ?
+                WHERE id = ?
+            """, (
+                client_data['nombre'],
+                client_data.get('nif', ''),  # Mapear nif a dni_nie
+                client_data.get('direccion', ''),
+                client_data.get('email', ''),
+                client_data.get('telefono', ''),
+                client_data['id']
+            ))
+
+            if cursor.rowcount > 0:
+                conn.commit()
+                conn.close()
+                self.logger.info(f"Cliente {client_data['id']} actualizado")
+                return True
+            else:
+                conn.close()
+                self.logger.warning(f"Cliente {client_data['id']} no encontrado para actualizar")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando cliente: {e}")
+            raise e
+
+    def get_client_by_name(self, nombre):
+        """Busca un cliente por nombre, priorizando el que tiene más datos"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, dni_nie, direccion, email, telefono, fecha_creacion
+                FROM clientes
+                WHERE LOWER(nombre) = LOWER(?)
+                ORDER BY
+                    CASE WHEN dni_nie IS NOT NULL AND dni_nie != '' THEN 1 ELSE 0 END +
+                    CASE WHEN direccion IS NOT NULL AND direccion != '' THEN 1 ELSE 0 END +
+                    CASE WHEN email IS NOT NULL AND email != '' THEN 1 ELSE 0 END +
+                    CASE WHEN telefono IS NOT NULL AND telefono != '' THEN 1 ELSE 0 END DESC,
+                    id DESC
+                LIMIT 1
+            """, (nombre,))
+
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                return {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'nif': row[2] or '',  # Mapear dni_nie a nif
+                    'direccion': row[3] or '',
+                    'email': row[4] or '',
+                    'telefono': row[5] or '',
+                    'fecha_creacion': row[6]
+                }
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error buscando cliente: {e}")
+            return None
+
+    def delete_client(self, client_id):
+        """Elimina un cliente por ID"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Verificar si el cliente tiene facturas asociadas
+            cursor.execute("SELECT COUNT(*) FROM facturas WHERE cliente_id = ?", (client_id,))
+            invoice_count = cursor.fetchone()[0]
+
+            if invoice_count > 0:
+                conn.close()
+                raise Exception(f"No se puede eliminar el cliente. Tiene {invoice_count} factura(s) asociada(s).")
+
+            # Eliminar el cliente
+            cursor.execute("DELETE FROM clientes WHERE id = ?", (client_id,))
+
+            if cursor.rowcount > 0:
+                conn.commit()
+                conn.close()
+                self.logger.info(f"Cliente {client_id} eliminado")
+                return True
+            else:
+                conn.close()
+                self.logger.warning(f"Cliente {client_id} no encontrado")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando cliente {client_id}: {e}")
+            raise e
+
+    def delete_multiple_clients(self, client_ids):
+        """Elimina múltiples clientes por IDs"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Verificar si algún cliente tiene facturas asociadas
+            placeholders = ','.join(['?' for _ in client_ids])
+            cursor.execute(f"""
+                SELECT cliente_id, COUNT(*) as invoice_count
+                FROM facturas
+                WHERE cliente_id IN ({placeholders})
+                GROUP BY cliente_id
+            """, client_ids)
+
+            clients_with_invoices = cursor.fetchall()
+
+            if clients_with_invoices:
+                # Construir mensaje de error
+                error_details = []
+                for client_id, count in clients_with_invoices:
+                    error_details.append(f"Cliente ID {client_id}: {count} factura(s)")
+
+                conn.close()
+                raise Exception(f"No se pueden eliminar algunos clientes con facturas asociadas:\n" +
+                              "\n".join(error_details))
+
+            # Eliminar los clientes
+            cursor.execute(f"DELETE FROM clientes WHERE id IN ({placeholders})", client_ids)
+
+            deleted_count = cursor.rowcount
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"{deleted_count} clientes eliminados")
+            return deleted_count
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando clientes múltiples: {e}")
+            raise e
+
+    # ==================== MÉTODOS PARA FACTURAS ====================
+
+    def add_invoice(self, invoice_data):
+        """Añade una nueva factura completa"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Insertar la factura principal
+            cursor.execute("""
+                INSERT INTO facturas (numero_factura, fecha_factura, cliente_id,
+                                    nombre_cliente, dni_nie_cliente, direccion_cliente,
+                                    subtotal, total_iva, total_factura)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                invoice_data['numero'],
+                invoice_data['fecha'],
+                invoice_data['cliente'].get('id'),
+                invoice_data['cliente']['nombre'],
+                invoice_data['cliente'].get('nif', ''),
+                invoice_data['cliente'].get('direccion', ''),
+                invoice_data['subtotal'],
+                invoice_data['iva_total'],
+                invoice_data['total']
+            ))
+
+            factura_id = cursor.lastrowid
+
+            # Sauvegarder les lignes de facture
+            lineas = invoice_data.get('lineas', [])
+            for linea in lineas:
+                cursor.execute("""
+                    INSERT INTO factura_items (factura_id, producto_id, cantidad, precio_unitario,
+                                             iva_aplicado, descuento, subtotal, descuento_amount,
+                                             iva_amount, total)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    factura_id,
+                    linea.get('producto_id'),
+                    linea.get('cantidad', 1),
+                    linea.get('precio_unitario', 0.0),
+                    linea.get('iva_aplicado', 21.0),
+                    linea.get('descuento', 0.0),
+                    linea.get('subtotal', 0.0),
+                    linea.get('descuento_amount', 0.0),
+                    linea.get('iva_amount', 0.0),
+                    linea.get('total', 0.0)
+                ))
+
+            # Procesar movimiento de stock (restar del inventario) usando la misma conexión
+            stock_movements = self._process_invoice_stock_movement_with_connection(cursor, invoice_data, operation='subtract')
+
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Factura añadida con ID: {factura_id}")
+            if stock_movements:
+                self.logger.info(f"Movimientos de stock procesados: {len(stock_movements)} productos")
+                for movement in stock_movements:
+                    self.logger.info(f"  • {movement['nombre_producto']}: {movement['stock_anterior']} → {movement['stock_nuevo']}")
+
+            return factura_id
+
+        except Exception as e:
+            self.logger.error(f"Error añadiendo factura: {e}")
+            raise e
+
+    def update_invoice(self, invoice_data):
+        """Actualiza una factura existente"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Datos de la factura
+            invoice_id = invoice_data['id']
+            numero_factura = invoice_data['numero']
+            fecha_factura = invoice_data['fecha']
+            cliente_data = invoice_data['cliente']
+            subtotal = invoice_data['subtotal']
+            iva_total = invoice_data['iva_total']
+            total = invoice_data['total']
+
+            # Actualizar la factura
+            cursor.execute("""
+                UPDATE facturas SET
+                    numero_factura = ?,
+                    fecha_factura = ?,
+                    cliente_id = ?,
+                    nombre_cliente = ?,
+                    dni_nie_cliente = ?,
+                    direccion_cliente = ?,
+                    subtotal = ?,
+                    total_iva = ?,
+                    total_factura = ?
+                WHERE id = ?
+            """, (
+                numero_factura,
+                fecha_factura,
+                cliente_data.get('id'),
+                cliente_data.get('nombre', ''),
+                cliente_data.get('nif', ''),
+                cliente_data.get('direccion', ''),
+                subtotal,
+                iva_total,
+                total,
+                invoice_id
+            ))
+
+            if cursor.rowcount > 0:
+                # Revertir el movimiento de stock de la factura original
+                try:
+                    # Obtener las líneas originales de la factura
+                    cursor.execute("""
+                        SELECT fi.producto_id, fi.cantidad
+                        FROM factura_items fi
+                        WHERE fi.factura_id = ?
+                    """, (invoice_id,))
+
+                    original_lines = []
+                    for row in cursor.fetchall():
+                        original_lines.append({
+                            'producto_id': row[0],
+                            'cantidad': row[1]
+                        })
+
+                    if original_lines:
+                        original_invoice_data = {'lineas': original_lines}
+                        reversed_movements = self._process_invoice_stock_movement_with_connection(cursor, original_invoice_data, operation='add')
+                        if reversed_movements:
+                            self.logger.info(f"Stock revertido para {len(reversed_movements)} productos")
+                except Exception as e:
+                    self.logger.warning(f"Error revirtiendo stock: {e}")
+
+                # Actualizar las líneas de factura
+                # Primero, eliminar las líneas existentes
+                cursor.execute("DELETE FROM factura_items WHERE factura_id = ?", (invoice_id,))
+
+                # Luego, insertar las nuevas líneas
+                lineas = invoice_data.get('lineas', [])
+                for linea in lineas:
+                    cursor.execute("""
+                        INSERT INTO factura_items (factura_id, producto_id, cantidad, precio_unitario,
+                                                 iva_aplicado, descuento, subtotal, descuento_amount,
+                                                 iva_amount, total)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        invoice_id,
+                        linea.get('producto_id'),
+                        linea.get('cantidad', 1),
+                        linea.get('precio_unitario', 0.0),
+                        linea.get('iva_aplicado', 21.0),
+                        linea.get('descuento', 0.0),
+                        linea.get('subtotal', 0.0),
+                        linea.get('descuento_amount', 0.0),
+                        linea.get('iva_amount', 0.0),
+                        linea.get('total', 0.0)
+                    ))
+
+                # Procesar el nuevo movimiento de stock
+                try:
+                    new_movements = self._process_invoice_stock_movement_with_connection(cursor, invoice_data, operation='subtract')
+                    if new_movements:
+                        self.logger.info(f"Nuevo stock procesado para {len(new_movements)} productos")
+                except Exception as e:
+                    self.logger.warning(f"Error procesando nuevo stock: {e}")
+
+                conn.commit()
+                conn.close()
+                self.logger.info(f"Factura {invoice_id} actualizada con {len(lineas)} líneas")
+                return True
+            else:
+                conn.close()
+                self.logger.warning(f"Factura {invoice_id} no encontrada para actualizar")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando factura {invoice_data.get('id', 'N/A')}: {e}")
+            raise e
+
+    def get_all_invoices(self):
+        """Obtiene todas las facturas"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, numero_factura, fecha_factura, nombre_cliente,
+                       total_factura, fecha_creacion
+                FROM facturas
+                ORDER BY fecha_creacion DESC
+            """)
+
+            invoices = []
+            for row in cursor.fetchall():
+                invoice = {
+                    'id': row[0],
+                    'numero': row[1],
+                    'fecha': row[2],
+                    'vencimiento': row[2],  # Usar la misma fecha por defecto
+                    'cliente_nombre': row[3],
+                    'total': row[4],
+                    'estado': 'Pendiente',  # Estado por defecto
+                    'fecha_creacion': row[5]
+                }
+                invoices.append(invoice)
+
+            conn.close()
+            return invoices
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo facturas: {e}")
+            return []
+
+    def get_invoice_by_id(self, invoice_id):
+        """Obtiene una factura completa por ID"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Obtener datos de la factura
+            cursor.execute("""
+                SELECT id, numero_factura, fecha_factura, cliente_id,
+                       nombre_cliente, dni_nie_cliente, direccion_cliente,
+                       subtotal, total_iva, total_factura
+                FROM facturas
+                WHERE id = ?
+            """, (invoice_id,))
+
+            factura_row = cursor.fetchone()
+            conn.close()
+
+            if not factura_row:
+                return None
+
+            # Construir el objeto factura
+            invoice_data = {
+                'id': factura_row[0],
+                'numero': factura_row[1],
+                'fecha': factura_row[2],
+                'vencimiento': factura_row[2],  # Usar la misma fecha par défaut
+                'cliente': {
+                    'id': factura_row[3],
+                    'nombre': factura_row[4],
+                    'nif': factura_row[5] or '',
+                    'direccion': factura_row[6] or ''
+                },
+                'subtotal': factura_row[7],
+                'iva_total': factura_row[8],
+                'total': factura_row[9],
+                'estado': 'Pendiente',  # Estado par défaut
+                'lineas': []  # Pour l'instant, pas de lignes détaillées
+            }
+
+            # Cargar las líneas de la factura
+            invoice_data['lineas'] = self.get_invoice_items(factura_row[0])
+
+            return invoice_data
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo factura {invoice_id}: {e}")
+            return None
+
+    def get_invoice_by_number(self, numero_factura):
+        """Obtiene una factura por su número"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT id, numero_factura, fecha_factura, cliente_id,
+                       nombre_cliente, dni_nie_cliente, direccion_cliente,
+                       subtotal, total_iva, total_factura
+                FROM facturas
+                WHERE numero_factura = ?
+            """, (numero_factura,))
+
+            factura_row = cursor.fetchone()
+            conn.close()
+
+            if not factura_row:
+                return None
+
+            # Construir le même objet que get_invoice_by_id
+            invoice_data = {
+                'id': factura_row[0],
+                'numero': factura_row[1],
+                'fecha': factura_row[2],
+                'vencimiento': factura_row[2],
+                'cliente': {
+                    'id': factura_row[3],
+                    'nombre': factura_row[4],
+                    'nif': factura_row[5] or '',
+                    'direccion': factura_row[6] or ''
+                },
+                'subtotal': factura_row[7],
+                'iva_total': factura_row[8],
+                'total': factura_row[9],
+                'estado': 'Pendiente',
+                'lineas': []
+            }
+
+            # Cargar las líneas de la factura
+            invoice_data['lineas'] = self.get_invoice_items(factura_row[0])
+
+            return invoice_data
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo factura por número {numero_factura}: {e}")
+            return None
+
+    def get_invoice_items(self, invoice_id):
+        """Obtiene las líneas de una factura"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT fi.id, fi.producto_id, fi.cantidad, fi.precio_unitario,
+                       fi.iva_aplicado, fi.descuento, fi.subtotal, fi.iva_amount, fi.total,
+                       p.nombre as producto_nombre, p.referencia as producto_referencia
+                FROM factura_items fi
+                LEFT JOIN productos p ON fi.producto_id = p.id
+                WHERE fi.factura_id = ?
+                ORDER BY fi.id
+            """, (invoice_id,))
+
+            items = []
+            for row in cursor.fetchall():
+                item = {
+                    'id': row[0],
+                    'producto_id': row[1],
+                    'cantidad': row[2],
+                    'precio_unitario': row[3],
+                    'iva_aplicado': row[4],
+                    'descuento': row[5] or 0.0,
+                    'subtotal': row[6],
+                    'iva_amount': row[7],
+                    'total': row[8],
+                    'producto_nombre': row[9] or 'Producto eliminado',
+                    'producto_referencia': row[10] or 'N/A'
+                }
+                items.append(item)
+
+            conn.close()
+            return items
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo líneas de factura {invoice_id}: {e}")
+            return []
+
+    def delete_invoice(self, invoice_id):
+        """Elimina una factura por ID"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Eliminar la factura
+            cursor.execute("DELETE FROM facturas WHERE id = ?", (invoice_id,))
+
+            if cursor.rowcount > 0:
+                conn.commit()
+                conn.close()
+                self.logger.info(f"Factura {invoice_id} eliminada")
+                return True
+            else:
+                conn.close()
+                self.logger.warning(f"Factura {invoice_id} no encontrada")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando factura {invoice_id}: {e}")
+            raise e
+
+    def delete_multiple_invoices(self, invoice_ids):
+        """Elimina múltiples facturas por IDs"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Crear placeholders para la consulta
+            placeholders = ','.join(['?' for _ in invoice_ids])
+
+            # Eliminar las facturas
+            cursor.execute(f"DELETE FROM facturas WHERE id IN ({placeholders})", invoice_ids)
+
+            deleted_count = cursor.rowcount
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"{deleted_count} facturas eliminadas")
+            return deleted_count
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando facturas múltiples: {e}")
+            raise e
+
+    def get_invoice_id_by_number(self, numero_factura):
+        """Obtiene el ID de una factura por su número"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM facturas WHERE numero_factura = ?", (numero_factura,))
+
+            row = cursor.fetchone()
+            conn.close()
+
+            return row[0] if row else None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo ID de factura {numero_factura}: {e}")
+            return None
 
 # Instancia global de la base de datos
 db = Database()

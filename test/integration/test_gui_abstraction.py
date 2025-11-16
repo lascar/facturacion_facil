@@ -22,20 +22,29 @@ class TestGUIAbstraction:
         print("🧪 Test chargement des frameworks")
         print("=" * 40)
         
-        # Test CustomTkinter
-        print("\n   1️⃣ Test CustomTkinter")
+        # Test PyQt6 (nouveau framework par défaut)
+        print("\n   1️⃣ Test PyQt6")
+        set_gui_framework('pyqt6')
+        manager = get_gui_manager()
+
+        assert manager.get_current_framework() == 'pyqt6'
+        assert 'PyQt6' in type(manager.get_factory()).__name__
+        print(f"     ✅ PyQt6 chargé: {type(manager.get_factory()).__name__}")
+
+        # Test CustomTkinter (avec adaptateur)
+        print("\n   2️⃣ Test CustomTkinter")
         set_gui_framework('customtkinter')
         manager = get_gui_manager()
-        
+
         assert manager.get_current_framework() == 'customtkinter'
         assert 'CustomTkinter' in type(manager.get_factory()).__name__
         print(f"     ✅ CustomTkinter chargé: {type(manager.get_factory()).__name__}")
-        
+
         # Test Tkinter
-        print("\n   2️⃣ Test Tkinter")
+        print("\n   3️⃣ Test Tkinter")
         set_gui_framework('tkinter')
         manager = get_gui_manager()
-        
+
         assert manager.get_current_framework() == 'tkinter'
         assert 'Tkinter' in type(manager.get_factory()).__name__
         print(f"     ✅ Tkinter chargé: {type(manager.get_factory()).__name__}")
@@ -47,7 +56,7 @@ class TestGUIAbstraction:
         print("\n🧪 Test création de widgets")
         print("=" * 40)
         
-        frameworks = ['customtkinter', 'tkinter']
+        frameworks = ['pyqt6', 'customtkinter', 'tkinter']
         
         for framework in frameworks:
             print(f"\n   🎨 Test avec {framework}")
@@ -97,9 +106,9 @@ class TestGUIAbstraction:
         print("\n🧪 Test composants abstraits")
         print("=" * 40)
         
-        # Test avec CustomTkinter
+        # Test avec PyQt6 (framework par défaut)
         print("\n   📝 Test AbstractForm")
-        set_gui_framework('customtkinter')
+        set_gui_framework('pyqt6')
         
         class TestForm(AbstractForm):
             def create_widgets(self):
@@ -166,8 +175,8 @@ class TestGUIAbstraction:
         
         manager = get_gui_manager()
         
-        # Test changements multiples
-        frameworks = ['customtkinter', 'tkinter', 'customtkinter', 'tkinter']
+        # Test changements multiples (inclure PyQt6)
+        frameworks = ['pyqt6', 'customtkinter', 'tkinter', 'pyqt6', 'customtkinter']
         
         for i, framework in enumerate(frameworks):
             print(f"\n   {i+1}️⃣ Changement vers {framework}")
@@ -193,7 +202,7 @@ class TestGUIAbstraction:
         print("\n🧪 Test boîtes de dialogue")
         print("=" * 40)
         
-        frameworks = ['customtkinter', 'tkinter']
+        frameworks = ['pyqt6', 'customtkinter', 'tkinter']
         
         for framework in frameworks:
             print(f"\n   💬 Test avec {framework}")

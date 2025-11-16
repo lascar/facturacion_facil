@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Tests para los componentes UI comunes
+Tests para los componentes UI comunes (adaptado para PyQt6)
 """
 import pytest
-import tkinter as tk
-import customtkinter as ctk
+import sys
+import os
+
+# Ajouter le répertoire racine au path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
+
 from unittest.mock import Mock, patch, MagicMock
+
+# Configurer PyQt6 comme framework par défaut pour les tests
+from gui import set_gui_framework
+set_gui_framework('pyqt6')
+
 from common.ui_components import BaseWindow, ImageSelector, FormHelper
 
 class TestFormHelper:
@@ -13,21 +23,23 @@ class TestFormHelper:
     
     def setup_method(self):
         """Setup para cada test"""
-        self.root = tk.Tk()
-        self.root.withdraw()  # Ocultar ventana
-    
+        from gui import get_gui_factory
+        self.factory = get_gui_factory()
+        self.root = self.factory.create_window("Test Window", "400x300")
+
     def teardown_method(self):
         """Cleanup después de cada test"""
-        if self.root:
-            self.root.destroy()
+        # PyQt6 cleanup se hace automatiquement
     
     def test_clear_entry(self):
         """Test limpiar campo de entrada"""
-        entry = tk.Entry(self.root)
-        entry.insert(0, "texto inicial")
-        
+        entry = self.factory.create_entry(self.root)
+        # Pour PyQt6, nous devons utiliser l'API native pour insérer du texte
+        native_entry = entry.get_native_widget()
+        native_entry.setText("texto inicial")
+
         FormHelper.clear_entry(entry)
-        assert entry.get() == ""
+        assert native_entry.text() == ""
     
     def test_clear_entry_with_default(self):
         """Test limpiar campo con valor por defecto"""

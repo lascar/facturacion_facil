@@ -22,6 +22,11 @@ class GUIManager:
             'factory_class': 'TkinterGUIFactory',
             'app_class': 'TkinterApplication',
             'module': 'gui.tkinter_impl'
+        },
+        'pyqt6': {
+            'factory_class': 'PyQt6GUIFactory',
+            'app_class': 'PyQt6Application',
+            'module': 'gui.pyqt6_impl'
         }
     }
     

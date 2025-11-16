@@ -1,3 +1,9 @@
+# GUI Framework (PyQt6 est maintenant le framework principal)
+PyQt6==6.6.1
+
+# Frameworks GUI de compatibilité
 customtkinter==5.2.2
+
+# Autres dépendances
 Pillow==10.4.0
 reportlab==4.2.2
