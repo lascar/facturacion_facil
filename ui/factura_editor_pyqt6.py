@@ -275,24 +275,10 @@ class FacturaEditorPyQt6Window(BasePyQt6Window):
             # Charger les clients depuis la base de données
             db_clients = db.get_all_clients()
 
-            # Si pas de clients en base, créer quelques clients de démo
+            # Base de datos vacía - no crear clientes de demo automáticamente
             if not db_clients:
-                demo_clients = [
-                    {"nombre": "Juan Pérez", "nif": "12345678A", "direccion": "Calle Mayor, 1\n28001 Madrid", "telefono": "91 123 45 67", "email": "juan@email.com"},
-                    {"nombre": "María García", "nif": "87654321B", "direccion": "Avenida Principal, 25\n28002 Madrid", "telefono": "91 234 56 78", "email": "maria@email.com"},
-                    {"nombre": "Empresa ABC S.L.", "nif": "A12345678", "direccion": "Polígono Industrial, 15\n28003 Madrid", "telefono": "91 345 67 89", "email": "info@abc.com"},
-                ]
-
-                # Créer les clients de démo en base
-                for demo_client in demo_clients:
-                    try:
-                        client_id = db.add_client(demo_client)
-                        demo_client['id'] = client_id
-                        self.logger.info(f"Cliente de demo creado: {demo_client['nombre']}")
-                    except Exception as e:
-                        self.logger.error(f"Error creando cliente de demo: {e}")
-
-                self.clientes_data = demo_clients
+                self.logger.info("No hay clientes en la base de datos - base limpia")
+                self.clientes_data = []
             else:
                 self.clientes_data = db_clients
 

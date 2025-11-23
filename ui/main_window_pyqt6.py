@@ -12,12 +12,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gui import set_gui_framework, get_gui_factory
 from utils.translations import get_text
-from ui.productos import ProductosWindow
-from ui.organizacion import OrganizacionWindow
-from ui.stock import StockWindow
-from ui.facturas import FacturasWindow
-from ui.clientes import ClientesWindow
-from ui.search_window_simple import SearchWindow
+from ui.productos_pyqt6 import ProductosPyQt6Window
+from ui.stock_pyqt6 import StockPyQt6Window
+from ui.factura_editor_pyqt6 import FacturaEditorPyQt6Window
+from ui.clientes_pyqt6 import ClientesPyQt6Window
 
 class MainWindowPyQt6:
     def __init__(self):
@@ -107,56 +105,57 @@ class MainWindowPyQt6:
     
     def open_productos(self):
         """Abre la ventana de productos"""
-        if self.productos_window is None or not hasattr(self.productos_window, 'window'):
-            self.productos_window = ProductosWindow(self.root.get_native_widget())
+        if self.productos_window is None or not self.productos_window.isVisible():
+            self.productos_window = ProductosPyQt6Window(self.root.get_native_widget())
+            self.productos_window.show()
         else:
             # Traer la ventana al frente si ya existe
-            self.productos_window.window.lift()
-            self.productos_window.window.focus_force()
-    
+            self.productos_window.raise_()
+            self.productos_window.activateWindow()
+
     def open_organizacion(self):
-        """Abre la ventana de organización"""
-        if self.organizacion_window is None or not hasattr(self.organizacion_window, 'window'):
-            self.organizacion_window = OrganizacionWindow(self.root.get_native_widget())
-        else:
-            self.organizacion_window.window.lift()
-            self.organizacion_window.window.focus_force()
-    
+        """Abre la ventana de organización (no implementada)"""
+        self.factory.show_message("info", "Organización", "Funcionalidad de organización no implementada en PyQt6")
+
     def open_stock(self):
         """Abre la ventana de stock"""
-        if self.stock_window is None or not hasattr(self.stock_window, 'window'):
-            self.stock_window = StockWindow(self.root.get_native_widget())
+        if self.stock_window is None or not self.stock_window.isVisible():
+            self.stock_window = StockPyQt6Window(self.root.get_native_widget())
+            self.stock_window.show()
         else:
-            self.stock_window.window.lift()
-            self.stock_window.window.focus_force()
-    
+            self.stock_window.raise_()
+            self.stock_window.activateWindow()
+
     def open_facturas(self):
         """Abre la ventana de facturas"""
-        if self.facturas_window is None or not hasattr(self.facturas_window, 'window'):
-            self.facturas_window = FacturasWindow(self.root.get_native_widget())
+        if self.facturas_window is None or not self.facturas_window.isVisible():
+            self.facturas_window = FacturaEditorPyQt6Window(self.root.get_native_widget())
+            self.facturas_window.show()
         else:
-            self.facturas_window.window.lift()
-            self.facturas_window.window.focus_force()
-    
+            self.facturas_window.raise_()
+            self.facturas_window.activateWindow()
+
     def open_clientes(self):
         """Abre la ventana de clientes"""
-        if self.clientes_window is None or not hasattr(self.clientes_window, 'window'):
-            self.clientes_window = ClientesWindow(self.root.get_native_widget())
+        if self.clientes_window is None or not self.clientes_window.isVisible():
+            self.clientes_window = ClientesPyQt6Window(self.root.get_native_widget())
+            self.clientes_window.show()
         else:
-            self.clientes_window.window.lift()
-            self.clientes_window.window.focus_force()
-    
+            self.clientes_window.raise_()
+            self.clientes_window.activateWindow()
+
     def open_search(self):
-        """Abre la ventana de búsqueda"""
-        if self.search_window is None or not hasattr(self.search_window, 'window'):
-            self.search_window = SearchWindow(self.root.get_native_widget())
-        else:
-            self.search_window.window.lift()
-            self.search_window.window.focus_force()
+        """Abre la ventana de búsqueda (no implementada)"""
+        self.factory.show_message("info", "Búsqueda", "Funcionalidad de búsqueda no implementada en PyQt6")
     
     def run(self):
         """Lance l'application"""
-        return self.app.run()
+        # Afficher la fenêtre
+        native_window = self.root.get_native_widget()
+        native_window.show()
+
+        # Lancer la boucle d'événements
+        return self.app.exec()
 
 def main():
     """Fonction principale"""

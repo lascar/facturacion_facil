@@ -196,34 +196,10 @@ class ClientesPyQt6Window(BasePyQt6Window):
 
                 self.logger.info(f"Cargados {len(db_clients)} clientes de la base de datos")
             else:
-                # Si pas de clients, créer quelques clients de démo
-                self.logger.info("No hay clientes en la base de datos, creando clientes de demo")
-                demo_clients = [
-                    {"nombre": "Juan Pérez", "nif": "12345678A", "telefono": "91-123-4567", "email": "juan@email.com", "direccion": "Calle Mayor, 1"},
-                    {"nombre": "María García", "nif": "87654321B", "telefono": "91-765-4321", "email": "maria@email.com", "direccion": "Avenida Principal, 25"},
-                    {"nombre": "Empresa ABC S.L.", "nif": "A12345678", "telefono": "91-555-0123", "email": "info@abc.com", "direccion": "Polígono Industrial, 15"},
-                ]
-
-                # Créer les clients de démo en base
-                created_clients = []
-                for demo_client in demo_clients:
-                    try:
-                        client_id = db.add_client(demo_client)
-                        demo_client['id'] = client_id
-                        created_clients.append(demo_client)
-                        self.logger.info(f"Cliente de demo creado: {demo_client['nombre']} (ID: {client_id})")
-                    except Exception as e:
-                        self.logger.error(f"Error creando cliente de demo: {e}")
-
-                # Afficher les clients créés
-                if created_clients:
-                    self.clients_table.setRowCount(len(created_clients))
-                    for row, client in enumerate(created_clients):
-                        self.clients_table.setItem(row, 0, QTableWidgetItem(client["nombre"]))
-                        self.clients_table.setItem(row, 1, QTableWidgetItem(client.get("nif", "")))
-                        self.clients_table.setItem(row, 2, QTableWidgetItem(client.get("telefono", "")))
-                        self.clients_table.setItem(row, 3, QTableWidgetItem(client.get("email", "")))
-                        self.clients_table.item(row, 0).setData(Qt.ItemDataRole.UserRole, client)
+                # Base de datos vacía - no crear clientes de demo automáticamente
+                self.logger.info("No hay clientes en la base de datos - base limpia")
+                # Tabla vacía
+                self.clients_table.setRowCount(0)
 
         except Exception as e:
             self.logger.error(f"Error cargando clientes: {e}")

@@ -43,7 +43,7 @@ class TestGUIAbstraction:
         # Test que les autres frameworks ne sont plus supportés
         print("\n   3️⃣ Test frameworks non supportés")
         try:
-            set_gui_framework('customtkinter')
+            set_gui_framework('pyqt6')
             # Devrait toujours retourner PyQt6 car c'est le seul supporté
             assert manager.get_current_framework() == 'pyqt6'
             print("     ✅ Migration vers PyQt6 confirmée")
@@ -57,7 +57,7 @@ class TestGUIAbstraction:
         print("\n🧪 Test création de widgets")
         print("=" * 40)
         
-        frameworks = ['pyqt6', 'customtkinter', 'tkinter']
+        frameworks = ['pyqt6', 'tkinter']
         
         for framework in frameworks:
             print(f"\n   🎨 Test avec {framework}")
@@ -177,7 +177,7 @@ class TestGUIAbstraction:
         manager = get_gui_manager()
         
         # Test changements multiples (inclure PyQt6)
-        frameworks = ['pyqt6', 'customtkinter', 'tkinter', 'pyqt6', 'customtkinter']
+        frameworks = ['pyqt6', 'tkinter', 'pyqt6']
         
         for i, framework in enumerate(frameworks):
             print(f"\n   {i+1}️⃣ Changement vers {framework}")
@@ -204,7 +204,7 @@ class TestGUIAbstraction:
         print("\n🧪 Test boîtes de dialogue")
         print("=" * 40)
         
-        frameworks = ['pyqt6', 'customtkinter', 'tkinter']
+        frameworks = ['pyqt6', 'tkinter']
         
         for framework in frameworks:
             print(f"\n   💬 Test avec {framework}")

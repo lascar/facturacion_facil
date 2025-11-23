@@ -269,17 +269,17 @@ class Database:
         return f"1-{year}"
 
     def get_product_categories(self):
-        """Obtiene todas las categorías de productos"""
+        """Obtiene todas las categorías de productos dinámicamente"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT DISTINCT categoria FROM productos WHERE categoria IS NOT NULL AND categoria != ''")
+            cursor.execute("SELECT DISTINCT categoria FROM productos WHERE categoria IS NOT NULL AND categoria != '' ORDER BY categoria")
             categories = [row[0] for row in cursor.fetchall()]
             conn.close()
-            return categories if categories else ["Electrónicos", "Ropa", "Hogar", "Deportes"]
+            return categories  # Retourner liste vide si aucune catégorie
         except Exception as e:
             self.logger.error(f"Error obteniendo categorías: {e}")
-            return ["Electrónicos", "Ropa", "Hogar", "Deportes"]
+            return []  # Retourner liste vide en cas d'erreur
 
     def get_all_products(self):
         """Obtiene todos los productos"""

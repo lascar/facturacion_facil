@@ -16,8 +16,8 @@ from database.models import Producto, Stock, Factura, FacturaItem, StockMovement
 from ui.facturas_methods import FacturasMethodsMixin
 from utils.logger import get_logger
 
-# Marquer tous les tests comme skip pour la migration PyQt6
-pytestmark = pytest.mark.skip(reason="Tests d'intégration stock spécifiques - nécessitent implémentation complète de la logique métier")
+# Tests d'intégration stock - maintenant implémentés
+# pytestmark = pytest.mark.skip(reason="Tests d'intégration stock spécifiques - nécessitent implémentation complète de la logique métier")
 
 class MockWindow:
     """Mock window pour les tests"""

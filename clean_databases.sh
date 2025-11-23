@@ -46,9 +46,12 @@ clean_main_database() {
         DELETE FROM productos;
         DELETE FROM clientes;
         DELETE FROM organizacion;
-        VACUUM;
         " 2>/dev/null
-        echo "✅ Base de datos principal limpiada"
+
+        # VACUUM en una operación separada
+        echo "🗜️  Optimizando base de datos..."
+        sqlite3 facturacion.db "VACUUM;" 2>/dev/null
+        echo "✅ Base de datos principal limpiada y optimizada"
     fi
 }
 
