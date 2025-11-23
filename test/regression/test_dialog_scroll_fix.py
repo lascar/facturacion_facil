@@ -6,6 +6,9 @@ import pytest
 from unittest.mock import Mock, patch
 import tkinter as tk
 
+# Marquer tous les tests comme skip pour la migration PyQt6
+pytestmark = pytest.mark.skip(reason="Tests spécifiques au scroll Tkinter - PyQt6 utilise un système de scroll natif")
+
 class TestDialogScrollRegression:
     """Tests de regresión para el scroll en diálogos"""
     

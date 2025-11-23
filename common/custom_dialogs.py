@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Dialogues personnalisés simplifiés avec texte sélectionnable et copiable
+Dialogues personnalisés avec PyQt6
 """
-import customtkinter as ctk
-import tkinter as tk
-from tkinter import messagebox
+from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                            QTextEdit, QPushButton, QMessageBox)
+from PyQt6.QtCore import Qt
 from utils.logger import get_logger
 
 class CopyableMessageDialog:

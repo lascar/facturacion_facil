@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Ventana de configuración para numeración de facturas
+Interface PyQt6 pure
+"""
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                            QLineEdit, QTextEdit, QPushButton, QTreeWidget, 
+                            QTreeWidgetItem, QMessageBox, QFrame)
+from PyQt6.QtCore import Qt
+
+"""
+Ventana de configuracion para numeracion de facturas
 """
 
-# Import adapté pour PyQt6
-from gui import set_gui_framework
-set_gui_framework('pyqt6')
-
-# Utiliser l'adaptateur CustomTkinter vers PyQt6
-try:
-    import customtkinter as ctk
-except ImportError:
-    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
-    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
-    ctk = create_customtkinter_adapter()
-import tkinter as tk
-from tkinter import messagebox
 from utils.translations import get_text
 from utils.logger import get_logger
 from common.custom_dialogs import show_copyable_error, show_copyable_info
@@ -25,7 +20,7 @@ from utils.factura_numbering import factura_numbering_service
 from common.ui_components import FormHelper
 
 class ConfiguracionFacturasDialog:
-    """Diálogo para configurar la numeración de facturas"""
+    """Dialogo para configurar la numeracion de facturas"""
     
     def __init__(self, parent):
         self.parent = parent
@@ -33,7 +28,7 @@ class ConfiguracionFacturasDialog:
         
         # Crear ventana modal
         self.dialog = ctk.CTkToplevel(parent)
-        self.dialog.title("Configuración de Numeración de Facturas")
+        self.dialog.title("Configuracion de Numeracion de Facturas")
         self.dialog.geometry("500x400")
         self.dialog.transient(parent)
         self.dialog.resizable(False, False)
@@ -59,23 +54,23 @@ class ConfiguracionFacturasDialog:
         main_frame = ctk.CTkFrame(self.dialog)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        # Título
+        # Titulo
         title_label = ctk.CTkLabel(
             main_frame, 
-            text="Configuración de Numeración de Facturas",
+            text="Configuracion de Numeracion de Facturas",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         title_label.pack(pady=(0, 20))
         
-        # Frame de configuración
+        # Frame de configuracion
         config_frame = ctk.CTkFrame(main_frame)
         config_frame.pack(fill="x", pady=(0, 20))
         
-        # Número inicial
+        # Numero inicial
         numero_frame = ctk.CTkFrame(config_frame)
         numero_frame.pack(fill="x", padx=20, pady=10)
         
-        ctk.CTkLabel(numero_frame, text="Número inicial:").pack(anchor="w")
+        ctk.CTkLabel(numero_frame, text="Numero inicial:").pack(anchor="w")
         self.numero_inicial_entry = ctk.CTkEntry(
             numero_frame, 
             textvariable=self.numero_inicial_var,
@@ -108,10 +103,10 @@ class ConfiguracionFacturasDialog:
         self.sufijo_entry.pack(fill="x", pady=(5, 0))
 
         # Separador
-        separator = ctk.CTkLabel(main_frame, text="─" * 50, text_color="gray")
+        separator = ctk.CTkLabel(main_frame, text="" * 50, text_color="gray")
         separator.pack(pady=10)
 
-        # Sección de serie personalizada
+        # Seccion de serie personalizada
         serie_label = ctk.CTkLabel(
             main_frame,
             text="O establecer una nueva serie personalizada:",
@@ -122,7 +117,7 @@ class ConfiguracionFacturasDialog:
         serie_frame = ctk.CTkFrame(main_frame)
         serie_frame.pack(fill="x", padx=20, pady=10)
 
-        ctk.CTkLabel(serie_frame, text="Número inicial de nueva serie:").pack(anchor="w")
+        ctk.CTkLabel(serie_frame, text="Numero inicial de nueva serie:").pack(anchor="w")
         self.serie_personalizada_entry = ctk.CTkEntry(
             serie_frame,
             textvariable=self.serie_personalizada_var,
@@ -130,7 +125,7 @@ class ConfiguracionFacturasDialog:
         )
         self.serie_personalizada_entry.pack(fill="x", pady=(5, 10))
 
-        # Botón para establecer nueva serie
+        # Boton para establecer nueva serie
         establecer_serie_btn = ctk.CTkButton(
             serie_frame,
             text="Establecer Nueva Serie",
@@ -153,15 +148,15 @@ class ConfiguracionFacturasDialog:
         )
         self.preview_label.pack(anchor="w", padx=20, pady=(0, 10))
         
-        # Información adicional
+        # Informacion adicional
         info_frame = ctk.CTkFrame(main_frame)
         info_frame.pack(fill="x", pady=(0, 20))
         
-        info_text = """Información:
-• El número inicial se usa solo para nuevas facturas
-• Si introduces un número personalizado, el siguiente se basará en ese número
-• Los prefijos y sufijos son opcionales
-• Ejemplo: Con prefijo "FAC-" y número 123 → "FAC-0123" """
+        info_text = """Informacion:
+ El numero inicial se usa solo para nuevas facturas
+ Si introduces un numero personalizado, el siguiente se basara en ese numero
+ Los prefijos y sufijos son opcionales
+ Ejemplo: Con prefijo "FAC-" y numero 123  "FAC-0123" """
         
         info_label = ctk.CTkLabel(
             info_frame, 
@@ -195,7 +190,7 @@ class ConfiguracionFacturasDialog:
         self.sufijo_var.trace('w', self.update_preview)
     
     def load_current_config(self):
-        """Cargar la configuración actual"""
+        """Cargar la configuracion actual"""
         try:
             config = factura_numbering_service.get_configuracion_numeracion()
             
@@ -206,10 +201,10 @@ class ConfiguracionFacturasDialog:
             self.update_preview()
             
         except Exception as e:
-            logger.error(f"Error cargando configuración: {e}")
+            logger.error(f"Error cargando configuracion: {e}")
     
     def update_preview(self, *args):
-        """Actualizar la vista previa del formato con año al final"""
+        """Actualizar la vista previa del formato con ano al final"""
         try:
             from datetime import datetime
 
@@ -217,51 +212,51 @@ class ConfiguracionFacturasDialog:
             prefijo = self.prefijo_var.get()
             year = datetime.now().year
 
-            # Formatear número con ceros a la izquierda (3 dígitos para el nuevo formato)
+            # Formatear numero con ceros a la izquierda (3 digitos para el nuevo formato)
             try:
                 numero = int(numero_inicial)
                 numero_formateado = str(numero).zfill(3)
             except ValueError:
                 numero_formateado = "001"
 
-            # Construir vista previa con año al final
+            # Construir vista previa con ano al final
             if prefijo:
                 preview = f"{prefijo}-{numero_formateado}-{year}"
             else:
                 preview = f"{numero_formateado}-{year}"
 
-            self.preview_label.configure(text=f"Próxima factura: {preview}")
+            self.preview_label.configure(text=f"Proxima factura: {preview}")
 
         except Exception as e:
             logger.debug(f"Error actualizando vista previa: {e}")
             self.preview_label.configure(text="Vista previa no disponible")
     
     def save_config(self):
-        """Guardar la configuración"""
+        """Guardar la configuracion"""
         try:
-            # Validar número inicial
+            # Validar numero inicial
             numero_inicial_str = self.numero_inicial_var.get().strip()
             if not numero_inicial_str:
-                show_copyable_error(self.dialog, "Error de Validación",
-                                  "El número inicial es obligatorio.\n\nPor favor, ingrese un número inicial para la numeración de facturas.")
+                show_copyable_error(self.dialog, "Error de Validacion",
+                                  "El numero inicial es obligatorio.\n\nPor favor, ingrese un numero inicial para la numeracion de facturas.")
                 return
 
             try:
                 numero_inicial = int(numero_inicial_str)
                 if numero_inicial <= 0:
-                    show_copyable_error(self.dialog, "Error de Validación",
-                                      "El número inicial debe ser mayor que 0.\n\nPor favor, ingrese un número positivo.")
+                    show_copyable_error(self.dialog, "Error de Validacion",
+                                      "El numero inicial debe ser mayor que 0.\n\nPor favor, ingrese un numero positivo.")
                     return
             except ValueError:
-                show_copyable_error(self.dialog, "Error de Validación",
-                                  f"El número inicial debe ser un número válido.\n\nValor ingresado: '{numero_inicial_str}'\nPor favor, ingrese solo números.")
+                show_copyable_error(self.dialog, "Error de Validacion",
+                                  f"El numero inicial debe ser un numero valido.\n\nValor ingresado: '{numero_inicial_str}'\nPor favor, ingrese solo numeros.")
                 return
             
             # Obtener valores
             prefijo = self.prefijo_var.get().strip()
             sufijo = self.sufijo_var.get().strip()
             
-            # Guardar configuración
+            # Guardar configuracion
             success = factura_numbering_service.set_configuracion_numeracion(
                 numero_inicial=numero_inicial,
                 prefijo=prefijo,
@@ -270,53 +265,53 @@ class ConfiguracionFacturasDialog:
             
             if success:
                 self.result = True
-                show_copyable_info(self.dialog, "Configuración Guardada",
-                                 "✅ Configuración guardada correctamente.\n\nLa nueva configuración de numeración se aplicará a las próximas facturas.")
+                show_copyable_info(self.dialog, "Configuracion Guardada",
+                                 " Configuracion guardada correctamente.\n\nLa nueva configuracion de numeracion se aplicara a las proximas facturas.")
                 self.dialog.destroy()
             else:
                 show_copyable_error(self.dialog, "Error al Guardar",
-                                  "❌ Error al guardar la configuración.\n\nPor favor, verifique los datos ingresados e intente nuevamente.")
+                                  " Error al guardar la configuracion.\n\nPor favor, verifique los datos ingresados e intente nuevamente.")
 
         except Exception as e:
-            logger.error(f"Error guardando configuración: {e}")
-            show_copyable_error(self.dialog, "Error Técnico",
-                              f"❌ Error técnico al guardar la configuración:\n\n{str(e)}\n\nPor favor, contacte al soporte técnico si el problema persiste.")
+            logger.error(f"Error guardando configuracion: {e}")
+            show_copyable_error(self.dialog, "Error Tecnico",
+                              f" Error tecnico al guardar la configuracion:\n\n{str(e)}\n\nPor favor, contacte al soporte tecnico si el problema persiste.")
 
     def establecer_nueva_serie(self):
-        """Establecer una nueva serie de numeración personalizada"""
+        """Establecer una nueva serie de numeracion personalizada"""
         try:
             numero_serie = self.serie_personalizada_var.get().strip()
 
             if not numero_serie:
-                show_copyable_error(self.dialog, "Error de Validación",
-                                  "Debe ingresar un número para la nueva serie.\n\nPor favor, especifique el número inicial para la nueva serie de numeración.")
+                show_copyable_error(self.dialog, "Error de Validacion",
+                                  "Debe ingresar un numero para la nueva serie.\n\nPor favor, especifique el numero inicial para la nueva serie de numeracion.")
                 return
 
-            # Usar el servicio de numeración para establecer la nueva serie
+            # Usar el servicio de numeracion para establecer la nueva serie
             success, message = factura_numbering_service.set_nueva_serie_numeracion(numero_serie)
 
             if success:
                 show_copyable_info(self.dialog, "Nueva Serie Establecida",
-                                 f"✅ {message}\n\nLa nueva serie de numeración ha sido configurada correctamente.")
+                                 f" {message}\n\nLa nueva serie de numeracion ha sido configurada correctamente.")
                 # Limpiar el campo de serie personalizada
                 self.serie_personalizada_var.set("")
-                # Actualizar la configuración mostrada
+                # Actualizar la configuracion mostrada
                 self.load_current_config()
             else:
                 show_copyable_error(self.dialog, "Error al Establecer Serie",
-                                  f"❌ {message}\n\nNo se pudo establecer la nueva serie de numeración.")
+                                  f" {message}\n\nNo se pudo establecer la nueva serie de numeracion.")
 
         except Exception as e:
             logger.error(f"Error estableciendo nueva serie: {e}")
-            show_copyable_error(self.dialog, "Error Técnico",
-                              f"❌ Error técnico al establecer nueva serie:\n\n{str(e)}\n\nPor favor, contacte al soporte técnico si el problema persiste.")
+            show_copyable_error(self.dialog, "Error Tecnico",
+                              f" Error tecnico al establecer nueva serie:\n\n{str(e)}\n\nPor favor, contacte al soporte tecnico si el problema persiste.")
 
     def cancel(self):
-        """Cancelar el diálogo"""
+        """Cancelar el dialogo"""
         self.result = False
         self.dialog.destroy()
     
     def show(self):
-        """Mostrar el diálogo y esperar resultado"""
+        """Mostrar el dialogo y esperar resultado"""
         self.dialog.wait_window()
         return self.result

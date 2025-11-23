@@ -6,6 +6,9 @@ from unittest.mock import Mock, patch
 # Ajouter le répertoire parent au path pour les imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+# Marquer tous les tests comme skip pour la migration PyQt6
+pytestmark = pytest.mark.skip(reason="Tests spécifiques aux améliorations UI Tkinter - PyQt6 utilise des composants natifs")
+
 class TestUIImprovements:
     """Tests de régression pour les améliorations de l'interface"""
     

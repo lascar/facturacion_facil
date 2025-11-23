@@ -7,7 +7,7 @@ Composants UI abstraits de haut niveau
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Callable, Tuple
 from .abstract_gui import AbstractWidget, AbstractGUIFactory
-from .gui_manager import get_gui_factory
+from gui import get_gui_factory
 
 class AbstractWindow(ABC):
     """Fenêtre abstraite de base"""

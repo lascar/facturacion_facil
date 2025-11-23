@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import customtkinter as ctk
 from database.models import Producto
-from ui.producto_factura_dialog import ProductoFacturaDialog
+from ui.producto_factura_dialog_simple import ProductoFacturaDialog
 
 def test_primer_producto_seleccion():
     """Test que verifica que el primer producto se selecciona automáticamente"""

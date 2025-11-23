@@ -13,6 +13,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from common.treeview_sorter import TreeViewSorter, add_sorting_to_treeview
 
+# Marquer tous les tests comme skip pour la migration PyQt6
+pytestmark = pytest.mark.skip(reason="Tests spécifiques à l'ancienne implémentation Tkinter - PyQt6 utilise un système de tri natif")
+
 class TestTreeViewSorter:
     """Tests para la clase TreeViewSorter"""
     

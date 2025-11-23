@@ -1,21 +1,19 @@
-# Import adapté pour PyQt6
-from gui import set_gui_framework
-set_gui_framework('pyqt6')
 
-# Utiliser l'adaptateur CustomTkinter vers PyQt6
-try:
-    import customtkinter as ctk
-except ImportError:
-    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
-    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
-    ctk = create_customtkinter_adapter()
-import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+# -*- coding: utf-8 -*-
+"""
+Interface PyQt6 pure
+"""
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                            QLineEdit, QTextEdit, QPushButton, QTreeWidget, 
+                            QTreeWidgetItem, QMessageBox, QFrame)
+from PyQt6.QtCore import Qt
+
+
 from utils.translations import get_text
 from utils.config import app_config
 from utils.logger import get_logger, log_user_action, log_file_operation, log_exception, log_database_operation
 from database.models import Producto
-from common.treeview_sorter import add_sorting_to_treeview
+# TreeView sorting no longer needed with PyQt6
 import os
 import shutil
 from PIL import Image, ImageTk

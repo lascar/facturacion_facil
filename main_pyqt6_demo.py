@@ -10,7 +10,7 @@ import os
 # Ajouter le répertoire racine au path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from gui import set_gui_framework, create_gui_application, get_gui_factory
+from gui import set_gui_framework, get_gui_factory
 from utils.translations import get_text
 
 class MainWindowPyQt6:
@@ -20,14 +20,14 @@ class MainWindowPyQt6:
         # Définir le framework PyQt6
         set_gui_framework('pyqt6')
 
-        # Créer l'application
-        self.app = create_gui_application()
-        self.factory = self.app.gui_factory
-        
-        # Initialiser l'application
-        self.app.initialize()
-        self.root = self.app.main_window
-        
+        # Créer l'application PyQt6
+        from PyQt6.QtWidgets import QApplication
+        self.app = QApplication.instance() or QApplication([])
+        self.factory = get_gui_factory()
+
+        # Créer la fenêtre principale
+        self.root = self.factory.create_window(get_text("app_title"), "800x600")
+
         # Configurer la fenêtre
         self.root.get_native_widget().setWindowTitle(get_text("app_title"))
         self.root.get_native_widget().resize(800, 600)
@@ -136,7 +136,7 @@ class MainWindowPyQt6:
         """Lance l'application"""
         print("Lancement de l'application PyQt6...")
         print("Fermer la fenêtre pour terminer.")
-        return self.app.run()
+        return self.app.exec()
 
 def main():
     """Fonction principale"""

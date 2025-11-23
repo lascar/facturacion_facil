@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Interface de stock optimisée pour de meilleures performances
+Interface PyQt6 pure
+"""
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                            QLineEdit, QTextEdit, QPushButton, QTreeWidget, 
+                            QTreeWidgetItem, QMessageBox, QFrame)
+from PyQt6.QtCore import Qt
+
+"""
+Interface de stock optimisee pour de meilleures performances
 """
 
-# Import adapté pour PyQt6
-from gui import set_gui_framework
-set_gui_framework('pyqt6')
-
-# Utiliser l'adaptateur CustomTkinter vers PyQt6
-try:
-    import customtkinter as ctk
-except ImportError:
-    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
-    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
-    ctk = create_customtkinter_adapter()
-import tkinter as tk
-from tkinter import ttk
 from database.optimized_models import OptimizedStock, BatchOperations
 from utils.performance_optimizer import performance_monitor, performance_optimizer
 from utils.translations import get_text
@@ -24,9 +19,8 @@ from utils.logger import get_logger
 from common.ui_components import BaseWindow
 import time
 
-
 class OptimizedStockWindow(BaseWindow):
-    """Fenêtre de stock optimisée avec virtualisation et cache"""
+    """Fentre de stock optimisee avec virtualisation et cache"""
     
     def __init__(self, parent):
         super().__init__(parent, get_text("gestion_stock"), "1200x800")
@@ -34,7 +28,7 @@ class OptimizedStockWindow(BaseWindow):
         # Variables de performance
         self.stock_data = []
         self.filtered_data = []
-        self.displayed_items = {}  # Cache des widgets affichés
+        self.displayed_items = {}  # Cache des widgets affiches
         self.visible_range = (0, 50)  # Plage visible (virtualisation)
         self.item_height = 60
         self.search_var = tk.StringVar()
@@ -51,21 +45,21 @@ class OptimizedStockWindow(BaseWindow):
         self.logger.info("Ventana de stock optimizada inicializada")
     
     def create_optimized_widgets(self):
-        """Créer l'interface optimisée"""
+        """Creer l'interface optimisee"""
         main_frame = ctk.CTkFrame(self.window)
         main_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
-        # Frame de contrôles optimisé
+        # Frame de contrles optimise
         self.create_optimized_controls(main_frame)
         
         # Frame de la table avec virtualisation
         self.create_virtualized_table(main_frame)
         
-        # Statistiques en temps réel
+        # Statistiques en temps reel
         self.create_stats_panel(main_frame)
     
     def create_optimized_controls(self, parent):
-        """Créer les contrôles optimisés"""
+        """Creer les contrles optimises"""
         controls_frame = ctk.CTkFrame(parent)
         controls_frame.pack(fill="x", padx=10, pady=(10, 5))
         
@@ -73,7 +67,7 @@ class OptimizedStockWindow(BaseWindow):
         search_frame = ctk.CTkFrame(controls_frame)
         search_frame.pack(side="left", fill="x", expand=True, padx=(10, 20), pady=20)
         
-        search_label = ctk.CTkLabel(search_frame, text="🔍 Búsqueda rápida:")
+        search_label = ctk.CTkLabel(search_frame, text=" Busqueda rapida:")
         search_label.pack(side="left", padx=(10, 5))
         
         self.search_entry = ctk.CTkEntry(
@@ -84,13 +78,13 @@ class OptimizedStockWindow(BaseWindow):
         )
         self.search_entry.pack(side="left", padx=5)
         
-        # Búsqueda con debouncing (evita búsquedas excesivas)
+        # Busqueda con debouncing (evita busquedas excesivas)
         self.search_var.trace_add("write", self.on_search_change)
         
-        # Botón de limpieza
+        # Boton de limpieza
         clear_btn = ctk.CTkButton(
             search_frame,
-            text="✖",
+            text="",
             command=self.clear_search,
             width=30
         )
@@ -105,13 +99,13 @@ class OptimizedStockWindow(BaseWindow):
         )
         self.results_label.pack(side="left", padx=(10, 0))
         
-        # Botones de acción optimizados
+        # Botones de accion optimizados
         buttons_frame = ctk.CTkFrame(controls_frame)
         buttons_frame.pack(side="right", padx=(10, 20), pady=20)
         
         refresh_btn = ctk.CTkButton(
             buttons_frame,
-            text="🔄 Actualizar",
+            text=" Actualizar",
             command=self.refresh_data,
             width=120
         )
@@ -119,7 +113,7 @@ class OptimizedStockWindow(BaseWindow):
         
         low_stock_btn = ctk.CTkButton(
             buttons_frame,
-            text="⚠️ Stock Bajo",
+            text="! Stock Bajo",
             command=self.show_low_stock_optimized,
             width=120,
             fg_color="orange",
@@ -127,10 +121,10 @@ class OptimizedStockWindow(BaseWindow):
         )
         low_stock_btn.pack(side="left", padx=5)
         
-        # Botón de optimización
+        # Boton de optimizacion
         optimize_btn = ctk.CTkButton(
             buttons_frame,
-            text="⚡ Optimizar",
+            text=" Optimizar",
             command=self.optimize_performance,
             width=120,
             fg_color="purple",
@@ -139,11 +133,11 @@ class OptimizedStockWindow(BaseWindow):
         optimize_btn.pack(side="left", padx=5)
     
     def create_virtualized_table(self, parent):
-        """Créer une table virtualisée pour de meilleures performances"""
+        """Creer une table virtualisee pour de meilleures performances"""
         table_frame = ctk.CTkFrame(parent)
         table_frame.pack(fill="both", expand=True, padx=10, pady=5)
         
-        # En-têtes avec tri
+        # En-ttes avec tri
         headers_frame = ctk.CTkFrame(table_frame)
         headers_frame.pack(fill="x", padx=10, pady=(10, 5))
         
@@ -152,7 +146,7 @@ class OptimizedStockWindow(BaseWindow):
             ("referencia", "Referencia", 0.15),
             ("cantidad", "Stock", 0.1),
             ("precio", "Precio", 0.15),
-            ("categoria", "Categoría", 0.15),
+            ("categoria", "Categoria", 0.15),
             ("fecha_actualizacion", "Actualizado", 0.15)
         ]
         
@@ -160,7 +154,7 @@ class OptimizedStockWindow(BaseWindow):
         for col_key, col_name, width_ratio in headers:
             btn = ctk.CTkButton(
                 headers_frame,
-                text=f"{col_name} ↕",
+                text=f"{col_name} ",
                 command=lambda k=col_key: self.sort_by_column(k),
                 height=30,
                 fg_color="gray30",
@@ -169,38 +163,38 @@ class OptimizedStockWindow(BaseWindow):
             btn.pack(side="left", fill="x", expand=True, padx=2)
             self.header_buttons[col_key] = btn
         
-        # Frame scrollable optimisé
+        # Frame scrollable optimise
         self.scrollable_frame = ctk.CTkScrollableFrame(
             table_frame,
             height=400
         )
         self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
-        # Bind pour le scroll virtualisé
+        # Bind pour le scroll virtualise
         self.scrollable_frame.bind("<Configure>", self.on_scroll_configure)
         self.scrollable_frame.bind("<MouseWheel>", self.on_mouse_wheel)
     
     def create_stats_panel(self, parent):
-        """Créer un panneau de statistiques en temps réel"""
+        """Creer un panneau de statistiques en temps reel"""
         stats_frame = ctk.CTkFrame(parent)
         stats_frame.pack(fill="x", padx=10, pady=(5, 10))
         
         self.stats_label = ctk.CTkLabel(
             stats_frame,
-            text="Cargando estadísticas...",
+            text="Cargando estadisticas...",
             font=ctk.CTkFont(size=12)
         )
         self.stats_label.pack(pady=10)
     
     @performance_monitor.time_function("load_stock_data_optimized")
     def load_stock_data_optimized(self):
-        """Charger les données de stock de manière optimisée"""
+        """Charger les donnees de stock de manire optimisee"""
         try:
-            # Utiliser la requête optimisée
+            # Utiliser la requte optimisee
             self.stock_data = OptimizedStock.get_all_optimized()
             self.filtered_data = self.stock_data.copy()
             
-            # Mettre à jour l'affichage
+            # Mettre  jour l'affichage
             self.update_display_optimized()
             self.update_stats()
             
@@ -211,9 +205,9 @@ class OptimizedStockWindow(BaseWindow):
             self.show_error_message("Error", f"Error cargando datos: {e}")
     
     def update_display_optimized(self):
-        """Mettre à jour l'affichage de manière optimisée (virtualisation)"""
+        """Mettre  jour l'affichage de manire optimisee (virtualisation)"""
         try:
-            # Nettoyer seulement si nécessaire
+            # Nettoyer seulement si necessaire
             if not hasattr(self, '_last_data_hash') or self._last_data_hash != hash(str(self.filtered_data)):
                 self.clear_display()
                 self._last_data_hash = hash(str(self.filtered_data))
@@ -222,7 +216,7 @@ class OptimizedStockWindow(BaseWindow):
                 self.show_no_data_message()
                 return
             
-            # Afficher seulement les éléments visibles (virtualisation)
+            # Afficher seulement les elements visibles (virtualisation)
             start_idx, end_idx = self.visible_range
             end_idx = min(end_idx, len(self.filtered_data))
             
@@ -232,7 +226,7 @@ class OptimizedStockWindow(BaseWindow):
                     widget = self.create_optimized_stock_row(item, i)
                     self.displayed_items[i] = widget
             
-            # Supprimer les éléments non visibles
+            # Supprimer les elements non visibles
             for idx in list(self.displayed_items.keys()):
                 if idx < start_idx or idx >= end_idx:
                     widget = self.displayed_items.pop(idx)
@@ -244,8 +238,8 @@ class OptimizedStockWindow(BaseWindow):
             self.logger.error(f"Error actualizando display optimizado: {e}")
     
     def create_optimized_stock_row(self, item, index):
-        """Créer une ligne de stock optimisée"""
-        # Frame principal avec couleur alternée
+        """Creer une ligne de stock optimisee"""
+        # Frame principal avec couleur alternee
         bg_color = "gray20" if index % 2 == 0 else "gray25"
         row_frame = ctk.CTkFrame(self.scrollable_frame, fg_color=bg_color)
         row_frame.pack(fill="x", padx=2, pady=1)
@@ -259,13 +253,13 @@ class OptimizedStockWindow(BaseWindow):
             (item['nombre'], 0.3),
             (item['referencia'], 0.15),
             (f"{item['cantidad']}", 0.1),
-            (f"€{item['precio']:.2f}", 0.15),
+            (f"{item['precio']:.2f}", 0.15),
             (item['categoria'], 0.15),
             (str(item['fecha_actualizacion'])[:10], 0.15)
         ]
         
         for i, (text, width_ratio) in enumerate(columns):
-            # Couleur spéciale pour stock bas
+            # Couleur speciale pour stock bas
             text_color = "red" if i == 2 and item['cantidad'] <= 5 else "white"
             
             label = ctk.CTkLabel(
@@ -276,7 +270,7 @@ class OptimizedStockWindow(BaseWindow):
             )
             label.pack(side="left", fill="x", expand=True, padx=2)
         
-        # Boutons d'action (seulement si nécessaire)
+        # Boutons d'action (seulement si necessaire)
         if item['cantidad'] <= 5:
             action_btn = ctk.CTkButton(
                 content_frame,
@@ -292,28 +286,28 @@ class OptimizedStockWindow(BaseWindow):
         return row_frame
     
     def on_search_change(self, *args):
-        """Gérer les changements de recherche avec debouncing"""
+        """Gerer les changements de recherche avec debouncing"""
         current_time = time.time() * 1000  # en millisecondes
         self.last_search_time = current_time
         
-        # Programmer la recherche avec délai
+        # Programmer la recherche avec delai
         self.window.after(self.search_delay, lambda: self.delayed_search(current_time))
     
     def delayed_search(self, search_time):
-        """Exécuter la recherche avec délai (debouncing)"""
-        if search_time == self.last_search_time:  # Seulement si c'est la dernière recherche
+        """Executer la recherche avec delai (debouncing)"""
+        if search_time == self.last_search_time:  # Seulement si c'est la dernire recherche
             self.perform_search_optimized()
     
     @performance_monitor.time_function("perform_search_optimized")
     def perform_search_optimized(self):
-        """Effectuer une recherche optimisée"""
+        """Effectuer une recherche optimisee"""
         try:
             search_text = self.search_var.get().lower().strip()
             
             if not search_text:
                 self.filtered_data = self.stock_data.copy()
             else:
-                # Recherche optimisée avec compréhension de liste
+                # Recherche optimisee avec comprehension de liste
                 self.filtered_data = [
                     item for item in self.stock_data
                     if (search_text in item.get('nombre', '').lower() or
@@ -321,14 +315,14 @@ class OptimizedStockWindow(BaseWindow):
                         search_text in item.get('categoria', '').lower())
                 ]
             
-            # Réinitialiser la plage visible
+            # Reinitialiser la plage visible
             self.visible_range = (0, min(50, len(self.filtered_data)))
             
             self.update_display_optimized()
             self.update_stats()
             
         except Exception as e:
-            self.logger.error(f"Error en búsqueda optimizada: {e}")
+            self.logger.error(f"Error en busqueda optimizada: {e}")
     
     def sort_by_column(self, column):
         """Trier par colonne"""
@@ -338,20 +332,20 @@ class OptimizedStockWindow(BaseWindow):
             self.sort_column = column
             self.sort_reverse = False
         
-        # Trier les données
+        # Trier les donnees
         try:
             self.filtered_data.sort(
                 key=lambda x: x.get(column, ''),
                 reverse=self.sort_reverse
             )
             
-            # Mettre à jour l'indicateur de tri dans l'en-tête
+            # Mettre  jour l'indicateur de tri dans l'en-tte
             for col, btn in self.header_buttons.items():
                 if col == column:
-                    arrow = "↓" if self.sort_reverse else "↑"
+                    arrow = "" if self.sort_reverse else ""
                     btn.configure(text=f"{btn.cget('text').split(' ')[0]} {arrow}")
                 else:
-                    btn.configure(text=f"{btn.cget('text').split(' ')[0]} ↕")
+                    btn.configure(text=f"{btn.cget('text').split(' ')[0]} ")
             
             self.update_display_optimized()
             
@@ -360,7 +354,7 @@ class OptimizedStockWindow(BaseWindow):
     
     @performance_optimizer.cache_result("low_stock_display", ttl=60)
     def show_low_stock_optimized(self):
-        """Afficher le stock bas de manière optimisée"""
+        """Afficher le stock bas de manire optimisee"""
         try:
             low_stock_data = OptimizedStock.get_low_stock_optimized()
             
@@ -390,7 +384,7 @@ class OptimizedStockWindow(BaseWindow):
             if cantidad_str:
                 cantidad = int(cantidad_str)
                 if cantidad > 0:
-                    # Mettre à jour en lot pour de meilleures performances
+                    # Mettre  jour en lot pour de meilleures performances
                     updates = [{
                         'producto_id': item['producto_id'],
                         'cantidad': item['cantidad'] + cantidad
@@ -398,26 +392,26 @@ class OptimizedStockWindow(BaseWindow):
                     
                     BatchOperations.update_multiple_stock(updates)
                     
-                    # Mettre à jour localement
+                    # Mettre  jour localement
                     item['cantidad'] += cantidad
                     
-                    # Rafraîchir l'affichage
+                    # Rafrachir l'affichage
                     self.update_display_optimized()
                     self.update_stats()
                     
                     self.show_success_message(
-                        "Éxito", 
+                        "xito", 
                         f"Stock agregado: +{cantidad}\nNuevo total: {item['cantidad']}"
                     )
         
         except ValueError:
-            self.show_error_message("Error", "Cantidad inválida")
+            self.show_error_message("Error", "Cantidad invalida")
         except Exception as e:
-            self.logger.error(f"Error agregando stock rápido: {e}")
+            self.logger.error(f"Error agregando stock rapido: {e}")
             self.show_error_message("Error", f"Error agregando stock: {e}")
     
     def update_stats(self):
-        """Mettre à jour les statistiques en temps réel"""
+        """Mettre  jour les statistiques en temps reel"""
         try:
             total_productos = len(self.stock_data)
             productos_mostrados = len(self.filtered_data)
@@ -425,19 +419,19 @@ class OptimizedStockWindow(BaseWindow):
             valor_total = sum(item['cantidad'] * item['precio'] for item in self.filtered_data)
             
             stats_text = (
-                f"📊 Total: {total_productos} productos | "
+                f"- Total: {total_productos} productos | "
                 f"Mostrados: {productos_mostrados} | "
                 f"Stock bajo: {stock_bajo} | "
-                f"Valor total: €{valor_total:.2f}"
+                f"Valor total: {valor_total:.2f}"
             )
             
             self.stats_label.configure(text=stats_text)
             
         except Exception as e:
-            self.logger.error(f"Error actualizando estadísticas: {e}")
+            self.logger.error(f"Error actualizando estadisticas: {e}")
     
     def update_results_indicator(self):
-        """Mettre à jour l'indicateur de résultats"""
+        """Mettre  jour l'indicateur de resultats"""
         search_text = self.search_var.get().strip()
         if search_text:
             self.results_label.configure(
@@ -453,7 +447,7 @@ class OptimizedStockWindow(BaseWindow):
         self.displayed_items.clear()
     
     def show_no_data_message(self):
-        """Afficher un message quand il n'y a pas de données"""
+        """Afficher un message quand il n'y a pas de donnees"""
         no_data_label = ctk.CTkLabel(
             self.scrollable_frame,
             text="No hay productos en stock",
@@ -470,7 +464,7 @@ class OptimizedStockWindow(BaseWindow):
         self.update_stats()
     
     def refresh_data(self):
-        """Actualiser les données"""
+        """Actualiser les donnees"""
         # Vider le cache
         performance_optimizer.clear_cache("stock")
         performance_optimizer.clear_cache("low_stock")
@@ -484,36 +478,35 @@ class OptimizedStockWindow(BaseWindow):
             # Vider tous les caches
             performance_optimizer.clear_cache()
             
-            # Préchauffer les caches
+            # Prechauffer les caches
             OptimizedStock.get_all_optimized()
             OptimizedStock.get_low_stock_optimized()
             
-            # Optimiser la base de données
+            # Optimiser la base de donnees
             from utils.performance_optimizer import optimize_database_queries
             optimize_database_queries()
             
             self.show_success_message(
-                "Optimización", 
+                "Optimizacion", 
                 "Rendimiento optimizado correctamente"
             )
             
         except Exception as e:
             self.logger.error(f"Error optimizando rendimiento: {e}")
-            self.show_error_message("Error", f"Error en optimización: {e}")
+            self.show_error_message("Error", f"Error en optimizacion: {e}")
     
     def on_scroll_configure(self, event):
-        """Gérer la configuration du scroll"""
-        # Implémenter la virtualisation si nécessaire
+        """Gerer la configuration du scroll"""
+        # Implementer la virtualisation si necessaire
         pass
     
     def on_mouse_wheel(self, event):
-        """Gérer le scroll de la souris"""
-        # Implémenter le scroll virtualisé si nécessaire
+        """Gerer le scroll de la souris"""
+        # Implementer le scroll virtualise si necessaire
         pass
 
-
 if __name__ == "__main__":
-    # Test de la fenêtre optimisée
+    # Test de la fentre optimisee
     root = ctk.CTk()
     app = OptimizedStockWindow(root)
     root.mainloop()

@@ -5,7 +5,7 @@ Tests para la interfaz de usuario de facturas
 import pytest
 import tkinter as tk
 from unittest.mock import Mock, patch, MagicMock
-from ui.producto_factura_dialog import ProductoFacturaDialog
+from ui.producto_factura_dialog_simple import ProductoFacturaDialog
 from database.models import Producto
 
 class TestProductoFacturaDialog:

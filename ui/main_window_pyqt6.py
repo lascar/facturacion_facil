@@ -10,27 +10,27 @@ import os
 # Ajouter le répertoire parent au path pour les imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from gui import set_gui_framework, create_gui_application, get_gui_factory
+from gui import set_gui_framework, get_gui_factory
 from utils.translations import get_text
 from ui.productos import ProductosWindow
 from ui.organizacion import OrganizacionWindow
 from ui.stock import StockWindow
 from ui.facturas import FacturasWindow
 from ui.clientes import ClientesWindow
-from ui.search_window import SearchWindow
+from ui.search_window_simple import SearchWindow
 
 class MainWindowPyQt6:
     def __init__(self):
         # Définir le framework PyQt6
         set_gui_framework('pyqt6')
         
-        # Créer l'application et la factory
-        self.app = create_gui_application()
-        self.factory = self.app.gui_factory
-        
-        # Initialiser l'application
-        self.app.initialize()
-        self.root = self.app.main_window
+        # Créer l'application PyQt6
+        from PyQt6.QtWidgets import QApplication
+        self.app = QApplication.instance() or QApplication([])
+        self.factory = get_gui_factory()
+
+        # Créer la fenêtre principale
+        self.root = self.factory.create_window("Facturación Fácil", "800x600")
         
         # Configurer la fenêtre
         native_window = self.root.get_native_widget()

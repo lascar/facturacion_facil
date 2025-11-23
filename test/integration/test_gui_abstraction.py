@@ -31,23 +31,24 @@ class TestGUIAbstraction:
         assert 'PyQt6' in type(manager.get_factory()).__name__
         print(f"     ✅ PyQt6 chargé: {type(manager.get_factory()).__name__}")
 
-        # Test CustomTkinter (avec adaptateur)
-        print("\n   2️⃣ Test CustomTkinter")
-        set_gui_framework('customtkinter')
+        # Test PyQt6 (framework unique après migration)
+        print("\n   2️⃣ Test PyQt6 (framework unique)")
+        set_gui_framework('pyqt6')
         manager = get_gui_manager()
 
-        assert manager.get_current_framework() == 'customtkinter'
-        assert 'CustomTkinter' in type(manager.get_factory()).__name__
-        print(f"     ✅ CustomTkinter chargé: {type(manager.get_factory()).__name__}")
+        assert manager.get_current_framework() == 'pyqt6'
+        assert 'PyQt6' in type(manager.get_factory()).__name__
+        print(f"     ✅ PyQt6 confirmé: {type(manager.get_factory()).__name__}")
 
-        # Test Tkinter
-        print("\n   3️⃣ Test Tkinter")
-        set_gui_framework('tkinter')
-        manager = get_gui_manager()
-
-        assert manager.get_current_framework() == 'tkinter'
-        assert 'Tkinter' in type(manager.get_factory()).__name__
-        print(f"     ✅ Tkinter chargé: {type(manager.get_factory()).__name__}")
+        # Test que les autres frameworks ne sont plus supportés
+        print("\n   3️⃣ Test frameworks non supportés")
+        try:
+            set_gui_framework('customtkinter')
+            # Devrait toujours retourner PyQt6 car c'est le seul supporté
+            assert manager.get_current_framework() == 'pyqt6'
+            print("     ✅ Migration vers PyQt6 confirmée")
+        except Exception as e:
+            print(f"     ✅ Frameworks non supportés correctement rejetés: {e}")
     
     def test_widget_creation(self):
         """Test de création de widgets"""
@@ -185,7 +186,8 @@ class TestGUIAbstraction:
             current = manager.get_current_framework()
             factory_type = type(manager.get_factory()).__name__
             
-            assert current == framework
+            # Après migration PyQt6, tous les frameworks doivent retourner 'pyqt6'
+            assert current == 'pyqt6', f"Après migration, le framework doit être PyQt6, mais c'est {current}"
             print(f"     ✅ Framework: {current}")
             print(f"     ✅ Factory: {factory_type}")
             

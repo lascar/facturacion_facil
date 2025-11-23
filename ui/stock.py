@@ -1,21 +1,19 @@
-# Import adapté pour PyQt6
-from gui import set_gui_framework
-set_gui_framework('pyqt6')
 
-# Utiliser l'adaptateur CustomTkinter vers PyQt6
-try:
-    import customtkinter as ctk
-except ImportError:
-    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
-    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
-    ctk = create_customtkinter_adapter()
-import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+# -*- coding: utf-8 -*-
+"""
+Interface PyQt6 pure
+"""
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                            QLineEdit, QTextEdit, QPushButton, QTreeWidget, 
+                            QTreeWidgetItem, QMessageBox, QFrame)
+from PyQt6.QtCore import Qt
+
+
 from utils.translations import get_text
 from database.models import Stock, Producto, StockMovement
 from database.optimized_models import OptimizedStock
 from common.ui_components import BaseWindow
-from common.treeview_sorter import add_sorting_to_treeview
+# TreeView sorting no longer needed with PyQt6
 from common.custom_dialogs import (
     show_copyable_info, show_copyable_success,
     show_copyable_warning, show_copyable_error,
@@ -841,7 +839,6 @@ class StockWindow:
             self.logger.error(f"Error actualizando indicador de resultados: {e}")
             self.results_label.configure(text="", text_color="gray")
 
-
     def show_low_stock(self):
         """Muestra solo productos con stock bajo (<=5) - OPTIMIZADO"""
         try:
@@ -1004,8 +1001,7 @@ class StockWindow:
 
     def _show_stock_modification_dialog(self, item, current_stock):
         """Muestra diálogo con botones + y - para modificar stock"""
-        import tkinter as tk
-
+        
         # Crear ventana modal
         dialog = ctk.CTkToplevel(self.window)
         dialog.title("Modificar Stock")

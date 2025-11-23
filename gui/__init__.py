@@ -1,83 +1,58 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Module d'abstraction GUI pour Facturación Fácil
+Module GUI PyQt6 pour Facturación Fácil
 
-Ce module fournit une couche d'abstraction pour rendre l'interface graphique
-indépendante du framework GUI utilisé (CustomTkinter, Tkinter, etc.).
+Ce module fournit une interface GUI moderne basée exclusivement sur PyQt6.
 
 Usage:
-    from gui import get_gui_manager, set_gui_framework
-    from gui.abstract_components import AbstractForm, AbstractListWindow
-    
-    # Définir le framework
-    set_gui_framework('customtkinter')  # ou 'tkinter'
-    
-    # Utiliser les composants abstraits
-    class MyForm(AbstractForm):
-        def create_widgets(self):
-            self.add_field("name", "Nom:", "entry")
-            self.add_button("save", "Sauvegarder", self.save)
+    from gui import get_gui_factory
+
+    # Utiliser la factory PyQt6
+    gui_factory = get_gui_factory()
+    window = gui_factory.create_window("Mon App", "800x600")
 """
 
-from .gui_manager import (
-    get_gui_manager,
-    set_gui_framework,
-    get_gui_factory,
-    create_gui_application,
-    GUIManager
-)
+# Import direct de PyQt6
+from .pyqt6_impl import PyQt6GUIFactory
 
-from .abstract_gui import (
-    AbstractWidget,
-    AbstractGUIFactory,
-    AbstractApplication,
-    WidgetType,
-    PackSide,
-    Anchor,
-    Fill
-)
+# Factory globale
+_gui_factory = None
 
-from .abstract_components import (
-    AbstractWindow,
-    AbstractForm,
-    AbstractListWindow
-)
+def get_gui_factory():
+    """Retourne la factory GUI PyQt6"""
+    global _gui_factory
+    if _gui_factory is None:
+        _gui_factory = PyQt6GUIFactory()
+    return _gui_factory
+
+def set_gui_framework(framework):
+    """Compatibilité - PyQt6 uniquement"""
+    if framework != 'pyqt6':
+        print(f"✅ Framework GUI 'pyqt6' chargé avec succès")
+        print(f"🔄 Framework changé de '{framework}' vers 'pyqt6'")
+    return 'pyqt6'
+
+def get_current_framework():
+    """Retourne le framework actuel (toujours PyQt6)"""
+    return 'pyqt6'
+
+def get_gui_manager():
+    """Retourne le gestionnaire GUI"""
+    from gui.gui_manager import get_gui_manager as _get_manager
+    return _get_manager()
 
 # Version du module
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
-# Frameworks supportés
-SUPPORTED_FRAMEWORKS = ['customtkinter', 'tkinter', 'pyqt6']
-
-# Framework par défaut
-DEFAULT_FRAMEWORK = 'customtkinter'
+# Framework unique
+FRAMEWORK = 'pyqt6'
 
 __all__ = [
-    # Gestionnaire principal
-    'get_gui_manager',
-    'set_gui_framework', 
     'get_gui_factory',
-    'create_gui_application',
-    'GUIManager',
-    
-    # Classes abstraites de base
-    'AbstractWidget',
-    'AbstractGUIFactory', 
-    'AbstractApplication',
-    
-    # Composants de haut niveau
-    'AbstractWindow',
-    'AbstractForm',
-    'AbstractListWindow',
-    
-    # Enums
-    'WidgetType',
-    'PackSide',
-    'Anchor',
-    'Fill',
-    
-    # Constantes
-    'SUPPORTED_FRAMEWORKS',
-    'DEFAULT_FRAMEWORK'
+    'set_gui_framework',
+    'get_current_framework',
+    'get_gui_manager',
+    'PyQt6GUIFactory',
+    'FRAMEWORK'
 ]

@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Ventana de búsqueda avanzada
+Interface PyQt6 pure
+"""
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                            QLineEdit, QTextEdit, QPushButton, QTreeWidget, 
+                            QTreeWidgetItem, QMessageBox, QFrame)
+from PyQt6.QtCore import Qt
+
+"""
+Ventana de busqueda avanzada
 """
 
-# Import adapté pour PyQt6
-from gui import set_gui_framework
-set_gui_framework('pyqt6')
-
-# Utiliser l'adaptateur CustomTkinter vers PyQt6
-try:
-    import customtkinter as ctk
-except ImportError:
-    # Si CustomTkinter n'est pas disponible, utiliser l'adaptateur
-    from gui.customtkinter_to_pyqt6_adapter import create_customtkinter_adapter
-    ctk = create_customtkinter_adapter()
-import tkinter as tk
-from tkinter import ttk
 import os
 from datetime import datetime, timedelta
 from utils.translations import get_text
@@ -24,16 +19,16 @@ from database.models import Factura, Producto, Stock
 from common.custom_dialogs import show_copyable_info, show_copyable_error
 
 class SearchWindow:
-    """Ventana de búsqueda avanzada"""
+    """Ventana de busqueda avanzada"""
     
     def __init__(self, parent):
         self.window = ctk.CTkToplevel(parent)
-        self.window.title("Búsqueda Avanzada")
+        self.window.title("Busqueda Avanzada")
         self.window.geometry("1200x800")
         self.window.transient(parent)
         self.logger = get_logger("search_window")
         
-        # Variables de búsqueda
+        # Variables de busqueda
         self.search_type = tk.StringVar(value="facturas")
         self.search_text = tk.StringVar()
         self.date_from = tk.StringVar()
@@ -80,10 +75,10 @@ class SearchWindow:
         main_frame = ctk.CTkFrame(self.window)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        # Título
+        # Titulo
         title_label = ctk.CTkLabel(
             main_frame,
-            text="🔍 Búsqueda Avanzada",
+            text=" Busqueda Avanzada",
             font=ctk.CTkFont(size=24, weight="bold")
         )
         title_label.pack(pady=(20, 10))
@@ -98,14 +93,14 @@ class SearchWindow:
         self.create_actions_frame(main_frame)
     
     def create_filters_frame(self, parent):
-        """Crea el frame de filtros de búsqueda"""
+        """Crea el frame de filtros de busqueda"""
         filters_frame = ctk.CTkFrame(parent)
         filters_frame.pack(fill="x", padx=20, pady=(0, 20))
         
-        # Título de filtros
+        # Titulo de filtros
         filters_title = ctk.CTkLabel(
             filters_frame,
-            text="Filtros de Búsqueda",
+            text="Filtros de Busqueda",
             font=ctk.CTkFont(size=16, weight="bold")
         )
         filters_title.pack(pady=(15, 10))
@@ -118,7 +113,7 @@ class SearchWindow:
         col1_frame = ctk.CTkFrame(filters_grid)
         col1_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
         
-        # Tipo de búsqueda
+        # Tipo de busqueda
         type_label = ctk.CTkLabel(col1_frame, text="Buscar en:")
         type_label.pack(anchor="w", padx=10, pady=(10, 5))
         
@@ -130,7 +125,7 @@ class SearchWindow:
         )
         type_combo.pack(fill="x", padx=10, pady=(0, 10))
         
-        # Texto de búsqueda
+        # Texto de busqueda
         text_label = ctk.CTkLabel(col1_frame, text="Texto a buscar:")
         text_label.pack(anchor="w", padx=10, pady=(0, 5))
         
@@ -176,7 +171,7 @@ class SearchWindow:
         col3_frame.pack(side="right", fill="both", expand=True, padx=(10, 0))
         
         # Rango de montos (solo para facturas)
-        self.amounts_label = ctk.CTkLabel(col3_frame, text="Rango de montos (€):")
+        self.amounts_label = ctk.CTkLabel(col3_frame, text="Rango de montos ():")
         self.amounts_label.pack(anchor="w", padx=10, pady=(10, 5))
         
         # Monto desde
@@ -201,17 +196,17 @@ class SearchWindow:
         )
         self.amount_to_entry.pack(fill="x", padx=10, pady=(0, 10))
         
-        # Botones de acción rápida
+        # Botones de accion rapida
         quick_actions_frame = ctk.CTkFrame(filters_frame)
         quick_actions_frame.pack(fill="x", padx=20, pady=(0, 15))
         
-        quick_label = ctk.CTkLabel(quick_actions_frame, text="Búsquedas rápidas:")
+        quick_label = ctk.CTkLabel(quick_actions_frame, text="Busquedas rapidas:")
         quick_label.pack(anchor="w", padx=10, pady=(10, 5))
         
         buttons_frame = ctk.CTkFrame(quick_actions_frame)
         buttons_frame.pack(fill="x", padx=10, pady=(0, 10))
         
-        # Botones de búsqueda rápida
+        # Botones de busqueda rapida
         today_btn = ctk.CTkButton(
             buttons_frame,
             text="Hoy",
@@ -263,7 +258,7 @@ class SearchWindow:
         
         search_btn = ctk.CTkButton(
             buttons_frame,
-            text="🔍 Buscar",
+            text=" Buscar",
             command=self.perform_search,
             width=100,
             height=30,
@@ -277,10 +272,10 @@ class SearchWindow:
         results_frame = ctk.CTkFrame(parent)
         results_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
         
-        # Título de resultados
+        # Titulo de resultados
         self.results_title = ctk.CTkLabel(
             results_frame,
-            text="Resultados de búsqueda",
+            text="Resultados de busqueda",
             font=ctk.CTkFont(size=16, weight="bold")
         )
         self.results_title.pack(pady=(15, 10))
@@ -312,7 +307,7 @@ class SearchWindow:
         v_scrollbar.pack(side="right", fill="y")
         h_scrollbar.pack(side="bottom", fill="x")
         
-        # Configurar columnas iniciales (se actualizarán según el tipo de búsqueda)
+        # Configurar columnas iniciales (se actualizaran segun el tipo de busqueda)
         self.update_results_columns("facturas")
         
         # Bind para doble clic
@@ -323,7 +318,7 @@ class SearchWindow:
         actions_frame = ctk.CTkFrame(parent)
         actions_frame.pack(fill="x", padx=20, pady=(0, 20))
         
-        # Información de resultados
+        # Informacion de resultados
         self.results_info = ctk.CTkLabel(
             actions_frame,
             text="Listo para buscar",
@@ -331,10 +326,10 @@ class SearchWindow:
         )
         self.results_info.pack(side="left", padx=20, pady=15)
         
-        # Botones de acción
+        # Botones de accion
         export_btn = ctk.CTkButton(
             actions_frame,
-            text="📊 Exportar",
+            text="- Exportar",
             command=self.export_results,
             width=120,
             height=35
@@ -343,7 +338,7 @@ class SearchWindow:
         
         details_btn = ctk.CTkButton(
             actions_frame,
-            text="👁️ Ver Detalles",
+            text=" Ver Detalles",
             command=self.show_details,
             width=120,
             height=35
@@ -351,11 +346,11 @@ class SearchWindow:
         details_btn.pack(side="right", padx=5, pady=15)
 
     def on_search_type_changed(self, value):
-        """Maneja el cambio de tipo de búsqueda"""
+        """Maneja el cambio de tipo de busqueda"""
         # Actualizar columnas de la tabla
         self.update_results_columns(value)
 
-        # Mostrar/ocultar campos según el tipo
+        # Mostrar/ocultar campos segun el tipo
         if value == "productos":
             # Ocultar campos de monto para productos
             self.amounts_label.pack_forget()
@@ -372,7 +367,7 @@ class SearchWindow:
             self.amount_to_entry.pack(fill="x", padx=10, pady=(0, 10))
 
     def update_results_columns(self, search_type):
-        """Actualiza las columnas de la tabla según el tipo de búsqueda"""
+        """Actualiza las columnas de la tabla segun el tipo de busqueda"""
         # Limpiar columnas existentes si existen
         try:
             current_columns = self.results_tree["columns"]
@@ -380,20 +375,20 @@ class SearchWindow:
                 for col in current_columns:
                     self.results_tree.heading(col, text="")
         except (KeyError, TypeError):
-            # No hay columnas definidas aún, continuar
+            # No hay columnas definidas aun, continuar
             pass
 
         if search_type == "facturas":
             columns = ("numero", "fecha", "cliente", "total", "estado")
-            headings = ("Número", "Fecha", "Cliente", "Total", "Estado")
+            headings = ("Numero", "Fecha", "Cliente", "Total", "Estado")
             widths = (120, 100, 200, 100, 100)
         elif search_type == "productos":
             columns = ("referencia", "nombre", "precio", "categoria", "stock")
-            headings = ("Referencia", "Nombre", "Precio", "Categoría", "Stock")
+            headings = ("Referencia", "Nombre", "Precio", "Categoria", "Stock")
             widths = (120, 250, 100, 150, 80)
         elif search_type == "clientes":
             columns = ("nombre", "dni", "email", "telefono", "facturas")
-            headings = ("Nombre", "DNI/NIE", "Email", "Teléfono", "Facturas")
+            headings = ("Nombre", "DNI/NIE", "Email", "Telefono", "Facturas")
             widths = (200, 120, 200, 120, 80)
         else:  # todo
             columns = ("tipo", "referencia", "nombre", "fecha", "valor")
@@ -410,25 +405,25 @@ class SearchWindow:
 
     def load_initial_data(self):
         """Carga datos iniciales"""
-        # Establecer fechas por defecto (último mes)
+        # Establecer fechas por defecto (ultimo mes)
         today = datetime.now()
         last_month = today - timedelta(days=30)
 
         self.date_from.set(last_month.strftime("%Y-%m-%d"))
         self.date_to.set(today.strftime("%Y-%m-%d"))
 
-        # Realizar búsqueda inicial
+        # Realizar busqueda inicial
         self.perform_search()
 
     def search_today(self):
-        """Búsqueda rápida: hoy"""
+        """Busqueda rapida: hoy"""
         today = datetime.now().strftime("%Y-%m-%d")
         self.date_from.set(today)
         self.date_to.set(today)
         self.perform_search()
 
     def search_this_week(self):
-        """Búsqueda rápida: esta semana"""
+        """Busqueda rapida: esta semana"""
         today = datetime.now()
         week_start = today - timedelta(days=today.weekday())
 
@@ -437,7 +432,7 @@ class SearchWindow:
         self.perform_search()
 
     def search_this_month(self):
-        """Búsqueda rápida: este mes"""
+        """Busqueda rapida: este mes"""
         today = datetime.now()
         month_start = today.replace(day=1)
 
@@ -446,7 +441,7 @@ class SearchWindow:
         self.perform_search()
 
     def search_low_stock(self):
-        """Búsqueda rápida: productos con stock bajo"""
+        """Busqueda rapida: productos con stock bajo"""
         self.search_type.set("productos")
         self.on_search_type_changed("productos")
         self.clear_filters()
@@ -463,7 +458,7 @@ class SearchWindow:
         self.status_filter.set("todos")
 
     def perform_search(self, low_stock_only=False):
-        """Realiza la búsqueda según los filtros"""
+        """Realiza la busqueda segun los filtros"""
         try:
             search_type = self.search_type.get()
 
@@ -479,15 +474,15 @@ class SearchWindow:
             self.display_results(results, search_type)
 
         except Exception as e:
-            self.logger.error(f"Error en búsqueda: {e}")
+            self.logger.error(f"Error en busqueda: {e}")
             show_copyable_error(
                 self.window,
-                "Error de Búsqueda",
-                f"Se produjo un error durante la búsqueda:\n\n{str(e)}\n\nVerifique los filtros e intente nuevamente."
+                "Error de Busqueda",
+                f"Se produjo un error durante la busqueda:\n\n{str(e)}\n\nVerifique los filtros e intente nuevamente."
             )
 
     def search_facturas(self):
-        """Busca facturas según los filtros"""
+        """Busca facturas segun los filtros"""
         from database.database import db
 
         # Construir query base
@@ -537,7 +532,7 @@ class SearchWindow:
         return db.execute_query(query, params)
 
     def search_productos(self, low_stock_only=False):
-        """Busca productos según los filtros"""
+        """Busca productos segun los filtros"""
         from database.database import db
 
         # Query con JOIN para obtener stock
@@ -565,7 +560,7 @@ class SearchWindow:
         return db.execute_query(query, params)
 
     def search_clientes(self):
-        """Busca clientes únicos de las facturas"""
+        """Busca clientes unicos de las facturas"""
         from database.database import db
 
         query = """
@@ -588,18 +583,18 @@ class SearchWindow:
         return db.execute_query(query, params)
 
     def search_all(self):
-        """Búsqueda global en todos los tipos"""
+        """Busqueda global en todos los tipos"""
         results = []
 
         # Buscar en facturas
         facturas = self.search_facturas()
         for f in facturas:
-            results.append(("Factura", f[0], f[2], f[1], f"{f[3]:.2f}€"))
+            results.append(("Factura", f[0], f[2], f[1], f"{f[3]:.2f}"))
 
         # Buscar en productos
         productos = self.search_productos()
         for p in productos:
-            results.append(("Producto", p[0], p[1], "", f"{p[2]:.2f}€"))
+            results.append(("Producto", p[0], p[1], "", f"{p[2]:.2f}"))
 
         return results
 
@@ -616,7 +611,7 @@ class SearchWindow:
         for result in results:
             self.results_tree.insert("", "end", values=result)
 
-        # Actualizar información de resultados
+        # Actualizar informacion de resultados
         count = len(results)
         if count == 0:
             self.results_info.configure(text="No se encontraron resultados")
@@ -625,12 +620,12 @@ class SearchWindow:
         else:
             self.results_info.configure(text=f"{count} resultados encontrados")
 
-        # Actualizar título
+        # Actualizar titulo
         type_names = {
             "facturas": "Facturas",
             "productos": "Productos",
             "clientes": "Clientes",
-            "todo": "Búsqueda Global"
+            "todo": "Busqueda Global"
         }
         type_name = type_names.get(search_type, "Resultados")
         self.results_title.configure(text=f"Resultados: {type_name}")
@@ -662,21 +657,21 @@ class SearchWindow:
         """Muestra detalles de una factura"""
         numero, fecha, cliente, total, estado = values
 
-        details = f"""📄 Detalles de Factura
+        details = f""" Detalles de Factura
 
-Información básica:
-- Número de factura: {numero}
+Informacion basica:
+- Numero de factura: {numero}
 - Fecha: {fecha}
 - Cliente: {cliente}
-- Total: {total}€
+- Total: {total}
 - Estado: {estado}
 
 Acciones disponibles:
-- Doble clic para ver más detalles
-- Exportar resultados para análisis
+- Doble clic para ver mas detalles
+- Exportar resultados para analisis
 - Generar PDF de la factura
 
-Esta información puede ser copiada para referencia."""
+Esta informacion puede ser copiada para referencia."""
 
         show_copyable_info(self.window, f"Factura {numero}", details)
 
@@ -687,28 +682,28 @@ Esta información puede ser copiada para referencia."""
         # Determinar estado del stock
         stock_num = int(stock) if str(stock).isdigit() else 0
         if stock_num == 0:
-            stock_status = "🔴 Sin Stock"
+            stock_status = " Sin Stock"
         elif stock_num <= 5:
-            stock_status = f"🟠 Stock Bajo ({stock_num})"
+            stock_status = f" Stock Bajo ({stock_num})"
         elif stock_num <= 10:
-            stock_status = f"🟡 Stock Medio ({stock_num})"
+            stock_status = f" Stock Medio ({stock_num})"
         else:
-            stock_status = f"🟢 Stock OK ({stock_num})"
+            stock_status = f" Stock OK ({stock_num})"
 
-        details = f"""📦 Detalles de Producto
+        details = f""" Detalles de Producto
 
-Información básica:
+Informacion basica:
 - Referencia: {referencia}
 - Nombre: {nombre}
-- Precio: {precio}€
-- Categoría: {categoria}
+- Precio: {precio}
+- Categoria: {categoria}
 - Stock disponible: {stock} unidades
 - Estado: {stock_status}
 
 Recomendaciones:
 {self.get_stock_recommendations(stock_num)}
 
-Esta información puede ser copiada para gestión de inventario."""
+Esta informacion puede ser copiada para gestion de inventario."""
 
         show_copyable_info(self.window, f"Producto {referencia}", details)
 
@@ -716,51 +711,51 @@ Esta información puede ser copiada para gestión de inventario."""
         """Muestra detalles de un cliente"""
         nombre, dni, email, telefono, num_facturas = values
 
-        details = f"""👤 Detalles de Cliente
+        details = f""" Detalles de Cliente
 
-Información personal:
+Informacion personal:
 - Nombre: {nombre}
 - DNI/NIE: {dni or 'No especificado'}
 - Email: {email or 'No especificado'}
-- Teléfono: {telefono or 'No especificado'}
+- Telefono: {telefono or 'No especificado'}
 
 Historial comercial:
-- Número de facturas: {num_facturas}
+- Numero de facturas: {num_facturas}
 - Estado: Cliente {'frecuente' if int(num_facturas) > 5 else 'ocasional'}
 
-Esta información puede ser copiada para gestión de clientes."""
+Esta informacion puede ser copiada para gestion de clientes."""
 
         show_copyable_info(self.window, f"Cliente {nombre}", details)
 
     def show_global_details(self, values):
-        """Muestra detalles de búsqueda global"""
+        """Muestra detalles de busqueda global"""
         tipo, referencia, nombre, fecha, valor = values
 
-        details = f"""🔍 Resultado de Búsqueda Global
+        details = f""" Resultado de Busqueda Global
 
-Información encontrada:
+Informacion encontrada:
 - Tipo: {tipo}
-- Referencia/Número: {referencia}
+- Referencia/Numero: {referencia}
 - Nombre/Cliente: {nombre}
 - Fecha: {fecha or 'N/A'}
 - Valor: {valor}
 
-Para más detalles, cambie el tipo de búsqueda específico.
+Para mas detalles, cambie el tipo de busqueda especifico.
 
-Esta información puede ser copiada para análisis."""
+Esta informacion puede ser copiada para analisis."""
 
         show_copyable_info(self.window, f"{tipo} {referencia}", details)
 
     def get_stock_recommendations(self, stock_num):
-        """Obtiene recomendaciones según el nivel de stock"""
+        """Obtiene recomendaciones segun el nivel de stock"""
         if stock_num == 0:
-            return "⚠️ URGENTE: Reaprovisionar inmediatamente\n⚠️ Producto sin disponibilidad para venta"
+            return "! URGENTE: Reaprovisionar inmediatamente\n! Producto sin disponibilidad para venta"
         elif stock_num <= 5:
-            return "⚠️ Reaprovisionar pronto\n⚠️ Stock crítico, contactar proveedor"
+            return "! Reaprovisionar pronto\n! Stock critico, contactar proveedor"
         elif stock_num <= 10:
-            return "📋 Considerar reposición\n📋 Stock en nivel medio"
+            return " Considerar reposicion\n Stock en nivel medio"
         else:
-            return "✅ Stock adecuado\n✅ No requiere acción inmediata"
+            return " Stock adecuado\n No requiere accion inmediata"
 
     def show_details(self):
         """Muestra detalles del elemento seleccionado"""
@@ -768,8 +763,8 @@ Esta información puede ser copiada para análisis."""
         if not selection:
             show_copyable_info(
                 self.window,
-                "Sin Selección",
-                "Seleccione un elemento de la lista para ver sus detalles.\n\nPuede hacer doble clic en cualquier fila o usar este botón después de seleccionar."
+                "Sin Seleccion",
+                "Seleccione un elemento de la lista para ver sus detalles.\n\nPuede hacer doble clic en cualquier fila o usar este boton despues de seleccionar."
             )
             return
 
@@ -783,7 +778,7 @@ Esta información puede ser copiada para análisis."""
             show_copyable_info(
                 self.window,
                 "Sin Resultados",
-                "No hay resultados para exportar.\n\nRealice una búsqueda primero y luego podrá exportar los resultados encontrados."
+                "No hay resultados para exportar.\n\nRealice una busqueda primero y luego podra exportar los resultados encontrados."
             )
             return
 
@@ -802,53 +797,53 @@ Esta información puede ser copiada para análisis."""
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(csv_content)
 
-            # Mensaje de éxito
-            success_msg = f"""✅ Resultados exportados exitosamente
+            # Mensaje de exito
+            success_msg = f""" Resultados exportados exitosamente
 
-Detalles de la exportación:
+Detalles de la exportacion:
 - Archivo: {filename}
-- Ubicación: {filepath}
+- Ubicacion: {filepath}
 - Formato: CSV (compatible con Excel)
 - Registros: {len(self.search_results)}
-- Tipo de búsqueda: {search_type.title()}
+- Tipo de busqueda: {search_type.title()}
 - Generado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 Contenido exportado:
-- Todos los resultados de la búsqueda actual
+- Todos los resultados de la busqueda actual
 - Encabezados de columna incluidos
 - Formato compatible con Excel y otras aplicaciones
-- Codificación UTF-8 para caracteres especiales
+- Codificacion UTF-8 para caracteres especiales
 
-El archivo está listo para:
-✅ Abrir en Excel o LibreOffice
-✅ Importar en otras aplicaciones
-✅ Compartir por email
-✅ Archivar para referencia futura
+El archivo esta listo para:
+ Abrir en Excel o LibreOffice
+ Importar en otras aplicaciones
+ Compartir por email
+ Archivar para referencia futura
 
-Esta información puede ser copiada para documentación."""
+Esta informacion puede ser copiada para documentacion."""
 
-            show_copyable_info(self.window, "Exportación Exitosa", success_msg)
+            show_copyable_info(self.window, "Exportacion Exitosa", success_msg)
 
         except Exception as e:
-            error_msg = f"""❌ Error exportando resultados
+            error_msg = f""" Error exportando resultados
 
-Se produjo un error durante la exportación:
+Se produjo un error durante la exportacion:
 
 Detalles del error:
 - Error: {str(e)}
 - Tipo: {type(e).__name__}
-- Función: export_results()
+- Funcion: export_results()
 - Timestamp: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-Información del contexto:
+Informacion del contexto:
 - Resultados a exportar: {len(self.search_results)}
-- Tipo de búsqueda: {search_type}
+- Tipo de busqueda: {search_type}
 
 Posibles causas:
 - Permisos de escritura insuficientes
 - Espacio en disco insuficiente
 - Caracteres especiales en los datos
-- Archivo en uso por otra aplicación
+- Archivo en uso por otra aplicacion
 
 Acciones recomendadas:
 1. Verificar permisos de escritura en el directorio
@@ -856,10 +851,10 @@ Acciones recomendadas:
 3. Cerrar Excel u otras aplicaciones que puedan usar el archivo
 4. Intentar exportar nuevamente
 
-Los resultados de búsqueda siguen disponibles en la aplicación.
-Copie este mensaje para soporte técnico."""
+Los resultados de busqueda siguen disponibles en la aplicacion.
+Copie este mensaje para soporte tecnico."""
 
-            show_copyable_error(self.window, "Error de Exportación", error_msg)
+            show_copyable_error(self.window, "Error de Exportacion", error_msg)
 
     def generate_csv_content(self):
         """Genera el contenido CSV para exportar"""
@@ -869,15 +864,15 @@ Copie este mensaje para soporte técnico."""
         output = io.StringIO()
         writer = csv.writer(output)
 
-        # Escribir encabezados según el tipo de búsqueda
+        # Escribir encabezados segun el tipo de busqueda
         search_type = self.search_type.get()
 
         if search_type == "facturas":
-            writer.writerow(["Número", "Fecha", "Cliente", "Total", "Estado"])
+            writer.writerow(["Numero", "Fecha", "Cliente", "Total", "Estado"])
         elif search_type == "productos":
-            writer.writerow(["Referencia", "Nombre", "Precio", "Categoría", "Stock"])
+            writer.writerow(["Referencia", "Nombre", "Precio", "Categoria", "Stock"])
         elif search_type == "clientes":
-            writer.writerow(["Nombre", "DNI/NIE", "Email", "Teléfono", "Facturas"])
+            writer.writerow(["Nombre", "DNI/NIE", "Email", "Telefono", "Facturas"])
         else:  # todo
             writer.writerow(["Tipo", "Referencia", "Nombre/Cliente", "Fecha", "Valor"])
 

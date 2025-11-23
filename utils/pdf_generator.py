@@ -4,6 +4,9 @@ Générateur de PDF professionnel pour les factures
 """
 
 import os
+import platform
+import subprocess
+import tempfile
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -373,5 +376,135 @@ class FacturaPDFGenerator:
 
         return None
 
+    def generar_factura_pdf(self, factura, output_path=None, auto_open=True):
+        """Méthode de compatibilité pour générer un PDF de facture"""
+        try:
+            # Si pas de chemin spécifié, créer un fichier temporaire
+            if output_path is None:
+                temp_dir = tempfile.gettempdir()
+                numero_safe = getattr(factura, 'numero_factura', 'SIN_NUMERO').replace('/', '_')
+                output_path = os.path.join(temp_dir, f"factura_{numero_safe}.pdf")
+
+            # Préparer les données de la facture
+            invoice_data = {
+                'numero': getattr(factura, 'numero_factura', 'SIN_NUMERO'),
+                'fecha': getattr(factura, 'fecha_factura', 'N/A'),
+                'vencimiento': getattr(factura, 'fecha_factura', 'N/A'),  # Usar misma fecha si no hay vencimiento
+                'estado': 'Pendiente',
+                'cliente': {
+                    'nombre': getattr(factura, 'nombre_cliente', 'Cliente'),
+                    'nif': getattr(factura, 'dni_nie_cliente', ''),
+                    'direccion': getattr(factura, 'direccion_cliente', '')
+                },
+                'lineas': [],
+                'subtotal': getattr(factura, 'subtotal', 0),
+                'iva_total': getattr(factura, 'total_iva', 0),
+                'total': getattr(factura, 'total_factura', 0)
+            }
+
+            # Ajouter les lignes de facture si disponibles
+            if hasattr(factura, 'items') and factura.items:
+                for item in factura.items:
+                    # Obtenir le produit pour la référence et description
+                    producto = None
+                    if hasattr(item, 'get_producto'):
+                        producto = item.get_producto()
+
+                    invoice_data['lineas'].append({
+                        'producto_referencia': getattr(producto, 'referencia', '') if producto else f"PROD_{getattr(item, 'producto_id', '')}",
+                        'descripcion': getattr(producto, 'nombre', '') if producto else 'Producto',
+                        'cantidad': getattr(item, 'cantidad', 0),
+                        'precio_unitario': getattr(item, 'precio_unitario', 0),
+                        'descuento_pct': getattr(item, 'descuento', 0),
+                        'iva_pct': getattr(item, 'iva_aplicado', 0),
+                        'total': getattr(item, 'total', 0)
+                    })
+
+            # Générer le PDF
+            success = self.generate_invoice_pdf(invoice_data, output_path)
+
+            if success and auto_open:
+                # Vérifier les variables d'environnement pour désactiver l'ouverture
+                should_disable = (
+                    os.getenv('DISABLE_PDF_OPEN') == '1' or
+                    os.getenv('PYTEST_CURRENT_TEST') is not None or
+                    os.getenv('TESTING') == '1'
+                )
+                if not should_disable:
+                    self.open_pdf_file(output_path)
+                else:
+                    self.logger.info("PDF no abierto - Modo test detectado o DISABLE_PDF_OPEN activado")
+
+            return output_path if success else None
+
+        except Exception as e:
+            self.logger.error(f"Error en generar_factura_pdf: {e}")
+            raise e
+
+    def create_logo_image(self, logo_path, max_width=3*cm, max_height=3*cm):
+        """Crée une image du logo avec redimensionnement proportionnel"""
+        try:
+            if not logo_path or not os.path.exists(logo_path):
+                return None
+
+            # Créer l'objet Image de ReportLab
+            logo_img = Image(logo_path)
+
+            # Obtenir les dimensions originales
+            original_width = logo_img.drawWidth
+            original_height = logo_img.drawHeight
+
+            # Calculer le ratio de redimensionnement
+            width_ratio = max_width / original_width
+            height_ratio = max_height / original_height
+            ratio = min(width_ratio, height_ratio)
+
+            # Appliquer le redimensionnement
+            logo_img.drawWidth = original_width * ratio
+            logo_img.drawHeight = original_height * ratio
+
+            return logo_img
+
+        except Exception as e:
+            self.logger.error(f"Error creando imagen de logo: {e}")
+            return None
+
+    def open_pdf_file(self, pdf_path):
+        """Ouvre le fichier PDF avec l'application par défaut"""
+        try:
+            # Vérifier les variables d'environnement pour désactiver l'ouverture
+            should_disable = (
+                os.getenv('DISABLE_PDF_OPEN') == '1' or
+                os.getenv('PYTEST_CURRENT_TEST') is not None or
+                os.getenv('TESTING') == '1'
+            )
+
+            if should_disable:
+                self.logger.info("PDF no abierto - Modo test detectado o DISABLE_PDF_OPEN activado")
+                return True  # Retourner True car c'est le comportement attendu
+
+            if not os.path.exists(pdf_path):
+                self.logger.error(f"Archivo PDF no existe: {pdf_path}")
+                return False
+
+            system = platform.system()
+
+            if system == "Windows":
+                os.startfile(pdf_path)
+            elif system == "Darwin":  # macOS
+                subprocess.run(["open", pdf_path], check=True)
+            else:  # Linux y otros
+                subprocess.run(["xdg-open", pdf_path], check=True)
+
+            self.logger.info(f"PDF abierto exitosamente: {pdf_path}")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo PDF: {e}")
+            return False
+
 # Instance globale du générateur
 pdf_generator = FacturaPDFGenerator()
+
+# Alias pour compatibilité avec les tests existants
+PDFGenerator = FacturaPDFGenerator
