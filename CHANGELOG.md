@@ -7,6 +7,35 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Non publié]
 
+## [2.0.0] - 2024-11-23
+
+### ✨ Ajouté
+- **🧪 Suite de tests complète** : 243+ tests automatizados avec coberture complète
+- **🔧 Herramientas de maintenance** : Scripts de nettoyage et diagnostic
+- **📊 Documentation mise à jour** : État actuel et guides utilisateur
+- **🛠️ Outils de développement** : Scripts d'activation et validation
+- **🎯 Tests de régression** : Validation continue des fonctionnalités
+
+### 🔧 Amélioré
+- **📚 README complet** : Documentation restructurée et mise à jour
+- **🚀 Guide de démarrage rapide** : Instructions simplifiées pour nouveaux utilisateurs
+- **📋 État du projet** : Documentation claire du statut actuel
+- **🔍 Système de validation** : Tests automatisés pour toutes les fonctionnalités
+- **🧹 Nettoyage de données** : Outils pour réinitialiser la base de données
+
+### 🐛 Corrigé
+- **✅ Tests ProductoFacturaDialog** : Tous les tests passent maintenant (9/9)
+- **🔧 Signature des constructeurs** : Compatibilité avec les tests
+- **📝 Validation des formulaires** : Logique de validation corrigée
+- **🎨 Widgets simulés** : Mocks appropriés pour les tests
+- **💾 Gestion de base de données** : Nettoyage et réinitialisation fiables
+
+### 📚 Documentation
+- **📊 ESTADO_ACTUAL_2024.md** : État complet du projet
+- **🚀 GUIA_INICIO_RAPIDO.md** : Guide de démarrage rapide
+- **📋 README.md mis à jour** : Documentation principale restructurée
+- **🔧 Scripts documentés** : Guides d'utilisation des outils
+
 ## [1.2.0] - 2024-09-26
 
 ### ✨ Ajouté

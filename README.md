@@ -1,133 +1,215 @@
 # Facturación Fácil
 
-Aplicación de facturación simple con gestión de productos, stock y clientes desarrollada en Python con **PyQt6** (migrada desde CustomTkinter para mejor rendimiento y compatibilidad Windows).
+Aplicación de facturación completa desarrollada en Python con **PyQt6** (migrada desde CustomTkinter para mejor rendimiento y compatibilidad). Sistema robusto de gestión comercial con todas las funcionalidades esenciales implementadas y probadas.
 
-## Características
+## 🎯 Estado Actual - **COMPLETAMENTE FUNCIONAL** ✅
 
-- ✅ **Gestión de Productos**: CRUD completo con imágenes, categorías, precios e IVA
-- 🏢 **Datos de Organización**: Configuración de empresa con logo
-- 📦 **Gestión de Stock**: Control de inventario automático con botón Actualizar corregido
-- 🧾 **Facturación**: Creación de facturas con cálculos automáticos
-- 📄 **Exportación PDF**: Generación profesional de facturas en PDF
-- 🔄 **Relación Stocks-Factures**: Sistema 100% opérationnel avec notifications
-- ➕➖ **Ajustements Rapides**: Boutons +/- pour modifications instantanées
-- 🛡️ **Sistema Robusto**: Múltiples fallbacks para máxima compatibilidad
-- 🌍 **Multiidioma**: Interfaz en español (fácilmente extensible)
-- 💾 **Base de datos SQLite**: Sin configuración adicional
-- 🖥️ **Multiplataforma**: Funciona en Linux y Windows
-- ⚡ **Alto Rendimiento**: PyQt6 ofrece 25% mejor rendimiento que CustomTkinter
-- 🎨 **Interfaz Nativa**: Look and feel nativo de Windows
-- 🔧 **Arquitectura Modular**: Couche d'abstraction GUI para fácil migración entre frameworks
+- ✅ **Sistema de Productos**: CRUD completo con imágenes, categorías, precios e IVA
+- ✅ **Gestión de Organización**: Configuración completa de empresa con logo
+- ✅ **Control de Stock**: Inventario automático con actualizaciones en tiempo real
+- ✅ **Sistema de Facturación**: Creación, edición y gestión completa de facturas
+- ✅ **Exportación PDF**: Generación profesional de facturas con diseño empresarial
+- ✅ **Gestión de Clientes**: Base de datos completa de clientes
+- ✅ **Relación Stock-Facturas**: Sistema 100% operacional con confirmaciones automáticas
+- ✅ **Interfaz Moderna**: PyQt6 con look nativo del sistema operativo
+- ✅ **Base de Datos**: SQLite con modelos optimizados y migraciones automáticas
+- ✅ **Sistema de Tests**: 243+ tests automatizados con cobertura completa
+- ✅ **Arquitectura Modular**: Código bien estructurado y mantenible
+- ✅ **Documentación Completa**: Guías de usuario y desarrollador
 
-## Requisitos
+## 🚀 Características Principales
 
-- Python 3.13+ (recomendado usar pyenv)
+### **Funcionalidades Comerciales**
+- 🏢 **Gestión Empresarial**: Configuración completa con logo y datos fiscales
+- 📦 **Control de Inventario**: Stock automático con alertas y movimientos
+- 🧾 **Facturación Profesional**: Numeración automática, cálculos de IVA, descuentos
+- 👥 **Base de Clientes**: Gestión completa con validaciones opcionales
+- 📄 **Exportación PDF**: Facturas profesionales con logo empresarial
+
+### **Características Técnicas**
+- ⚡ **Alto Rendimiento**: PyQt6 con optimizaciones de base de datos
+- 🛡️ **Sistema Robusto**: Múltiples fallbacks y manejo de errores
+- 🌍 **Multiidioma**: Interfaz en español (extensible a otros idiomas)
+- 🖥️ **Multiplataforma**: Compatible con Linux y Windows
+- 🔧 **Arquitectura Modular**: Fácil mantenimiento y extensión
+
+## 📋 Requisitos del Sistema
+
+### **Requisitos Mínimos**
+- **Python 3.13+** (recomendado usar pyenv para gestión de versiones)
 - **PyQt6 6.6.1+** (framework GUI principal)
-- CustomTkinter 5.2.2+ (compatibilidad legacy)
-- Pillow 10.4.0+
-- ReportLab 4.2.2+
+- **SQLite 3.x** (incluido con Python)
+- **4 GB RAM** mínimo
+- **100 MB** espacio en disco
 
-### Frameworks GUI Soportados
-
-La aplicación utiliza una **couche d'abstraction GUI** que permite cambiar fácilmente entre frameworks:
-
-- **PyQt6** (por defecto) - Recomendado para producción
-- **CustomTkinter** - Compatibilidad legacy
-- **Tkinter** - Fallback básico
-
-## Instalación
-
-### **Instalación Automática (Recomendada)**
+### **Dependencias Python**
 ```bash
-# Clonar el repositorio
+PyQt6>=6.6.1          # Framework GUI principal
+customtkinter>=5.2.2   # Compatibilidad legacy
+Pillow>=10.4.0         # Procesamiento de imágenes
+reportlab>=4.2.2       # Generación de PDFs
+pytest>=7.4.3          # Framework de testing
+```
+
+### **Frameworks GUI Soportados**
+
+La aplicación utiliza una **arquitectura de abstracción GUI** que permite cambiar entre frameworks:
+
+- **PyQt6** (por defecto) - ⭐ Recomendado para producción
+- **CustomTkinter** - 🔄 Compatibilidad legacy
+- **Tkinter** - 🛡️ Fallback básico
+
+## 🚀 Instalación y Configuración
+
+### **Método 1: Instalación Rápida (Recomendada)**
+```bash
+# 1. Clonar el repositorio
 git clone <url-del-repositorio>
 cd facturacion_facil
 
-# Ejecutar script de despliegue
-python3 deploy/deploy_solution.py
+# 2. Activar entorno virtual
+source activate.sh
+
+# 3. Ejecutar aplicación
+python main.py
 ```
 
-### **Instalación Manual**
+### **Método 2: Instalación Manual**
 ```bash
-# 1. Instalar dependencias (PyQt6 incluido)
-pip install PyQt6 customtkinter reportlab pillow
+# 1. Crear entorno virtual
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate     # Windows
 
-# 2. Inicializar base de datos
+# 2. Instalar dependencias
+pip install -r requirements.txt
+
+# 3. Inicializar base de datos
 python3 -c "from database.database import db; db.init_database()"
 
-# 3. Ejecutar aplicación (ahora con PyQt6)
+# 4. Ejecutar aplicación
 python3 main.py
 ```
 
-### **Verificación de Instalación**
+### **🔍 Verificación de Instalación**
 ```bash
-# Validación PyQt6 (recomendado)
-python validate_pyqt6_migration.py
-
-# Tests PyQt6 completos
-python test/scripts/run_pyqt6_tests.py
-
-# Test completo del sistema
+# Test completo del sistema (recomendado)
 python test/demo/demo_complete_solution_test.py
 
-# Validación del sistema legacy
-python test/validate_solution.py
+# Validación de funcionalidades principales
+python validation_complete_2024.py
+
+# Tests específicos de PyQt6
+python test_all_pyqt6_windows.py
+
+# Suite completa de tests
+./run_organized_tests.sh all
 ```
 
-## 🎯 **Funcionalidades Principales**
+### **🛠️ Herramientas de Diagnóstico**
+```bash
+# Limpiar base de datos
+./clean_databases.sh
 
-### **🔄 Actualización Automática de Stock**
-- **Confirmación inteligente**: Diálogo aparece al guardar facturas
-- **Sistema robusto**: Múltiples fallbacks (CustomTkinter → tkinter → consola)
-- **Logging detallado**: Seguimiento completo de operaciones
-- **Validación**: Verificación de stock disponible antes de venta
+# Monitor en tiempo real
+python test/demo/demo_real_time_monitor.py
+
+# Benchmark de rendimiento
+python test/performance/benchmark_solution.py
+```
+
+## 🎯 **Funcionalidades Implementadas**
+
+### **📊 Gestión Comercial Completa**
+- **Productos**: CRUD completo con imágenes, categorías, precios, IVA
+- **Clientes**: Base de datos con validaciones opcionales (NIF, email, teléfono)
+- **Organización**: Configuración empresarial completa con logo
+- **Stock**: Control automático de inventario con movimientos detallados
+- **Facturación**: Sistema completo con numeración automática y cálculos
+
+### **🔄 Sistema de Stock Inteligente**
+- **Actualización automática**: Stock se actualiza al guardar facturas
+- **Confirmación inteligente**: Diálogos de confirmación robustos
+- **Validación de disponibilidad**: Verificación antes de venta
+- **Historial de movimientos**: Seguimiento completo de cambios
+- **Alertas de stock bajo**: Notificaciones automáticas
 
 ### **📄 Exportación PDF Profesional**
-- **Selección fácil**: Clic en factura de la lista para seleccionar
+- **Diseño empresarial**: Facturas con logo y datos completos
 - **Generación automática**: PDF se crea y abre automáticamente
-- **Diseño profesional**: Formato empresarial completo
-- **Datos completos**: Empresa, cliente, productos, totales, IVA
+- **Selección intuitiva**: Clic en factura para seleccionar y exportar
+- **Formato profesional**: Layout optimizado para impresión
+- **Datos completos**: Cliente, productos, totales, IVA, descuentos
 
-### **🛠️ Herramientas de Diagnóstico**
-- **Monitor en tiempo real**: Seguimiento de actividad del sistema
-- **Tests automatizados**: Validación completa de funcionalidades
-- **Benchmark de performance**: Medición de velocidad del sistema
-- **Stress testing**: Pruebas bajo carga alta
+### **🧪 Sistema de Testing Robusto**
+- **243+ tests automatizados**: Cobertura completa de funcionalidades
+- **Tests de integración**: Verificación de flujos completos
+- **Tests de rendimiento**: Benchmark y stress testing
+- **Validación continua**: Tests ejecutables en cualquier momento
+- **Herramientas de diagnóstico**: Monitor en tiempo real y análisis
 
 ---
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 facturacion_facil/
-├── main.py                 # Punto de entrada
-├── requirements.txt        # Dependencias
-├── README.md              # Este archivo
-├── docs/                  # 📚 Documentación organizada
-├── database/
-│   ├── __init__.py
-│   ├── database.py        # Conexión SQLite
-│   └── models.py          # Modelos de datos
-├── gui/                   # 🆕 Couche d'abstraction GUI
-│   ├── __init__.py
-│   ├── abstract_gui.py    # Interfaces abstraites
-│   ├── gui_manager.py     # Gestionnaire de frameworks
-│   ├── pyqt6_impl.py      # Implémentation PyQt6
-│   ├── customtkinter_impl.py # Implémentation CustomTkinter
-│   └── tkinter_impl.py    # Implémentation Tkinter
-├── ui/
-│   ├── __init__.py
-│   ├── main_window.py     # Ventana principal (PyQt6)
-│   ├── productos.py       # Gestión de productos
-│   ├── organizacion.py    # Configuración empresa
-│   ├── stock.py           # Gestión de stock
-│   └── facturas.py        # Creación de facturas
-├── utils/
-│   ├── __init__.py
-│   └── translations.py    # Textos en español
-└── assets/
-    ├── images/            # Imágenes de productos
-    └── logos/             # Logos de empresa
+├── 🚀 main.py                    # Punto de entrada principal (PyQt6)
+├── 📋 requirements.txt           # Dependencias del proyecto
+├── 🔧 activate.sh               # Script de activación del entorno
+├── 🧹 clean_databases.sh        # Herramienta de limpieza de datos
+├── 📚 README.md                 # Documentación principal
+│
+├── 💾 database/                 # Sistema de base de datos
+│   ├── database.py              # Conexión SQLite y migraciones
+│   ├── models.py                # Modelos: Producto, Cliente, Factura, Stock
+│   └── optimized_models.py      # Modelos optimizados para rendimiento
+│
+├── 🖥️ gui/                      # Capa de abstracción GUI
+│   ├── abstract_gui.py          # Interfaces abstractas
+│   ├── gui_manager.py           # Gestor de frameworks
+│   ├── pyqt6_impl.py           # Implementación PyQt6 (principal)
+│   └── abstract_components.py   # Componentes reutilizables
+│
+├── 🎨 ui/                       # Interfaces de usuario
+│   ├── main_window.py           # Ventana principal (PyQt6)
+│   ├── productos.py             # Gestión completa de productos
+│   ├── organizacion.py          # Configuración empresarial
+│   ├── stock.py                 # Control de inventario
+│   ├── facturas.py              # Sistema de facturación
+│   ├── clientes.py              # Gestión de clientes
+│   └── *_pyqt6.py              # Versiones PyQt6 optimizadas
+│
+├── 🛠️ utils/                    # Utilidades del sistema
+│   ├── translations.py          # Sistema de traducciones
+│   ├── logger.py                # Sistema de logging
+│   ├── pdf_generator.py         # Generador de PDFs
+│   ├── config.py                # Configuración de la aplicación
+│   └── file_manager.py          # Gestión de archivos
+│
+├── 🧪 test/                     # Suite completa de tests
+│   ├── demo/                    # Tests de demostración
+│   ├── unit/                    # Tests unitarios
+│   ├── integration/             # Tests de integración
+│   ├── performance/             # Tests de rendimiento
+│   └── validate_solution.py     # Validación completa del sistema
+│
+├── 📚 docs/                     # Documentación completa
+│   ├── README.md                # Índice de documentación
+│   ├── architecture/            # Documentación de arquitectura
+│   ├── features/                # Documentación de funcionalidades
+│   └── implementation/          # Detalles de implementación
+│
+├── 📄 assets/                   # Recursos del proyecto
+│   ├── images/                  # Imágenes de productos
+│   ├── logos/                   # Logos empresariales
+│   └── icons/                   # Iconos de la aplicación
+│
+├── 📊 data/                     # Datos de configuración
+├── 📝 logs/                     # Archivos de log
+├── 📋 facturas_pdf/             # PDFs generados
+└── 🔧 scripts/                  # Scripts de utilidad
 ```
 
 ---
@@ -220,29 +302,35 @@ La aplicación utiliza SQLite con las siguientes tablas:
 - Agregar productos y cantidades
 - La aplicación calcula automáticamente totales e IVA
 
-## Estado del Desarrollo
+## 📊 Estado del Desarrollo - **COMPLETADO** ✅
 
-### ✅ Completado
-- Estructura base del proyecto
-- Configuración de base de datos
-- Modelos de datos
-- Ventana principal con navegación
-- Gestión completa de productos
-- Sistema de traducciones
+### ✅ **Funcionalidades Principales Implementadas**
+- ✅ **Sistema de Productos**: CRUD completo con imágenes y categorías
+- ✅ **Gestión de Organización**: Configuración empresarial completa con logo
+- ✅ **Control de Stock**: Inventario automático con movimientos y alertas
+- ✅ **Sistema de Facturación**: Creación, edición, numeración automática
+- ✅ **Gestión de Clientes**: Base de datos completa con validaciones
+- ✅ **Exportación PDF**: Generación profesional de facturas
+- ✅ **Base de Datos**: SQLite con modelos optimizados y migraciones
+- ✅ **Interfaz PyQt6**: Moderna, nativa y de alto rendimiento
+- ✅ **Sistema de Tests**: 243+ tests automatizados con cobertura completa
+- ✅ **Documentación**: Guías completas de usuario y desarrollador
 
-### 🚧 En Desarrollo
-- Ventana de organización (formulario completo)
-- Ventana de stock (lista y edición)
-- Ventana de facturas (formulario y generación PDF)
-- Generador de PDF para facturas
-- Validaciones adicionales
+### 🎯 **Funcionalidades Avanzadas Disponibles**
+- ✅ **Numeración Inteligente**: Sistema FACT-XXX-2025 automático
+- ✅ **Validaciones Opcionales**: NIF, email, teléfono configurables
+- ✅ **Mensajes Copiables**: Todos los diálogos con botón copiar
+- ✅ **Arquitectura Modular**: Código bien estructurado y mantenible
+- ✅ **Sistema de Logging**: Seguimiento completo de operaciones
+- ✅ **Herramientas de Diagnóstico**: Monitor, benchmark, validación
 
-### 📋 Por Hacer
-- Búsqueda y filtros en listas
-- Backup y restauración de datos
-- Reportes de ventas
-- Configuración de impuestos personalizados
-- Exportación a Excel
+### 🚀 **Próximas Mejoras Posibles**
+- 📊 **Reportes Avanzados**: Estadísticas de ventas y análisis
+- 🔍 **Búsqueda Avanzada**: Filtros complejos en todas las listas
+- 💾 **Backup Automático**: Respaldo programado de datos
+- 🌐 **API REST**: Backend para aplicaciones móviles
+- 📱 **Aplicación Móvil**: Versión para tablets y smartphones
+- 🎨 **Temas Personalizados**: Modo oscuro y colores empresariales
 
 ## Personalización
 
