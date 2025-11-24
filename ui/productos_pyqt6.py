@@ -23,7 +23,8 @@ class ProductosPyQt6Window(BasePyQt6Window):
         super().__init__(parent, "Gestión de Productos", 1000, 700)
         self.logger = get_logger("productos_pyqt6")
         self.current_product = None
-        
+        self.editing_mode = False
+
         self.logger.info("Inicializando ventana de gestión de productos PyQt6")
     
     def setup_ui(self):
@@ -149,6 +150,7 @@ class ProductosPyQt6Window(BasePyQt6Window):
         self.products_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.products_table.setAlternatingRowColors(True)
         self.products_table.itemSelectionChanged.connect(self.on_product_selected)
+        self.products_table.itemDoubleClicked.connect(self.on_product_double_clicked)
         
         products_layout.addWidget(self.products_table)
         
@@ -158,13 +160,17 @@ class ProductosPyQt6Window(BasePyQt6Window):
         """Crée les boutons d'action"""
         buttons_config = [
             ("Nuevo", self.new_product, "success"),
+            ("Editar", self.edit_product, "info"),
             ("Guardar", self.save_product, "primary"),
             ("Eliminar", self.delete_product, "danger"),
             ("Cerrar", self.close, "secondary")
         ]
-        
+
         button_layout = self.create_button_layout(buttons_config)
         self.main_layout.addLayout(button_layout)
+
+        # Désactiver certains boutons au démarrage
+        self.update_button_states()
     
     def load_categories(self):
         """Charge les catégories disponibles"""
@@ -223,6 +229,14 @@ class ProductosPyQt6Window(BasePyQt6Window):
             if ref_item:
                 product_id = ref_item.data(Qt.ItemDataRole.UserRole)
                 self.load_product_data(product_id)
+                self.editing_mode = False  # Sortir du mode édition
+                self.update_button_states()
+                self.update_form_style()
+
+    def on_product_double_clicked(self, item):
+        """Gère le double-clic sur un produit (lance l'édition)"""
+        if self.current_product:
+            self.edit_product()
     
     def load_product_data(self, product_id):
         """Charge les données d'un produit dans le formulaire"""
@@ -245,8 +259,64 @@ class ProductosPyQt6Window(BasePyQt6Window):
     def new_product(self):
         """Prépare un nouveau produit"""
         self.current_product = None
+        self.editing_mode = True  # Mode création = mode édition
         self.clear_form()
         self.ref_edit.setFocus()
+        self.update_button_states()
+        self.update_form_style()
+
+    def edit_product(self):
+        """Active le mode édition pour le produit sélectionné"""
+        if not self.current_product:
+            self.show_warning("Selección", "Selecciona un producto para editar")
+            return
+
+        self.editing_mode = True
+        self.ref_edit.setFocus()
+        self.update_button_states()
+        self.update_form_style()
+        self.show_info("Edición", f"Editando producto: {self.current_product.get('nombre', '')}")
+
+    def update_form_style(self):
+        """Met à jour le style du formulaire selon le mode"""
+        if self.editing_mode:
+            # Style pour mode édition
+            style = "QLineEdit, QComboBox, QDoubleSpinBox, QTextEdit { border: 2px solid #3498db; background-color: #f8f9fa; }"
+        else:
+            # Style normal
+            style = "QLineEdit, QComboBox, QDoubleSpinBox, QTextEdit { border: 1px solid #ddd; background-color: white; }"
+
+        # Appliquer le style au groupe de formulaire
+        if hasattr(self, 'form_group'):
+            self.form_group.setStyleSheet(style)
+
+    def update_button_states(self):
+        """Met à jour l'état des boutons selon le contexte"""
+        # Vérifier que les attributs existent
+        if not hasattr(self, 'current_product') or not hasattr(self, 'main_layout'):
+            return
+
+        # Récupérer les boutons depuis le layout
+        buttons = {}
+        for i in range(self.main_layout.count()):
+            item = self.main_layout.itemAt(i)
+            if item and hasattr(item, 'layout') and item.layout():
+                layout = item.layout()
+                for j in range(layout.count()):
+                    widget = layout.itemAt(j).widget()
+                    if isinstance(widget, QPushButton):
+                        buttons[widget.text()] = widget
+
+        # État des boutons selon le contexte
+        has_selection = self.current_product is not None
+        is_editing = getattr(self, 'editing_mode', False)
+
+        if 'Editar' in buttons:
+            buttons['Editar'].setEnabled(has_selection and not is_editing)
+        if 'Eliminar' in buttons:
+            buttons['Eliminar'].setEnabled(has_selection and not is_editing)
+        if 'Guardar' in buttons:
+            buttons['Guardar'].setEnabled(is_editing or not has_selection)
     
     def clear_form(self):
         """Vide le formulaire"""
@@ -280,19 +350,24 @@ class ProductosPyQt6Window(BasePyQt6Window):
             }
             
             # Sauvegarder
-            if self.current_product:
+            if self.current_product and self.editing_mode:
                 # Mise à jour
                 product_data['id'] = self.current_product['id']
                 db.update_product(product_data)
                 self.show_info("Éxito", "Producto actualizado correctamente")
+                self.editing_mode = False
             else:
                 # Nouveau produit
                 db.add_product(product_data)
                 self.show_info("Éxito", "Producto creado correctamente")
-            
+                self.current_product = None
+                self.editing_mode = False
+
             # Recharger la liste
             self.load_products()
             self.load_categories()
+            self.update_button_states()
+            self.update_form_style()
             
         except Exception as e:
             self.logger.error(f"Error guardando producto: {e}")

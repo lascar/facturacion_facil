@@ -20,9 +20,24 @@ show_databases() {
 show_database_content() {
     if [ -f "facturacion.db" ]; then
         echo "📊 Contenido de facturacion.db:"
-        sqlite3 facturacion.db "SELECT COUNT(*) as clientes FROM clientes; SELECT COUNT(*) as productos FROM productos; SELECT COUNT(*) as facturas FROM facturas;" 2>/dev/null | while read line; do
-            echo "   - $line registros"
-        done
+
+        # Verificar si la base de datos tiene tablas
+        tables=$(sqlite3 facturacion.db ".tables" 2>/dev/null)
+        if [ -z "$tables" ]; then
+            echo "   - Base de datos vacía (sin tablas)"
+        else
+            # Contar registros en cada tabla principal
+            clientes=$(sqlite3 facturacion.db "SELECT COUNT(*) FROM clientes;" 2>/dev/null || echo "0")
+            productos=$(sqlite3 facturacion.db "SELECT COUNT(*) FROM productos;" 2>/dev/null || echo "0")
+            facturas=$(sqlite3 facturacion.db "SELECT COUNT(*) FROM facturas;" 2>/dev/null || echo "0")
+
+            echo "   - Clientes: $clientes registros"
+            echo "   - Productos: $productos registros"
+            echo "   - Facturas: $facturas registros"
+        fi
+        echo ""
+    else
+        echo "📊 No existe facturacion.db"
         echo ""
     fi
 }
@@ -98,6 +113,27 @@ delete_backup_databases() {
     echo "✅ Bases de datos de backup eliminadas"
 }
 
+# Función para crear una base de datos limpia
+create_clean_database() {
+    echo "🆕 Creando base de datos limpia..."
+
+    # Eliminar la base actual si existe
+    rm -f facturacion.db
+
+    # Activar el entorno virtual y crear una nueva base
+    if [ -f "activate.sh" ]; then
+        source activate.sh
+        python -c "
+from database.database import db
+print('Inicializando base de datos limpia...')
+db.init_database()
+print('✅ Base de datos limpia creada')
+"
+    else
+        echo "❌ No se encontró activate.sh - no se puede crear la base"
+    fi
+}
+
 # Mostrar estado actual
 show_databases
 show_database_content
@@ -109,10 +145,11 @@ echo "2) Limpiar solo el CONTENIDO de la base principal (mantener estructura)"
 echo "3) Eliminar TODOS los datos (bases, logs, PDFs, cache) (⚠️  MUY PELIGROSO)"
 echo "4) Eliminar solo las bases de datos de TEST"
 echo "5) Eliminar solo las bases de datos de BACKUP"
-echo "6) Mostrar estado actual y salir"
-echo "7) Cancelar"
+echo "6) Crear base de datos LIMPIA (recomendado)"
+echo "7) Mostrar estado actual y salir"
+echo "8) Cancelar"
 echo ""
-read -p "Tu elección (1-7): " choice
+read -p "Tu elección (1-8): " choice
 
 case $choice in
     1)
@@ -146,11 +183,19 @@ case $choice in
         delete_backup_databases
         ;;
     6)
+        read -p "🆕 ¿Quieres crear una base de datos limpia? (escribe 'SI' para confirmar): " confirm
+        if [ "$confirm" = "SI" ]; then
+            create_clean_database
+        else
+            echo "❌ Operación cancelada"
+        fi
+        ;;
+    7)
         echo "📋 Estado actual:"
         show_databases
         show_database_content
         ;;
-    7)
+    8)
         echo "❌ Operación cancelada"
         ;;
     *)
