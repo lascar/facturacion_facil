@@ -1,9 +1,14 @@
 # GUI Framework (PyQt6 est maintenant le framework principal)
+# Compatible avec Python 3.10+ et Windows 10/11
 PyQt6==6.6.1
 
-# Frameworks GUI de compatibilité
+# Frameworks GUI de compatibilité (pour systèmes anciens)
 customtkinter==5.2.2
 
-# Autres dépendances
-Pillow==10.4.0
-reportlab==4.2.2
+# Dépendances principales
+Pillow==10.4.0          # Traitement d'images - Compatible Windows 11
+reportlab==4.2.2        # Génération PDF - Compatible Windows 11
+
+# Dépendances système (installées automatiquement)
+# - Microsoft Visual C++ Redistributable (inclus avec Python sur Windows 11)
+# - Qt6 runtime libraries (incluses avec PyQt6)

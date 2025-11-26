@@ -17,8 +17,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QIcon
 
 from ui.productos_pyqt6 import ProductosPyQt6Window
+from ui.organizacion_pyqt6 import OrganizacionPyQt6Window
 from ui.stock_pyqt6 import StockPyQt6Window
-from ui.factura_editor_pyqt6 import FacturaEditorPyQt6Window
+from ui.facturas_pyqt6 import FacturasPyQt6Window
 from ui.clientes_pyqt6 import ClientesPyQt6Window
 
 class MainWindowPyQt6(QMainWindow):
@@ -35,6 +36,7 @@ class MainWindowPyQt6(QMainWindow):
 
         # Variables pour les fenêtres secondaires
         self.productos_window = None
+        self.organizacion_window = None
         self.stock_window = None
         self.facturas_window = None
         self.clientes_window = None
@@ -95,6 +97,7 @@ class MainWindowPyQt6(QMainWindow):
             ("👥 Clientes", self.open_clientes, 0, 1, "Gestión de clientes y contactos"),
             ("📋 Stock", self.open_stock, 1, 0, "Control de inventario y stock"),
             ("🧾 Facturas", self.open_facturas, 1, 1, "Creación y gestión de facturas"),
+            ("🏢 Organización", self.open_organizacion, 2, 0, "Configuración de la empresa"),
         ]
 
         for text, command, row, col, tooltip in buttons:
@@ -133,6 +136,7 @@ class MainWindowPyQt6(QMainWindow):
         # Menu Gestión
         management_menu = menubar.addMenu('&Gestión')
         management_menu.addAction('&Productos', self.open_productos)
+        management_menu.addAction('&Organización', self.open_organizacion)
         management_menu.addAction('&Clientes', self.open_clientes)
         management_menu.addAction('&Stock', self.open_stock)
         management_menu.addAction('&Facturas', self.open_facturas)
@@ -156,6 +160,16 @@ class MainWindowPyQt6(QMainWindow):
             self.productos_window.raise_()
             self.productos_window.activateWindow()
 
+    def open_organizacion(self):
+        """Abre la ventana de configuración de la organización"""
+        if self.organizacion_window is None or not self.organizacion_window.isVisible():
+            self.organizacion_window = OrganizacionPyQt6Window(self)
+            self.organizacion_window.show()
+        else:
+            # Traer la ventana al frente si ya existe
+            self.organizacion_window.raise_()
+            self.organizacion_window.activateWindow()
+
     def open_stock(self):
         """Abre la ventana de stock"""
         if self.stock_window is None or not self.stock_window.isVisible():
@@ -166,9 +180,9 @@ class MainWindowPyQt6(QMainWindow):
             self.stock_window.activateWindow()
 
     def open_facturas(self):
-        """Abre la ventana de facturas"""
+        """Abre la ventana de gestión de facturas"""
         if self.facturas_window is None or not self.facturas_window.isVisible():
-            self.facturas_window = FacturaEditorPyQt6Window(self)
+            self.facturas_window = FacturasPyQt6Window(self)
             self.facturas_window.show()
         else:
             self.facturas_window.raise_()

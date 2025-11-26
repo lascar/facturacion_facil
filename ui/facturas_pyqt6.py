@@ -16,6 +16,7 @@ from ui.factura_editor_pyqt6 import FacturaEditorPyQt6Window
 from database.database import db
 from utils.logger import get_logger
 from utils.pdf_generator import pdf_generator
+from utils.invoice_status_manager import invoice_status_manager
 import os
 
 class FacturasPyQt6Window(BasePyQt6Window):
@@ -76,7 +77,7 @@ class FacturasPyQt6Window(BasePyQt6Window):
         # État
         filters_layout.addWidget(QLabel("Estado:"), 1, 0)
         self.status_filter = QComboBox()
-        self.status_filter.addItems(["Todos", "Pendiente", "Pagada", "Vencida"])
+        self.load_status_filter()
         filters_layout.addWidget(self.status_filter, 1, 1)
         
         self.main_layout.addWidget(filters_group)
@@ -484,3 +485,22 @@ class FacturasPyQt6Window(BasePyQt6Window):
 
         except Exception as e:
             self.logger.error(f"Error actualizando lista de facturas: {e}")
+
+    def load_status_filter(self):
+        """Carga los estados de facturas en el filtro"""
+        try:
+            self.status_filter.clear()
+            self.status_filter.addItem("Todos")
+
+            # Obtener todos los estados disponibles
+            statuses = invoice_status_manager.get_all_statuses()
+            for status in statuses:
+                self.status_filter.addItem(status['nombre'])
+
+            self.logger.info(f"Cargados {len(statuses)} estados en el filtro")
+
+        except Exception as e:
+            self.logger.error(f"Error cargando estados en filtro: {e}")
+            # Fallback a estados por defecto
+            self.status_filter.clear()
+            self.status_filter.addItems(["Todos", "Borrador", "Pendiente", "Pagada", "Vencida"])

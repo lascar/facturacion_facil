@@ -19,19 +19,25 @@
 
 ### Requisitos Mínimos
 - **Sistema Operativo**:
-  - Windows 7 SP1 o superior (32-bit o 64-bit)
-  - Windows 8/8.1 (32-bit o 64-bit)
-  - Windows 10/11 (64-bit recomendado)
-- **RAM**: 2 GB mínimo, 4 GB recomendado (8 GB para Windows 10/11)
-- **Espacio en Disco**: 500 MB libres
-- **Resolución**: 1024x768 mínimo, 1920x1080 recomendado
+  - Windows 7 SP1 o superior (32-bit o 64-bit) - **Soporte limitado**
+  - Windows 8/8.1 (32-bit o 64-bit) - **Soporte limitado**
+  - Windows 10 (64-bit recomendado) - **Soporte completo**
+  - **Windows 11 (64-bit) - Soporte completo y recomendado**
+- **RAM**:
+  - Windows 7/8: 2 GB mínimo, 4 GB recomendado
+  - Windows 10: 4 GB mínimo, 8 GB recomendado
+  - **Windows 11: 4 GB mínimo, 8 GB recomendado**
+- **Espacio en Disco**: 1 GB libres (500 MB para la aplicación + 500 MB para Python y dependencias)
+- **Resolución**: 1024x768 mínimo, **1920x1080 recomendado para Windows 11**
 
 ### Software Requerido
 - **Python**:
   - Windows 7/8: Python 3.8 a 3.11 (Python 3.12+ no soporta Windows 7/8)
-  - Windows 10/11: Python 3.9 o superior (recomendado Python 3.11+)
+  - Windows 10: Python 3.9 a 3.13 (recomendado Python 3.11+)
+  - **Windows 11: Python 3.10 a 3.13 (recomendado Python 3.12+)**
 - **Conexión a Internet** (para descarga de dependencias)
 - **Microsoft Visual C++ Redistributable** (se instala automáticamente con Python)
+- **Para Windows 11**: Microsoft Store opcional para instalación simplificada de Python
 
 ---
 
@@ -42,14 +48,16 @@
 #### Para Windows 10/11:
 1. **Descargar Python**:
    - Visita [https://www.python.org/downloads/](https://www.python.org/downloads/)
-   - Haz clic en "Download Python 3.11.x" (versión más reciente)
+   - **Windows 10**: Haz clic en "Download Python 3.11.x" o "Download Python 3.12.x"
+   - **Windows 11**: Haz clic en "Download Python 3.12.x" o "Download Python 3.13.x" (versión más reciente)
    - Descarga el instalador para Windows (64-bit recomendado)
 
 2. **Ejecutar el Instalador**:
-   - Ejecuta el archivo descargado (`python-3.11.x-amd64.exe`)
+   - Ejecuta el archivo descargado (`python-3.12.x-amd64.exe` o `python-3.13.x-amd64.exe`)
    - ⚠️ **IMPORTANTE**: Marca la casilla "Add Python to PATH"
    - Selecciona "Install Now" para instalación estándar
    - O selecciona "Customize installation" para opciones avanzadas
+   - **Windows 11**: El instalador detectará automáticamente la compatibilidad
 
 #### Para Windows 7/8/8.1:
 1. **Descargar Python Compatible**:
@@ -83,11 +91,28 @@
 ### Opción 2: Instalación desde Microsoft Store (Solo Windows 10/11)
 
 1. Abre Microsoft Store
-2. Busca "Python 3.11" o "Python 3.12"
-3. Instala la versión más reciente
-4. Python se agregará automáticamente al PATH
+2. **Windows 10**: Busca "Python 3.11" o "Python 3.12"
+3. **Windows 11**: Busca "Python 3.12" o "Python 3.13" (recomendado)
+4. Instala la versión más reciente disponible
+5. Python se agregará automáticamente al PATH
+6. **Ventaja en Windows 11**: Actualizaciones automáticas y gestión simplificada
 
 **Nota**: Microsoft Store NO está disponible en Windows 7/8/8.1
+
+### Opción 3: Instalación con Winget (Windows 10/11 con Package Manager)
+
+**Solo para Windows 10 versión 1809+ y Windows 11**:
+```cmd
+# Abrir PowerShell como Administrador
+winget install Python.Python.3.12
+# O para la versión más reciente:
+winget install Python.Python.3.13
+```
+
+**Ventajas**:
+- Instalación rápida desde línea de comandos
+- Actualizaciones fáciles con `winget upgrade Python.Python.3.12`
+- Configuración automática del PATH
 
 ### Verificación de pip
 
@@ -220,9 +245,12 @@ pip list
 ```
 
 Deberías ver las siguientes librerías instaladas:
-- `customtkinter==5.2.2`
-- `Pillow==10.4.0`
-- `reportlab==4.2.2`
+- `PyQt6==6.6.1` (Framework GUI principal)
+- `customtkinter==5.2.2` (Framework GUI de compatibilidad)
+- `Pillow==10.4.0` (Procesamiento de imágenes)
+- `reportlab==4.2.2` (Generación de PDFs)
+
+**Nota importante**: La aplicación ahora usa **PyQt6** como framework GUI principal, con CustomTkinter como respaldo para compatibilidad.
 
 ---
 
@@ -317,11 +345,21 @@ set PATH=%PATH%;C:\Python38;C:\Python38\Scripts
 set PATH=%PATH%;C:\Python311;C:\Python311\Scripts
 ```
 
-### Error: "No module named 'customtkinter'"
+### Error: "No module named 'PyQt6'" o "No module named 'customtkinter'"
 
-**Solución**:
+**Solución para PyQt6** (framework principal):
+```cmd
+pip install PyQt6==6.6.1
+```
+
+**Solución para CustomTkinter** (compatibilidad):
 ```cmd
 pip install customtkinter==5.2.2
+```
+
+**Instalar ambos** (recomendado):
+```cmd
+pip install PyQt6==6.6.1 customtkinter==5.2.2
 ```
 
 ### Error: "Permission denied" al instalar
@@ -614,5 +652,185 @@ Para cualquier problema adicional, revisa la documentación en la carpeta `docs/
 ### 📞 Soporte por Versión de Windows
 
 - **Windows 7**: Soporte limitado, usar Python 3.8.10
-- **Windows 8/8.1**: Soporte completo, usar Python 3.11.x
-- **Windows 10/11**: Soporte completo, usar Python 3.11+ o 3.12+
+- **Windows 8/8.1**: Soporte limitado, usar Python 3.11.x
+- **Windows 10**: Soporte completo, usar Python 3.11+ o 3.12+
+- **Windows 11**: Soporte completo y optimizado, usar Python 3.12+ o 3.13
+
+---
+
+## 🪟 Guía Específica para Windows 11
+
+### Características Optimizadas para Windows 11
+
+#### Ventajas de Windows 11 para Facturación Fácil:
+- **Rendimiento mejorado**: PyQt6 aprovecha las optimizaciones gráficas de Windows 11
+- **Interfaz moderna**: Mejor integración con el diseño Fluent Design
+- **Gestión de ventanas**: Soporte nativo para Snap Layouts y ventanas múltiples
+- **Escalado DPI**: Mejor soporte para pantallas de alta resolución
+- **Seguridad**: Windows Defender integrado protege la aplicación y datos
+
+### Instalación Recomendada para Windows 11
+
+#### Método 1: Microsoft Store (Más Fácil)
+```cmd
+# 1. Abrir Microsoft Store
+# 2. Buscar "Python 3.12" o "Python 3.13"
+# 3. Instalar directamente
+# 4. Python se configura automáticamente
+```
+
+#### Método 2: Winget (Recomendado para Desarrolladores)
+```powershell
+# Abrir Windows Terminal como Administrador
+winget install Python.Python.3.12
+
+# Verificar instalación
+python --version
+pip --version
+```
+
+#### Método 3: Instalador Oficial
+1. Descargar desde [python.org](https://www.python.org/downloads/)
+2. Ejecutar `python-3.12.x-amd64.exe`
+3. ✅ Marcar "Add Python to PATH"
+4. ✅ Marcar "Install for all users" (recomendado)
+5. Seleccionar "Install Now"
+
+### Configuración Específica para Windows 11
+
+#### 1. Configurar Windows Terminal (Recomendado)
+```powershell
+# Instalar Windows Terminal si no está disponible
+winget install Microsoft.WindowsTerminal
+
+# Configurar como terminal por defecto
+# Configuración → Sistema → Para desarrolladores → Terminal
+```
+
+#### 2. Configurar Variables de Entorno
+Windows 11 facilita la configuración:
+1. `Win + X` → "Configuración"
+2. "Sistema" → "Acerca de" → "Configuración avanzada del sistema"
+3. "Variables de entorno"
+4. Verificar que Python esté en PATH
+
+#### 3. Optimizar para Pantallas de Alta Resolución
+```cmd
+# La aplicación detecta automáticamente el escalado DPI
+# Para forzar un escalado específico:
+set QT_SCALE_FACTOR=1.25  # Para pantallas 4K
+python main.py
+```
+
+### Características Específicas de Windows 11
+
+#### Integración con el Sistema
+- **Notificaciones**: La aplicación puede usar las notificaciones nativas de Windows 11
+- **Temas**: Soporte automático para modo claro/oscuro del sistema
+- **Widgets**: Posible integración futura con Windows Widgets
+- **Microsoft Store**: Distribución simplificada para usuarios finales
+
+#### Rendimiento Optimizado
+```cmd
+# Configurar prioridad alta para mejor rendimiento
+start /high python main.py
+
+# O configurar afinidad de CPU (para sistemas multi-core)
+start /affinity 3 python main.py
+```
+
+#### Seguridad Mejorada
+- **Windows Defender**: Protección automática contra malware
+- **SmartScreen**: Verificación de archivos descargados
+- **Sandboxing**: Ejecución segura de la aplicación
+- **Backup automático**: OneDrive puede respaldar automáticamente los datos
+
+### Solución de Problemas Específicos de Windows 11
+
+#### Error: "Esta aplicación no puede ejecutarse en tu PC"
+```cmd
+# Verificar arquitectura del sistema
+systeminfo | findstr "Tipo de sistema"
+
+# Descargar la versión correcta de Python (64-bit recomendado)
+```
+
+#### Problemas con Microsoft Store
+```powershell
+# Reiniciar Microsoft Store
+Get-AppxPackage Microsoft.WindowsStore | Reset-AppxPackage
+
+# O usar instalación alternativa
+winget install Python.Python.3.12
+```
+
+#### Problemas de Permisos
+```powershell
+# Ejecutar como Administrador si es necesario
+Start-Process powershell -Verb runAs
+
+# O configurar permisos de usuario
+icacls "C:\Proyectos\facturacion_facil" /grant %USERNAME%:F /T
+```
+
+#### Optimización de Rendimiento
+```cmd
+# Deshabilitar efectos visuales para mejor rendimiento
+systempropertiesperformance.exe
+# Seleccionar "Ajustar para obtener el mejor rendimiento"
+
+# O mantener efectos pero optimizar
+# Seleccionar "Personalizar" y mantener solo efectos esenciales
+```
+
+### Creación de Ejecutable para Windows 11
+
+#### Configuración Optimizada
+```cmd
+# Instalar PyInstaller
+pip install pyinstaller
+
+# Crear ejecutable optimizado para Windows 11
+pyinstaller --onefile --windowed --optimize=2 main.py
+
+# Con configuraciones específicas de Windows 11
+pyinstaller --onefile --windowed --target-architecture=universal --optimize=2 --strip main.py
+```
+
+#### Distribución en Microsoft Store (Avanzado)
+Para distribución profesional:
+1. Crear paquete MSIX
+2. Registrarse como desarrollador en Microsoft Partner Center
+3. Subir la aplicación para certificación
+4. Distribución automática a usuarios de Windows 11
+
+### Lista de Verificación para Windows 11
+
+- [ ] Windows 11 versión 21H2 o superior
+- [ ] Python 3.12+ instalado y en PATH
+- [ ] Windows Terminal configurado
+- [ ] PyQt6 y dependencias instaladas
+- [ ] Aplicación ejecutándose sin errores
+- [ ] Escalado DPI configurado correctamente
+- [ ] Windows Defender configurado (excluir carpeta si es necesario)
+- [ ] Backup automático configurado (OneDrive recomendado)
+
+### Ventajas Adicionales en Windows 11
+
+#### Para Usuarios Finales:
+- Instalación más simple desde Microsoft Store
+- Actualizaciones automáticas
+- Mejor integración con el sistema
+- Rendimiento optimizado
+
+#### Para Desarrolladores:
+- Windows Subsystem for Linux (WSL) para desarrollo multiplataforma
+- Windows Terminal mejorado
+- Package Manager (winget) integrado
+- Mejor soporte para contenedores y virtualización
+
+---
+
+**🎉 ¡Facturación Fácil está completamente optimizada para Windows 11!**
+
+La aplicación aprovecha todas las características modernas de Windows 11 para ofrecer la mejor experiencia de usuario posible.

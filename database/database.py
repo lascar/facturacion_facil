@@ -181,8 +181,23 @@ class Database:
                 total_iva REAL NOT NULL,
                 total_factura REAL NOT NULL,
                 modo_pago TEXT,
+                estado TEXT DEFAULT 'Borrador',
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (cliente_id) REFERENCES clientes (id)
+            )
+        ''')
+
+        # Tabla de estados de facturas
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS factura_estados (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT UNIQUE NOT NULL,
+                descripcion TEXT,
+                permite_modificacion BOOLEAN DEFAULT 1,
+                color TEXT DEFAULT '#007bff',
+                orden INTEGER DEFAULT 0,
+                activo BOOLEAN DEFAULT 1,
+                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
 
@@ -191,6 +206,15 @@ class Database:
             cursor.execute('ALTER TABLE facturas ADD COLUMN cliente_id INTEGER')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
+
+        # Agregar columna estado a facturas existentes si no existe
+        try:
+            cursor.execute("ALTER TABLE facturas ADD COLUMN estado TEXT DEFAULT 'Borrador'")
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        # Inicializar estados por defecto si no existen
+        self._init_default_invoice_statuses(cursor)
 
         # Tabla items de factura
         cursor.execute('''
@@ -213,7 +237,36 @@ class Database:
         
         conn.commit()
         conn.close()
-    
+
+    def _init_default_invoice_statuses(self, cursor):
+        """Inicializa los estados por defecto de las facturas"""
+        try:
+            # Verificar si ya existen estados
+            cursor.execute("SELECT COUNT(*) FROM factura_estados")
+            count = cursor.fetchone()[0]
+
+            if count == 0:
+                # Insertar estados por defecto
+                default_statuses = [
+                    ('Borrador', 'Factura en proceso de creación', 1, '#6c757d', 1),
+                    ('Pendiente', 'Factura enviada, pendiente de pago', 0, '#ffc107', 2),
+                    ('Pagada', 'Factura pagada completamente', 0, '#28a745', 3),
+                    ('Vencida', 'Factura vencida sin pagar', 0, '#dc3545', 4),
+                    ('Cancelada', 'Factura cancelada', 0, '#6f42c1', 5),
+                    ('Anulada', 'Factura anulada', 0, '#fd7e14', 6)
+                ]
+
+                for nombre, descripcion, permite_mod, color, orden in default_statuses:
+                    cursor.execute('''
+                        INSERT INTO factura_estados (nombre, descripcion, permite_modificacion, color, orden)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (nombre, descripcion, permite_mod, color, orden))
+
+                self.logger.info("Estados de factura por defecto inicializados")
+
+        except Exception as e:
+            self.logger.error(f"Error inicializando estados de factura: {e}")
+
     def execute_query(self, query, params=None):
         """Ejecuta una consulta y devuelve los resultados"""
         conn = self.get_connection()
@@ -864,8 +917,8 @@ class Database:
             cursor.execute("""
                 INSERT INTO facturas (numero_factura, fecha_factura, cliente_id,
                                     nombre_cliente, dni_nie_cliente, direccion_cliente,
-                                    subtotal, total_iva, total_factura)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    subtotal, total_iva, total_factura, estado)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 invoice_data['numero'],
                 invoice_data['fecha'],
@@ -875,7 +928,8 @@ class Database:
                 invoice_data['cliente'].get('direccion', ''),
                 invoice_data['subtotal'],
                 invoice_data['iva_total'],
-                invoice_data['total']
+                invoice_data['total'],
+                invoice_data.get('estado', 'Borrador')
             ))
 
             factura_id = cursor.lastrowid
@@ -945,7 +999,8 @@ class Database:
                     direccion_cliente = ?,
                     subtotal = ?,
                     total_iva = ?,
-                    total_factura = ?
+                    total_factura = ?,
+                    estado = ?
                 WHERE id = ?
             """, (
                 numero_factura,
@@ -957,6 +1012,7 @@ class Database:
                 subtotal,
                 iva_total,
                 total,
+                invoice_data.get('estado', 'Borrador'),
                 invoice_id
             ))
 
@@ -1038,7 +1094,7 @@ class Database:
             cursor = conn.cursor()
             cursor.execute("""
                 SELECT id, numero_factura, fecha_factura, nombre_cliente,
-                       total_factura, fecha_creacion
+                       total_factura, fecha_creacion, estado
                 FROM facturas
                 ORDER BY fecha_creacion DESC
             """)
@@ -1052,8 +1108,8 @@ class Database:
                     'vencimiento': row[2],  # Usar la misma fecha por defecto
                     'cliente_nombre': row[3],
                     'total': row[4],
-                    'estado': 'Pendiente',  # Estado por defecto
-                    'fecha_creacion': row[5]
+                    'fecha_creacion': row[5],
+                    'estado': row[6] if row[6] else 'Borrador'  # Estado desde la base de datos
                 }
                 invoices.append(invoice)
 
@@ -1074,7 +1130,7 @@ class Database:
             cursor.execute("""
                 SELECT id, numero_factura, fecha_factura, cliente_id,
                        nombre_cliente, dni_nie_cliente, direccion_cliente,
-                       subtotal, total_iva, total_factura
+                       subtotal, total_iva, total_factura, estado
                 FROM facturas
                 WHERE id = ?
             """, (invoice_id,))
@@ -1100,7 +1156,7 @@ class Database:
                 'subtotal': factura_row[7],
                 'iva_total': factura_row[8],
                 'total': factura_row[9],
-                'estado': 'Pendiente',  # Estado par défaut
+                'estado': factura_row[10] if factura_row[10] else 'Borrador',  # Estado desde la base de datos
                 'lineas': []  # Pour l'instant, pas de lignes détaillées
             }
 
@@ -1261,6 +1317,132 @@ class Database:
 
         except Exception as e:
             self.logger.error(f"Error obteniendo ID de factura {numero_factura}: {e}")
+            return None
+
+    # ==================== MÉTODOS PARA ESTADOS DE FACTURAS ====================
+
+    def get_all_invoice_statuses(self):
+        """Obtiene todos los estados de facturas"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, descripcion, permite_modificacion, color, orden, activo
+                FROM factura_estados
+                WHERE activo = 1
+                ORDER BY orden
+            """)
+
+            statuses = []
+            for row in cursor.fetchall():
+                status = {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'descripcion': row[2],
+                    'permite_modificacion': bool(row[3]),
+                    'color': row[4],
+                    'orden': row[5],
+                    'activo': bool(row[6])
+                }
+                statuses.append(status)
+
+            conn.close()
+            return statuses
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo estados de facturas: {e}")
+            return []
+
+    def save_invoice_status(self, status_data):
+        """Guarda o actualiza un estado de factura"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            if status_data.get('id'):
+                # Actualizar estado existente
+                cursor.execute("""
+                    UPDATE factura_estados SET
+                        nombre = ?,
+                        descripcion = ?,
+                        permite_modificacion = ?,
+                        color = ?,
+                        orden = ?
+                    WHERE id = ?
+                """, (
+                    status_data['nombre'],
+                    status_data['descripcion'],
+                    status_data['permite_modificacion'],
+                    status_data['color'],
+                    status_data['orden'],
+                    status_data['id']
+                ))
+            else:
+                # Crear nuevo estado
+                cursor.execute("""
+                    INSERT INTO factura_estados (nombre, descripcion, permite_modificacion, color, orden)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (
+                    status_data['nombre'],
+                    status_data['descripcion'],
+                    status_data['permite_modificacion'],
+                    status_data['color'],
+                    status_data['orden']
+                ))
+
+            conn.commit()
+            conn.close()
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error guardando estado de factura: {e}")
+            return False
+
+    def delete_invoice_status(self, status_id):
+        """Elimina un estado de factura (marca como inactivo)"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Marcar como inactivo en lugar de eliminar
+            cursor.execute("UPDATE factura_estados SET activo = 0 WHERE id = ?", (status_id,))
+
+            conn.commit()
+            conn.close()
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error eliminando estado de factura: {e}")
+            return False
+
+    def get_invoice_status_by_name(self, status_name):
+        """Obtiene un estado de factura por nombre"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, descripcion, permite_modificacion, color, orden, activo
+                FROM factura_estados
+                WHERE nombre = ? AND activo = 1
+            """, (status_name,))
+
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                return {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'descripcion': row[2],
+                    'permite_modificacion': bool(row[3]),
+                    'color': row[4],
+                    'orden': row[5],
+                    'activo': bool(row[6])
+                }
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo estado por nombre {status_name}: {e}")
             return None
 
 # Instancia global de la base de datos

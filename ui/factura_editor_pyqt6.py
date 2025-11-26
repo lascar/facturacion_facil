@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QComboBox, QDateEdit, QDoubleSpinBox, QTextEdit, QGroupBox,
-    QSplitter, QSpinBox, QFrame, QMessageBox, QWidget
+    QSplitter, QSpinBox, QFrame, QMessageBox, QWidget, QStyledItemDelegate
 )
 from PyQt6.QtCore import Qt, QDate, pyqtSignal
 from PyQt6.QtGui import QFont, QColor
@@ -17,6 +17,7 @@ from ui.widgets.client_autocomplete import ClientAutoCompleteWidget
 from database.database import db
 from utils.logger import get_logger
 from utils.pdf_generator import pdf_generator
+from utils.invoice_status_manager import invoice_status_manager
 from datetime import datetime
 import uuid
 import os
@@ -101,7 +102,14 @@ class FacturaEditorPyQt6Window(BasePyQt6Window):
         self.vencimiento_edit.setDate(QDate.currentDate().addDays(30))
         self.vencimiento_edit.setCalendarPopup(True)
         general_layout.addWidget(self.vencimiento_edit, 2, 1)
-        
+
+        # Estado de la factura
+        general_layout.addWidget(QLabel("Estado:"), 3, 0)
+        self.estado_combo = QComboBox()
+        self.load_invoice_statuses()
+        self.estado_combo.currentTextChanged.connect(self.on_status_changed)
+        general_layout.addWidget(self.estado_combo, 3, 1)
+
         info_layout.addWidget(general_group)
         
         # Informations client
@@ -206,7 +214,7 @@ class FacturaEditorPyQt6Window(BasePyQt6Window):
         self.items_table.setMinimumHeight(400)  # Augmenté de 350 à 400 pixels pour les lignes plus hautes
 
         # Hauteur de ligne plus confortable
-        self.items_table.verticalHeader().setDefaultSectionSize(45)  # 45 pixels par ligne (augmenté de 35 à 45)
+        self.items_table.verticalHeader().setDefaultSectionSize(55)  # 55 pixels par ligne (augmenté de 45 à 55 pour mieux voir producto)
         
         items_layout.addWidget(self.items_table)
 
@@ -745,6 +753,7 @@ La factura ha sido guardada en la base de datos."""
             'numero': self.numero_edit.text(),
             'fecha': self.fecha_edit.date().toString('yyyy-MM-dd'),
             'vencimiento': self.vencimiento_edit.date().toString('yyyy-MM-dd'),
+            'estado': self.get_current_status(),
             'cliente': {
                 'id': client_data['id'],
                 'nombre': client_data['nombre'],
@@ -966,6 +975,10 @@ TOTAL: {invoice_data['total']:.2f} €
                 except Exception as e:
                     self.logger.warning(f"Error cargando fecha: {e}")
 
+            # Charger le statut
+            estado = self.factura_data.get('estado', 'Borrador')
+            self.set_invoice_status(estado)
+
             # Charger les données du client
             cliente_data = self.factura_data.get('cliente', {})
             if cliente_data:
@@ -1071,3 +1084,159 @@ TOTAL: {invoice_data['total']:.2f} €
 
         except Exception as e:
             self.logger.error(f"Error cargando línea de factura: {e}")
+
+    # ==================== MÉTODOS PARA GESTIÓN DE ESTADOS ====================
+
+    def load_invoice_statuses(self):
+        """Carga los estados de facturas en el combo"""
+        try:
+            statuses = invoice_status_manager.get_all_statuses()
+
+            self.estado_combo.clear()
+            for i, status in enumerate(statuses):
+                self.estado_combo.addItem(status['nombre'])
+                # Stocker la couleur dans les données de l'item
+                self.estado_combo.setItemData(i, status['color'], Qt.ItemDataRole.UserRole)
+
+            # Appliquer le style CSS avec les couleurs individuelles
+            self.apply_status_combo_style()
+
+            # Seleccionar el estado por defecto (Borrador) si no estamos editando
+            if not self.is_editing:
+                default_index = self.estado_combo.findText('Borrador')
+                if default_index >= 0:
+                    self.estado_combo.setCurrentIndex(default_index)
+
+            self.logger.info(f"Cargados {len(statuses)} estados de facturas")
+
+        except Exception as e:
+            self.logger.error(f"Error cargando estados de facturas: {e}")
+
+    def apply_status_combo_style(self):
+        """Applique le style CSS au ComboBox des états avec les couleurs individuelles"""
+        try:
+            # Créer un delegate personnalisé pour les couleurs des éléments
+            class StatusComboDelegate(QStyledItemDelegate):
+                def paint(self, painter, option, index):
+                    # Obtenir la couleur stockée dans les données de l'item
+                    color = index.data(Qt.ItemDataRole.UserRole)
+                    if color:
+                        # Dessiner le fond avec la couleur de l'état
+                        painter.fillRect(option.rect, QColor(color))
+
+                        # Dessiner le texte en blanc
+                        painter.setPen(QColor("white"))
+                        font = painter.font()
+                        font.setBold(True)
+                        painter.setFont(font)
+                        painter.drawText(option.rect, Qt.AlignmentFlag.AlignCenter, index.data())
+                    else:
+                        # Utiliser le rendu par défaut si pas de couleur
+                        super().paint(painter, option, index)
+
+            # Appliquer le delegate au ComboBox
+            delegate = StatusComboDelegate()
+            self.estado_combo.setItemDelegate(delegate)
+
+            # Style de base pour le ComboBox
+            base_style = "QComboBox { font-weight: bold; }"
+            self.estado_combo.setStyleSheet(base_style)
+
+        except Exception as e:
+            self.logger.error(f"Error aplicando estilo al combo de estados: {e}")
+
+    def on_status_changed(self, status_name):
+        """Se ejecuta cuando cambia el estado de la factura"""
+        try:
+            # Verificar si el estado permite modificación
+            can_modify = invoice_status_manager.can_modify_invoice(status_name)
+
+            # Actualizar la interfaz según el estado
+            self.update_fields_editability(can_modify)
+
+            # Cambiar el color del combo según el estado seleccionado
+            color = invoice_status_manager.get_status_color(status_name)
+            # Appliquer seulement la couleur de fond au ComboBox principal (fermé)
+            self.estado_combo.setStyleSheet(f"""
+                QComboBox {{
+                    background-color: {color};
+                    color: white;
+                    font-weight: bold;
+                    border: 2px solid #ddd;
+                    border-radius: 6px;
+                    padding: 8px;
+                }}
+                QComboBox:focus {{
+                    border-color: #0078d4;
+                }}
+            """)
+
+            self.logger.info(f"Estado cambiado a: {status_name} (Modificable: {can_modify})")
+
+        except Exception as e:
+            self.logger.error(f"Error cambiando estado: {e}")
+
+    def update_fields_editability(self, can_modify):
+        """Actualiza la editabilidad de los campos según el estado"""
+        try:
+            # Campos que se deshabilitan cuando no se puede modificar
+            fields_to_disable = [
+                self.numero_edit,  # Número (ya es readonly, pero por consistencia)
+                self.fecha_edit,   # Fecha
+                self.vencimiento_edit,  # Vencimiento
+            ]
+
+            # Deshabilitar/habilitar campos básicos
+            for field in fields_to_disable:
+                if hasattr(field, 'setReadOnly'):
+                    field.setReadOnly(not can_modify)
+                else:
+                    field.setEnabled(can_modify)
+
+            # El cliente se mantiene como referencia pero no modificable
+            self.cliente_autocomplete.setEnabled(can_modify)
+
+            # Deshabilitar/habilitar la tabla de productos
+            self.productos_table.setEnabled(can_modify)
+
+            # Deshabilitar/habilitar botones de productos
+            if hasattr(self, 'add_product_btn'):
+                self.add_product_btn.setEnabled(can_modify)
+            if hasattr(self, 'remove_product_btn'):
+                self.remove_product_btn.setEnabled(can_modify)
+
+            # Los totales siempre son readonly, no necesitan cambios
+
+            # Cambiar el estilo visual para indicar el estado
+            if can_modify:
+                style = ""
+            else:
+                style = "background-color: #f8f9fa; color: #6c757d;"
+
+            for field in fields_to_disable:
+                if hasattr(field, 'setStyleSheet'):
+                    field.setStyleSheet(style)
+
+            # Aplicar estilo a la tabla de productos
+            if not can_modify:
+                self.productos_table.setStyleSheet("background-color: #f8f9fa; color: #6c757d;")
+            else:
+                self.productos_table.setStyleSheet("")
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando editabilidad de campos: {e}")
+
+    def get_current_status(self):
+        """Obtiene el estado actual de la factura"""
+        return self.estado_combo.currentText()
+
+    def set_invoice_status(self, status_name):
+        """Establece el estado de la factura"""
+        try:
+            index = self.estado_combo.findText(status_name)
+            if index >= 0:
+                self.estado_combo.setCurrentIndex(index)
+            else:
+                self.logger.warning(f"Estado no encontrado: {status_name}")
+        except Exception as e:
+            self.logger.error(f"Error estableciendo estado: {e}")
