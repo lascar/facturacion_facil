@@ -27,15 +27,15 @@ def get_gui_factory():
     return _gui_factory
 
 def set_gui_framework(framework):
-    """Compatibilité - PyQt6 uniquement"""
-    if framework != 'pyqt6':
-        print(f"✅ Framework GUI 'pyqt6' chargé avec succès")
-        print(f"🔄 Framework changé de '{framework}' vers 'pyqt6'")
-    return 'pyqt6'
+    """Compatibilité - PySide6 uniquement"""
+    if framework != 'pyside6':
+        print(f"✅ Framework GUI 'pyside6' chargé avec succès")
+        print(f"🔄 Framework changé de '{framework}' vers 'pyside6'")
+    return 'pyside6'
 
 def get_current_framework():
-    """Retourne le framework actuel (toujours PyQt6)"""
-    return 'pyqt6'
+    """Retourne le framework actuel (toujours PySide6)"""
+    return 'pyside6'
 
 def get_gui_manager():
     """Retourne le gestionnaire GUI"""

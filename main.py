@@ -15,10 +15,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gui import set_gui_framework
 
-# Définir PyQt6 comme framework GUI
-set_gui_framework('pyqt6')
+# Définir PySide6 comme framework GUI
+set_gui_framework('pyside6')
 
-from ui.main_window_pyqt6 import MainWindowPyQt6
+from ui.main_window_pyside6 import MainWindowPySide6
 from database.database import db
 from utils.logger import app_logger, log_info, log_error, log_exception
 
@@ -39,15 +39,15 @@ def main():
         # Crear y ejecutar la aplicación PyQt6
         log_info("Creando ventana principal")
 
-        # Créer l'application PyQt6 si elle n'existe pas
-        from PyQt6.QtWidgets import QApplication
+        # Créer l'application PySide6 si elle n'existe pas
+        from PySide6.QtWidgets import QApplication
         if not QApplication.instance():
             qt_app = QApplication(sys.argv)
         else:
             qt_app = QApplication.instance()
 
         # Créer et lancer la fenêtre principale
-        main_window = MainWindowPyQt6()
+        main_window = MainWindowPySide6()
 
         log_info("Iniciando bucle principal de la aplicación")
         main_window.run()

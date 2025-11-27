@@ -1,6 +1,6 @@
-# GUI Framework (PyQt6 est maintenant le framework principal)
+# GUI Framework (PySide6 est maintenant le framework principal)
 # Compatible avec Python 3.10+ et Windows 10/11
-PyQt6==6.6.1
+PySide6
 
 # Frameworks GUI de compatibilité (pour systèmes anciens)
 customtkinter==5.2.2
