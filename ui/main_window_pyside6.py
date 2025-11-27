@@ -50,13 +50,24 @@ class MainWindowPySide6(QMainWindow):
         # Layout principal
         main_layout = QVBoxLayout(central_widget)
         
-        # Titre
-        title_label = QLabel("Facturación Fácil")
+        # Titre avec style moderne
+        title_label = QLabel("💼 Facturación Fácil")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_font = QFont()
-        title_font.setPointSize(24)
-        title_font.setBold(True)
+        title_font = QFont("Segoe UI", 28, QFont.Weight.Bold)
         title_label.setFont(title_font)
+        title_label.setStyleSheet("""
+            QLabel {
+                color: #2c3e50;
+                background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                    stop: 0 #3498db, stop: 1 #2c3e50);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                padding: 20px;
+                margin: 10px;
+                border-radius: 10px;
+                background-color: rgba(52, 152, 219, 0.1);
+            }
+        """)
         main_layout.addWidget(title_label)
         
         # Layout des boutons
@@ -70,38 +81,50 @@ class MainWindowPySide6(QMainWindow):
         
         # Barre de statut
         self.statusBar().showMessage("Prêt - PySide6")
+
+        # Appliquer le style
+        self.apply_modern_style()
         
     def create_main_buttons(self, layout):
-        """Créer les boutons principaux"""
+        """Créer les boutons principaux avec icônes"""
         # Bouton Productos
-        btn_productos = QPushButton("Productos")
-        btn_productos.setMinimumSize(200, 80)
+        btn_productos = QPushButton("📦 Productos")
+        btn_productos.setMinimumSize(220, 90)
         btn_productos.clicked.connect(self.open_productos)
+        btn_productos.setToolTip("Gestionar productos y servicios")
         layout.addWidget(btn_productos, 0, 0)
-        
+
         # Bouton Organización
-        btn_organizacion = QPushButton("Organización")
-        btn_organizacion.setMinimumSize(200, 80)
+        btn_organizacion = QPushButton("🏢 Organización")
+        btn_organizacion.setMinimumSize(220, 90)
         btn_organizacion.clicked.connect(self.open_organizacion)
+        btn_organizacion.setToolTip("Configurar la organización")
         layout.addWidget(btn_organizacion, 0, 1)
-        
+
         # Bouton Stock
-        btn_stock = QPushButton("Stock")
-        btn_stock.setMinimumSize(200, 80)
+        btn_stock = QPushButton("📊 Stock")
+        btn_stock.setMinimumSize(220, 90)
         btn_stock.clicked.connect(self.open_stock)
+        btn_stock.setToolTip("Gestionar inventario y stock")
         layout.addWidget(btn_stock, 1, 0)
-        
+
         # Bouton Facturas
-        btn_facturas = QPushButton("Facturas")
-        btn_facturas.setMinimumSize(200, 80)
+        btn_facturas = QPushButton("🧾 Facturas")
+        btn_facturas.setMinimumSize(220, 90)
         btn_facturas.clicked.connect(self.open_facturas)
+        btn_facturas.setToolTip("Crear y gestionar facturas")
         layout.addWidget(btn_facturas, 1, 1)
-        
+
         # Bouton Clientes
-        btn_clientes = QPushButton("Clientes")
-        btn_clientes.setMinimumSize(200, 80)
+        btn_clientes = QPushButton("👥 Clientes")
+        btn_clientes.setMinimumSize(220, 90)
         btn_clientes.clicked.connect(self.open_clientes)
+        btn_clientes.setToolTip("Gestionar base de clientes")
         layout.addWidget(btn_clientes, 2, 0)
+
+        # Espacement
+        layout.setSpacing(15)
+        layout.setContentsMargins(30, 20, 30, 20)
         
     def open_productos(self):
         """Ouvrir la fenêtre des produits"""
@@ -188,3 +211,126 @@ class MainWindowPySide6(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def apply_modern_style(self):
+        """Appliquer un style moderne à l'application"""
+        self.setStyleSheet("""
+            /* Fenêtre principale */
+            QMainWindow {
+                background-color: #f5f5f5;
+                color: #333333;
+            }
+
+            /* Widget central */
+            QWidget {
+                background-color: #f5f5f5;
+                color: #333333;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 10pt;
+            }
+
+            /* Titre principal */
+            QLabel {
+                color: #2c3e50;
+            }
+
+            /* Boutons principaux */
+            QPushButton {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #4a90e2, stop: 1 #357abd);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 12px 24px;
+                font-size: 12pt;
+                font-weight: bold;
+                min-width: 180px;
+                min-height: 60px;
+            }
+
+            QPushButton:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #5ba0f2, stop: 1 #4a90e2);
+                transform: translateY(-2px);
+            }
+
+            QPushButton:pressed {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #357abd, stop: 1 #2c6aa0);
+            }
+
+            /* Boutons spécifiques par couleur */
+            QPushButton[text="Productos"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #e74c3c, stop: 1 #c0392b);
+            }
+
+            QPushButton[text="Productos"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #f55c4c, stop: 1 #e74c3c);
+            }
+
+            QPushButton[text="Organización"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #f39c12, stop: 1 #d68910);
+            }
+
+            QPushButton[text="Organización"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #f4ac32, stop: 1 #f39c12);
+            }
+
+            QPushButton[text="Stock"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #27ae60, stop: 1 #229954);
+            }
+
+            QPushButton[text="Stock"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #37be70, stop: 1 #27ae60);
+            }
+
+            QPushButton[text="Facturas"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #8e44ad, stop: 1 #7d3c98);
+            }
+
+            QPushButton[text="Facturas"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #9e54bd, stop: 1 #8e44ad);
+            }
+
+            QPushButton[text="Clientes"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #3498db, stop: 1 #2980b9);
+            }
+
+            QPushButton[text="Clientes"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #44a8eb, stop: 1 #3498db);
+            }
+
+            /* Barre de statut */
+            QStatusBar {
+                background-color: #34495e;
+                color: white;
+                border-top: 1px solid #2c3e50;
+                padding: 4px;
+            }
+
+            /* Barre de menu */
+            QMenuBar {
+                background-color: #2c3e50;
+                color: white;
+                border-bottom: 1px solid #34495e;
+            }
+
+            QMenuBar::item {
+                background-color: transparent;
+                padding: 4px 8px;
+            }
+
+            QMenuBar::item:selected {
+                background-color: #34495e;
+            }
+        """)
