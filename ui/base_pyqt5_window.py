@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-Fenêtre de base PySide6 pour toutes les fenêtres secondaires
+Fenêtre de base PySide2 pour toutes les fenêtres secondaires
 """
 
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QGridLayout, 
+from PyQt5.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QGridLayout,
     QLabel, QLineEdit, QPushButton, QTextEdit, QComboBox,
     QTableWidget, QTableWidgetItem, QHeaderView, QFrame,
     QScrollArea, QWidget, QSplitter, QTabWidget,
     QMessageBox, QFileDialog, QProgressBar, QCheckBox,
     QSpinBox, QDoubleSpinBox, QDateEdit, QGroupBox
 )
-from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal as Signal
+from PyQt5.QtGui import QFont, QIcon, QPixmap
 from utils.logger import get_logger
 import os
 
-class BasePySide6Window(QDialog):
-    """Classe de base pour toutes les fenêtres secondaires PySide6"""
+class BasePyQt5Window(QDialog):
+    """Classe de base pour toutes les fenêtres secondaires PySide2"""
     
-    # Signaux PySide6
+    # Signaux PySide2
     window_closed = Signal()
     data_changed = Signal()
     
@@ -116,10 +116,10 @@ class BasePySide6Window(QDialog):
         """Demander une confirmation"""
         reply = QMessageBox.question(
             self, title, message,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
         )
-        return reply == QMessageBox.StandardButton.Yes
+        return reply == QMessageBox.Yes
     
     def set_data_modified(self, modified=True):
         """Marquer les données comme modifiées"""
@@ -257,6 +257,6 @@ class BasePySide6Window(QDialog):
         header.setStretchLastSection(True)
         
         # Permettre la sélection de lignes entières
-        table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        table.setSelectionBehavior(QTableWidget.SelectRows)
         
         return table

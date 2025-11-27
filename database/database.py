@@ -639,22 +639,29 @@ class Database:
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
+
+            # Obtenir le stock depuis les données (avec fallback)
+            stock_actual = product_data.get('stock', product_data.get('stock_actual', 0))
+            stock_minimo = product_data.get('stock_minimo', 5)
+
             cursor.execute("""
-                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, stock_actual, stock_minimo)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 product_data['nombre'],
                 product_data['referencia'],
                 product_data['precio_venta'],
                 product_data['categoria'],
-                product_data['descripcion']
+                product_data['descripcion'],
+                stock_actual,
+                stock_minimo
             ))
 
             product_id = cursor.lastrowid
             conn.commit()
             conn.close()
 
-            self.logger.info(f"Producto añadido con ID: {product_id}")
+            self.logger.info(f"Producto añadido con ID: {product_id}, stock: {stock_actual}")
             return product_id
 
         except Exception as e:
@@ -666,9 +673,14 @@ class Database:
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
+
+            # Obtenir le stock depuis les données (avec fallback)
+            stock_actual = product_data.get('stock', product_data.get('stock_actual', 0))
+            stock_minimo = product_data.get('stock_minimo', 5)
+
             cursor.execute("""
                 UPDATE productos
-                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?
+                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, stock_actual = ?, stock_minimo = ?
                 WHERE id = ?
             """, (
                 product_data['nombre'],
@@ -676,13 +688,15 @@ class Database:
                 product_data['precio_venta'],
                 product_data['categoria'],
                 product_data['descripcion'],
+                stock_actual,
+                stock_minimo,
                 product_data['id']
             ))
 
             conn.commit()
             conn.close()
 
-            self.logger.info(f"Producto {product_data['id']} actualizado")
+            self.logger.info(f"Producto {product_data['id']} actualizado, stock: {stock_actual}")
 
         except Exception as e:
             self.logger.error(f"Error actualizando producto: {e}")
@@ -956,7 +970,9 @@ class Database:
                 ))
 
             # Procesar movimiento de stock (restar del inventario) usando la misma conexión
+            print(f"DEBUG DB: Procesando stock para factura con {len(invoice_data.get('lineas', []))} líneas")
             stock_movements = self._process_invoice_stock_movement_with_connection(cursor, invoice_data, operation='subtract')
+            print(f"DEBUG DB: Stock movements procesados: {len(stock_movements) if stock_movements else 0}")
 
             conn.commit()
             conn.close()
@@ -964,6 +980,8 @@ class Database:
             self.logger.info(f"Factura añadida con ID: {factura_id}")
             if stock_movements:
                 self.logger.info(f"Movimientos de stock procesados: {len(stock_movements)} productos")
+                for movement in stock_movements:
+                    print(f"DEBUG: {movement['nombre_producto']}: {movement['stock_anterior']} → {movement['stock_nuevo']}")
                 for movement in stock_movements:
                     self.logger.info(f"  • {movement['nombre_producto']}: {movement['stock_anterior']} → {movement['stock_nuevo']}")
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Fenêtre principale PySide6 native
+Fenêtre principale PySide2 native
 """
 
 import sys
@@ -10,26 +10,26 @@ import os
 # Ajouter le répertoire parent au path pour les imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                             QHBoxLayout, QGridLayout, QPushButton, QLabel,
                             QMenuBar, QStatusBar, QMessageBox)
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QIcon
 
-from ui.productos_pyside6 import ProductosPySide6Window
-from ui.organizacion_pyside6 import OrganizacionPySide6Window
-from ui.stock_pyside6 import StockPySide6Window
-from ui.facturas_pyside6 import FacturasPySide6Window
-from ui.clientes_pyside6 import ClientesPySide6Window
+from ui.productos_pyqt5 import ProductosPyQt5Window
+from ui.organizacion_pyqt5 import OrganizacionPyQt5Window
+from ui.stock_pyqt5 import StockPyQt5Window
+from ui.facturas_pyqt5 import FacturasPyQt5Window
+from ui.clientes_pyqt5 import ClientesPyQt5Window
 
-class MainWindowPySide6(QMainWindow):
+class MainWindowPyQt5(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Créer l'application PySide6 si elle n'existe pas
+        # Créer l'application PySide2 si elle n'existe pas
         self.app = QApplication.instance() or QApplication([])
         
-        self.setWindowTitle("Facturación Fácil - PySide6")
+        self.setWindowTitle("Facturación Fácil - PySide2")
         self.setGeometry(100, 100, 1200, 800)
         
         # Variables pour les fenêtres
@@ -52,20 +52,17 @@ class MainWindowPySide6(QMainWindow):
         
         # Titre avec style moderne
         title_label = QLabel("💼 Facturación Fácil")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_font = QFont("Segoe UI", 28, QFont.Weight.Bold)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_font = QFont("Segoe UI", 28, QFont.Bold)
         title_label.setFont(title_font)
         title_label.setStyleSheet("""
             QLabel {
                 color: #2c3e50;
-                background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
-                    stop: 0 #3498db, stop: 1 #2c3e50);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
                 padding: 20px;
                 margin: 10px;
                 border-radius: 10px;
                 background-color: rgba(52, 152, 219, 0.1);
+                font-weight: bold;
             }
         """)
         main_layout.addWidget(title_label)
@@ -80,7 +77,7 @@ class MainWindowPySide6(QMainWindow):
         main_layout.addStretch()
         
         # Barre de statut
-        self.statusBar().showMessage("Prêt - PySide6")
+        self.statusBar().showMessage("Prêt - PySide2")
 
         # Appliquer le style
         self.apply_modern_style()
@@ -130,7 +127,7 @@ class MainWindowPySide6(QMainWindow):
         """Ouvrir la fenêtre des produits"""
         try:
             if self.productos_window is None:
-                self.productos_window = ProductosPySide6Window()
+                self.productos_window = ProductosPyQt5Window()
             self.productos_window.show()
             self.productos_window.raise_()
             self.productos_window.activateWindow()
@@ -141,7 +138,7 @@ class MainWindowPySide6(QMainWindow):
         """Ouvrir la fenêtre d'organisation"""
         try:
             if self.organizacion_window is None:
-                self.organizacion_window = OrganizacionPySide6Window()
+                self.organizacion_window = OrganizacionPyQt5Window()
             self.organizacion_window.show()
             self.organizacion_window.raise_()
             self.organizacion_window.activateWindow()
@@ -152,7 +149,7 @@ class MainWindowPySide6(QMainWindow):
         """Ouvrir la fenêtre de stock"""
         try:
             if self.stock_window is None:
-                self.stock_window = StockPySide6Window()
+                self.stock_window = StockPyQt5Window()
             self.stock_window.show()
             self.stock_window.raise_()
             self.stock_window.activateWindow()
@@ -163,7 +160,7 @@ class MainWindowPySide6(QMainWindow):
         """Ouvrir la fenêtre des factures"""
         try:
             if self.facturas_window is None:
-                self.facturas_window = FacturasPySide6Window()
+                self.facturas_window = FacturasPyQt5Window()
             self.facturas_window.show()
             self.facturas_window.raise_()
             self.facturas_window.activateWindow()
@@ -174,7 +171,7 @@ class MainWindowPySide6(QMainWindow):
         """Ouvrir la fenêtre des clients"""
         try:
             if self.clientes_window is None:
-                self.clientes_window = ClientesPySide6Window()
+                self.clientes_window = ClientesPyQt5Window()
             self.clientes_window.show()
             self.clientes_window.raise_()
             self.clientes_window.activateWindow()
@@ -191,11 +188,11 @@ class MainWindowPySide6(QMainWindow):
         reply = QMessageBox.question(
             self, 'Fermer', 
             'Êtes-vous sûr de vouloir fermer l\'application?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
         )
         
-        if reply == QMessageBox.StandardButton.Yes:
+        if reply == QMessageBox.Yes:
             # Fermer toutes les fenêtres ouvertes
             if self.productos_window:
                 self.productos_window.close()
@@ -251,7 +248,6 @@ class MainWindowPySide6(QMainWindow):
             QPushButton:hover {
                 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                     stop: 0 #5ba0f2, stop: 1 #4a90e2);
-                transform: translateY(-2px);
             }
 
             QPushButton:pressed {
