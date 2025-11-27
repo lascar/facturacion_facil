@@ -127,7 +127,7 @@ function Install-Dependencies {
     Write-Header "INSTALLATION DES DÉPENDANCES"
     
     # Activer l'environnement virtuel
-    & "venv\Scripts\Activate.ps1"
+    . "venv\Scripts\Activate.ps1"
     
     # Mettre à jour pip
     Write-Info "Mise à jour de pip..."
@@ -149,7 +149,7 @@ function Test-Installation {
     Write-Header "TEST DE L'INSTALLATION"
     
     # Activer l'environnement virtuel
-    & "venv\Scripts\Activate.ps1"
+    . "venv\Scripts\Activate.ps1"
     
     # Exécuter le test de compatibilité
     python test_windows11_compatibility.py
@@ -219,16 +219,16 @@ try {
         Write-Success "Facturación Fácil est prêt à être utilisé"
         Write-Info "Pour lancer l'application:"
         Write-Host "  1. Ouvrir PowerShell dans ce dossier"
-        Write-Host "  2. Exécuter: & 'venv\Scripts\Activate.ps1'"
+        Write-Host "  2. Executer: venv\Scripts\Activate.ps1"
         Write-Host "  3. Exécuter: python main.py"
         
         $launch = Read-Host "Lancer l'application maintenant? (y/N)"
         if ($launch -eq "y" -or $launch -eq "Y") {
-            & "venv\Scripts\Activate.ps1"
+            . "venv\Scripts\Activate.ps1"
             python main.py
         }
     } else {
-        Write-Error "L'installation a échoué. Consultez les messages d'erreur ci-dessus."
+        Write-Error "L'installation a echoue. Consultez les messages d'erreur ci-dessus."
         exit 1
     }
     
