@@ -105,11 +105,27 @@ echo 📝 Creando scripts de la aplicación...
     echo echo ✅ Respaldo creado
     echo.
     echo echo 📥 Descargando actualizaciones...
-    echo git pull origin main
+    echo echo    Probando rama main...
+    echo git pull origin main ^>nul 2^>^&1
     echo if errorlevel 1 ^(
-    echo     echo ❌ Error al descargar actualizaciones
-    echo     pause
-    echo     exit /b 1
+    echo     echo    main no encontrada, probando master...
+    echo     git pull origin master ^>nul 2^>^&1
+    echo     if errorlevel 1 ^(
+    echo         echo    Probando rama por defecto...
+    echo         git pull ^>nul 2^>^&1
+    echo         if errorlevel 1 ^(
+    echo             echo ❌ Error: No se pudo actualizar desde ninguna rama
+    echo             echo 💡 Verificar conexión y configuración Git
+    echo             pause
+    echo             exit /b 1
+    echo         ^) else ^(
+    echo             echo ✅ Actualizado desde rama por defecto
+    echo         ^)
+    echo     ^) else ^(
+    echo         echo ✅ Actualizado desde rama master
+    echo     ^)
+    echo ^) else ^(
+    echo     echo ✅ Actualizado desde rama main
     echo ^)
     echo.
     echo echo 📦 Actualizando dependencias...
