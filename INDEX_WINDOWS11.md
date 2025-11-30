@@ -131,9 +131,20 @@ Après avoir suivi ce guide, tu auras :
 
 ### **Mise à jour**
 ```bash
+# Méthode automatique (recommandée)
+update.bat
+
+# Ou méthode manuelle
 git pull
 install.bat  # Réinstaller si nouvelles dépendances
 ```
+
+### **Scripts de mise à jour disponibles**
+- `update.bat` - Mise à jour automatique complète
+- `backup.bat` - Sauvegarde avant mise à jour
+- `restore.bat` - Restauration en cas de problème
+- `diagnostic_update.bat` - Diagnostic avant mise à jour
+- `update.ps1` - Version PowerShell avancée
 
 ### **Partage avec d'autres utilisateurs**
 Partager ces fichiers avec les instructions :
