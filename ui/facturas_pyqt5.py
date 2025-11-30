@@ -38,9 +38,12 @@ class FacturasPyQt5Window(BasePyQt5Window):
         
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
-        # Layout principal
-        main_layout = QVBoxLayout(self)
-        
+        # Activer le scroll pour cette fenêtre (contenu très long)
+        self.enable_window_scroll(enable_horizontal=False, enable_vertical=True)
+
+        # Obtenir le layout de contenu (scrollable ou normal)
+        main_layout = self.get_content_layout()
+
         # Titre
         title_label = QLabel("Gestión de Facturas")
         title_label.setAlignment(Qt.AlignCenter)

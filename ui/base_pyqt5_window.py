@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Fenêtre de base PySide2 pour toutes les fenêtres secondaires
+Fenêtre de base PyQt5 pour toutes les fenêtres secondaires avec support du scroll
 """
 
 from PyQt5.QtWidgets import (
@@ -14,27 +14,29 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal as Signal
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from utils.logger import get_logger
+from ui.scroll_mixin_pyqt5 import ScrollableMixin
 import os
 
-class BasePyQt5Window(QDialog):
+class BasePyQt5Window(ScrollableMixin, QDialog):
     """Classe de base pour toutes les fenêtres secondaires PySide2"""
     
     # Signaux PySide2
     window_closed = Signal()
     data_changed = Signal()
     
-    def __init__(self, parent=None, title="Ventana", width=800, height=600):
+    def __init__(self, parent=None, title="Ventana", width=800, height=600, enable_scroll=True):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
-        
+
         # Configuration de base
         self.setWindowTitle(title)
         self.setModal(False)
         self.resize(width, height)
-        
+
         # Variables communes
         self.data_modified = False
-        
+        self.enable_scroll = enable_scroll
+
         # Appliquer les styles globaux
         self.apply_global_styles()
 
@@ -192,7 +194,36 @@ class BasePyQt5Window(QDialog):
     def setup_connections(self):
         """À implémenter dans les classes filles"""
         pass
-        
+
+    def enable_window_scroll(self, enable_horizontal=False, enable_vertical=True):
+        """
+        Active le scroll pour la fenêtre.
+        À appeler dans setup_ui() des classes filles si nécessaire.
+
+        Args:
+            enable_horizontal (bool): Activer le scroll horizontal
+            enable_vertical (bool): Activer le scroll vertical
+        """
+        if self.enable_scroll:
+            self.setup_scrollable_content(enable_horizontal, enable_vertical)
+            self.logger.debug(f"Scroll activé pour {self.__class__.__name__}")
+
+    def get_content_layout(self):
+        """
+        Retourne le layout où ajouter le contenu.
+        Si le scroll est activé, retourne le layout scrollable.
+        Sinon, retourne le layout principal de la fenêtre.
+        """
+        if self.enable_scroll and hasattr(self, 'scrollable_widget') and self.scrollable_widget:
+            return self.get_scrollable_layout()
+        else:
+            # Créer un layout principal si aucun n'existe
+            if not self.layout():
+                layout = QVBoxLayout(self)
+                layout.setContentsMargins(10, 10, 10, 10)
+                layout.setSpacing(10)
+            return self.layout()
+
     def center_window(self):
         """Centrer la fenêtre sur l'écran"""
         try:

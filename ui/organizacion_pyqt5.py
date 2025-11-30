@@ -37,34 +37,37 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
-        # Layout principal
-        main_layout = QVBoxLayout(self)
-        
+        # Activer le scroll pour cette fenêtre (contenu long)
+        self.enable_window_scroll(enable_horizontal=False, enable_vertical=True)
+
+        # Obtenir le layout de contenu (scrollable ou normal)
+        main_layout = self.get_content_layout()
+
         # Titre
         title_label = QLabel("Configuración de la Empresa")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setFont(QFont("Arial", 16, QFont.Bold))
         main_layout.addWidget(title_label)
-        
+
         # Configuration des sections
         self.setup_company_form(main_layout)
         self.setup_invoice_statuses_section(main_layout)
 
-        # Boutons
+        # Boutons (toujours visibles en bas)
         buttons_layout = QHBoxLayout()
-        
+
         self.save_btn = QPushButton("💾 Guardar Configuración")
         self.reset_btn = QPushButton("🔄 Restablecer")
-        
+
         buttons_layout.addWidget(self.save_btn)
         buttons_layout.addWidget(self.reset_btn)
         buttons_layout.addStretch()
-        
+
         main_layout.addLayout(buttons_layout)
-        
+
         # Connexions
         self.setup_connections()
-        
+
         # Appliquer le style
         self.apply_style()
         
