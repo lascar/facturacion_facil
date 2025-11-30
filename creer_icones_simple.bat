@@ -150,43 +150,47 @@ echo 🔧 Création des scripts de lancement...
 echo ✅ Scripts créés
 echo.
 
-:: Créer les icônes sur le bureau
+:: Créer les icônes sur le bureau avec VBScript (plus compatible)
 echo 🖥️  Création des icônes sur le bureau...
 
-:: Icône de lancement
-echo    🚀 Création de l'icône de lancement...
-powershell -Command ^
-"try { ^
-    $WshShell = New-Object -comObject WScript.Shell; ^
-    $Shortcut = $WshShell.CreateShortcut('%BUREAU%\Facturacion Facil.lnk'); ^
-    $Shortcut.TargetPath = '%DOSSIER_APP%\Lancer_Application.bat'; ^
-    $Shortcut.WorkingDirectory = '%DOSSIER_APP%'; ^
-    $Shortcut.Description = 'Lancer Facturacion Facil'; ^
-    if (Test-Path '%DOSSIER_APP%\assets\icon.ico') { ^
-        $Shortcut.IconLocation = '%DOSSIER_APP%\assets\icon.ico,0'; ^
-    }; ^
-    $Shortcut.Save(); ^
-    Write-Host '       ✅ Icône de lancement créée sur le bureau' -ForegroundColor Green; ^
-} catch { ^
-    Write-Host '       ❌ Erreur création icône lancement' -ForegroundColor Red; ^
-    Write-Host $_.Exception.Message -ForegroundColor Red; ^
-}"
+:: Créer un script VBScript temporaire pour les raccourcis
+echo Set WshShell = WScript.CreateObject("WScript.Shell") > temp_shortcut.vbs
+echo Set Shortcut = WshShell.CreateShortcut("%BUREAU%\Facturacion Facil.lnk") >> temp_shortcut.vbs
+echo Shortcut.TargetPath = "%DOSSIER_APP%\Lancer_Application.bat" >> temp_shortcut.vbs
+echo Shortcut.WorkingDirectory = "%DOSSIER_APP%" >> temp_shortcut.vbs
+echo Shortcut.Description = "Lancer Facturacion Facil" >> temp_shortcut.vbs
+echo If CreateObject("Scripting.FileSystemObject").FileExists("%DOSSIER_APP%\assets\icon.ico") Then >> temp_shortcut.vbs
+echo     Shortcut.IconLocation = "%DOSSIER_APP%\assets\icon.ico,0" >> temp_shortcut.vbs
+echo End If >> temp_shortcut.vbs
+echo Shortcut.Save >> temp_shortcut.vbs
 
-:: Icône de mise à jour
+echo    🚀 Création de l'icône de lancement...
+cscript //nologo temp_shortcut.vbs
+if %errorlevel%==0 (
+    echo       ✅ Icône de lancement créée sur le bureau
+) else (
+    echo       ❌ Erreur création icône lancement
+)
+
+:: Créer le raccourci de mise à jour
+echo Set WshShell = WScript.CreateObject("WScript.Shell") > temp_update.vbs
+echo Set Shortcut = WshShell.CreateShortcut("%BUREAU%\Mise a Jour Facturacion Facil.lnk") >> temp_update.vbs
+echo Shortcut.TargetPath = "%DOSSIER_APP%\Mettre_a_Jour.bat" >> temp_update.vbs
+echo Shortcut.WorkingDirectory = "%DOSSIER_APP%" >> temp_update.vbs
+echo Shortcut.Description = "Mettre a jour Facturacion Facil depuis GitHub" >> temp_update.vbs
+echo Shortcut.Save >> temp_update.vbs
+
 echo    🔄 Création de l'icône de mise à jour...
-powershell -Command ^
-"try { ^
-    $WshShell = New-Object -comObject WScript.Shell; ^
-    $Shortcut = $WshShell.CreateShortcut('%BUREAU%\Mise a Jour Facturacion Facil.lnk'); ^
-    $Shortcut.TargetPath = '%DOSSIER_APP%\Mettre_a_Jour.bat'; ^
-    $Shortcut.WorkingDirectory = '%DOSSIER_APP%'; ^
-    $Shortcut.Description = 'Mettre a jour Facturacion Facil depuis GitHub'; ^
-    $Shortcut.Save(); ^
-    Write-Host '       ✅ Icône de mise à jour créée sur le bureau' -ForegroundColor Green; ^
-} catch { ^
-    Write-Host '       ❌ Erreur création icône mise à jour' -ForegroundColor Red; ^
-    Write-Host $_.Exception.Message -ForegroundColor Red; ^
-}"
+cscript //nologo temp_update.vbs
+if %errorlevel%==0 (
+    echo       ✅ Icône de mise à jour créée sur le bureau
+) else (
+    echo       ❌ Erreur création icône mise à jour
+)
+
+:: Nettoyer les fichiers temporaires
+del temp_shortcut.vbs >nul 2>&1
+del temp_update.vbs >nul 2>&1
 
 echo.
 echo ╔══════════════════════════════════════════════════════════════╗
@@ -195,10 +199,10 @@ echo ╚════════════════════════
 echo.
 echo 🖥️  Regardez sur votre bureau, vous devriez voir:
 echo.
-echo     🚀 Facturación Fácil
+echo     🚀 Facturacion Facil
 echo        → Double-clic pour lancer l'application
 echo.
-echo     🔄 Mise à Jour Facturación Fácil
+echo     🔄 Mise a Jour Facturacion Facil
 echo        → Double-clic pour mettre à jour depuis GitHub
 echo.
 echo 💡 UTILISATION:
