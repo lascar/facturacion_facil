@@ -59,14 +59,8 @@ def main():
         log_error(f"Error crítico al iniciar la aplicación: {str(e)}")
 
         # Mostrar error al usuario
-        try:
-            import tkinter.messagebox as messagebox
-            messagebox.showerror(
-                "Error Crítico",
-                f"Error inesperado en la aplicación:\n{str(e)}\n\nRevisa los logs en el directorio 'logs' para más detalles."
-            )
-        except:
-            print(f"Error crítico: {str(e)}")
+        print(f"Error crítico: {str(e)}")
+        print("Revisa los logs en el directorio 'logs' para más detalles.")
 
         sys.exit(1)
 

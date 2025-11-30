@@ -14,6 +14,7 @@ from PyQt6.QtGui import QFont, QColor
 from ui.base_pyqt6_window import BasePyQt6Window
 from database.database import db
 from utils.logger import get_logger
+from utils.event_manager import event_manager
 
 class StockPyQt6Window(BasePyQt6Window):
     """Fenêtre de gestion du stock en PyQt6 natif"""
@@ -21,9 +22,22 @@ class StockPyQt6Window(BasePyQt6Window):
     def __init__(self, parent=None):
         super().__init__(parent, "Gestión de Stock", 1000, 700)
         self.logger = get_logger("stock_pyqt6")
-        
+
+        # Connecter aux signaux d'événements
+        self.connect_event_signals()
+
         self.logger.info("Inicializando ventana de gestión de stock PyQt6")
-    
+
+    def connect_event_signals(self):
+        """Connecte aux signaux d'événements pour la synchronisation"""
+        # Écouter les modifications de produits
+        event_manager.product_created.connect(self.on_product_created)
+        event_manager.product_updated.connect(self.on_product_updated)
+        event_manager.product_deleted.connect(self.on_product_deleted)
+
+        # Écouter les modifications de factures (qui peuvent affecter le stock)
+        event_manager.invoice_created.connect(self.on_invoice_created)
+
     def setup_ui(self):
         """Configure l'interface utilisateur"""
         # Titre
@@ -254,12 +268,18 @@ class StockPyQt6Window(BasePyQt6Window):
     def adjust_stock(self, product_id, adjustment):
         """Ajuste le stock d'un produit de manière fluide"""
         try:
+            # Obtenir l'ancien stock pour le signal
+            old_stock = self.get_current_stock_from_table(product_id)
+
             # Ajuster le stock en base de données
             new_stock = db.adjust_product_stock(product_id, adjustment)
 
             if new_stock is not False:
                 # Mettre à jour seulement la ligne concernée (plus rapide)
                 self.update_single_product_row(product_id, new_stock)
+
+                # Émettre un signal pour notifier les autres fenêtres
+                event_manager.emit_stock_adjusted(product_id, old_stock, new_stock)
 
                 # Indicateur visuel temporaire dans la barre de statut
                 action_symbol = "📈" if adjustment > 0 else "📉"
@@ -277,6 +297,20 @@ class StockPyQt6Window(BasePyQt6Window):
             # Seulement afficher l'erreur si c'est critique
             if "database" in str(e).lower():
                 self.show_error("Error de Base de Datos", "Error al conectar con la base de datos")
+
+    def get_current_stock_from_table(self, product_id):
+        """Obtient le stock actuel d'un produit depuis la table"""
+        try:
+            for row in range(self.stock_table.rowCount()):
+                id_item = self.stock_table.item(row, 7)  # Colonne ID cachée
+                if id_item and int(id_item.text()) == product_id:
+                    stock_item = self.stock_table.item(row, 3)  # Colonne stock actuel
+                    if stock_item:
+                        return int(stock_item.text())
+            return 0
+        except Exception as e:
+            self.logger.error(f"Error obteniendo stock actual: {e}")
+            return 0
 
     def update_single_product_row(self, product_id, new_stock):
         """Met à jour une seule ligne de produit dans la table"""
@@ -550,3 +584,28 @@ Stock Actual: {current_stock} unidades
         except Exception as e:
             self.logger.error(f"Error exportando stock: {e}")
             self.show_error("Error de Exportación", f"No se pudo exportar el stock:\n{str(e)}")
+
+    # Méthodes de gestion des événements
+    def on_product_created(self, product_data):
+        """Gère la création d'un nouveau produit"""
+        self.logger.debug(f"Nouveau produit créé: {product_data.get('nombre', 'N/A')}")
+        # Recharger les données pour inclure le nouveau produit
+        self.load_stock_data()
+
+    def on_product_updated(self, product_data):
+        """Gère la modification d'un produit"""
+        self.logger.debug(f"Produit modifié: {product_data.get('nombre', 'N/A')}")
+        # Recharger les données pour refléter les modifications
+        self.load_stock_data()
+
+    def on_product_deleted(self, product_id):
+        """Gère la suppression d'un produit"""
+        self.logger.debug(f"Produit supprimé: {product_id}")
+        # Recharger les données pour supprimer le produit de la liste
+        self.load_stock_data()
+
+    def on_invoice_created(self, invoice_data):
+        """Gère la création d'une facture (peut affecter le stock)"""
+        self.logger.debug(f"Facture créée: {invoice_data.get('numero', 'N/A')}")
+        # Recharger les données car les stocks peuvent avoir changé
+        self.load_stock_data()

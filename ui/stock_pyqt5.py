@@ -14,6 +14,7 @@ from PyQt5.QtGui import QFont
 from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
 from utils.logger import get_logger
+from utils.event_manager_pyqt5 import event_manager
 
 class StockPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion du stock avec PyQt5"""
@@ -179,6 +180,13 @@ class StockPyQt5Window(BasePyQt5Window):
             return
 
         try:
+            # Obtenir l'ancien stock pour comparaison
+            old_stock = 0
+            for producto in self.productos:
+                if producto.get('id') == self.selected_product_id:
+                    old_stock = int(producto.get('stock_actual', 0))
+                    break
+
             nuevo_stock = self.nuevo_stock_edit.value()
             stock_minimo = self.stock_minimo_edit.value()
 
@@ -187,6 +195,10 @@ class StockPyQt5Window(BasePyQt5Window):
 
             # Mettre à jour aussi le stock minimum
             self.update_stock_minimo(self.selected_product_id, stock_minimo)
+
+            # Émettre un signal pour notifier les autres fenêtres
+            self.logger.info(f"📤 ÉMISSION SIGNAL - Stock ajusté: produit {self.selected_product_id}, {old_stock} -> {nuevo_stock}")
+            event_manager.emit_stock_adjusted(self.selected_product_id, old_stock, nuevo_stock)
 
             self.show_info("Éxito", f"Stock actualizado a {nuevo_stock} unidades\nStock mínimo: {stock_minimo}")
 

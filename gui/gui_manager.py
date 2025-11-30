@@ -44,10 +44,10 @@ class GUIManager:
         return factory.create_dialog(parent, title)
     
     def is_available(self, framework):
-        """Vérifie si un framework est disponible"""
-        if framework == 'pyqt6':
+        """Vérifie si un framework est disponible - PyQt5 uniquement"""
+        if framework == 'pyqt5':
             try:
-                import PyQt6
+                from PyQt5 import QtWidgets
                 return True
             except ImportError:
                 return False

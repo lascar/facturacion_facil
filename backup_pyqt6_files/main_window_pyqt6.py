@@ -152,11 +152,15 @@ class MainWindowPyQt6(QMainWindow):
 
     def open_productos(self):
         """Abre la ventana de productos"""
+        print("DEBUG: Abriendo ventana de productos...")
         if self.productos_window is None or not self.productos_window.isVisible():
+            print("DEBUG: Creando nueva instancia de ProductosPyQt6Window...")
             self.productos_window = ProductosPyQt6Window(self)
+            print("DEBUG: Mostrando ventana de productos...")
             self.productos_window.show()
         else:
             # Traer la ventana al frente si ya existe
+            print("DEBUG: Trayendo ventana existente al frente...")
             self.productos_window.raise_()
             self.productos_window.activateWindow()
 

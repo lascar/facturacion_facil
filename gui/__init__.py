@@ -1,30 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Module GUI PyQt6 pour Facturación Fácil
+Module GUI PyQt5 pour Facturación Fácil
 
-Ce module fournit une interface GUI moderne basée exclusivement sur PyQt6.
+Ce module fournit une interface GUI moderne basée exclusivement sur PyQt5.
 
 Usage:
-    from gui import get_gui_factory
+    from gui import set_gui_framework
 
-    # Utiliser la factory PyQt6
-    gui_factory = get_gui_factory()
-    window = gui_factory.create_window("Mon App", "800x600")
+    # L'application utilise uniquement PyQt5
+    set_gui_framework('pyqt5')
 """
 
-# Import direct de PyQt6
-from .pyqt6_impl import PyQt6GUIFactory
-
-# Factory globale
+# Factory globale (non utilisée - compatibilité uniquement)
 _gui_factory = None
 
 def get_gui_factory():
-    """Retourne la factory GUI PyQt6"""
-    global _gui_factory
-    if _gui_factory is None:
-        _gui_factory = PyQt6GUIFactory()
-    return _gui_factory
+    """Retourne None - L'application utilise PyQt5 natif"""
+    return None
 
 def set_gui_framework(framework):
     """Compatibilité - PyQt5 uniquement"""
@@ -46,13 +39,12 @@ def get_gui_manager():
 __version__ = "2.0.0"
 
 # Framework unique
-FRAMEWORK = 'pyqt6'
+FRAMEWORK = 'pyqt5'
 
 __all__ = [
     'get_gui_factory',
     'set_gui_framework',
     'get_current_framework',
     'get_gui_manager',
-    'PyQt6GUIFactory',
     'FRAMEWORK'
 ]

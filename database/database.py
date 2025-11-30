@@ -23,7 +23,7 @@ class Database:
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
-                referencia TEXT UNIQUE NOT NULL,
+                referencia TEXT UNIQUE,
                 precio REAL NOT NULL,
                 categoria TEXT,
                 descripcion TEXT,
@@ -72,6 +72,16 @@ class Database:
         except sqlite3.OperationalError:
             pass  # La columna ya existe
 
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN logo_orientation TEXT DEFAULT \'landscape\'')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_logos_storage TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
         # Migración: Añadir columnas de stock a productos
         try:
             cursor.execute('ALTER TABLE productos ADD COLUMN stock_actual INTEGER DEFAULT 0')
@@ -82,6 +92,90 @@ class Database:
             cursor.execute('ALTER TABLE productos ADD COLUMN stock_minimo INTEGER DEFAULT 5')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
+
+        # Migración: Hacer la referencia opcional (no obligatoria)
+        try:
+            # Verificar la estructura actual de la tabla productos
+            cursor.execute("PRAGMA table_info(productos)")
+            columns = cursor.fetchall()
+            referencia_column = next((col for col in columns if col[1] == 'referencia'), None)
+
+            print(f"DEBUG: Columna referencia encontrada: {referencia_column}")
+
+            # Verificar si referencia tiene NOT NULL (columna 3 = notnull, 1 = tiene NOT NULL)
+            if referencia_column and referencia_column[3] == 1:
+                print("DEBUG: Migración de referencia opcional necesaria...")
+
+                try:
+                    # Nettoyer d'abord si la table temp existe déjà
+                    cursor.execute("DROP TABLE IF EXISTS productos_temp")
+
+                    # Créer une nouvelle table avec referencia optionnelle (structure fixe)
+                    cursor.execute('''
+                        CREATE TABLE productos_temp (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            nombre TEXT NOT NULL,
+                            referencia TEXT UNIQUE,
+                            precio REAL NOT NULL,
+                            categoria TEXT,
+                            descripcion TEXT,
+                            imagen_path TEXT,
+                            iva_recomendado REAL DEFAULT 21.0,
+                            stock_actual INTEGER DEFAULT 0,
+                            stock_minimo INTEGER DEFAULT 5,
+                            fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    ''')
+                    print("DEBUG: Table productos_temp créée avec referencia optionnelle")
+
+                    # Copier les données existantes (en remplaçant les références vides par NULL)
+                    cursor.execute('''
+                        INSERT INTO productos_temp (id, nombre, referencia, precio, categoria, descripcion, imagen_path, iva_recomendado, stock_actual, stock_minimo, fecha_creacion)
+                        SELECT id, nombre,
+                               CASE WHEN referencia = '' OR referencia IS NULL THEN NULL ELSE referencia END as referencia,
+                               precio, categoria, descripcion, imagen_path, iva_recomendado,
+                               stock_actual, stock_minimo, fecha_creacion
+                        FROM productos
+                    ''')
+                    print("DEBUG: Données copiées vers productos_temp")
+
+                    # Supprimer l'ancienne table et renommer
+                    cursor.execute('DROP TABLE productos')
+                    cursor.execute('ALTER TABLE productos_temp RENAME TO productos')
+                    print("DEBUG: Table productos remplacée")
+
+                    # Vérifier que la migration a réussi
+                    cursor.execute("PRAGMA table_info(productos)")
+                    new_columns = cursor.fetchall()
+                    new_ref_column = next((col for col in new_columns if col[1] == 'referencia'), None)
+
+                    if new_ref_column and new_ref_column[3] == 0:  # notnull = 0 (optionnel)
+                        print("DEBUG: Migration referencia opcional terminée avec succès ✅")
+                    else:
+                        print(f"DEBUG: Migration échouée, referencia toujours NOT NULL: {new_ref_column}")
+
+                    # Commit pour sauvegarder la migration
+                    conn.commit()
+                    print("DEBUG: Migration commitée avec succès")
+
+                except Exception as migration_error:
+                    print(f"DEBUG: Erreur pendant la migration: {migration_error}")
+                    conn.rollback()
+                    # Nettoyer en cas d'erreur
+                    try:
+                        cursor.execute("DROP TABLE IF EXISTS productos_temp")
+                    except:
+                        pass
+                    raise migration_error
+            else:
+                print("DEBUG: Referencia déjà optionnelle, migration non nécessaire")
+
+        except Exception as e:
+            print(f"DEBUG: Erreur migration referencia: {e}")
+            import traceback
+            traceback.print_exc()
+            pass  # Continuer même en cas d'erreur
 
         # Migración: Cambiar numero_factura_inicial de INTEGER a TEXT para soportar formatos como "2025-FACT-1"
         try:
@@ -645,14 +739,15 @@ class Database:
             stock_minimo = product_data.get('stock_minimo', 5)
 
             cursor.execute("""
-                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, stock_actual, stock_minimo)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, iva_recomendado, stock_actual, stock_minimo)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 product_data['nombre'],
                 product_data['referencia'],
                 product_data['precio_venta'],
                 product_data['categoria'],
                 product_data['descripcion'],
+                product_data.get('iva_recomendado', 21.0),
                 stock_actual,
                 stock_minimo
             ))
@@ -680,7 +775,7 @@ class Database:
 
             cursor.execute("""
                 UPDATE productos
-                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, stock_actual = ?, stock_minimo = ?
+                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, iva_recomendado = ?, stock_actual = ?, stock_minimo = ?
                 WHERE id = ?
             """, (
                 product_data['nombre'],
@@ -688,6 +783,7 @@ class Database:
                 product_data['precio_venta'],
                 product_data['categoria'],
                 product_data['descripcion'],
+                product_data.get('iva_recomendado', 21.0),
                 stock_actual,
                 stock_minimo,
                 product_data['id']
@@ -1462,6 +1558,118 @@ class Database:
         except Exception as e:
             self.logger.error(f"Error obteniendo estado por nombre {status_name}: {e}")
             return None
+
+    # ==================== MÉTODOS PARA ORGANIZACIÓN ====================
+
+    def get_organization_info(self):
+        """Obtiene la información de la organización"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, direccion, telefono, email, cif, logo_path,
+                       directorio_imagenes_defecto, numero_factura_inicial,
+                       directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation,
+                       directorio_logos_storage
+                FROM organizacion
+                WHERE id = 1
+            """)
+
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                return {
+                    'id': row[0],
+                    'nombre': row[1] or '',
+                    'direccion': row[2] or '',
+                    'telefono': row[3] or '',
+                    'email': row[4] or '',
+                    'cif': row[5] or '',
+                    'logo_path': row[6] or '',
+                    'directorio_imagenes_defecto': row[7] or '',
+                    'numero_factura_inicial': row[8] or '1',
+                    'directorio_descargas_pdf': row[9] or '',
+                    'visor_pdf_personalizado': row[10] or '',
+                    'logo_orientation': row[11] if len(row) > 11 else 'landscape',
+                    'directorio_logos_storage': row[12] if len(row) > 12 else ''
+                }
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo información de organización: {e}")
+            return None
+
+    def create_organization(self, org_data):
+        """Crea la información de la organización"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO organizacion
+                (id, nombre, direccion, telefono, email, cif, logo_path,
+                 directorio_imagenes_defecto, numero_factura_inicial,
+                 directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation,
+                 directorio_logos_storage)
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                org_data.get('nombre', ''),
+                org_data.get('direccion', ''),
+                org_data.get('telefono', ''),
+                org_data.get('email', ''),
+                org_data.get('cif', ''),
+                org_data.get('logo_path', ''),
+                org_data.get('directorio_imagenes_defecto', ''),
+                org_data.get('numero_factura_inicial', '1'),
+                org_data.get('directorio_descargas_pdf', ''),
+                org_data.get('visor_pdf_personalizado', ''),
+                org_data.get('logo_orientation', 'landscape'),
+                org_data.get('directorio_logos_storage', '')
+            ))
+
+            conn.commit()
+            conn.close()
+            self.logger.info("Información de organización creada")
+
+        except Exception as e:
+            self.logger.error(f"Error creando organización: {e}")
+            raise e
+
+    def update_organization(self, org_data):
+        """Actualiza la información de la organización"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE organizacion
+                SET nombre = ?, direccion = ?, telefono = ?, email = ?, cif = ?,
+                    logo_path = ?, directorio_imagenes_defecto = ?, numero_factura_inicial = ?,
+                    directorio_descargas_pdf = ?, visor_pdf_personalizado = ?, logo_orientation = ?,
+                    directorio_logos_storage = ?, fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (
+                org_data.get('nombre', ''),
+                org_data.get('direccion', ''),
+                org_data.get('telefono', ''),
+                org_data.get('email', ''),
+                org_data.get('cif', ''),
+                org_data.get('logo_path', ''),
+                org_data.get('directorio_imagenes_defecto', ''),
+                org_data.get('numero_factura_inicial', '1'),
+                org_data.get('directorio_descargas_pdf', ''),
+                org_data.get('visor_pdf_personalizado', ''),
+                org_data.get('logo_orientation', 'landscape'),
+                org_data.get('directorio_logos_storage', ''),
+                org_data.get('id', 1)
+            ))
+
+            conn.commit()
+            conn.close()
+            self.logger.info(f"Información de organización actualizada")
+
+        except Exception as e:
+            self.logger.error(f"Error actualizando organización: {e}")
+            raise e
 
 # Instancia global de la base de datos
 db = Database()

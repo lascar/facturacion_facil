@@ -35,17 +35,160 @@ class BasePyQt5Window(QDialog):
         # Variables communes
         self.data_modified = False
         
+        # Appliquer les styles globaux
+        self.apply_global_styles()
+
         # Configuration de l'interface
         self.setup_ui()
         self.setup_connections()
-        
+
         # Centrer la fenêtre
         self.center_window()
         
+    def apply_global_styles(self):
+        """Appliquer les styles globaux pour améliorer la lisibilité"""
+        global_style = """
+            QLineEdit {
+                min-height: 28px;
+                padding: 4px 8px;
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+            }
+
+            QLineEdit:focus {
+                border: 2px solid #0078d4;
+                background-color: #f8f9fa;
+            }
+
+            QLineEdit:disabled {
+                background-color: #f5f5f5;
+                color: #666;
+            }
+
+            QTextEdit {
+                min-height: 80px;
+                padding: 4px 8px;
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+            }
+
+            QTextEdit:focus {
+                border: 2px solid #0078d4;
+                background-color: #f8f9fa;
+            }
+
+            QComboBox {
+                min-height: 28px;
+                padding: 4px 8px;
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+            }
+
+            QComboBox:focus {
+                border: 2px solid #0078d4;
+            }
+
+            QSpinBox, QDoubleSpinBox {
+                min-height: 28px;
+                padding: 4px 8px;
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+            }
+
+            QSpinBox:focus, QDoubleSpinBox:focus {
+                border: 2px solid #0078d4;
+            }
+
+            QPushButton {
+                min-height: 32px;
+                padding: 6px 12px;
+                font-size: 13px;
+                font-weight: 500;
+                border: 1px solid #0078d4;
+                border-radius: 4px;
+                background-color: #0078d4;
+                color: white;
+            }
+
+            QPushButton:hover {
+                background-color: #106ebe;
+                border-color: #106ebe;
+            }
+
+            QPushButton:pressed {
+                background-color: #005a9e;
+                border-color: #005a9e;
+            }
+
+            QPushButton:disabled {
+                background-color: #f5f5f5;
+                border-color: #ccc;
+                color: #666;
+            }
+
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #ccc;
+                border-radius: 6px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 8px 0 8px;
+                background-color: white;
+            }
+
+            QLabel {
+                font-size: 13px;
+                color: #333;
+            }
+
+            QTableWidget {
+                gridline-color: #e0e0e0;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+                selection-background-color: #0078d4;
+                selection-color: white;
+                font-size: 12px;
+            }
+
+            QTableWidget::item {
+                padding: 8px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            QTableWidget::item:selected {
+                background-color: #0078d4;
+                color: white;
+            }
+
+            QHeaderView::section {
+                background-color: #f1f3f4;
+                padding: 8px;
+                border: 1px solid #e0e0e0;
+                font-weight: bold;
+                font-size: 12px;
+            }
+        """
+
+        self.setStyleSheet(global_style)
+
     def setup_ui(self):
         """À implémenter dans les classes filles"""
         pass
-        
+
     def setup_connections(self):
         """À implémenter dans les classes filles"""
         pass

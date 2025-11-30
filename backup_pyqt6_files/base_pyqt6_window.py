@@ -214,7 +214,27 @@ class BasePyQt6Window(QDialog):
                         background-color: #218838;
                     }
                 """)
-            
+            elif style_class == "info":
+                button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #17a2b8;
+                        color: white;
+                    }
+                    QPushButton:hover {
+                        background-color: #138496;
+                    }
+                """)
+            elif style_class == "primary":
+                button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #007bff;
+                        color: white;
+                    }
+                    QPushButton:hover {
+                        background-color: #0056b3;
+                    }
+                """)
+
             layout.addWidget(button)
         
         return layout
