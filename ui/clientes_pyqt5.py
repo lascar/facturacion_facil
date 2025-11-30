@@ -236,12 +236,156 @@ class ClientesPyQt5Window(BasePyQt5Window):
             self.show_warning("Selección", "Seleccione un cliente para eliminar")
             return
 
-        if self.ask_confirmation("Confirmar", "¿Está seguro de eliminar este cliente?"):
+        # Vérifier d'abord si le client a des factures
+        try:
+            conn = db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM facturas WHERE cliente_id = ?", (self.selected_cliente_id,))
+            invoice_count = cursor.fetchone()[0]
+
+            # Obtenir les informations du client
+            cursor.execute("SELECT nombre FROM clientes WHERE id = ?", (self.selected_cliente_id,))
+            client_result = cursor.fetchone()
+            client_name = client_result[0] if client_result else "Cliente"
+            conn.close()
+
+            if invoice_count > 0:
+                # Le client a des factures, proposer des options
+                self.show_client_with_invoices_dialog(client_name, invoice_count)
+                return
+
+        except Exception as e:
+            self.logger.error(f"Error verificando facturas del cliente: {e}")
+            self.show_error("Error", f"Error al verificar las facturas del cliente: {str(e)}")
+            return
+
+        # Le client n'a pas de factures, procéder à la suppression normale
+        if self.ask_confirmation("Confirmar", f"¿Está seguro de eliminar el cliente '{client_name}'?"):
             try:
                 db.delete_client(self.selected_cliente_id)
                 self.show_info("Éxito", "Cliente eliminado correctamente")
                 self.load_clientes()
                 self.new_cliente()
             except Exception as e:
-                self.logger.error(f"Erreur suppression client: {e}")
+                self.logger.error(f"Error suppression client: {e}")
                 self.show_error("Error", f"Error al eliminar el cliente: {str(e)}")
+
+    def show_client_with_invoices_dialog(self, client_name, invoice_count):
+        """Afficher un dialogue avec options quand le client a des factures"""
+        from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QMessageBox
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Cliente con Facturas")
+        dialog.setModal(True)
+        dialog.resize(500, 300)
+
+        layout = QVBoxLayout(dialog)
+
+        # Message principal
+        title_label = QLabel(f"<h3>No se puede eliminar el cliente '{client_name}'</h3>")
+        layout.addWidget(title_label)
+
+        info_label = QLabel(f"Este cliente tiene <b>{invoice_count} factura(s)</b> asociada(s).")
+        layout.addWidget(info_label)
+
+        explanation_label = QLabel(
+            "Para mantener la integridad de los datos, no se puede eliminar un cliente "
+            "que tiene facturas asociadas."
+        )
+        explanation_label.setWordWrap(True)
+        layout.addWidget(explanation_label)
+
+        # Opciones disponibles
+        options_label = QLabel("<h4>Opciones disponibles:</h4>")
+        layout.addWidget(options_label)
+
+        option1_label = QLabel("• <b>Ver facturas:</b> Consultar las facturas de este cliente")
+        layout.addWidget(option1_label)
+
+        option2_label = QLabel("• <b>Eliminar facturas:</b> Eliminar primero todas las facturas del cliente")
+        layout.addWidget(option2_label)
+
+        option3_label = QLabel("• <b>Cancelar:</b> Mantener el cliente y sus facturas")
+        layout.addWidget(option3_label)
+
+        # Botones
+        buttons_layout = QHBoxLayout()
+
+        view_invoices_btn = QPushButton("Ver Facturas")
+        view_invoices_btn.clicked.connect(lambda: self.view_client_invoices(dialog))
+        buttons_layout.addWidget(view_invoices_btn)
+
+        delete_invoices_btn = QPushButton("Eliminar Facturas")
+        delete_invoices_btn.setStyleSheet("background-color: #dc3545; color: white;")
+        delete_invoices_btn.clicked.connect(lambda: self.delete_client_invoices(dialog, client_name, invoice_count))
+        buttons_layout.addWidget(delete_invoices_btn)
+
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+        buttons_layout.addWidget(cancel_btn)
+
+        layout.addLayout(buttons_layout)
+
+        dialog.exec_()
+
+    def view_client_invoices(self, dialog):
+        """Ouvrir la fenêtre des factures avec filtre sur le client"""
+        dialog.accept()
+
+        # Obtenir le nom du client
+        try:
+            conn = db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT nombre FROM clientes WHERE id = ?", (self.selected_cliente_id,))
+            client_result = cursor.fetchone()
+            client_name = client_result[0] if client_result else "Cliente"
+            conn.close()
+
+            self.show_info("Información",
+                          f"Abre la ventana de Facturas para ver las facturas del cliente '{client_name}'.\n\n"
+                          f"Puedes filtrar por cliente o eliminar las facturas individualmente.")
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo nombre del cliente: {e}")
+
+    def delete_client_invoices(self, dialog, client_name, invoice_count):
+        """Eliminar todas las facturas del cliente y luego el cliente"""
+        # Confirmar la eliminación de las facturas
+        reply = QMessageBox.question(
+            dialog,
+            "Confirmar Eliminación de Facturas",
+            f"¿Está seguro de eliminar las {invoice_count} factura(s) del cliente '{client_name}'?\n\n"
+            f"Esta acción eliminará:\n"
+            f"• Todas las facturas del cliente\n"
+            f"• El cliente '{client_name}'\n\n"
+            f"Esta acción NO se puede deshacer.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            try:
+                # Obtener los IDs de las facturas del cliente
+                conn = db.get_connection()
+                cursor = conn.cursor()
+                cursor.execute("SELECT id FROM facturas WHERE cliente_id = ?", (self.selected_cliente_id,))
+                invoice_ids = [row[0] for row in cursor.fetchall()]
+                conn.close()
+
+                # Eliminar las facturas
+                if invoice_ids:
+                    deleted_invoices = db.delete_multiple_invoices(invoice_ids)
+                    self.logger.info(f"Eliminadas {deleted_invoices} facturas del cliente {self.selected_cliente_id}")
+
+                # Ahora eliminar el cliente
+                db.delete_client(self.selected_cliente_id)
+
+                dialog.accept()
+                self.show_info("Éxito",
+                              f"Cliente '{client_name}' y sus {invoice_count} factura(s) eliminados correctamente")
+                self.load_clientes()
+                self.new_cliente()
+
+            except Exception as e:
+                self.logger.error(f"Error eliminando cliente y facturas: {e}")
+                self.show_error("Error", f"Error al eliminar el cliente y sus facturas: {str(e)}")
