@@ -537,9 +537,9 @@ class Stock:
     
     @staticmethod
     def update_stock(producto_id, cantidad_vendida):
-        """Actualiza el stock después de una venta"""
+        """Actualiza el stock después de una venta - permite stocks negativos"""
         current_stock = Stock.get_by_product(producto_id)
-        new_stock = max(0, current_stock - cantidad_vendida)
+        new_stock = current_stock - cantidad_vendida  # Permitir stocks negativos
         query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
                   WHERE producto_id=?'''
         db.execute_query(query, (new_stock, producto_id))

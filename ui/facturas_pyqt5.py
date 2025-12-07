@@ -18,6 +18,7 @@ from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
+from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
 
 class FacturasPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion des factures avec PyQt5"""
@@ -42,26 +43,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Charger les données
         self.load_facturas()
 
-    def _ensure_dialog_on_top(self, dialog):
-        """S'assurer qu'un dialog apparaît au premier plan - Version renforcée"""
-        if dialog and dialog.isVisible():
-            # Méthode agressive pour forcer au premier plan
-            dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)
-            dialog.show()
-            dialog.raise_()
-            dialog.activateWindow()
-            dialog.setFocus()
 
-            # Retirer le flag "always on top" après 500ms pour éviter qu'il reste toujours au-dessus
-            from PyQt5.QtCore import QTimer
-            def remove_always_on_top():
-                if dialog and dialog.isVisible():
-                    dialog.setWindowFlags(dialog.windowFlags() & ~Qt.WindowStaysOnTopHint)
-                    dialog.show()
-                    dialog.raise_()
-                    dialog.activateWindow()
-
-            QTimer.singleShot(500, remove_always_on_top)
 
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
@@ -243,11 +225,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         self.crear_dialog.finished.connect(on_dialog_finished)
 
-        # Afficher le dialog (le forçage au premier plan est géré dans le constructeur)
+        # Afficher le dialog avec forçage simple multiplateforme
         self.crear_dialog.show()
-        self.crear_dialog.raise_()
-        self.crear_dialog.activateWindow()
-        self.crear_dialog.setFocus()
+        # Forcer immédiatement au premier plan avec technique simple
+        force_dialog_simple_foreground(self.crear_dialog)
 
     def view_factura(self):
         """Ver los detalles de la factura sélectionnée"""
@@ -273,17 +254,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
                 self.ver_dialog.finished.connect(on_ver_dialog_finished)
 
-                # Afficher le dialog non-modal et s'assurer qu'il apparaît au premier plan
+                # Afficher le dialog avec forçage Linux optimisé
                 self.ver_dialog.show()
-                self.ver_dialog.raise_()
-                self.ver_dialog.activateWindow()
-
-                # Forcer l'affichage au premier plan
-                self.ver_dialog.setWindowState(self.ver_dialog.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
-
-                # S'assurer que la fenêtre est visible et au premier plan
-                from PyQt5.QtCore import QTimer
-                QTimer.singleShot(100, lambda: self._ensure_dialog_on_top(self.ver_dialog))
+                # Forcer immédiatement au premier plan avec techniques Linux
+                force_dialog_to_foreground_linux(self.ver_dialog)
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
         except Exception as e:
@@ -322,18 +296,11 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
                 self.editar_dialog.finished.connect(on_edit_dialog_finished)
 
-                # Afficher le dialog non-modal et s'assurer qu'il apparaît au premier plan
+                # Afficher le dialog avec forçage simple multiplateforme
                 self.editar_dialog.show()
-                self.editar_dialog.raise_()
-                self.editar_dialog.activateWindow()
-
-                # Forcer l'affichage au premier plan
-                self.editar_dialog.setWindowState(self.editar_dialog.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
-
-                # S'assurer que la fenêtre est visible et au premier plan
-                from PyQt5.QtCore import QTimer
-                QTimer.singleShot(100, lambda: self._ensure_dialog_on_top(self.editar_dialog))
-                self.logger.debug("edit_factura() - Dialog d'édition ouvert en mode non-modal")
+                # Forcer immédiatement au premier plan avec technique simple
+                force_dialog_simple_foreground(self.editar_dialog)
+                self.logger.debug("edit_factura() - Dialog d'édition ouvert avec forçage simple multiplateforme")
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
 
@@ -529,36 +496,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.estado_label.setText("Estado: -")
 
 
-class CrearFacturaDialog(QDialog):
+class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
     """Dialog para crear una nueva factura"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
         self.setWindowTitle("Crear Nueva Factura")
-        self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(800, 600)
-
-        # SOLUTION ROBUSTE - Forçage au premier plan garanti
-
-        # Étape 1: Configurer comme fenêtre indépendante avec priorité maximale
-        self.setWindowFlags(
-            Qt.Window |
-            Qt.WindowCloseButtonHint |
-            Qt.WindowMinimizeButtonHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.WindowTitleHint
-        )
-
-        # Étape 2: Forcer l'état actif immédiatement
-        self.setWindowState(Qt.WindowActive)
-
-        # Étape 3: Centrer sur l'écran
-        screen = QApplication.desktop().screenGeometry()
-        self.move(
-            (screen.width() - self.width()) // 2,
-            (screen.height() - self.height()) // 2
-        )
 
         # Variables
         self.clientes = []
@@ -567,12 +512,9 @@ class CrearFacturaDialog(QDialog):
 
         self.setup_ui()
 
-        # AFFICHAGE IMMÉDIAT AVANT CHARGEMENT DES DONNÉES
-        # Ceci garantit que le dialog apparaît au premier plan instantanément
-        self.show()
-        self.raise_()
-        self.activateWindow()
-        self.setFocus()
+        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
+        # Fonctionne sur Windows, Linux, macOS sans complexité
+        self.setup_simple_foreground_display()
 
         # Charger les données de manière asynchrone après affichage
         from PyQt5.QtCore import QTimer
@@ -861,10 +803,17 @@ class CrearFacturaDialog(QDialog):
                     stock_actual = producto_data.get('stock_actual', 0)
                     if nueva_cantidad > stock_actual:
                         from PyQt5.QtWidgets import QMessageBox
-                        QMessageBox.warning(self, "Stock insuficiente",
-                                          f"Stock disponible: {stock_actual}")
-                        item.setText(str(self.lineas_factura[row]['cantidad']))
-                        return
+                        stock_resultante = stock_actual - nueva_cantidad
+                        reply = QMessageBox.question(self, "Stock insuficiente",
+                                                   f"Stock disponible: {stock_actual}\n"
+                                                   f"Cantidad solicitada: {nueva_cantidad}\n"
+                                                   f"Stock resultante: {stock_resultante}\n\n"
+                                                   f"¿Desea continuar con stock negativo?",
+                                                   QMessageBox.Yes | QMessageBox.No,
+                                                   QMessageBox.No)
+                        if reply != QMessageBox.Yes:
+                            item.setText(str(self.lineas_factura[row]['cantidad']))
+                            return
 
                 self.lineas_factura[row]['cantidad'] = nueva_cantidad
                 self.recalcular_linea(row)
@@ -1029,7 +978,7 @@ class CrearFacturaDialog(QDialog):
             QMessageBox.critical(self, "Error", f"Error al guardar la factura: {str(e)}")
 
 
-class EditarFacturaDialog(QDialog):
+class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
     """Dialog para editar una factura existente"""
 
     def __init__(self, factura_data, parent=None):
@@ -1037,28 +986,7 @@ class EditarFacturaDialog(QDialog):
         self.logger = get_logger(self.__class__.__name__)
         self.factura_data = factura_data
         self.setWindowTitle(f"Editar Factura {factura_data['numero']}")
-        self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(800, 600)
-
-        # Configurar comme fenêtre indépendante AVEC forçage au premier plan
-        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint | Qt.WindowStaysOnTopHint)
-
-        # Forcer immédiatement au premier plan
-        self.raise_()
-        self.activateWindow()
-        self.setFocus()
-
-        # Programmer le retrait du flag "always on top" après affichage
-        from PyQt5.QtCore import QTimer
-        def remove_always_on_top():
-            if self.isVisible():
-                self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
-                self.show()
-                self.raise_()
-                self.activateWindow()
-                self.setFocus()
-
-        QTimer.singleShot(500, remove_always_on_top)
 
         # Variables
         self.clientes = []
@@ -1068,6 +996,10 @@ class EditarFacturaDialog(QDialog):
         self.setup_ui()
         self.load_data()
         self.load_factura_data()
+
+        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
+        # Fonctionne sur Windows, Linux, macOS sans complexité
+        self.setup_simple_foreground_display()
 
     def setup_ui(self):
         """Configurar la interfaz"""
@@ -1357,8 +1289,16 @@ class EditarFacturaDialog(QDialog):
                 self.fecha_edit.setEnabled(permite_modificacion)
                 self.cliente_combo.setEnabled(permite_modificacion)
                 self.productos_table.setEnabled(permite_modificacion)
-                self.agregar_producto_btn.setEnabled(permite_modificacion)
-                self.eliminar_producto_btn.setEnabled(permite_modificacion)
+
+                # Usar los nombres correctos de los botones
+                if hasattr(self, 'agregar_btn'):
+                    self.agregar_btn.setEnabled(permite_modificacion)
+
+                # Buscar botones de eliminar en la tabla (si existen)
+                for i in range(self.productos_table.rowCount()):
+                    eliminar_btn = self.productos_table.cellWidget(i, 5)  # Columna de acciones
+                    if eliminar_btn:
+                        eliminar_btn.setEnabled(permite_modificacion)
 
                 # Actualizar estilo visual
                 if not permite_modificacion:
@@ -1384,12 +1324,19 @@ class EditarFacturaDialog(QDialog):
         # Calcular stock disponible considerando la factura actual
         stock_disponible = self.get_available_stock_for_product(producto_id)
 
-        # Verificar stock disponible
+        # Verificar stock disponible - permitir stocks negativos con confirmación
         if cantidad > stock_disponible:
             from PyQt5.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "Stock insuficiente",
-                              f"Stock disponible para edición: {stock_disponible}\nCantidad solicitada: {cantidad}")
-            return
+            stock_resultante = stock_disponible - cantidad
+            reply = QMessageBox.question(self, "Stock insuficiente",
+                                       f"Stock disponible para edición: {stock_disponible}\n"
+                                       f"Cantidad solicitada: {cantidad}\n"
+                                       f"Stock resultante: {stock_resultante}\n\n"
+                                       f"¿Desea continuar con stock negativo?",
+                                       QMessageBox.Yes | QMessageBox.No,
+                                       QMessageBox.No)
+            if reply != QMessageBox.Yes:
+                return
 
         # Calcular precios
         precio_unitario = producto_data['precio_venta']
@@ -1444,14 +1391,20 @@ class EditarFacturaDialog(QDialog):
                 stock_disponible = self.get_available_stock_for_product(producto_id)
 
                 # El stock disponible ya incluye la cantidad original que se va a liberar
-                # Solo necesitamos verificar si la nueva cantidad es mayor al stock disponible
+                # Permitir stocks negativos con confirmación del usuario
                 if nueva_cantidad > stock_disponible:
                     from PyQt5.QtWidgets import QMessageBox
-                    QMessageBox.warning(self, "Stock insuficiente",
-                                      f"Stock disponible para edición: {stock_disponible}\n"
-                                      f"Cantidad solicitada: {nueva_cantidad}")
-                    item.setText(str(self.lineas_factura[row]['cantidad']))
-                    return
+                    stock_resultante = stock_disponible - nueva_cantidad
+                    reply = QMessageBox.question(self, "Stock insuficiente",
+                                               f"Stock disponible para edición: {stock_disponible}\n"
+                                               f"Cantidad solicitada: {nueva_cantidad}\n"
+                                               f"Stock resultante: {stock_resultante}\n\n"
+                                               f"¿Desea continuar con stock negativo?",
+                                               QMessageBox.Yes | QMessageBox.No,
+                                               QMessageBox.No)
+                    if reply != QMessageBox.Yes:
+                        item.setText(str(self.lineas_factura[row]['cantidad']))
+                        return
 
                 self.lineas_factura[row]['cantidad'] = nueva_cantidad
                 self.recalcular_linea(row)
@@ -1619,7 +1572,7 @@ class EditarFacturaDialog(QDialog):
             QMessageBox.critical(self, "Error", f"Error al actualizar la factura: {str(e)}")
 
 
-class VerFacturaDialog(QDialog):
+class VerFacturaDialog(QDialog, SimpleDialogForegroundMixin):
     """Dialog para ver detalles de una factura"""
 
     def __init__(self, factura_data, parent=None):
@@ -1629,25 +1582,9 @@ class VerFacturaDialog(QDialog):
         self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(600, 500)
 
-        # Configurar comme fenêtre indépendante AVEC forçage au premier plan
-        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint | Qt.WindowStaysOnTopHint)
-
-        # Forcer immédiatement au premier plan
-        self.raise_()
-        self.activateWindow()
-        self.setFocus()
-
-        # Programmer le retrait du flag "always on top" après affichage
-        from PyQt5.QtCore import QTimer
-        def remove_always_on_top():
-            if self.isVisible():
-                self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
-                self.show()
-                self.raise_()
-                self.activateWindow()
-                self.setFocus()
-
-        QTimer.singleShot(500, remove_always_on_top)
+        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
+        # Fonctionne sur Windows, Linux, macOS sans complexité
+        self.setup_simple_foreground_display()
 
         self.setup_ui()
 

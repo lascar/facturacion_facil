@@ -151,10 +151,11 @@ class TestIntegrationWorkflows:
             stock_actual = Stock.get_by_product(producto.id)
             assert stock_actual == stocks_esperados[i]
         
-        # 6. Vérifier qu'on ne peut pas avoir de stock négatif
-        Stock.update_stock(productos[0].id, 100)  # Essayer de vendre plus que disponible
+        # 6. Vérifier que les stocks négatifs sont maintenant autorisés
+        stock_avant = Stock.get_by_product(productos[0].id)
+        Stock.update_stock(productos[0].id, 100)  # Vendre plus que disponible
         stock_final = Stock.get_by_product(productos[0].id)
-        assert stock_final == 0  # Devrait être 0, pas négatif
+        assert stock_final == stock_avant - 100  # Les stocks négatifs sont autorisés
     
     def test_database_transaction_workflow(self, temp_db):
         """Test du workflow de transactions de base de données"""

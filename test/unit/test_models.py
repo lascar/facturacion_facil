@@ -298,17 +298,17 @@ class TestStock:
         cantidad = Stock.get_by_product(1)
         assert cantidad == 70
     
-    def test_stock_update_stock_negative_prevention(self, temp_db):
-        """Test que le stock ne peut pas devenir négatif"""
+    def test_stock_update_stock_negative_allowed(self, temp_db):
+        """Test que les stocks négatifs sont maintenant autorisés"""
         # Créer un stock initial
         temp_db.execute_query(
             "INSERT INTO stock (producto_id, cantidad_disponible) VALUES (?, ?)",
             (1, 10)
         )
-        
-        # Essayer de vendre plus que disponible
+
+        # Vendre plus que disponible (maintenant autorisé)
         Stock.update_stock(1, 15)
-        
-        # Le stock devrait être à 0, pas négatif
+
+        # Le stock peut maintenant être négatif
         cantidad = Stock.get_by_product(1)
-        assert cantidad == 0
+        assert cantidad == -5  # 10 - 15 = -5
