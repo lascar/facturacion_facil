@@ -126,7 +126,7 @@ function Test-UpdatesAvailable {
         git fetch origin 2>$null
         
         # Comparer avec la branche locale
-        $updates = git log HEAD..origin/main --oneline 2>$null
+        $updates = git log HEAD..origin/master --oneline 2>$null
         
         if ($updates) {
             Write-Info "📥 Mises à jour disponibles:"
@@ -148,7 +148,7 @@ function Update-Application {
     
     try {
         # Appliquer les mises à jour Git
-        git pull origin main
+        git pull origin master
         if ($LASTEXITCODE -ne 0) {
             throw "Échec de git pull"
         }

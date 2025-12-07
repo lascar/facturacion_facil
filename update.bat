@@ -92,7 +92,7 @@ if errorlevel 1 (
 )
 
 echo 📋 Mises à jour disponibles:
-git log HEAD..origin/main --oneline --format="  • %%s"
+git log HEAD..origin/master --oneline --format="  • %%s"
 echo.
 
 echo Voulez-vous appliquer ces mises à jour? (O/N)
@@ -105,7 +105,7 @@ if /i not "%choice%"=="O" if /i not "%choice%"=="o" (
 
 :: Appliquer les mises à jour
 echo 🔄 Application des mises à jour...
-git pull origin main
+git pull origin master
 if errorlevel 1 (
     echo ❌ ERREUR: Échec de la mise à jour
     echo Essayez de résoudre les conflits manuellement
