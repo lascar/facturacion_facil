@@ -139,13 +139,8 @@ class FacturaPDFGenerator:
         else:
             self.logger.warning("Aucun logo disponible, utilisation du texte 'LOGO'")
         
-        company_info = """
-        <b>FACTURACIÓN FÁCIL</b><br/>
-        Calle Ejemplo, 123<br/>
-        28001 Madrid, España<br/>
-        Tel: +34 91 123 45 67<br/>
-        Email: info@facturacionfacil.com
-        """
+        # Récupérer les informations de l'organisation configurée
+        company_info = self.get_company_info()
         
         invoice_title = f"""
         <b style="font-size:18pt; color:#e74c3c;">FACTURA</b><br/>
@@ -370,7 +365,26 @@ class FacturaPDFGenerator:
         return elements
 
     def find_company_logo(self):
-        """Cherche le logo de l'entreprise"""
+        """Cherche le logo de l'entreprise en priorité dans la configuration d'organisation"""
+        try:
+            # Importer ici pour éviter les imports circulaires
+            from database.models import Organizacion
+
+            # 1. PRIORITÉ : Logo configuré dans l'organisation
+            organizacion = Organizacion.get()
+            if organizacion and organizacion.logo_path:
+                logo_path = organizacion.logo_path.strip()
+                if logo_path and os.path.exists(logo_path):
+                    self.logger.info(f"Logo configuré trouvé: {logo_path}")
+                    return logo_path
+                else:
+                    self.logger.warning(f"Logo configuré n'existe pas: {logo_path}")
+
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la récupération du logo configuré: {e}")
+
+        # 2. FALLBACK : Chercher dans les chemins par défaut
+        self.logger.info("Recherche du logo dans les chemins par défaut...")
         possible_paths = [
             "data/logos/logo.png",
             "data/logos/logo.jpg",
@@ -385,7 +399,7 @@ class FacturaPDFGenerator:
         # Chercher d'abord dans les chemins spécifiques
         for path in possible_paths:
             if os.path.exists(path):
-                self.logger.info(f"Logo trouvé: {path}")
+                self.logger.info(f"Logo par défaut trouvé: {path}")
                 return path
 
         # Chercher dans le dossier data/logos/ pour n'importe quel fichier image
@@ -408,6 +422,56 @@ class FacturaPDFGenerator:
 
         self.logger.warning("Aucun logo trouvé")
         return None
+
+    def get_company_info(self):
+        """Récupère les informations de l'entreprise depuis la configuration d'organisation"""
+        try:
+            # Importer ici pour éviter les imports circulaires
+            from database.models import Organizacion
+
+            # Récupérer les données de l'organisation
+            organizacion = Organizacion.get()
+            if organizacion:
+                # Construire les informations de l'entreprise avec les données configurées
+                company_name = organizacion.nombre or "FACTURACIÓN FÁCIL"
+                company_cif = f"CIF: {organizacion.cif}" if organizacion.cif else ""
+                company_address = organizacion.direccion or "Dirección no configurada"
+                company_phone = f"Tel: {organizacion.telefono}" if organizacion.telefono else ""
+                company_email = f"Email: {organizacion.email}" if organizacion.email else ""
+
+                # Construire le HTML avec les données réelles
+                info_parts = [f"<b>{company_name}</b>"]
+
+                if company_cif:
+                    info_parts.append(company_cif)
+
+                if company_address:
+                    # Remplacer les retours à la ligne par <br/>
+                    address_formatted = company_address.replace('\n', '<br/>')
+                    info_parts.append(address_formatted)
+
+                if company_phone:
+                    info_parts.append(company_phone)
+
+                if company_email:
+                    info_parts.append(company_email)
+
+                company_info = "<br/>".join(info_parts)
+                self.logger.info("Informations d'entreprise récupérées depuis la configuration")
+                return company_info
+
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la récupération des informations d'entreprise: {e}")
+
+        # Fallback : informations par défaut
+        self.logger.warning("Utilisation des informations d'entreprise par défaut")
+        return """
+        <b>FACTURACIÓN FÁCIL</b><br/>
+        Calle Ejemplo, 123<br/>
+        28001 Madrid, España<br/>
+        Tel: +34 91 123 45 67<br/>
+        Email: info@facturacionfacil.com
+        """
 
     def generar_factura_pdf(self, factura, output_path=None, auto_open=True):
         """Méthode de compatibilité pour générer un PDF de facture"""
