@@ -25,7 +25,7 @@ class TodoEditorDialog(QDialog):
         self.original_content = ""
         
         self.setWindowTitle("📝 Editor de TODO")
-        self.setModal(True)
+        self.setModal(False)  # Permettre l'accès aux autres fenêtres
         self.setFixedSize(600, 500)
         
         # Centrar en la pantalla
@@ -153,14 +153,8 @@ class TodoEditorDialog(QDialog):
                 f.write(content)
             
             self.logger.info(f"TODO guardado exitosamente en {self.todo_file_path}")
-            
-            # Mostrar confirmación
-            QMessageBox.information(
-                self, 
-                "Guardado", 
-                "El archivo TODO.md ha sido guardado exitosamente."
-            )
-            
+
+            # Pas de message de confirmation ici - sera géré par la fenêtre parent
             self.accept()
             
         except Exception as e:

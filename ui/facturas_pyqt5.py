@@ -368,13 +368,24 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
             # Importar el generador PDF
             from utils.pdf_generator import PDFGenerator
+            from database.models import Organizacion
             import os
             from datetime import datetime
 
-            # Crear el directorio pdfs si no existe
-            pdf_dir = os.path.join(os.getcwd(), "pdfs")
+            # Obtener el directorio configurado por el usuario
+            organizacion = Organizacion.get()
+            pdf_dir = organizacion.directorio_descargas_pdf.strip() if organizacion and organizacion.directorio_descargas_pdf else ""
+
+            # Si no hay directorio configurado o no existe, usar el directorio por defecto
+            if not pdf_dir or not os.path.exists(pdf_dir):
+                pdf_dir = os.path.join(os.getcwd(), "pdfs")
+                if organizacion and organizacion.directorio_descargas_pdf:
+                    self.logger.warning(f"Directorio PDF configurado no existe: {organizacion.directorio_descargas_pdf}. Usando directorio por defecto: {pdf_dir}")
+
+            # Crear el directorio si no existe
             if not os.path.exists(pdf_dir):
                 os.makedirs(pdf_dir)
+                self.logger.info(f"Directorio PDF creado: {pdf_dir}")
 
             # Generar nombre del archivo PDF
             numero_safe = str(factura_data.get('numero', 'SIN_NUMERO')).replace('/', '_')
@@ -391,12 +402,6 @@ class FacturasPyQt5Window(BasePyQt5Window):
             if success:
                 # Abrir el PDF automáticamente
                 self.abrir_pdf(pdf_path)
-
-                self.show_info("Éxito",
-                    f"PDF generado y abierto exitosamente:\n\n"
-                    f"Archivo: {pdf_filename}\n"
-                    f"Ubicación: {pdf_dir}\n\n"
-                    f"La factura {factura_data.get('numero', 'N/A')} ha sido exportada correctamente.")
                 self.logger.info(f"PDF exportado y abierto: {pdf_path}")
             else:
                 self.show_error("Error", "No se pudo generar el archivo PDF")

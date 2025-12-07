@@ -349,41 +349,78 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             
     def load_organization_data(self, data):
         """Charger les données dans le formulaire"""
-        self.nombre_edit.setText(str(data.get('nombre', '')))
-        self.cif_edit.setText(str(data.get('cif', '')))
-        self.telefono_edit.setText(str(data.get('telefono', '')))
-        self.email_edit.setText(str(data.get('email', '')))
-        self.direccion_edit.setPlainText(str(data.get('direccion', '')))
-        self.logo_path_edit.setText(str(data.get('logo_path', '')))
-        self.numero_factura_edit.setText(str(data.get('numero_factura_inicial', '1')))
+        # Bloquer temporairement tous les signaux pour éviter de déclencher data_modified
+        widgets_to_block = [
+            self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
+            self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
+            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit
+        ]
 
-        # Charger l'orientation du logo (nouveau champ)
-        logo_orientation = data.get('logo_orientation', 'landscape')
-        self.set_logo_orientation(logo_orientation)
+        # Bloquer les signaux
+        for widget in widgets_to_block:
+            widget.blockSignals(True)
 
-        # Charger les répertoires
-        self.images_dir_edit.setText(str(data.get('directorio_imagenes_defecto', '')))
-        self.logos_storage_dir_edit.setText(str(data.get('directorio_logos_storage', '')))
-        self.pdfs_dir_edit.setText(str(data.get('directorio_descargas_pdf', '')))
+        try:
+            self.nombre_edit.setText(str(data.get('nombre', '')))
+            self.cif_edit.setText(str(data.get('cif', '')))
+            self.telefono_edit.setText(str(data.get('telefono', '')))
+            self.email_edit.setText(str(data.get('email', '')))
+            self.direccion_edit.setPlainText(str(data.get('direccion', '')))
+            self.logo_path_edit.setText(str(data.get('logo_path', '')))
+            self.numero_factura_edit.setText(str(data.get('numero_factura_inicial', '1')))
 
-        # Mettre à jour l'aperçu du logo
-        self.update_logo_preview()
+            # Charger l'orientation du logo (nouveau champ)
+            logo_orientation = data.get('logo_orientation', 'landscape')
+            self.set_logo_orientation(logo_orientation)
 
-        self.set_data_modified(False)
+            # Charger les répertoires
+            self.images_dir_edit.setText(str(data.get('directorio_imagenes_defecto', '')))
+            self.logos_storage_dir_edit.setText(str(data.get('directorio_logos_storage', '')))
+            self.pdfs_dir_edit.setText(str(data.get('directorio_descargas_pdf', '')))
+
+            # Mettre à jour l'aperçu du logo
+            self.update_logo_preview()
+
+        finally:
+            # Débloquer les signaux
+            for widget in widgets_to_block:
+                widget.blockSignals(False)
+
+            # Maintenant marquer comme non modifié
+            self.set_data_modified(False)
         
     def clear_form(self):
         """Vider le formulaire"""
-        self.nombre_edit.clear()
-        self.cif_edit.clear()
-        self.telefono_edit.clear()
-        self.email_edit.clear()
-        self.direccion_edit.clear()
-        self.logo_path_edit.clear()
-        self.numero_factura_edit.setText("1")
-        self.images_dir_edit.clear()
-        self.logos_storage_dir_edit.clear()
-        self.pdfs_dir_edit.clear()
-        self.set_data_modified(False)
+        # Bloquer temporairement tous les signaux pour éviter de déclencher data_modified
+        widgets_to_block = [
+            self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
+            self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
+            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit
+        ]
+
+        # Bloquer les signaux
+        for widget in widgets_to_block:
+            widget.blockSignals(True)
+
+        try:
+            self.nombre_edit.clear()
+            self.cif_edit.clear()
+            self.telefono_edit.clear()
+            self.email_edit.clear()
+            self.direccion_edit.clear()
+            self.logo_path_edit.clear()
+            self.numero_factura_edit.setText("1")
+            self.images_dir_edit.clear()
+            self.logos_storage_dir_edit.clear()
+            self.pdfs_dir_edit.clear()
+
+        finally:
+            # Débloquer les signaux
+            for widget in widgets_to_block:
+                widget.blockSignals(False)
+
+            # Maintenant marquer comme non modifié
+            self.set_data_modified(False)
 
     def browse_logo(self):
         """Parcourir pour sélectionner un logo"""
@@ -785,7 +822,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
             if result == dialog.Accepted:
                 self.logger.info("TODO editado y guardado")
-                # Opcional: mostrar mensaje de confirmación
+                # Message de confirmation unique
                 self.show_info("TODO Actualizado",
                              "El archivo TODO.md ha sido actualizado exitosamente.")
             else:

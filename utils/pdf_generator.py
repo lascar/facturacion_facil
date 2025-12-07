@@ -132,8 +132,12 @@ class FacturaPDFGenerator:
         if logo_path:
             try:
                 logo_cell = Image(logo_path, width=60, height=40)
-            except:
+                self.logger.info(f"Logo chargé avec succès: {logo_path}")
+            except Exception as e:
+                self.logger.error(f"Erreur lors du chargement du logo {logo_path}: {e}")
                 logo_cell = "LOGO"
+        else:
+            self.logger.warning("Aucun logo disponible, utilisation du texte 'LOGO'")
         
         company_info = """
         <b>FACTURACIÓN FÁCIL</b><br/>
@@ -231,13 +235,17 @@ class FacturaPDFGenerator:
 
         lineas = invoice_data.get('lineas', [])
         for linea in lineas:
+            # Utiliser les bonnes clés pour les données du produit
+            producto_ref = linea.get('producto_referencia', 'N/A')
+            producto_nombre = linea.get('producto_nombre', linea.get('descripcion', 'Producto'))
+
             row = [
-                f"{linea.get('producto_referencia', '')}",
-                linea.get('descripcion', ''),
+                producto_ref,
+                producto_nombre,
                 str(linea.get('cantidad', 0)),
                 f"{linea.get('precio_unitario', 0):.2f} €",
-                f"{linea.get('descuento_pct', 0):.1f}%",
-                f"{linea.get('iva_pct', 0):.1f}%",
+                f"{linea.get('descuento', 0):.1f}%",  # Utiliser 'descuento' au lieu de 'descuento_pct'
+                f"{linea.get('iva_aplicado', 0):.1f}%",  # Utiliser 'iva_aplicado' au lieu de 'iva_pct'
                 f"{linea.get('total', 0):.2f} €"
             ]
             table_data.append(row)
@@ -367,13 +375,38 @@ class FacturaPDFGenerator:
             "data/logos/logo.png",
             "data/logos/logo.jpg",
             "assets/logo.png",
-            "logo.png"
+            "assets/icon.png",
+            "logo/logo.png",
+            "logo/logo.jpg",
+            "logo.png",
+            "logo.jpg"
         ]
 
+        # Chercher d'abord dans les chemins spécifiques
         for path in possible_paths:
             if os.path.exists(path):
+                self.logger.info(f"Logo trouvé: {path}")
                 return path
 
+        # Chercher dans le dossier data/logos/ pour n'importe quel fichier image
+        logos_dir = "data/logos"
+        if os.path.exists(logos_dir):
+            for filename in os.listdir(logos_dir):
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    logo_path = os.path.join(logos_dir, filename)
+                    self.logger.info(f"Logo trouvé dans data/logos/: {logo_path}")
+                    return logo_path
+
+        # Chercher dans le dossier logo/
+        logo_dir = "logo"
+        if os.path.exists(logo_dir):
+            for filename in os.listdir(logo_dir):
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    logo_path = os.path.join(logo_dir, filename)
+                    self.logger.info(f"Logo trouvé dans logo/: {logo_path}")
+                    return logo_path
+
+        self.logger.warning("Aucun logo trouvé")
         return None
 
     def generar_factura_pdf(self, factura, output_path=None, auto_open=True):
@@ -412,11 +445,11 @@ class FacturaPDFGenerator:
 
                     invoice_data['lineas'].append({
                         'producto_referencia': getattr(producto, 'referencia', '') if producto else f"PROD_{getattr(item, 'producto_id', '')}",
-                        'descripcion': getattr(producto, 'nombre', '') if producto else 'Producto',
+                        'producto_nombre': getattr(producto, 'nombre', '') if producto else 'Producto',
                         'cantidad': getattr(item, 'cantidad', 0),
                         'precio_unitario': getattr(item, 'precio_unitario', 0),
-                        'descuento_pct': getattr(item, 'descuento', 0),
-                        'iva_pct': getattr(item, 'iva_aplicado', 0),
+                        'descuento': getattr(item, 'descuento', 0),
+                        'iva_aplicado': getattr(item, 'iva_aplicado', 0),
                         'total': getattr(item, 'total', 0)
                     })
 

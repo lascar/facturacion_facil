@@ -482,13 +482,15 @@ class Organizacion:
         results = db.execute_query(query)
         if results:
             row = results[0]
-            # Orden de columnas después de migración: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado, fecha_actualizacion
-            # Manejar compatibilidad con bases de datos existentes
+            # Orden real de columnas: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, fecha_actualizacion, directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation, directorio_logos_storage
+            # Manejar compatibilidad avec bases de datos existentes
             logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
             directorio_imagenes = row[7] if len(row) > 7 and row[7] is not None else ""
             numero_inicial = row[8] if len(row) > 8 and row[8] is not None else "1"
-            directorio_pdf = row[9] if len(row) > 9 and row[9] is not None else ""
-            visor_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
+            # CORRECTION: directorio_descargas_pdf est à l'index 10, pas 9
+            directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
+            # CORRECTION: visor_pdf_personalizado est à l'index 11, pas 10
+            visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
 
             return Organizacion(
                 nombre=row[1], direccion=row[2], telefono=row[3],

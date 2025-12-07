@@ -47,9 +47,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         try:
             categories = db_improved.get_product_categories()
 
-            # Ajouter les catégories par défaut si la base est vide
-            if not categories:
-                categories = ["Producto", "Servicio", "Material", "Otro"]
+            # Ne pas ajouter de catégories par défaut - laisser vide si aucune catégorie n'existe
 
             # Vider et remplir le combo
             self.categoria_combo.clear()
@@ -58,10 +56,9 @@ class ProductosPyQt5Window(BasePyQt5Window):
 
         except Exception as e:
             self.logger.error(f"Erreur chargement catégories: {e}")
-            # Catégories par défaut en cas d'erreur
+            # En cas d'erreur, laisser seulement l'option vide
             self.categoria_combo.clear()
-            self.categoria_combo.addItem("")  # Option vide
-            self.categoria_combo.addItems(["Producto", "Servicio", "Material", "Otro"])
+            self.categoria_combo.addItem("")  # Option vide seulement
         
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
@@ -121,7 +118,16 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.products_table = QTableWidget()
         headers = ["ID", "Nombre", "Referencia", "Precio", "Stock", "Categoría"]
         self.setup_table_widget(self.products_table, headers)
-        
+
+        # Configuration spécifique des largeurs de colonnes
+        header = self.products_table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+        header.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Referencia
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Precio
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Stock
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Categoría
+
         # Connecter la sélection
         self.products_table.itemSelectionChanged.connect(self.on_product_selected)
         
@@ -222,7 +228,8 @@ class ProductosPyQt5Window(BasePyQt5Window):
             self.products_table.setItem(row, 2, QTableWidgetItem(str(producto.get('referencia', ''))))
             self.products_table.setItem(row, 3, QTableWidgetItem(f"{producto.get('precio_venta', 0):.2f}"))
             self.products_table.setItem(row, 4, QTableWidgetItem(str(int(producto.get('stock_actual', 0)))))
-            self.products_table.setItem(row, 5, QTableWidgetItem(str(producto.get('categoria', ''))))
+            categoria = producto.get('categoria', '') or ''  # Convertir None en chaîne vide
+            self.products_table.setItem(row, 5, QTableWidgetItem(str(categoria)))
             
     def on_product_selected(self):
         """Gérer la sélection d'un produit"""
