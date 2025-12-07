@@ -104,10 +104,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         buttons_layout.addStretch()
         
         main_layout.addLayout(buttons_layout)
-        
-        # Connexions
-        self.setup_connections()
-        
+
         # Appliquer le style
         self.apply_style()
         
