@@ -14,8 +14,12 @@ from PyQt5.QtGui import QFont
 
 from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
+from database.database_improved import DatabaseImproved
 from utils.logger import get_logger
 from utils.event_manager_pyqt5 import event_manager
+
+# Utiliser la version améliorée avec gestionnaires de contexte
+db_improved = DatabaseImproved()
 
 class ProductosPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion des produits avec PyQt5"""
@@ -41,7 +45,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
     def load_categories(self):
         """Charger les catégories depuis la base de données"""
         try:
-            categories = db.get_product_categories()
+            categories = db_improved.get_product_categories()
 
             # Ajouter les catégories par défaut si la base est vide
             if not categories:
@@ -202,7 +206,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
     def load_productos(self):
         """Charger les produits depuis la base de données"""
         try:
-            self.productos = db.get_all_products()
+            self.productos = db_improved.get_all_products()
             self.update_products_table()
         except Exception as e:
             self.logger.error(f"Erreur chargement produits: {e}")
@@ -253,13 +257,30 @@ class ProductosPyQt5Window(BasePyQt5Window):
             # Gérer la catégorie NULL/None
             categoria = producto.get('categoria')
             if categoria and categoria.strip():
+                # S'assurer que les catégories sont chargées
+                current_categories = [self.categoria_combo.itemText(i) for i in range(self.categoria_combo.count())]
+                if categoria not in current_categories:
+                    # Recharger les catégories si la catégorie n'est pas présente
+                    self.load_categories()
+
+                # Chercher et sélectionner la catégorie
                 index = self.categoria_combo.findText(categoria)
                 if index >= 0:
                     self.categoria_combo.setCurrentIndex(index)
                 else:
-                    # Si la catégorie n'existe pas, l'ajouter
+                    # Si la catégorie n'existe toujours pas, l'ajouter
                     self.categoria_combo.addItem(categoria)
+                    new_index = self.categoria_combo.findText(categoria)
+                    if new_index >= 0:
+                        self.categoria_combo.setCurrentIndex(new_index)
+
+                # Vérification finale
+                if self.categoria_combo.currentText() != categoria:
+                    # Forcer la sélection avec setCurrentText en dernier recours
                     self.categoria_combo.setCurrentText(categoria)
+
+                # Log pour debug
+                self.logger.debug(f"Catégorie sélectionnée: '{categoria}' → Résultat: '{self.categoria_combo.currentText()}' (index: {self.categoria_combo.currentIndex()})")
             else:
                 # Pas de catégorie, sélectionner l'option vide
                 self.categoria_combo.setCurrentText("")
@@ -277,6 +298,10 @@ class ProductosPyQt5Window(BasePyQt5Window):
         
     def new_producto(self):
         """Créer un nouveau produit"""
+        self.clear_form()
+
+    def clear_form(self):
+        """Vider le formulaire"""
         self.selected_producto_id = None
         self.nombre_edit.clear()
         self.referencia_edit.clear()
@@ -321,11 +346,11 @@ class ProductosPyQt5Window(BasePyQt5Window):
             if self.selected_producto_id:
                 # Mise à jour
                 producto_data['id'] = self.selected_producto_id
-                db.update_product(producto_data)
+                db_improved.update_product(producto_data)
                 self.show_info("Éxito", "Producto actualizado correctamente")
             else:
                 # Nouveau produit
-                new_id = db.add_product(producto_data)
+                new_id = db_improved.add_product(producto_data)
                 self.selected_producto_id = new_id
                 self.show_info("Éxito", "Producto creado correctamente")
             

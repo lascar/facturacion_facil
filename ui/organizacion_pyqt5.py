@@ -18,6 +18,8 @@ from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
+from ui.data_cleanup_dialog import DataCleanupDialog
+from ui.todo_editor_dialog import TodoEditorDialog
 
 class OrganizacionPyQt5Window(BasePyQt5Window):
     """Fenêtre de configuration de l'organisation avec PyQt5"""
@@ -59,9 +61,51 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.save_btn = QPushButton("💾 Guardar Configuración")
         self.reset_btn = QPushButton("🔄 Restablecer")
 
+        # Bouton pour éditer le TODO
+        self.todo_btn = QPushButton("📝 Editar TODO")
+        self.todo_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
+                min-width: 120px;
+            }
+            QPushButton:hover {
+                background-color: #0056b3;
+            }
+            QPushButton:pressed {
+                background-color: #004085;
+            }
+        """)
+
+        # Bouton rouge pour la suppression de données
+        self.cleanup_btn = QPushButton("🗑️ Limpiar Datos")
+        self.cleanup_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #dc3545;
+                color: white;
+                font-weight: bold;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
+                min-width: 120px;
+            }
+            QPushButton:hover {
+                background-color: #c82333;
+            }
+            QPushButton:pressed {
+                background-color: #bd2130;
+            }
+        """)
+
         buttons_layout.addWidget(self.save_btn)
         buttons_layout.addWidget(self.reset_btn)
         buttons_layout.addStretch()
+        buttons_layout.addWidget(self.todo_btn)
+        buttons_layout.addWidget(self.cleanup_btn)
 
         main_layout.addLayout(buttons_layout)
 
@@ -256,6 +300,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
         self.save_btn.clicked.connect(self.save_organizacion)
         self.reset_btn.clicked.connect(self.load_organizacion)
+        self.todo_btn.clicked.connect(self.open_todo_editor)
+        self.cleanup_btn.clicked.connect(self.open_data_cleanup_dialog)
         self.logo_browse_btn.clicked.connect(self.browse_logo)
         print("DEBUG: logo_browse_btn connecté à browse_logo")
         self.logo_landscape_radio.toggled.connect(self.on_orientation_changed)
@@ -727,3 +773,45 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Error eliminando estado: {e}")
             self.show_error("Error", f"Error al eliminar estado: {str(e)}")
+
+    def open_todo_editor(self):
+        """Abre el editor de TODO"""
+        try:
+            self.logger.info("Abriendo editor de TODO")
+
+            # Crear y mostrar el diálogo
+            dialog = TodoEditorDialog(self)
+            result = dialog.exec_()
+
+            if result == dialog.Accepted:
+                self.logger.info("TODO editado y guardado")
+                # Opcional: mostrar mensaje de confirmación
+                self.show_info("TODO Actualizado",
+                             "El archivo TODO.md ha sido actualizado exitosamente.")
+            else:
+                self.logger.info("Edición de TODO cancelada")
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo editor de TODO: {e}")
+            self.show_error("Error", f"Error al abrir el editor de TODO: {str(e)}")
+
+    def open_data_cleanup_dialog(self):
+        """Abre el diálogo de limpieza de datos"""
+        try:
+            self.logger.info("Abriendo diálogo de limpieza de datos")
+
+            # Crear y mostrar el diálogo
+            dialog = DataCleanupDialog(self)
+            result = dialog.exec_()
+
+            if result == dialog.Accepted:
+                self.logger.info("Limpieza de datos completada")
+                # Opcional: mostrar mensaje de confirmación
+                self.show_info("Limpieza Completada",
+                             "La limpieza de datos se ha completado exitosamente.")
+            else:
+                self.logger.info("Limpieza de datos cancelada")
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo diálogo de limpieza: {e}")
+            self.show_error("Error", f"Error al abrir el diálogo de limpieza: {str(e)}")

@@ -6,7 +6,23 @@
 
  ### Localisation
  - **Textes en dur** : ne jamais harcoder des textes en dur dans le code
- - **Langues obligatoires** : ES pour chaque nouveau texte
+ - **Langues obligatoires** : ES pour chaque nouveau texte une fois qu'il passe
 
  ### Tests
  - ** les tests doivent être intégrés comme test de régression ou d'integration dans la suite de test et non supprimer
+ - ** les tests doivent utiliser une base de donnée différente à celle de production CRITIQUE
+ - ** lorque tu fais un nouveau test dans le developpement intègre-le à la suite de test
+
+ ### Structure de données - CRITIQUE ⚠️
+ - ** JAMAIS modifier la structure de base de données sans sauvegarde préalable obligatoire
+ - ** JAMAIS supprimer ou perdre des données de production - INCIDENT GRAVE
+ - ** quand la structure de la base de donnée change, il faut maintenir la compatibilité avec la structure antérieur
+ - ** si la structure de la base de donnée change, il faut migrer les données existantes de la base de production
+ - ** TOUJOURS utiliser des migrations progressives (ADD COLUMN) au lieu de DROP/CREATE
+ - ** TOUJOURS tester les migrations sur une copie avant application en production
+ - ** TOUJOURS vérifier que les données sont préservées après migration
+ - ** En cas de doute sur une modification de structure : DEMANDER CONFIRMATION EXPLICITE
+ - ** UTILISER OBLIGATOIREMENT le système de migration : database/migration_manager.py
+ - ** CONSULTER la documentation : GUIDE_MIGRATIONS_BASE_DONNEES.md
+ - ** TESTER avec le script : test_migration_system.py avant toute modification
+ - ** En cas de perte de données : utiliser restore_and_migrate.py pour récupération

@@ -115,8 +115,30 @@ class Config:
 
     # Métodos para configuración de facturas
     def get_factura_numero_inicial(self):
-        """Obtiene el número inicial para facturas"""
-        return self.get("factura_numero_inicial", 1)
+        """Obtiene el número inicial para facturas desde la tabla organizacion"""
+        try:
+            # Leer desde la tabla organizacion en lugar del archivo config.json
+            import sqlite3
+            conn = sqlite3.connect("facturacion.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT numero_factura_inicial FROM organizacion WHERE id = 1")
+            result = cursor.fetchone()
+            conn.close()
+
+            if result and result[0]:
+                numero_inicial = result[0]
+                # Si es un string que parece un número, convertir a int
+                if isinstance(numero_inicial, str) and numero_inicial.isdigit():
+                    return int(numero_inicial)
+                # Si es un string con formato personalizado, devolverlo tal como está
+                return numero_inicial
+            else:
+                # Fallback al valor por defecto
+                return self.get("factura_numero_inicial", 1)
+
+        except Exception as e:
+            # En caso de error, usar el valor del archivo config
+            return self.get("factura_numero_inicial", 1)
 
     def set_factura_numero_inicial(self, numero):
         """Establece el número inicial para facturas"""

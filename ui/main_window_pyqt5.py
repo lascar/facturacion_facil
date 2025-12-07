@@ -128,6 +128,15 @@ class MainWindowPyQt5(QMainWindow):
         try:
             if self.productos_window is None:
                 self.productos_window = ProductosPyQt5Window()
+            else:
+                # Forcer le rafraîchissement des données à chaque ouverture
+                self.productos_window.load_productos()
+                self.productos_window.load_categories()
+                # Réinitialiser la sélection
+                self.productos_window.selected_producto_id = None
+                # Vider le formulaire
+                self.productos_window.clear_form()
+
             self.productos_window.show()
             self.productos_window.raise_()
             self.productos_window.activateWindow()

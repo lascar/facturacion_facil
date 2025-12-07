@@ -20,21 +20,35 @@ class FacturaNumberingService:
     def get_next_numero_factura(self):
         """
         Obtiene el siguiente número de factura sugerido
-        Nuevo formato: número-año (ej: FAC-001-2025)
+        Respeta el formato configurado en organizacion
         """
         try:
+            # Obtener el número inicial configurado
+            numero_inicial = self.config.get_factura_numero_inicial()
+
             # Obtener el último número de factura de la base de datos
             ultimo_numero = self._get_ultimo_numero_factura()
 
             if ultimo_numero is not None:
                 # Si hay facturas existentes, incrementar desde el último número
                 siguiente_numero = ultimo_numero + 1
+
+                # Verificar si hay un formato personalizado configurado
+                if isinstance(numero_inicial, str) and not numero_inicial.isdigit():
+                    # Intentar mantener el formato personalizado e incrementar
+                    numero_formateado = self._increment_custom_format(numero_inicial, siguiente_numero)
+                else:
+                    # Usar el formato estándar
+                    numero_formateado = self._format_numero_factura(siguiente_numero)
             else:
                 # Si no hay facturas, usar el número inicial configurado
-                siguiente_numero = self.config.get_factura_numero_inicial()
-
-            # Formatear el número con prefijo y año al final
-            numero_formateado = self._format_numero_factura(siguiente_numero)
+                if isinstance(numero_inicial, str) and not numero_inicial.isdigit():
+                    # Si el número inicial es un formato personalizado (ej: "2025-wp-01")
+                    # usarlo directamente como base
+                    numero_formateado = numero_inicial
+                else:
+                    # Si es un número, usar el formato estándar
+                    numero_formateado = self._format_numero_factura(numero_inicial)
 
             logger.info(f"Siguiente número de factura sugerido: {numero_formateado}")
             return numero_formateado
@@ -45,11 +59,16 @@ class FacturaNumberingService:
             from datetime import datetime
             year = datetime.now().year
             numero_inicial = self.config.get_factura_numero_inicial()
-            prefijo = self.config.get_factura_prefijo()
-            if prefijo:
-                return f"{prefijo}-{numero_inicial:03d}-{year}"
+
+            # Manejar el fallback según el tipo de número inicial
+            if isinstance(numero_inicial, str) and not str(numero_inicial).isdigit():
+                return numero_inicial
             else:
-                return f"{numero_inicial:03d}-{year}"
+                prefijo = self.config.get_factura_prefijo()
+                if prefijo:
+                    return f"{prefijo}-{numero_inicial:03d}-{year}"
+                else:
+                    return f"{numero_inicial:03d}-{year}"
     
     def _get_ultimo_numero_factura(self):
         """
@@ -80,6 +99,42 @@ class FacturaNumberingService:
             logger.error(f"Error obteniendo último número de factura: {e}")
             return None
     
+    def _increment_custom_format(self, formato_base, nuevo_numero):
+        """
+        Incrementa un formato personalizado manteniendo su estructura
+        Ej: "2025-wp-01" → "2025-wp-02"
+        """
+        try:
+            import re
+
+            # Buscar el último número en el formato
+            numeros = re.findall(r'\d+', formato_base)
+            if numeros:
+                # Tomar el último número encontrado
+                ultimo_num_str = numeros[-1]
+                ultimo_num = int(ultimo_num_str)
+
+                # Incrementar manteniendo el formato (ceros a la izquierda)
+                nuevo_num_str = str(nuevo_numero).zfill(len(ultimo_num_str))
+
+                # Reemplazar el último número en el formato
+                resultado = formato_base
+                # Reemplazar de derecha a izquierda para asegurar que reemplazamos el último
+                for i in range(len(numeros) - 1, -1, -1):
+                    if numeros[i] == ultimo_num_str:
+                        resultado = resultado.replace(ultimo_num_str, nuevo_num_str, 1)
+                        break
+
+                return resultado
+            else:
+                # Si no hay números, agregar el número al final
+                return f"{formato_base}-{nuevo_numero:02d}"
+
+        except Exception as e:
+            logger.error(f"Error incrementando formato personalizado: {e}")
+            # Fallback: agregar el número al final
+            return f"{formato_base}-{nuevo_numero:02d}"
+
     def _extract_numero_from_string(self, numero_str):
         """
         Extrae la parte numérica de un número de factura

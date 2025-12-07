@@ -29,7 +29,7 @@ show_help() {
     echo ""
     echo -e "${YELLOW}Types de tests:${NC}"
     echo -e "  ${GREEN}all${NC}              Tous les tests"
-    echo -e "  ${GREEN}pyqt6${NC}           🚀 Tests PyQt6 (recommandé)"
+    echo -e "  ${GREEN}pyqt5${NC}           🚀 Tests PyQt5 (recommandé)"
     echo -e "  ${GREEN}unit${NC}             Tests unitaires (test/unit/)"
     echo -e "  ${GREEN}integration${NC}      Tests d'intégration (test/integration/)"
     echo -e "  ${GREEN}ui${NC}               Tests interface utilisateur (test/ui/)"
@@ -160,10 +160,10 @@ run_tests() {
             echo -e "${BLUE}🔄 Tests CI/CD (sans performance)${NC}"
             pytest "$TEST_DIR/" --ignore="$TEST_DIR/performance/" --ignore="$TEST_DIR/demo/" --ignore="$TEST_DIR/scripts/" $pytest_args
             ;;
-        "pyqt6")
-            echo -e "${GREEN}🚀 Tests PyQt6 (Suite spécialisée)${NC}"
-            echo -e "${YELLOW}💡 Redirection vers la suite PyQt6 spécialisée...${NC}"
-            exec ./run_pyqt6_tests.sh all $pytest_args
+        "pyqt5")
+            echo -e "${GREEN}🚀 Tests PyQt5 (Suite spécialisée)${NC}"
+            echo -e "${YELLOW}💡 Redirection vers la suite PyQt5 spécialisée...${NC}"
+            exec ./run_pyqt5_tests_simple.sh quick
             ;;
         *)
             echo -e "${RED}❌ Type de test inconnu: $test_type${NC}"
@@ -205,9 +205,9 @@ show_report() {
                 echo -e "${YELLOW}🚀 Toute la suite de tests a été validée !${NC}"
                 echo "   Votre application est prête pour la production."
                 ;;
-            "pyqt6")
-                echo -e "${YELLOW}🎨 Migration PyQt6 validée !${NC}"
-                echo "   Votre interface PyQt6 est fonctionnelle."
+            "pyqt5")
+                echo -e "${YELLOW}🎨 Interface PyQt5 validée !${NC}"
+                echo "   Votre interface PyQt5 est fonctionnelle."
                 ;;
             "unit")
                 echo -e "${YELLOW}🔧 Tests unitaires validés !${NC}"
@@ -261,7 +261,7 @@ show_report() {
     # Conseils généraux
     echo -e "${CYAN}💡 CONSEILS GÉNÉRAUX${NC}"
     echo "   • Pour aide complète: ./run_organized_tests.sh --help"
-    echo "   • Tests PyQt6 spécialisés: ./run_organized_tests.sh pyqt6"
+    echo "   • Tests PyQt5 spécialisés: ./run_organized_tests.sh pyqt5"
     echo "   • Tests rapides: ./run_organized_tests.sh quick"
     echo "   • Tous les tests: ./run_organized_tests.sh all --cov-html"
     echo ""

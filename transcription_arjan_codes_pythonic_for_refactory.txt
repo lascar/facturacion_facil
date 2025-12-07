@@ -1,0 +1,1270 @@
+
+Intro
+0:00
+The code that you're seeing here works,
+0:02
+but it's ugly, repetitive, for both,
+0:06
+totally unpythonic.
+0:08
+Today, I'm going to take this pretty
+0:10
+clunky fitness tracker script and
+0:12
+refactor it step by step into clean,
+0:15
+beautiful, idiomatic Python. Before I
+What does Pythonic mean?
+0:18
+start refactoring that code, let's talk
+0:20
+about this word Pythonic. It's one of
+0:23
+those terms that lots of Python
+0:25
+developers throw around, but what does
+0:27
+it actually mean? Is it some kind of
+0:30
+secret club that only a few gurus are a
+0:33
+part of? Or do you need to buy a bunch
+0:35
+of iron gold merch like the hoodie that
+0:38
+I'm wearing right now or this nice hat
+0:42
+or this mug that's now available? Of
+0:45
+course not.
+0:47
+There's no clear definition. But to me,
+0:50
+Pythonic code is code that uses Python's
+0:53
+strengths, like readability, simplicity,
+0:57
+for example, in many case using
+0:59
+functions over classes and
+1:01
+expressiveness, using features of Python
+1:04
+that are really powerful like
+1:05
+comprehensions or generators. And it
+1:08
+should feel natural in Python. Well,
+1:11
+that's not very specific, obviously. Now
+1:14
+the closest thing you we might have to a
+1:17
+definition is the Zen of Python. If you
+1:20
+write import this in a Python script or
+1:24
+in the command line interface like here,
+1:26
+you get the Zen of Python. And this
+1:28
+outputs a number of guiding principles
+1:31
+like uh beautiful is better than ugly.
+1:34
+Don't know exactly what that means.
+1:36
+That's kind of up to you what you find
+1:38
+beautiful or what you don't find
+1:39
+beautiful, right? To me, the favorite
+1:41
+one is simple is better than complex.
+1:44
+And that doesn't just apply to Python,
+1:45
+but to any programming work. And in
+1:48
+fact, most anything that you do in life.
+1:51
+But in this video, when I talk about
+1:53
+Pythonic, I mean that I'm going to be
+1:55
+using idiomatic syntax, things that fit
+1:58
+well with Python. I'll try to avoid
+2:00
+overengineering and overall make the
+2:02
+code just easier to reason about. Now,
+2:04
+with that in mind, let's take a look at
+2:06
+the original version of the code. The
+Before
+2:09
+starting point is this fitness tracker
+2:11
+class that has a log food method to log
+2:14
+some food items. So this writes to a
+2:17
+foodc file. We have a log activity
+2:20
+method as well that logs to activities
+2:23
+CSV. And we have some method that
+2:27
+prepares some sort of summary for the
+2:29
+day. And then it retrieves information
+2:32
+from this CSV file and from this one as
+2:34
+well. And then it's going to print out
+2:36
+some sort of summary. Some issues in
+2:39
+this code are the manual file opening
+2:41
+and closing, no type annotations,
+2:44
+there's no data classes or something, no
+2:47
+error handling, pretty verbose uh
+2:50
+control flow, especially in run day
+2:52
+summary. And the question is also what
+2:54
+the added value of the class here is. So
+2:57
+there's lots of things wrong with this
+2:59
+code. I mean it works. When you run
+3:01
+this, it creates these CSV files and it
+3:04
+prints out a summary. And this is what
+3:07
+these files look like. Pretty basic
+3:09
+obviously, but clearly there's a lot to
+3:11
+improve in this code. So the first thing
+Step 1 – Prefer Functions Over Classes
+3:14
+that I'm going to do to make this more
+3:17
+Pythonic is to replace that fitness
+3:20
+tracker class or actually just remove it
+3:22
+and turn these methods into functions.
+3:25
+Because as you can see, the class has no
+3:27
+member variables. There's no reason for
+3:29
+this to be a class. We don't need
+3:31
+multiple instances of a fitness tracker.
+3:34
+So we can simply turn this into
+3:36
+functions. So that's actually very easy
+3:38
+to do. I just remove this. And then I
+3:40
+de-indent this part
+3:43
+like so. And we will remove the self
+3:47
+from all of these argument list because
+3:49
+obviously we don't need those anymore.
+3:52
+Like so. Now the nice thing is at the
+3:54
+bottom of the script, we don't need to
+3:55
+create an object anymore. So we don't
+3:58
+need that object and we can simply call
+4:01
+the functions directly. So we're logging
+4:03
+the food, we're logging activity and
+4:04
+we're running the day summary like so.
+4:07
+And now I'm going to run the code and as
+4:09
+you can see it does exactly the same
+4:11
+thing and it creates the files again.
+4:13
+But now we went from having this class
+4:15
+to having just a couple of simple
+4:17
+functions. And typically I much prefer
+4:20
+this kind of setup. Actually, overall I
+4:22
+typically start with functions and I
+4:24
+only add classes when I feel like they
+4:26
+add some value. On top of that, if you
+4:28
+want to write tests for this, that's
+4:30
+also a bit easier because you don't need
+4:31
+to create an object. Next step is that I
+Step 2 – Use Context Managers
+4:34
+want to take a look at how we're dealing
+4:35
+with files. Now, you can do it this way
+4:38
+in Python. You can open files and close
+4:41
+files, but uh this is actually pretty
+4:43
+dangerous if something goes wrong. For
+4:45
+example, let's say that for some reason
+4:47
+you're not able to open a file or here
+4:50
+in the runday summary if you call that
+4:52
+before you actually log anything then
+4:54
+well these files don't exist. Now there
+4:56
+is a check here. I'll come to that later
+4:59
+but there's all sorts of things that can
+5:01
+go wrong here and then if it goes wrong
+5:03
+we don't properly close the file and in
+5:05
+terms of resource management that's not
+5:07
+great. Now the Pythonic way to do this
+5:10
+is to have instead of these uh manual
+5:13
+opens and closes to use a context
+5:15
+manager instead. And this also makes the
+5:18
+code look a lot cleaner. So how do you
+5:20
+do that? Well, this line we're going to
+5:21
+replace with a context manager. So we
+5:25
+type with open food as f. And now we can
+5:30
+within that with statement add a block
+5:33
+where we can do something with the file.
+5:35
+And we don't need to close the file
+5:36
+anymore because the context manager
+5:38
+already handles this. And same thing, we
+5:40
+can also do that here.
+5:44
+And then I can delete that. And finally,
+5:47
+we have the same issue in of course run
+5:50
+day summary. So here we're going to do
+5:52
+the same thing,
+5:54
+but now I'm going to put the entire for
+5:57
+statement inside the body of this width.
+6:00
+And then I will remove the close
+6:02
+operation here because that's not
+6:04
+needed. Same here.
+6:10
+There we go. That actually makes the
+6:12
+code a bit shorter because now we don't
+6:14
+need to manually close the files anymore
+6:16
+and it's going to be much more safe
+6:18
+because if there is some error here
+6:19
+while we try to open this file, the
+6:21
+context manager is going to make sure
+6:23
+that that resource is actually released.
+6:25
+Let's run this again and see what
+6:27
+happens. Oh, now we're having minus 400
+6:31
+calories because I'm actually adding
+6:32
+this data to the existing file. So, as
+6:35
+you can see, there's now multiple
+6:36
+entries. I ate two bananas and I ran
+6:39
+twice and burned 300 calories each time.
+Step 3 – Add Type Annotations
+6:42
+The next step, you see that my ID is
+6:44
+already giving all sorts of errors here
+6:46
+is that we want to add type annotations.
+6:49
+Now, strictly speaking, this of course
+6:51
+not necessary in Python. And especially
+6:53
+in older Python code, you're not going
+6:55
+to see a lot of use of type annotations.
+6:57
+And there's still plenty of packages
+6:59
+today that don't have type annotations,
+7:01
+even though they're very useful. I find
+7:03
+by adding type annotations, it not only
+7:06
+makes your code a lot easier to read and
+7:09
+understand, it also forces you to think
+7:12
+about what kind of thing a certain data
+7:15
+item is. Like for example here calories,
+7:18
+we have no idea what that is. Is that a
+7:20
+number? Is that a string? Is that a list
+7:22
+of things? It's unclear, right? You now
+7:24
+you have to inspect the body to see what
+7:26
+this is actually is. And it seems if you
+7:29
+read and interpret this that okay, it's
+7:31
+probably a number, but it's not clear at
+7:34
+all from the function signature right
+7:36
+here. And by adding type annotations, it
+7:39
+just makes it much easier to understand
+7:41
+what a function expects in terms of data
+7:43
+and what it's going to return. So here,
+7:46
+let's add those annotations. And it's
+7:48
+very simple to do. So item, for example,
+7:50
+that's a name of an item. So we're going
+7:52
+to make that a string. And calories
+7:56
+is a number.
+7:58
+Let's say that's a whole number. We
+8:01
+don't deal with half calories. So I'm
+8:03
+making that an integer. And then we have
+8:06
+date. So if you look at what date
+8:08
+actually is, you might think that is a
+8:09
+datetime object, but actually, as you
+8:11
+can see, it's represented here as a
+8:14
+string. So date is actually a string. On
+8:18
+top of that, it needs to accept
+8:20
+optionally a nonv valueue. So it's an
+8:22
+optional string and we can denote that
+8:24
+by writing string or null like so.
+8:29
+With type annotate, it's also important
+8:31
+that you don't forget about the return
+8:33
+value. What's the result of a function
+8:36
+here? That's also pretty
+8:37
+straightforward. It doesn't return any
+8:39
+result. So we simply write none. log
+8:42
+food doesn't return a value and with log
+8:45
+activity we can do the same thing. So
+8:47
+date again that's a string or it's num
+8:54
+calories burnt that's again a number and
+8:59
+the activity that we're logging that's a
+9:01
+string also I'm not sure why there is an
+9:04
+extra daytime import here I'll just
+9:06
+remove that finally let's take a look at
+9:08
+run day summary so here also we have
+9:10
+date
+9:13
+So that's also a string. There's also no
+9:16
+return value here. It simply prints a
+9:18
+summary
+9:20
+like so. As you can see, my IDE still
+9:22
+gives me some of these red squiggly
+9:24
+lines. I've set type checking here to
+9:26
+strict. So I actually do see these
+9:29
+errors, and I I like that. Now, the
+9:32
+reason this happens is because I define
+9:34
+food here as an empty list, but it's
+9:36
+unclear what type of list this is. This
+9:39
+can in principle contain anything,
+9:41
+right? But we're adding integers here.
+9:43
+So that's why we get the error. In order
+9:45
+to solve this, you can specify the type
+9:47
+of the list when you define it.
+9:51
+In this case, that's a list of integers.
+9:53
+As you can see, now this error
+9:55
+disappeared. So we can do the same thing
+9:57
+for activity. And that is basically all
+10:00
+we need to do. Now type annotations are
+10:04
+in principle ignored by the Python
+10:06
+interpreter. So, if I run this, I simply
+10:08
+get exactly the same result. Well, it's
+10:10
+now - 600 because I added yet another
+10:13
+banana and I ran yet another uh time and
+10:17
+burned 300 calories. But the program
+10:19
+does the same thing. Python ignores
+10:21
+these type annotations. They're really
+10:23
+there to be helpful to you as a
+10:25
+developer. And that's also how you
+10:26
+should view them. And by the way, if you
+10:28
+want to learn more about how to design a
+10:30
+piece of software from scratch, I have a
+10:32
+free guide for you. You can get this at
+10:34
+r.designguide. /designguides. This
+10:36
+contains the seven steps that I take
+10:38
+when I design new software. Hopefully,
+10:40
+it helps you avoid some of the mistakes
+10:41
+that I made in the past.
+10:44
+Guidu link is also in the description of
+Step 4 – Favor EAFP Over LBYL
+10:46
+the video. Now, the next thing that I'm
+10:47
+going to do, that's in this run day
+10:49
+summary function is this part. So, what
+10:53
+this does, this checks that food.csv
+10:56
+exists before I open it. And it's all
+10:59
+fine. It's a programming technique
+11:01
+called look before you leap, right? We
+11:04
+check if it exists, then we open it.
+11:06
+Actually, a more Pythonic way of
+11:08
+handling this is that it's easier to ask
+11:10
+forgiveness than permission. And that
+11:13
+basically means that instead of checking
+11:15
+whether the file exists, we're just
+11:17
+going to try and open it. And if that
+11:19
+doesn't work for some reason, we handle
+11:22
+the error. So if we do that here, then
+11:25
+instead of this if statement, what we're
+11:27
+going to do is a try accept block.
+11:32
+So that's going to be a try and this is
+11:34
+going to be an accept file not found
+11:37
+error. That's the kind of error that we
+11:39
+might get. And then we can print a
+11:41
+message to the user. And of course I can
+11:43
+do the same thing right here.
+11:48
+The reason that this is a arguably nicer
+11:51
+approach is because you are explicit
+11:54
+about the kind of errors that you're
+11:55
+handling and you don't have to do all
+11:57
+these various checks. So that's actually
+12:00
+pretty nice. Also in this case, it
+12:02
+actually means we don't have to import
+12:04
+OS anymore. Now the next step to make
+Step 5 – Use Dataclasses for Structured Data
+12:08
+this even more Pythonic is by taking a
+12:11
+look at the structure of the data that
+12:14
+we're using. Now if you look at these
+12:16
+logs, they all have the same three
+12:18
+fields. There is some sort of item or
+12:20
+description. Uh there is a date and
+12:23
+there is a number of calories. So
+12:25
+instead of passing around these three
+12:27
+arguments everywhere, we can also model
+12:30
+this in a class. Hey, and you thought I
+12:32
+didn't like classes. So actually
+12:34
+sometimes I still do like classes. And
+12:37
+I'm not just going to create a class for
+12:38
+this. I'm going to use a data class
+12:44
+like so. And then I'm going to define
+12:47
+that data class. I'm going to call it
+12:49
+entry. Entry is going to have a date.
+12:54
+It's going to have a description
+12:57
+and it's going to have calories
+13:00
+like so. And that means we can now also
+13:02
+remove a lot of duplication because
+13:05
+actually logging food and logging
+13:06
+activities is almost the same thing
+13:09
+apart from the file name. So the first
+13:11
+thing I'm going to do is rename log food
+13:15
+to let's say append entry and this
+13:20
+function is going to get file name. So
+13:24
+can use it for food or for activities or
+13:28
+for anything else that we want. And I'm
+13:30
+going to pass an entry
+13:35
+and that is of type entry. That's the
+13:38
+class we just defined right here. And if
+13:40
+you want to do it in a really neat way,
+13:42
+you can see that there's here a part
+13:44
+that handles when the date is none. Now,
+13:47
+what we can do instead is actually add
+13:49
+that feature to the data class so that
+13:51
+when you create the entry, it will
+13:53
+actually fill in a default date. Now, in
+13:56
+order to do that, we're going to need a
+13:58
+helper function. Let's call that
+14:00
+function today.
+14:04
+This going to return a string.
+14:09
+And what that will do is it's going to
+14:11
+return this exact value. And now what we
+14:15
+can do and I'll just move date down the
+14:18
+list so that we can set a default value
+14:20
+for it. Then what we can do is we can
+14:22
+create a field which we need to import
+14:25
+from data classes.
+14:30
+And the default factory for this field
+14:33
+is the today function like so.
+14:38
+Now you might wonder why can't I just
+14:40
+call today here? Well the problem is
+14:42
+that it will then calculate that default
+14:44
+value once and then every time you use
+14:47
+entry throughout your code is always
+14:49
+going to be exactly the same date. This
+14:51
+way by using default factory it means
+14:53
+that this function is called whenever we
+14:55
+create the entry object. Now what we can
+14:58
+do is refactor this append entry
+15:01
+function. So this we don't need anymore
+15:03
+because that's already handled in the
+15:05
+entry data class. And then we open the
+15:08
+file. So that needs to be the file name
+15:10
+like so. And then what we're going to
+15:12
+write is
+15:14
+entry.
+15:16
+Entry dot description
+15:19
+and entry dot calories. And by the way,
+15:22
+you can probably improve this even more
+15:24
+by setting also default values for the
+15:27
+description and or the calories, but I'm
+15:29
+not doing that for this particular
+15:31
+example. And then the print statement,
+15:33
+we also need to update of course. So
+15:35
+that's going to be appended the entry.
+15:38
+So slightly changing the behavior of the
+15:41
+code here. Uh and then we have entry dot
+15:45
+description.
+15:46
+We have the calories and we have the
+15:50
+date like so. So that's appending the
+15:53
+entry. Now what we can do next that I
+15:55
+can actually remove this log activity
+15:57
+function because we don't need that
+15:58
+anymore. And then what we're going to do
+16:00
+here is append entry. And then I'm
+16:03
+simply going to provide the file name
+16:07
+and the entry object. So the file name
+16:09
+here for this is food csv
+16:14
+and the entry is
+16:18
+a banana with a 100 calories like so.
+16:21
+And here we're going to do exactly the
+16:23
+same thing. Append entry. Here we have
+16:26
+activities csv.
+16:30
+And then the entry is running with 300
+16:33
+calories like so.
+16:36
+And then we run the day summary. And
+16:38
+here we can actually also call the today
+16:42
+function that we made before like so.
+16:45
+Let's run this again and see what
+16:47
+happens. So now you can see we added yet
+16:49
+another banana and we started running
+16:52
+even more. And then we have our summary
+16:54
+just like we had before. So this is nice
+16:57
+because now it provides a bit more
+16:59
+structure to our code and that's also a
+17:01
+really nice addition when you're writing
+17:03
+Python scripts that you think about
+17:05
+structure a bit and it's going to simply
+17:07
+make your code a lot easier to read. The
+Step 6 – Centralize File Paths and Use
+17:09
+next step is that we think a bit more
+17:11
+about constants and where we define
+17:14
+those things centralized file paths and
+17:17
+how we're using them. Now if you look at
+17:20
+the code we for example here I've open
+17:22
+food.csv. that works, but it's also uh
+17:26
+pretty brittle. Uh instead of defining
+17:29
+it here as a string, it's probably
+17:31
+better to define it as a constant at the
+17:34
+top of the file. Now, you can also load
+17:36
+that from a config file. I I like to do
+17:38
+it at the top of Python file if it's not
+17:40
+uh too many constants. So, what you can
+17:42
+do is something like this
+17:48
+like so. And then instead of referring
+17:49
+to the string here,
+17:52
+we can refer to the constant. And then
+17:54
+we also do that over here.
+17:58
+So now if you want to use a different
+17:59
+file, we only need to change that in one
+18:02
+place, namely here. And of course,
+18:07
+we can do the same thing for the
+18:09
+activities.
+18:21
+Like so. Now, if you want to be really
+18:23
+neat, actually, of course, these are
+18:25
+file names currently, but it would be
+18:27
+even better if we use actual paths
+18:29
+because then we have a lot more
+18:30
+flexibility. And one neat way to do that
+18:34
+is to use path lip.
+18:36
+So, I'm going to import path from there.
+18:38
+And instead of using strings here, I
+18:41
+turn these into path objects. And nice
+18:43
+thing about that is that you can then
+18:45
+combine different paths. You can create
+18:47
+like a tople directory and then have
+18:50
+relative paths below that. There's a lot
+18:52
+of features in path flip which are
+18:54
+really nice. And what's really cool is
+18:57
+that opening a file actually works with
+19:00
+path out of the box. And then of course
+19:02
+we also need to update this because this
+19:05
+is going to be of type path and not a
+19:08
+string. So there we go. Let's run this
+19:10
+and see what happens. We're already at
+19:13
+minus,000 calories. I'm starting to like
+19:15
+this example. So, we're using path lip,
+19:17
+which is a really nice addition. And now
+Step 7: Rely on Python's strengths
+19:20
+that we have these paths separately, we
+19:22
+can also take a look at run day summary
+19:24
+and simplify that as well. Because
+19:26
+actually, if you look at this code,
+19:28
+well, that's roughly the same as this
+19:31
+code. That's just a few name changes
+19:33
+here and there. So, what we can actually
+19:35
+do is uh duplicate this like so. And
+19:39
+then we can actually just create a read
+19:43
+entries function that reads entries from
+19:45
+a file. And of course
+19:48
+for that we're also going to use the
+19:50
+path type. And then what we'll do here
+19:52
+is I will just name this
+19:55
+entries and we're going to open
+19:59
+the file. And then if you want to be
+20:01
+really neat we can start using more
+20:02
+Pythonic style coding. So instead of
+20:05
+creating a list of entries here that
+20:08
+we're returning uh as a value at the
+20:10
+end, what we can do instead is actually
+20:12
+using an iterator. So what I'm going to
+20:14
+do is read entries is going to give me
+20:17
+an iterator
+20:20
+of entry objects and from typing I'm
+20:24
+going to import the iterator.
+20:27
+And then what I'll do here, instead of
+20:29
+dealing with the list of entries, I'm
+20:32
+simply going to yield an entry object
+20:38
+with description,
+20:41
+calories,
+20:45
+and finally the date.
+20:48
+And I'm missing a parenthesis there. And
+20:50
+I have one extra there. And this we
+20:53
+don't need.
+20:55
+So now we have a read entries function
+20:59
+and if you look at the try except block
+21:01
+here actually it does nothing else than
+21:04
+just print a message. So the question is
+21:07
+whether we really need this right
+21:08
+because if there is some sort of
+21:10
+exception it's already going to print
+21:11
+some sort of message and that's also a
+21:13
+nice thing about using try except block
+21:16
+that actually often later on you can
+21:18
+remove them again. So here reading
+21:19
+entries I can simply remove this and
+21:22
+I'll just assume that my interpreter is
+21:25
+going to print the error whenever I
+21:27
+encounter one. So now I have a function
+21:30
+for reading entries from a file. So then
+21:33
+what I can do here is actually read food
+21:36
+in a much easier way. So I'm just going
+21:37
+to create a list from
+21:42
+read entries of my food CSV file. And
+21:45
+then of course it's not going to be a
+21:47
+list of integers anymore, but a list of
+21:49
+entries. And there's just one part that
+21:52
+we don't need to forget to do a bit
+21:53
+later on, but I'll do that in a minute.
+21:55
+But now I can basically remove all of
+21:57
+this. And same for the activity. I can
+22:00
+simply
+22:03
+create a list from reading the entries
+22:06
+from the activities CSV file like so.
+22:10
+And then I can just remove all of this
+22:12
+because that's already covered in this
+22:14
+helper function. So then what we're
+22:16
+going to do is now we can compute sums.
+22:20
+For example, the food total we can make
+22:22
+that the entry dot calories for entry in
+22:28
+food if
+22:31
+entry dot date equals the date. That
+22:36
+also automatically adds our filter. And
+22:39
+here we can do the same thing for the
+22:40
+activity. Well, that's going to be
+22:42
+almost the same. Entry dot calories
+22:47
+for entering in activity
+22:50
+if entry dot date equals date. So now
+22:55
+you see that step by step we're relying
+22:57
+more and more on the strings of Python
+22:59
+by using these types of expressions
+23:01
+which is a really powerful feature of
+23:03
+Python. Let's run this again. And we're
+23:05
+already at -200 calories. Yay. Now feel
+23:09
+that we're almost there. One other thing
+Step 8 – Add Logging Instead of Print
+23:10
+that I want to do is instead of having
+23:13
+these print statements, I want to have
+23:15
+proper logging. That's another example
+23:17
+of relying more on Python's standard
+23:19
+library. And for that, we're going to
+23:22
+import the logging module. And then
+23:25
+we're going to set up logging. So that's
+23:27
+a basic configuration where we log a
+23:30
+particular level and we also supply it
+23:33
+with a format. So we have time and the
+23:35
+level name and the particular message
+23:37
+like so. And then for example instead of
+23:40
+this print statement here
+23:43
+we can write a logging message like so.
+23:46
+And then let me remove this print
+23:48
+statement. Now here I feel like this is
+23:50
+actually not logging. This is really
+23:52
+just the result of the program. So I'll
+23:54
+leave these as print statements.
+23:58
+But when I run this now, you see that
+24:00
+we're going to get these logging
+24:02
+messages which contain a lot more detail
+24:04
+in terms of the time when that happened
+24:06
+and the logging level. So that's a nice
+24:08
+thing to have as well. The final thing
+Step 9 – Add a Main Function
+24:10
+that I want to do is take this code and
+24:12
+put it in a main function.
+24:15
+Of course, the main function also
+24:17
+doesn't return any result. So indent
+24:20
+this. That's part of the main function.
+24:22
+And then if name
+24:26
+equals main, we're going to call the
+24:30
+main function. Now, in essence, it
+24:33
+doesn't really do anything. I mean, the
+24:35
+code just runs exactly like it did
+24:37
+before, but now at least we have this
+24:40
+explicit entry point, which is nice. And
+24:43
+also, if you define some variables that
+24:45
+you're going to need here, then it's not
+24:47
+going to pollute the global namespace,
+24:49
+which is also uh really neat. So now
+24:51
+when we look at this final version of
+24:53
+the code, this is actually to me a
+24:56
+pretty good setup like this. We have
+24:58
+some logging. We've defined constants at
+25:00
+the top of the file. I have some helper
+25:02
+functions like the today function. I use
+25:06
+a data class to structure my data that
+25:09
+I'm working with. I then have functions
+25:12
+that do a particular job that I need
+25:15
+without having too much duplication. So
+25:17
+appending entries and reading entries.
+25:20
+And then I have my function for creating
+25:22
+a summary. They all have nice type
+25:24
+annotations. I'm using the standard
+25:27
+library features like path lip and
+25:30
+daytime data classes uh logging which is
+25:33
+all very helpful. It makes my Python
+25:35
+code a lot shorter. And then finally the
+25:38
+actual behavior of what I want the
+25:39
+script to do is in a main function. Now
+25:42
+if you like these kind of refactorings
+25:44
+and practical Python tips, make sure to
+25:46
+subscribe clicking a subscribe button.
+25:48
+actually also probably burns like 0.01
+25:52
+calorie or something. So, you know, it's
+Final Thoughts
+25:56
+a start. Anyway, I hope this video gave
+25:58
+you a better idea of what I think
+26:00
+Pythonic means, but I'd love to hear
+26:02
+from you. What are some unpythonic
+26:05
+patterns that you often see? How would
+26:07
+you refactor this code that I showed you
+26:10
+today? And when you started learning
+26:13
+Python, did you have habits that you
+26:15
+needed to unlearn?
+26:17
+Let me know in the comments. Now, during
+26:19
+refactoring, I mentioned a few times
+26:21
+that you should rely on the standard
+26:23
+libraries, things like data classes,
+26:25
+path lip, etc. Actually, the standard
+26:27
+library is one of the best things of
+26:29
+Python. If you want to learn more about
+26:32
+some of the real gems that are in there,
+26:34
+check out this video next. Thanks for
+26:37
+watching and see you next

@@ -7,7 +7,8 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QGroupBox, QSplitter, QFrame, QWidget, QComboBox, QDateEdit,
-    QSpinBox, QDoubleSpinBox, QTextEdit, QDialog, QDialogButtonBox
+    QSpinBox, QDoubleSpinBox, QTextEdit, QDialog, QDialogButtonBox,
+    QApplication, QDesktopWidget
 )
 from PyQt5.QtCore import Qt, pyqtSignal as Signal, QDate
 from PyQt5.QtGui import QFont
@@ -32,10 +33,36 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Variables
         self.facturas = []
         self.selected_factura_id = None
-        
+
+        # Variables pour éviter les ouvertures multiples
+        self.crear_dialog = None
+        self.editar_dialog = None
+        self.ver_dialog = None
+
         # Charger les données
         self.load_facturas()
-        
+
+    def _ensure_dialog_on_top(self, dialog):
+        """S'assurer qu'un dialog apparaît au premier plan - Version renforcée"""
+        if dialog and dialog.isVisible():
+            # Méthode agressive pour forcer au premier plan
+            dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)
+            dialog.show()
+            dialog.raise_()
+            dialog.activateWindow()
+            dialog.setFocus()
+
+            # Retirer le flag "always on top" après 500ms pour éviter qu'il reste toujours au-dessus
+            from PyQt5.QtCore import QTimer
+            def remove_always_on_top():
+                if dialog and dialog.isVisible():
+                    dialog.setWindowFlags(dialog.windowFlags() & ~Qt.WindowStaysOnTopHint)
+                    dialog.show()
+                    dialog.raise_()
+                    dialog.activateWindow()
+
+            QTimer.singleShot(500, remove_always_on_top)
+
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
         # Activer le scroll pour cette fenêtre (contenu très long)
@@ -64,12 +91,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.new_btn = QPushButton("➕ Nueva Factura")
         self.view_btn = QPushButton("👁️ Ver Detalles")
         self.edit_btn = QPushButton("✏️ Editar")
+        self.pdf_btn = QPushButton("📄 Exportar PDF")
         self.eliminar_btn = QPushButton("🗑️ Eliminar")
         self.refresh_btn = QPushButton("🔄 Actualizar")
 
         buttons_layout.addWidget(self.new_btn)
         buttons_layout.addWidget(self.view_btn)
         buttons_layout.addWidget(self.edit_btn)
+        buttons_layout.addWidget(self.pdf_btn)
         buttons_layout.addWidget(self.eliminar_btn)
         buttons_layout.addWidget(self.refresh_btn)
         buttons_layout.addStretch()
@@ -153,6 +182,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.new_btn.clicked.connect(self.new_factura)
         self.view_btn.clicked.connect(self.view_factura)
         self.edit_btn.clicked.connect(self.edit_factura)
+        self.pdf_btn.clicked.connect(self.exportar_pdf)
         self.eliminar_btn.clicked.connect(self.eliminar_factura)
         self.refresh_btn.clicked.connect(self.load_facturas)
         
@@ -196,10 +226,31 @@ class FacturasPyQt5Window(BasePyQt5Window):
     def new_factura(self):
         """Créer une nouvelle facture"""
         self.logger.debug("new_factura() appelée - Ouverture dialogue création")
-        dialog = CrearFacturaDialog(self)
-        if dialog.exec_() == QDialog.Accepted:
-            # Recharger les factures après création
-            self.load_facturas()
+
+        # Vérifier si un dialog de création est déjà ouvert
+        if self.crear_dialog is not None and self.crear_dialog.isVisible():
+            self.logger.debug("Dialog de création déjà ouvert - amener au premier plan")
+            self.crear_dialog.raise_()
+            self.crear_dialog.activateWindow()
+            return
+
+        # Créer un nouveau dialog SANS parent pour éviter les problèmes de hiérarchie
+        # Le dialog s'affiche automatiquement au premier plan grâce à son constructeur
+        self.crear_dialog = CrearFacturaDialog(None)
+
+        # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
+        def on_dialog_finished(result):
+            if result == QDialog.Accepted:
+                self.load_facturas()
+            self.crear_dialog = None  # Nettoyer la référence
+
+        self.crear_dialog.finished.connect(on_dialog_finished)
+
+        # Afficher le dialog (le forçage au premier plan est géré dans le constructeur)
+        self.crear_dialog.show()
+        self.crear_dialog.raise_()
+        self.crear_dialog.activateWindow()
+        self.crear_dialog.setFocus()
 
     def view_factura(self):
         """Ver los detalles de la factura sélectionnée"""
@@ -208,10 +259,34 @@ class FacturasPyQt5Window(BasePyQt5Window):
             return
 
         try:
+            # Vérifier si un dialog de visualisation est déjà ouvert
+            if self.ver_dialog is not None and self.ver_dialog.isVisible():
+                self.logger.debug("Dialog de visualisation déjà ouvert - amener au premier plan")
+                self.ver_dialog.raise_()
+                self.ver_dialog.activateWindow()
+                return
+
             factura = db.get_invoice_by_id(self.selected_factura_id)
             if factura:
-                dialog = VerFacturaDialog(factura, self)
-                dialog.exec_()
+                self.ver_dialog = VerFacturaDialog(factura, None)
+
+                # Connecter le signal de fermeture pour nettoyer la référence
+                def on_ver_dialog_finished():
+                    self.ver_dialog = None  # Nettoyer la référence
+
+                self.ver_dialog.finished.connect(on_ver_dialog_finished)
+
+                # Afficher le dialog non-modal et s'assurer qu'il apparaît au premier plan
+                self.ver_dialog.show()
+                self.ver_dialog.raise_()
+                self.ver_dialog.activateWindow()
+
+                # Forcer l'affichage au premier plan
+                self.ver_dialog.setWindowState(self.ver_dialog.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+
+                # S'assurer que la fenêtre est visible et au premier plan
+                from PyQt5.QtCore import QTimer
+                QTimer.singleShot(100, lambda: self._ensure_dialog_on_top(self.ver_dialog))
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
         except Exception as e:
@@ -231,16 +306,37 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.new_btn.setEnabled(False)
             self.logger.debug("edit_factura() - Bouton Nueva Factura désactivé temporairement")
 
+            # Vérifier si un dialog d'édition est déjà ouvert
+            if self.editar_dialog is not None and self.editar_dialog.isVisible():
+                self.logger.debug("Dialog d'édition déjà ouvert - amener au premier plan")
+                self.editar_dialog.raise_()
+                self.editar_dialog.activateWindow()
+                return
+
             factura = db.get_invoice_by_id(self.selected_factura_id)
             if factura:
-                dialog = EditarFacturaDialog(factura, self)
-                result = dialog.exec_()
-                self.logger.debug(f"edit_factura() - Resultado del diálogo: {result}")
-                if result == QDialog.Accepted:
-                    # Recharger les factures après modification
-                    self.logger.debug("edit_factura() - Recargando facturas...")
-                    self.load_facturas()
-                    self.logger.debug("edit_factura() - Facturas recargadas, terminado")
+                self.editar_dialog = EditarFacturaDialog(factura, None)
+
+                # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
+                def on_edit_dialog_finished(result):
+                    if result == QDialog.Accepted:
+                        self.load_facturas()
+                    self.editar_dialog = None  # Nettoyer la référence
+
+                self.editar_dialog.finished.connect(on_edit_dialog_finished)
+
+                # Afficher le dialog non-modal et s'assurer qu'il apparaît au premier plan
+                self.editar_dialog.show()
+                self.editar_dialog.raise_()
+                self.editar_dialog.activateWindow()
+
+                # Forcer l'affichage au premier plan
+                self.editar_dialog.setWindowState(self.editar_dialog.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+
+                # S'assurer que la fenêtre est visible et au premier plan
+                from PyQt5.QtCore import QTimer
+                QTimer.singleShot(100, lambda: self._ensure_dialog_on_top(self.editar_dialog))
+                self.logger.debug("edit_factura() - Dialog d'édition ouvert en mode non-modal")
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
 
@@ -256,6 +352,92 @@ class FacturasPyQt5Window(BasePyQt5Window):
             if self.new_btn.hasFocus():
                 self.facturas_table.setFocus()
                 self.logger.debug("edit_factura() - Focus déplacé du bouton Nueva Factura vers la table")
+
+    def exportar_pdf(self):
+        """Exportar la factura seleccionada a PDF"""
+        if not self.selected_factura_id:
+            self.show_warning("Selección", "Seleccione una factura para exportar a PDF")
+            return
+
+        try:
+            # Obtener la factura seleccionada
+            factura_data = db.get_invoice_by_id(self.selected_factura_id)
+            if not factura_data:
+                self.show_error("Error", "No se pudo cargar la factura seleccionada")
+                return
+
+            # Importar el generador PDF
+            from utils.pdf_generator import PDFGenerator
+            import os
+            from datetime import datetime
+
+            # Crear el directorio pdfs si no existe
+            pdf_dir = os.path.join(os.getcwd(), "pdfs")
+            if not os.path.exists(pdf_dir):
+                os.makedirs(pdf_dir)
+
+            # Generar nombre del archivo PDF
+            numero_safe = str(factura_data.get('numero', 'SIN_NUMERO')).replace('/', '_')
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            pdf_filename = f"Factura_{numero_safe}_{timestamp}.pdf"
+            pdf_path = os.path.join(pdf_dir, pdf_filename)
+
+            # Crear instancia del generador PDF
+            pdf_generator = PDFGenerator()
+
+            # Usar directamente generate_invoice_pdf que acepta un dictionnaire
+            success = pdf_generator.generate_invoice_pdf(factura_data, pdf_path)
+
+            if success:
+                # Abrir el PDF automáticamente
+                self.abrir_pdf(pdf_path)
+
+                self.show_info("Éxito",
+                    f"PDF generado y abierto exitosamente:\n\n"
+                    f"Archivo: {pdf_filename}\n"
+                    f"Ubicación: {pdf_dir}\n\n"
+                    f"La factura {factura_data.get('numero', 'N/A')} ha sido exportada correctamente.")
+                self.logger.info(f"PDF exportado y abierto: {pdf_path}")
+            else:
+                self.show_error("Error", "No se pudo generar el archivo PDF")
+
+        except Exception as e:
+            self.logger.error(f"Error exportando PDF: {e}")
+            self.show_error("Error", f"Error al exportar PDF:\n{str(e)}")
+
+    def abrir_pdf(self, pdf_path):
+        """Abrir el archivo PDF con el visor predeterminado del sistema"""
+        try:
+            import subprocess
+            import platform
+            import os
+
+            # Verificar que el archivo existe
+            if not os.path.exists(pdf_path):
+                self.logger.warning(f"Archivo PDF no encontrado: {pdf_path}")
+                return False
+
+            # Detectar el sistema operativo y usar el comando apropiado
+            sistema = platform.system().lower()
+
+            if sistema == "windows":
+                # Windows: usar start
+                os.startfile(pdf_path)
+            elif sistema == "darwin":
+                # macOS: usar open
+                subprocess.run(["open", pdf_path], check=True)
+            else:
+                # Linux y otros: usar xdg-open
+                subprocess.run(["xdg-open", pdf_path], check=True)
+
+            self.logger.info(f"PDF abierto exitosamente: {pdf_path}")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo PDF: {e}")
+            # No mostrar error al usuario, solo registrar en log
+            # El PDF se ha generado correctamente, solo falló la apertura
+            return False
 
     def eliminar_factura(self):
         """Eliminar la factura seleccionada"""
@@ -352,8 +534,29 @@ class CrearFacturaDialog(QDialog):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
         self.setWindowTitle("Crear Nueva Factura")
-        self.setModal(True)
+        self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(800, 600)
+
+        # SOLUTION ROBUSTE - Forçage au premier plan garanti
+
+        # Étape 1: Configurer comme fenêtre indépendante avec priorité maximale
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowStaysOnTopHint |
+            Qt.WindowTitleHint
+        )
+
+        # Étape 2: Forcer l'état actif immédiatement
+        self.setWindowState(Qt.WindowActive)
+
+        # Étape 3: Centrer sur l'écran
+        screen = QApplication.desktop().screenGeometry()
+        self.move(
+            (screen.width() - self.width()) // 2,
+            (screen.height() - self.height()) // 2
+        )
 
         # Variables
         self.clientes = []
@@ -361,7 +564,17 @@ class CrearFacturaDialog(QDialog):
         self.lineas_factura = []
 
         self.setup_ui()
-        self.load_data()
+
+        # AFFICHAGE IMMÉDIAT AVANT CHARGEMENT DES DONNÉES
+        # Ceci garantit que le dialog apparaît au premier plan instantanément
+        self.show()
+        self.raise_()
+        self.activateWindow()
+        self.setFocus()
+
+        # Charger les données de manière asynchrone après affichage
+        from PyQt5.QtCore import QTimer
+        QTimer.singleShot(100, self.load_data)  # Charger après 100ms
 
     def setup_ui(self):
         """Configurar la interfaz"""
@@ -383,6 +596,56 @@ class CrearFacturaDialog(QDialog):
 
         # Cliente
         self.cliente_combo = QComboBox()
+        # Améliorer la visibilité du texte sélectionné
+        self.cliente_combo.setStyleSheet("""
+            QComboBox {
+                background-color: white;
+                border: 2px solid #cccccc;
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #2c3e50;
+                min-height: 25px;
+            }
+            QComboBox:hover {
+                border-color: #3498db;
+                background-color: #ecf0f1;
+            }
+            QComboBox:focus {
+                border-color: #3498db;
+                background-color: #ffffff;
+            }
+            QComboBox::drop-down {
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 25px;
+                border-left-width: 1px;
+                border-left-color: #bdc3c7;
+                border-left-style: solid;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+                background-color: #ecf0f1;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid #34495e;
+                width: 0px;
+                height: 0px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: white;
+                border: 2px solid #3498db;
+                selection-background-color: #3498db;
+                selection-color: white;
+                color: #2c3e50;
+                font-size: 13px;
+                font-weight: normal;
+                padding: 5px;
+            }
+        """)
 
         info_layout.addWidget(QLabel("Número:"), 0, 0)
         info_layout.addWidget(self.numero_edit, 0, 1)
@@ -477,9 +740,11 @@ class CrearFacturaDialog(QDialog):
             # Charger les clients
             self.clientes = db.get_all_clients()
             self.cliente_combo.clear()
-            self.cliente_combo.addItem("Seleccionar cliente...", None)
+            self.cliente_combo.addItem("📋 Seleccionar cliente...", None)
             for cliente in self.clientes:
-                self.cliente_combo.addItem(f"{cliente['nombre']} - {cliente['nif']}", cliente)
+                # Format amélioré pour une meilleure lisibilité
+                texto_cliente = f"👤 {cliente['nombre']} • NIF: {cliente['nif']}"
+                self.cliente_combo.addItem(texto_cliente, cliente)
 
             # Charger les produits
             from datetime import datetime
@@ -503,28 +768,21 @@ class CrearFacturaDialog(QDialog):
             self.logger.error(f"Error cargando datos: {e}")
 
     def generate_invoice_number(self):
-        """Generar número de factura automático"""
+        """Generar número de factura automático usando el servicio de numeración"""
         try:
-            # Obtener el último número de factura
-            facturas = db.get_all_invoices()
-            if facturas:
-                # Extraer números y encontrar el máximo
-                numeros = []
-                for f in facturas:
-                    try:
-                        num = int(f['numero'].replace('F', '').replace('-', ''))
-                        numeros.append(num)
-                    except:
-                        pass
-                if numeros:
-                    next_num = max(numeros) + 1
-                else:
-                    next_num = 1
-            else:
-                next_num = 1
+            from utils.factura_numbering import FacturaNumberingService
 
-            return f"F-{next_num:04d}"
-        except:
+            # Usar el servicio de numeración que respeta la configuración
+            numbering_service = FacturaNumberingService()
+            numero_factura = numbering_service.get_next_numero_factura()
+
+            self.logger.info(f"Número de factura generado: {numero_factura}")
+            return numero_factura
+
+        except Exception as e:
+            self.logger.error(f"Error generando número de factura: {e}")
+            # Fallback simple en caso de error
+            from datetime import datetime
             return f"F-{datetime.now().strftime('%Y%m%d')}-001"
 
     def agregar_producto(self):
@@ -777,8 +1035,28 @@ class EditarFacturaDialog(QDialog):
         self.logger = get_logger(self.__class__.__name__)
         self.factura_data = factura_data
         self.setWindowTitle(f"Editar Factura {factura_data['numero']}")
-        self.setModal(True)
+        self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(800, 600)
+
+        # Configurar comme fenêtre indépendante AVEC forçage au premier plan
+        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint | Qt.WindowStaysOnTopHint)
+
+        # Forcer immédiatement au premier plan
+        self.raise_()
+        self.activateWindow()
+        self.setFocus()
+
+        # Programmer le retrait du flag "always on top" après affichage
+        from PyQt5.QtCore import QTimer
+        def remove_always_on_top():
+            if self.isVisible():
+                self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
+                self.show()
+                self.raise_()
+                self.activateWindow()
+                self.setFocus()
+
+        QTimer.singleShot(500, remove_always_on_top)
 
         # Variables
         self.clientes = []
@@ -808,6 +1086,56 @@ class EditarFacturaDialog(QDialog):
 
         # Cliente
         self.cliente_combo = QComboBox()
+        # Améliorer la visibilité du texte sélectionné
+        self.cliente_combo.setStyleSheet("""
+            QComboBox {
+                background-color: white;
+                border: 2px solid #cccccc;
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #2c3e50;
+                min-height: 25px;
+            }
+            QComboBox:hover {
+                border-color: #3498db;
+                background-color: #ecf0f1;
+            }
+            QComboBox:focus {
+                border-color: #3498db;
+                background-color: #ffffff;
+            }
+            QComboBox::drop-down {
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 25px;
+                border-left-width: 1px;
+                border-left-color: #bdc3c7;
+                border-left-style: solid;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+                background-color: #ecf0f1;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid #34495e;
+                width: 0px;
+                height: 0px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: white;
+                border: 2px solid #3498db;
+                selection-background-color: #3498db;
+                selection-color: white;
+                color: #2c3e50;
+                font-size: 13px;
+                font-weight: normal;
+                padding: 5px;
+            }
+        """)
 
         # Estado de la factura
         self.estado_combo = QComboBox()
@@ -889,9 +1217,11 @@ class EditarFacturaDialog(QDialog):
             # Charger les clients
             self.clientes = db.get_all_clients()
             self.cliente_combo.clear()
-            self.cliente_combo.addItem("Seleccionar cliente...", None)
+            self.cliente_combo.addItem("📋 Seleccionar cliente...", None)
             for cliente in self.clientes:
-                self.cliente_combo.addItem(f"{cliente['nombre']} - {cliente['nif']}", cliente)
+                # Format amélioré pour une meilleure lisibilité
+                texto_cliente = f"👤 {cliente['nombre']} • NIF: {cliente['nif']}"
+                self.cliente_combo.addItem(texto_cliente, cliente)
 
             # Charger les états de factures
             self.estados = invoice_status_manager.get_all_statuses()
@@ -1294,8 +1624,28 @@ class VerFacturaDialog(QDialog):
         super().__init__(parent)
         self.factura_data = factura_data
         self.setWindowTitle(f"Factura {factura_data['numero']}")
-        self.setModal(True)
+        self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(600, 500)
+
+        # Configurar comme fenêtre indépendante AVEC forçage au premier plan
+        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint | Qt.WindowStaysOnTopHint)
+
+        # Forcer immédiatement au premier plan
+        self.raise_()
+        self.activateWindow()
+        self.setFocus()
+
+        # Programmer le retrait du flag "always on top" après affichage
+        from PyQt5.QtCore import QTimer
+        def remove_always_on_top():
+            if self.isVisible():
+                self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
+                self.show()
+                self.raise_()
+                self.activateWindow()
+                self.setFocus()
+
+        QTimer.singleShot(500, remove_always_on_top)
 
         self.setup_ui()
 

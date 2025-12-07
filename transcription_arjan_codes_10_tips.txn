@@ -1,0 +1,980 @@
+
+0:00
+Today I'll share 10 tips that can take you from a good Python developer to a great one.
+0:06
+In particular, the last tip is something that I see a lot of developers struggle with,
+0:10
+so make sure you watch this video to the end to get the most out of it.
+0:14
+This video is sponsored by Brilliant. More about them later.
+Tip 1: Master Comprehensions
+0:17
+The first tip is to master comprehensions.
+0:19
+Comprehensions in Python aren't just for lists.
+0:22
+They work for dictionaries, sets, and even generators.
+0:25
+By mastering them, you'll write more concise and more Pythonic code.
+0:29
+List comprehensions are the most common, and they allow you to create lists in a single line.
+0:34
+I have an example here of a few different types of comprehensions,
+0:37
+and I know, blasphemy, I'm using a Jupyter notebook here, but they are actually quite handy.
+0:41
+So here's an example of a list comprehension that just generates squares of even numbers.
+0:47
+So when I run this, then we get the result that you see right here.
+0:52
+So this is just a single line, and that allows us to create a list.
+0:55
+But you can do list comprehensions for other types of data structures as well.
+0:58
+For example, here I'm mapping numbers to their queues, and I'm putting that in a dictionary.
+1:04
+So that looks like this. So this is a dictionary comprehension.
+1:09
+You can also use set comprehensions.
+1:11
+These are similar to list comprehensions, except they don't contain any duplicate values.
+1:16
+So, for example, here I have a list of words,
+1:19
+and I'm going to compute the unique length using a set comprehension like so.
+1:25
+And that's going to give us a set with two values, 5 and 6.
+1:29
+So it's going to remove the duplicate values.
+1:31
+Now, similar to these comprehensions, you can also use generators.
+1:35
+These look almost the same, but they use parentheses.
+1:38
+The difference between this type of structure and the list comprehension you saw at the start right here
+1:43
+is that this is actually evaluated lazily.
+1:46
+So the value is only computed when you actually call it.
+1:51
+So you can see it just prints these values, goes through them with a for loop,
+1:55
+but these values are only computed when we actually call the function.
+1:59
+And you can even nest comprehensions if you want to do, let's say,
+2:02
+multidimensional data processing or something.
+2:04
+So let's say we have a matrix here.
+2:06
+Then you can use a list comprehension here,
+2:08
+which takes the num for the row in the matrix for each number in a row.
+2:14
+And then that's going to print a flattened list like so.
+2:18
+And that happens because of this nested comprehension that you see right here.
+Tip 2: Use F-Strings for String Formatting
+2:22
+The second tip is to use f-strings for string formatting.
+2:25
+F-strings are a really powerful way to format strings in Python.
+2:28
+They're concise, they're readable, they support advanced formatting features
+2:32
+for numbers, dates, and more.
+2:34
+So let me start off easy here with a simple f-string
+2:37
+that interpolates a name and a level and then constructs a new string.
+2:41
+So when I run this, then we get this as a result.
+2:44
+Now, instead of simply referring to variables,
+2:47
+you can actually also put expressions in here.
+2:49
+So, for example, I have a variable containing an age, 30,
+2:53
+and then I construct an f-string, but in between these braces,
+2:58
+I can actually write an expression like this, age plus 10.
+3:01
+And then when I run this, it's going to compute this as you would expect.
+3:04
+Now, next to simply including these values in strings,
+3:08
+you can also format numbers with a certain precision
+3:11
+or put them in a more human-readable format.
+3:14
+For example, let's say we have a value for pi,
+3:17
+and this, of course, is not a very precise version of pi.
+3:20
+This might actually be the Doom version of pi, I'm not entirely sure.
+3:24
+But what you can do with f-strings, you can actually format them.
+3:27
+So this is going to display a floating point version of pi
+3:31
+that is rounded to two decimals.
+3:34
+So when I run this, we're going to get 3.14.
+3:37
+And you can also use formatting to make things more readable.
+3:40
+For example, if you add a comma behind a number like this,
+3:44
+then it's going to add thousands of separators to it.
+3:48
+So there you see, then we get this as a result.
+3:50
+So that makes it a lot easier to read.
+3:52
+You can also display percentage, so that's what you see right here.
+3:55
+And as you can see, it presents a percentage
+3:58
+with a precision of one decimal.
+4:01
+So if I add, let's say, more precision here,
+4:03
+then I'm going to run this again.
+4:05
+You can see it still displays this single decimal.
+4:08
+I can change this to, for example, two.
+4:10
+And then we're going to get this as a result.
+4:13
+You can also use f-strings with date-time objects.
+4:16
+So here I'm importing date-time,
+4:19
+and then I'm creating the current date and time as of recording this video.
+4:24
+And then you can use these types of formats
+4:26
+to indicate how the date or the time should be printed.
+4:29
+And then this is what you're going to get as a result.
+4:32
+As you can see, I'm recording this like a week before Christmas,
+4:35
+and you're actually only seeing this in 2025.
+4:38
+What you can also do is text alignment,
+4:40
+and that's actually also really powerful
+4:42
+if you want to format outputs
+4:44
+and display them neatly in the table or something.
+4:46
+Here you see some examples of that.
+4:48
+So this is how you left-align a particular value
+4:52
+and want this to take up minimum 10 characters.
+4:55
+And you can do the same thing for right-aligned and also for centered.
+4:58
+So this is what that looks like.
+5:00
+So left, right, centered.
+5:02
+And you can change these numbers.
+5:04
+So let's say I'm going to turn this into 20 instead.
+5:09
+So then you will see it's simply going to move all of this text to the right
+5:13
+and it's going to change the alignment like so.
+5:16
+But if I change this back to 10
+5:19
+and I'm using a longer string like so,
+5:23
+well, then actually there is no alignment that's going to happen
+5:26
+because the string is actually longer than the 10 characters
+5:29
+that I've provided here as a setting.
+5:32
+So that's how alignment works.
+5:34
+Final thing I want to show you with fStrings,
+5:36
+and that's a really cool feature that I use all the time,
+5:38
+is that it supports a debugging syntax
+5:41
+and that allows you to display both the expression and the result.
+5:45
+So in this case, I have a value of 42.
+5:48
+And if you write an equal statement behind that,
+5:51
+it's also going to print the name of the variable.
+5:54
+So before we did this,
+5:57
+and then it's simply going to display the value.
+5:59
+If you write the equal statement behind it,
+6:01
+it's going to also print the name of the variable.
+6:04
+And it even displays expression.
+6:07
+So if I do, let's say, value plus 30,
+6:10
+then it's going to display the computed value,
+6:13
+but it's also going to display the expression.
+6:15
+So this is really great for quickly debugging things,
+6:18
+even though if you're seriously debugging some piece of code,
+6:21
+you should probably use the VS Code debugger.
+6:24
+And then you can also specify watch expressions
+6:26
+that achieve the same results.
+6:28
+fStrings are great for most formatting needs in Python.
+6:32
+However, if you're formatting strings dynamically,
+6:34
+for example, building templates,
+6:36
+consider string.format or the template class
+6:40
+from the string module for more advanced use cases.
+6:43
+Also, don't use fStrings to construct SQL queries.
+6:46
+fStrings don't escape values,
+6:48
+so that's going to leave you open to SQL injection attacks.
+6:51
+Instead, use a prepared statement.
+6:53
+fString formatting takes a bit of time to get used to,
+6:56
+but in my opinion, the best way of learning is by doing.
+6:59
+For example, if you want to become better at Python,
+7:01
+don't just watch my videos,
+7:02
+but work on solving actual problems with the language,
+7:05
+like you can do with today's sponsor, Brilliant.
+7:08
+Brilliant has thousands of interactive lessons in programming,
+7:12
+including Python, but also math, data analysis,
+7:15
+programming, and AI.
+7:17
+Using Brilliant is an effective way
+7:19
+to support your skill development
+7:21
+because their first principles approach
+7:23
+helps you build understanding from the ground up.
+7:25
+Brilliant helps build your critical thinking skills
+7:28
+through hands-on problem solving, not memorizing.
+7:31
+So while you're building real knowledge on specific topics,
+7:35
+you're also becoming a better thinker.
+7:37
+Learning a little every day
+7:38
+is one of the most important things you can do,
+7:40
+both for your personal and professional growth.
+7:43
+Brilliant makes it easy to learn anywhere right on your phone
+7:46
+with fun lessons you can do whenever you have some time.
+7:49
+Myself, I've been using Brilliant
+7:51
+to learn more about data science and AI.
+7:53
+Brilliant recently launched a ton of new data science content,
+7:56
+all of which uses real-world data
+7:58
+to train you to see trends and make better informed decisions.
+8:02
+For example, here's an interesting case study
+8:04
+that analyzes Airbnb data
+8:06
+and finds the best place to buy a rental property.
+8:09
+To try everything, Brilliant has to offer for free
+8:12
+for a full 30 days.
+8:13
+Visit brilliant.org/ArjanCodes or scan the QR code on screen
+8:18
+or click the link in the description.
+8:20
+You'll also get 20% off an annual premium subscription.
+Tip 3: Know the Built-In Functions
+8:24
+Third tip is to know built-in functions.
+8:26
+Python's built-in functions are incredibly powerful
+8:29
+and often overlooked.
+8:30
+They can simplify your code, make it more Pythonic,
+8:33
+and save you time.
+8:34
+Spoiler alert, soon I'm going to publish a video
+8:37
+covering built-in functions in more detail.
+8:39
+Now, you probably know functions like min, max, round, and len,
+8:43
+but how about the following ones?
+8:45
+For example, you can use enumerate to loop through an iterable
+8:48
+and then also keep track of the index.
+8:50
+That's what you see here.
+8:51
+So I have a list of items,
+8:53
+and then I'm using enumerate to go through the items,
+8:56
+and I also have the index.
+8:58
+So when I run this, I can do something with the index.
+9:00
+Really helpful.
+9:01
+And then there's also zip,
+9:02
+which is going to combine two or more iterables element-wise,
+9:06
+and then it creates tuples from them.
+9:08
+So I can have a list of names and a list of scores,
+9:12
+and then I can use zip to combine them
+9:14
+and then iterate over name and score at the same time.
+9:17
+And then this is what you get.
+9:19
+Also quite useful is any and all.
+9:22
+So if I have a list of numbers like so,
+9:24
+then any of those numbers is going to output true if any of the values are truthy.
+9:30
+In Python, a value is considered truthy if it evaluates to true in a Boolean context.
+9:36
+Examples of truthy values include non-zero numbers,
+9:39
+non-empty strings, lists, and other objects.
+9:42
+Falsy values like zero,
+9:44
+none, false, and empty collections evaluate to false.
+9:48
+And that's also what you see in this particular example,
+9:51
+where if you run this, you take this list of numbers.
+9:53
+So any is going to output true because there are truthy values in this list of numbers,
+9:59
+whereas all is going to output false because there are some falsy values,
+10:04
+which is these zero values right here.
+10:07
+And there's more useful built-in functions like map, for example,
+10:10
+which transforms an iterable by applying a function to each element.
+10:14
+So if you have a list of numbers,
+10:16
+you can map the square to this particular list and then print that,
+10:20
+and then this is what you're going to get.
+10:22
+Or you can use filter to select elements based on a certain condition.
+10:26
+For example, we only want to get the numbers that are divisible by 10.
+10:30
+And then when you run this, then this is the result that you get.
+10:33
+You can also use the reversed built-in function
+10:36
+that's going to reverse an iterable without actually modifying it.
+10:39
+So if I have this list of items,
+10:41
+and then I'm going to iterate over the reverse list,
+10:45
+then it's simply going to print that,
+10:46
+but actually at the same time, items is not changed.
+10:50
+So if I print items,
+10:52
+then you see that it will still have the original order preserved.
+10:56
+And another nice tip is that min and max,
+10:59
+which is really common functions used in Python,
+11:02
+actually also work with custom keys.
+11:04
+So for example, let's say I have a list of words.
+11:07
+What I can do is I can check what the longest word is using the max function
+11:12
+by supplying the length function as the key.
+11:14
+So then it's going to apply that function to each value
+11:17
+and then use that value to determine the maximum.
+11:20
+And then this is what we get.
+11:22
+The longest word is banana.
+Tip 4: Use Generators for Efficient Iteration
+11:24
+The next step is to use generators for efficient iteration.
+11:27
+If you use the yield keyword in a function,
+11:30
+then that's going to turn it into a generator.
+11:32
+Yield basically pauses the function
+11:35
+and allows it to produce a series of values over time,
+11:38
+resuming from where it left off with each subsequent call.
+11:42
+Because of that, generators are a really great way to handle large datasets
+11:46
+or streams of data without consuming too much memory.
+11:49
+Here you see a couple of examples of generators.
+11:52
+So in this case, I have a square numbers function,
+11:55
+and that's going to use a for loop to go over a certain range,
+12:00
+and then it's going to yield the square of that particular value,
+12:04
+but it's only going to compute that when you actually call that function.
+12:08
+So what you can then do is use this generator function
+12:10
+to compute the actual value.
+12:12
+So I'm going to loop over square numbers five,
+12:15
+and then I'm going to print the actual value.
+12:18
+And then this is what you're going to get.
+12:19
+And it's not going to compute the square numbers
+12:22
+for every possible integer, only the ones that you actually request.
+12:26
+And that's one of the main powers of generators,
+12:28
+that they compute values lazily.
+12:29
+So they only produce the results when you explicitly request them.
+12:33
+So here you can actually see that happening,
+12:35
+where we have a generator that also computes the square of a number,
+12:39
+but with a delay.
+12:40
+So I'm using a time.sleep here.
+12:43
+And then I'm going to yield that value.
+12:45
+And then what you're going to see is that I use another built-in function
+12:49
+here, next, to go through the generator manually
+12:52
+and fetching these values on the fly.
+12:54
+So I'm computing it of 0, 1, and 2 with a time delay.
+12:58
+And you actually see that happening when you
+13:01
+run this particular piece of code.
+Tip 5: Use Context Managers for Resource Management
+13:03
+Now, our next step is to use context managers, which
+13:05
+is also a really nice feature.
+13:08
+Context managers, they use the with statement.
+13:11
+They simplify and automate management of resources,
+13:14
+like files, database connections, network sockets.
+13:18
+They ensure that resources are properly closed or cleaned up,
+13:22
+even if some exception occurs during execution.
+13:25
+File operations are one of the most common uses of context managers.
+13:30
+Here you see a couple of examples.
+13:31
+So I'm using a context manager here, using the with statement
+13:35
+and opening example.txt, which is this particular file.
+13:39
+And then when I run that, well, it's simply
+13:41
+going to open that file and print the content.
+13:44
+And it's going to automatically close the file again.
+13:47
+That's exactly what context managers do.
+13:49
+And they work for lots of different scenarios.
+13:51
+For example, they can also help manage external connections,
+13:54
+like a database connection, and make sure
+13:56
+that it closes properly when you're done with the particular database.
+13:59
+So in this case, I have a SQLite example.
+14:01
+It connects to a database.
+14:03
+It's going to create a table if it doesn't exist.
+14:05
+And then it's going to insert a user and then
+14:08
+fetch the users in the database.
+14:10
+So there you see there is now one user in the database.
+14:12
+If I run this again, there's going to be two aliases.
+14:15
+You can also create your own context manager
+14:18
+with the context manager decorator.
+14:21
+And that actually allows you to use a generator.
+14:23
+So all these different concepts, they combine to produce
+14:26
+like a really cool syntax.
+14:29
+So we use this decorator.
+14:30
+And then I have a timer.
+14:31
+I'm going to start the timer and then do a yield.
+14:35
+So every time I call the context manager,
+14:37
+that's where it's going to pause.
+14:39
+And then after that, it's going to compute the end time
+14:41
+and then print the elapsed time.
+14:44
+And then the usage of this is really simple.
+14:46
+You can just do with timer.
+14:48
+And then once that's completed, it's
+14:50
+going to close the context by running this piece of code.
+14:53
+So when I run this, then this is what we get.
+14:55
+So this took us 0.13 seconds.
+14:58
+Now, if you need something more complex that
+15:00
+can't be handled with the decorator,
+15:01
+you can also implement a context manager
+15:04
+by defining the enter and exit Donder methods in a class.
+15:08
+So that's basically what you see here.
+15:10
+And then you are in a method, and you
+15:11
+can do like a bunch of things.
+15:13
+And in the exit, you also have things
+15:15
+like the traceback and exception type and value
+15:18
+that you can work with.
+15:20
+And then you can use this like so.
+15:22
+And that also is a context manager.
+Tip 6: Leverage Python’s Libraries
+15:24
+The next step is to use Python's libraries.
+15:27
+Python has an extensive ecosystem,
+15:29
+and that's one of its greatest strengths.
+15:32
+Libraries like Pandas, NumPy, HTTPS, Matplotlib,
+15:35
+they can make your work significantly easier.
+15:38
+Knowing when to use a library versus when
+15:41
+to implement something yourself makes you
+15:42
+a much more efficient developer.
+15:44
+Now, of course, there's thousands and thousands
+15:46
+of libraries.
+15:47
+I'm not going to show all of them,
+15:48
+but just a few simple ones that I regularly use.
+15:51
+So one is HTTPS.
+15:52
+So if you want to do some API requests, I always use this.
+15:56
+And it's really simple.
+15:58
+It works really great.
+15:59
+Of course, there's Pandas for data manipulation and analysis.
+16:03
+So if you can create a data frame
+16:05
+and then perform some operations on it,
+16:07
+like computing the mean of the age column,
+16:10
+this is actually pretty slow.
+16:11
+I'm guessing it's initializing something.
+16:15
+Why did that take eight seconds?
+16:17
+That's ridiculous.
+16:18
+Let's try that again.
+16:18
+OK, now it's way faster.
+16:20
+So data frames can be easily printed.
+16:22
+You can do things like compute the mean.
+16:24
+And of course, Pandas has many, many, many different features
+16:27
+that you don't have to implement from scratch yourself
+16:30
+if you use that library.
+16:31
+Of course, there's also NumPy.
+16:33
+So we can create an array, a NumPy array,
+16:36
+and then also perform these type of simple operations on it.
+16:39
+And it's all implemented in C. So NumPy is really fast.
+16:42
+We have scikit-learn, which has machine learning algorithms.
+16:45
+So you can take, let's say, some data that we have here
+16:49
+and then create a linear regression model
+16:53
+and then fit to that model and then predict the next value,
+16:57
+which is what you see here.
+16:58
+And apparently, I'm running this for the first time
+17:00
+on this machine.
+17:01
+This is now also pretty slow.
+17:02
+So in this case, 1, 2, 3, so the predictive value for 5
+17:05
+is obviously 5.
+17:07
+But if I change this to, I don't know, let's say 10,
+17:09
+and then I run this again, then you
+17:11
+see we're going to get a different value here.
+17:13
+So it's really easy.
+17:14
+Scikit-learn is a really great package.
+17:17
+matplotlib can plot graphs, charts, so that's also really easy, and also integrates directly
+17:23
+with Jupyter Notebooks, which I'm using here to show you these code examples. In short,
+17:29
+use these libraries. They really save you a lot of time. The next tip is to use type annotations
+Tip 7: Use Typing for Better Code Clarity
+17:33
+for better code clarity. Type annotations or type hints, they help others and future you
+17:39
+understand your code better. I've talked about type annotations many times on this channel.
+17:44
+They're really easy to add in Python and they simply make your functions look a lot cleaner
+17:49
+and clearer. Because when you look at, for example, this function's signature, you can
+17:53
+immediately see that this function expects a list of integers. If you leave out the type
+17:58
+annotation, you don't know, right? You have to check the code and figure out what is going on.
+18:02
+And we also know that it's going to return a floating point value. So that's very useful
+18:06
+information. It's like structured documentation. And then we can, of course, simply run this.
+18:12
+But what's nice about type hints is that they also help you write code that's more generic.
+18:16
+So in this case, we have the average function that takes a list of integers. But actually,
+18:21
+when you look at the body, you may realize that it doesn't have to be a list. It can also be a set,
+18:28
+for example. And in fact, as long as numbers is of type iterable, anything that's iterable,
+18:34
+a list or a set, then you can actually perform this function. So I can do average on a set,
+18:41
+in this case. And that's also going to give me that value. I might say, well, yeah, of course,
+18:46
+you could also just leave out the type annotations. Then it also works with anything, right? And you
+18:51
+would be absolutely correct. But the thing is that by being explicit about types in this way,
+18:57
+it also helps you get yourself as a developer a better understanding of what kind of data
+19:03
+a function expects. And by understanding that better, you're going to write better code,
+19:09
+because you may do some refactor to improve the efficiency or improve the structure. And
+19:13
+thinking about types the way that your data is structured is going to massively help you
+19:17
+understand your code better. The next step is to use abstraction to decouple your code.
+Tip 8: Use Abstraction to Decouple Your Code
+19:22
+Abstraction is a key concept in software design that allows you to separate what a piece of code
+19:28
+does from how it does it. In Python, you can use ABCs, abstract base classes, and protocols. These
+19:36
+provide the tools to create clean and decoupled code. ABCs, abstract base classes, they define
+19:42
+a sort of blueprint for concrete classes. They specify what methods or properties a subclass
+19:48
+must implement. I've shown ABCs many times in videos on the channel. So if you want to learn
+19:54
+more about that, watch some of my older videos. But this is basically what it looks like. So
+19:58
+we can create a, in this case, payment processor, which is an abstract base class. We do that by
+20:03
+inheriting from the ABC class. And you can define methods, like so. So process payment
+20:09
+doesn't have implementation, so it's an abstract method. And then you can create subclasses of
+20:14
+this, like a PayPal processor and a Stripe processor. And then we have another function
+20:20
+that has a processor as an argument. And this function now doesn't need to know anything about
+20:26
+what specific type of payment processor it uses. And that's exactly the abstraction that we're
+20:32
+looking for. So when I run this, then, well, this is the result that we're going to get. And
+20:37
+process order knows nothing about specific payment processors that it uses. Now, next to abstract
+20:44
+base classes, you can also use the protocol class, which relies more on Python's duck typing
+20:50
+mechanism. And this works a bit differently in that we can have a logger. In this case,
+20:56
+that's another example, but that's a protocol. So it doesn't inherit from ABC, it inherits from
+21:01
+protocol, and that has a log method. But then we can create classes that implement or that follow
+21:08
+this protocol. But as you can see, there's no inheritance relationship here. The class simply
+21:13
+has the same methods. And there's also a file logger that does the same thing, but it logs to
+21:19
+the file. And then, similar to what we had in the ABC example, I can then perform a task and provide
+21:24
+a logger, an abstract logger, as an argument. And here, this uses duck typing. So Python is simply
+21:32
+going to check, hey, what we pass here, does it actually follow this protocol? And then it's going
+21:36
+to use that object in some way. So when I run this, then it's going to log these things here. And
+21:43
+actually, it now also has created the log file right here. Now, personally, I do like protocols
+21:48
+quite a bit. They're more closely related to the actual typing system of Python, whereas abstract
+21:53
+base classes are, in my opinion, a bit different. But, you know, they both do the job. So use whichever
+21:59
+one of these options you prefer. You can only apply abstraction well if you thought about the design
+22:04
+of your software. If you want to learn how to design a piece of software from scratch and avoid the main
+22:09
+pitfalls, check out my free design guide at arjan.codes/designguide. This describes the seven steps
+22:15
+you need to take, and it's going to help you avoid some of the mistakes that I made in the past.
+Tip 9: Write Tests
+22:19
+The next step is to write tests. You need to test your code early and often. You can use PyTest
+22:25
+for that. This doesn't come out of the box with Python, so you need to install it separately,
+22:29
+with UV, for example, or with any dependency manager that you use. But what writing tests is
+22:34
+going to do for you is that it will create a safety net. Basically, things that you know
+22:39
+they're guaranteed to work, because when you run those tests, you add some code, you run the test
+22:44
+again, you can verify that actually it's not broken. And that's what tests are really helpful
+22:48
+with. And they are scalable, in a sense, because you can just add more, and you're not going to
+22:52
+forget to manually test some edge case. Writing these tests in Python is actually not that hard.
+22:58
+So here I can show you a quick example where this is from a recent code roast video that I did,
+23:05
+data CLI. And there you see I have a test folder that basically tests different things. So I simply
+23:12
+write these functions that do some tests. And you can write different files here containing
+23:18
+all sorts of different tests, like here's a test to show files. And you can even do mocking, like
+23:25
+I create a mock data dictionary here, which just contains a bunch of data frames. And then I'm
+23:31
+going to check that calling this show files function and prints the correct message. And
+23:36
+if you followed the previous tip related to abstractions, then actually you can use abstractions
+23:40
+to mock things as well in your test. For example, this is another code example I did a while back
+23:46
+about the repository pattern. But here I want to test the repository. And what I did in this case
+23:52
+is that I have a mock repository that is a subclass of repository. Now repository itself
+24:00
+is an abstract base class, so that's, you know, no implementation. And then I have here a specific
+24:05
+implementation of that for blog posts. But then I also have a mock version that just does some
+24:11
+very basic simple things. And then you can write tests that use this mock repository. Now these
+24:16
+specific tests here are not that useful, but by having this abstract version we don't have to
+24:21
+create an actual repository which may connect to a database, etc. So abstractions are really helpful
+Tip 10: Use Classes and Functions Wisely
+24:26
+for that. My final tip is to use classes and functions wisely. And this is something that
+24:32
+lots of developers struggle with. Understanding when to use a class, a data class, or a plain
+24:37
+function can help you write cleaner, more maintainable Python code. So here's a breakdown.
+24:42
+First, use a class when you need to encapsulate behavior and data together. Classes are ideal
+24:48
+for creating objects that have both state attributes and behavior methods. Here you can
+24:54
+see a clear example of that. So I have a class Shopping Cart, which has a bunch of items. And
+24:58
+it also has behavior. So you can add an item and you can also compute the total. That's what you
+25:04
+see right here. And then we can run this code like so and print some information about it. So we have
+25:09
+three dollars and fifty cents in our Shopping Cart. A data class is a bit different. It's a
+25:14
+lightweight alternative to a class that's more focused on representing some sort of structured
+25:20
+data. So when you need to do that and you don't need that much behavior, a data class is actually
+25:25
+really nice and it allows you to avoid some of the boilerplate that's involved with writing a
+25:30
+regular class, such as an initializer like you see here. So here you see an example where we have a
+25:35
+data class of a class Item, which has a name and a price. And the class is very simple. It's really
+25:41
+easy. And then I can simply use that and also add some other things like easily printing an instance
+25:47
+of the class and things like that. So as you can see, if I print the item, then it's going to give
+25:52
+me some useful information. And I can still access, of course, the instance variables like so. If you
+25:58
+have a stateless operation that you need to perform, then a function is a much better fit.
+26:04
+In other words, a task that doesn't really require you to maintain a state and that you
+26:08
+can perform independently. And then you can also introduce abstraction again,
+26:11
+what I talked about in one of the previous tips.
+26:13
+So here's an example of that, where I have a function to calculate a discounted price so that it gets a price and a discount.
+26:20
+So this is like a really independent function, it doesn't need to maintain any state.
+26:24
+And then I can simply call that function and then this is what we get.
+26:28
+And then of course you will often use these things in various combinations to get a complete solution to your problem.
+26:35
+So here, for example, I have a data class which is an item.
+26:38
+I have a shopping cart which is a regular class that has behavior, but it also maintains a list of items.
+26:45
+And then I have this calculateDiscount function that expects a shopping cart.
+26:50
+You could even introduce some abstraction here by allowing any type of object that has a total method.
+26:57
+And then it's going to calculate the discount and then, well, we simply use it in this way.
+27:02
+And we have the basic setup of a simple webshop, apart from the website and actual payments and all the other things you need for a webshop.
+27:10
+So these were my tips, but now I'd like to hear from you.
+Final thoughts
+27:14
+Did you find these tips helpful? Did I miss any important ones?
+27:18
+Let me know your thoughts in the comments.
+27:20
+Next to writing Python code, you also need to think about the ideal way of managing your Python project.
+27:26
+In what environment you're going to run your code, managing your dependencies, and so on.
+27:30
+Watch this video next to learn how to do that the easiest way possible.
+27:35
+Thanks for watching and see you next time.
