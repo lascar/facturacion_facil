@@ -4,7 +4,7 @@ from datetime import datetime
 from utils.logger import get_logger, log_database_operation, log_exception
 
 class Database:
-    def __init__(self, db_path="facturacion.db"):
+    def __init__(self, db_path="base_de_datos/facturacion.db"):
         self.db_path = db_path
         self.logger = get_logger("database")
         self.init_database()

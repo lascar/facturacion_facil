@@ -4,7 +4,7 @@ Componentes UI comunes refactorizados para usar la abstracción GUI
 """
 from gui import get_gui_factory
 from utils.translations import get_text
-from utils.config import app_config
+from config.config import app_config
 from utils.logger import get_logger
 import os
 from PIL import Image

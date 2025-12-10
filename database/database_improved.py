@@ -15,7 +15,7 @@ from utils.logger import get_logger, log_database_operation, log_exception
 class DatabaseImproved(DatabaseContextManager):
     """Version améliorée de Database avec gestionnaires de contexte"""
     
-    def __init__(self, db_path="facturacion.db"):
+    def __init__(self, db_path="base_de_datos/facturacion.db"):
         super().__init__(db_path)
         self.logger = get_logger("database_improved")
         self.migration_manager = MigrationManager(db_path)

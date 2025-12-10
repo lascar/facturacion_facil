@@ -12,7 +12,7 @@ def test_validate_form_directly():
     print("🔍 Test directo de validate_form...")
     
     try:
-        from ui.productos import ProductosWindow
+        from ui.productos_pyqt5 import ProductosPyQt5Window as ProductosWindow
         from unittest.mock import Mock
         
         # Crear instancia mock

@@ -90,7 +90,7 @@ def test_configuration_actuelle():
         
         # Vérifier via Config
         print("\n2️⃣ Configuration via Config:")
-        from utils.config import app_config
+        from config.config import app_config
         config_class = app_config.get_factura_numero_inicial()
         print(f"   📝 Config class: '{config_class}'")
         

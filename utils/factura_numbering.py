@@ -5,7 +5,7 @@ Servicio para manejar la numeración de facturas
 
 import re
 from database.database import Database
-from utils.config import app_config
+from config.config import app_config
 from utils.logger import get_logger
 
 logger = get_logger(__name__)

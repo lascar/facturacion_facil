@@ -19,6 +19,7 @@ from database.database import db
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
 from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
+from utils.dialog_foreground_linux import force_dialog_to_foreground_linux
 
 class FacturasPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion des factures avec PyQt5"""

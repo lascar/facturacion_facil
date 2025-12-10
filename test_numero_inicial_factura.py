@@ -5,7 +5,7 @@ Test pour vérifier le respect du numéro initial de factura
 """
 
 from utils.factura_numbering import FacturaNumberingService
-from utils.config import Config
+from config.config import Config
 from database.database_improved import DatabaseImproved
 import sqlite3
 

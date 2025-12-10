@@ -66,8 +66,16 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-database/facturacion.db
-facturacion.db
+
+# Bases de données et backups (exclure les fichiers, garder les répertoires)
+base_de_datos/*.db
+base_de_datos/backups/*.db
+config/config.json
+
+# Garder les répertoires vides
+!base_de_datos/
+!base_de_datos/backups/
+!config/
 
 # Flask stuff:
 instance/
@@ -136,9 +144,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Application specific
-*.db
-*.db-journal
+# Application specific - Garder les bases de test
+test/base_de_datos/*.db
 logs/*.log
 pdfs/*.pdf
 data/logos/*

@@ -14,10 +14,10 @@ from utils.logger import get_logger
 class MigrationManager:
     """Gestionnaire de migrations pour maintenir la compatibilité des données"""
     
-    def __init__(self, db_path="facturacion.db"):
+    def __init__(self, db_path="base_de_datos/facturacion.db"):
         self.db_path = db_path
         self.logger = get_logger(__name__)
-        self.backup_dir = "backups"
+        self.backup_dir = "base_de_datos/backups"
         
         # Créer le répertoire de sauvegarde s'il n'existe pas
         os.makedirs(self.backup_dir, exist_ok=True)

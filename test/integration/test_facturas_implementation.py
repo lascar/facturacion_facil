@@ -22,14 +22,14 @@ def test_imports():
         from common.ui_components import BaseWindow, ImageSelector, FormHelper
         print("   ✅ Componentes UI comunes importados")
         
-        from ui.facturas import FacturasWindow
+        from ui.facturas_pyqt5 import FacturasPyQt5Window as FacturasWindow
         print("   ✅ Ventana de facturas importada")
         
         from ui.facturas_methods import FacturasMethodsMixin
         print("   ✅ Métodos de facturas importados")
         
-        from ui.producto_factura_dialog import ProductoFacturaDialog
-        print("   ✅ Diálogo de productos importado")
+        # ProductoFacturaDialog supprimé (CustomTkinter, pas PyQt5)
+        print("   ✅ Imports PyQt5 validés")
         
         return True
         
@@ -180,10 +180,10 @@ def test_ui_components():
         print("   ✅ FormHelper disponible")
         
         # Test que las clases se pueden importar
-        from ui.facturas import FacturasWindow
-        from ui.producto_factura_dialog import ProductoFacturaDialog
-        
-        print("   ✅ Clases UI importadas correctamente")
+        from ui.facturas_pyqt5 import FacturasPyQt5Window as FacturasWindow
+        # ProductoFacturaDialog supprimé (CustomTkinter, pas PyQt5)
+
+        print("   ✅ Clases UI PyQt5 importadas correctamente")
         
         return True
         

@@ -13,7 +13,7 @@ from PyQt5.QtGui import QFont, QPixmap
 
 from database.database import db
 from utils.logger import get_logger
-from auto_backup_system import AutoBackupSystem
+from utils.auto_backup_system import AutoBackupSystem
 import sqlite3
 
 class DataCleanupWorker(QThread):
