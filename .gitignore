@@ -166,6 +166,20 @@ data/test_images/*
 .DS_Store
 Thumbs.db
 
+# Windows reserved names (cause Git clone errors)
+nul
+con
+prn
+aux
+com[1-9]
+lpt[1-9]
+**/nul
+**/con
+**/prn
+**/aux
+**/com[1-9]
+**/lpt[1-9]
+
 # Documentation temporaire (éviter les MD temporaires à la racine)
 /*_SUMMARY.md
 /*_RESUMEN.md
