@@ -8,14 +8,22 @@
  - **Textes en dur** : ne jamais harcoder des textes en dur dans le code
  - **Langues obligatoires** : ES pour chaque nouveau texte une fois qu'il passe
 
- ### Tests
+ ### Tests - PROTECTION PRODUCTION CRITIQUE ⚠️
+ - ** JAMAIS utiliser la base de données de production pour les tests - INCIDENT GRAVE
+ - ** OBLIGATOIRE : Utiliser database/test_database.py pour créer une base de test isolée
+ - ** OBLIGATOIRE : Vérifier le chemin de la base avant tout test (doit contenir "test" ou "temp")
+ - ** OBLIGATOIRE : Nettoyer automatiquement les bases de test après utilisation
+ - ** OBLIGATOIRE : Préfixer tous les noms de test par "Test" ou "TEST" pour identification
+ - ** CRITIQUE : Si des données de test apparaissent en production, les supprimer IMMÉDIATEMENT
  - ** les tests doivent être intégrés comme test de régression ou d'integration dans la suite de test et non supprimer
- - ** les tests doivent utiliser une base de donnée différente à celle de production CRITIQUE
  - ** lorque tu fais un nouveau test dans le developpement intègre-le à la suite de test
+ - ** TOUJOURS utiliser test_safe_*.py comme modèle pour les nouveaux tests
+ - ** INTERDICTION ABSOLUE : Modifier, créer ou supprimer des données en production via les tests
 
  ### Structure de données - CRITIQUE ⚠️
  - ** JAMAIS modifier la structure de base de données sans sauvegarde préalable obligatoire
  - ** JAMAIS supprimer ou perdre des données de production - INCIDENT GRAVE
+ - ** JAMAIS utiliser la base de production pour tester des modifications - UTILISER database/test_database.py
  - ** quand la structure de la base de donnée change, il faut maintenir la compatibilité avec la structure antérieur
  - ** si la structure de la base de donnée change, il faut migrer les données existantes de la base de production
  - ** TOUJOURS utiliser des migrations progressives (ADD COLUMN) au lieu de DROP/CREATE
@@ -26,3 +34,11 @@
  - ** CONSULTER la documentation : GUIDE_MIGRATIONS_BASE_DONNEES.md
  - ** TESTER avec le script : test_migration_system.py avant toute modification
  - ** En cas de perte de données : utiliser restore_and_migrate.py pour récupération
+
+ ### Protocole de sécurité des données - NOUVEAU ⚠️
+ - ** AVANT tout test : Vérifier que database.db_path contient "test" ou "temp"
+ - ** AVANT toute modification : Confirmer explicitement avec l'utilisateur
+ - ** APRÈS tout test : Vérifier qu'aucune donnée de test n'est restée en production
+ - ** EN CAS D'ERREUR : Nettoyer immédiatement et informer l'utilisateur
+ - ** UTILISER EXCLUSIVEMENT : get_test_database() pour tous les tests
+ - ** INTERDICTION : Importer directement database.db dans les tests

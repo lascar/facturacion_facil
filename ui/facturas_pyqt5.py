@@ -8,15 +8,18 @@ from PyQt5.QtWidgets import (
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QGroupBox, QSplitter, QFrame, QWidget, QComboBox, QDateEdit,
     QSpinBox, QDoubleSpinBox, QTextEdit, QDialog, QDialogButtonBox,
-    QApplication, QDesktopWidget
+    QApplication, QDesktopWidget, QScrollArea
 )
 from PyQt5.QtCore import Qt, pyqtSignal as Signal, QDate
 from PyQt5.QtGui import QFont
+
+from ui.client_autocomplete_widget import ClientAutoCompleteWidget, ClientDetailsWidget
 from datetime import datetime
 
 from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
 from utils.logger import get_logger
+from utils.invoice_status_manager import invoice_status_manager
 from utils.invoice_status_manager import invoice_status_manager
 from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
 from utils.dialog_foreground_linux import force_dialog_to_foreground_linux
@@ -59,113 +62,735 @@ class FacturasPyQt5Window(BasePyQt5Window):
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setFont(QFont("Arial", 16, QFont.Bold))
         main_layout.addWidget(title_label)
-        
-        # Splitter pour diviser l'interface
-        splitter = QSplitter(Qt.Horizontal)
-        main_layout.addWidget(splitter)
-        
-        # Configuration des sections
-        self.setup_facturas_list(splitter)
-        self.setup_factura_info(splitter)
-        
-        # Boutons
+
+        # Splitter vertical pour diviser liste (bas) et formulaire (haut)
+        main_splitter = QSplitter(Qt.Vertical)
+        main_layout.addWidget(main_splitter)
+
+        # Partie supérieure - Formulaire d'édition/création
+        self.setup_factura_form(main_splitter)
+
+        # Partie inférieure - Liste des factures
+        self.setup_facturas_list(main_splitter)
+
+        # Définir les proportions (formulaire plus grand que liste)
+        main_splitter.setSizes([400, 300])  # 400px pour formulaire, 300px pour liste
+
+        # Boutons d'action
         buttons_layout = QHBoxLayout()
 
         self.new_btn = QPushButton("➕ Nueva Factura")
+        self.save_btn = QPushButton("💾 Guardar")
+        self.cancel_btn = QPushButton("❌ Cancelar")
         self.view_btn = QPushButton("👁️ Ver Detalles")
-        self.edit_btn = QPushButton("✏️ Editar")
         self.pdf_btn = QPushButton("📄 Exportar PDF")
         self.eliminar_btn = QPushButton("🗑️ Eliminar")
         self.refresh_btn = QPushButton("🔄 Actualizar")
 
         buttons_layout.addWidget(self.new_btn)
+        buttons_layout.addWidget(self.save_btn)
+        buttons_layout.addWidget(self.cancel_btn)
         buttons_layout.addWidget(self.view_btn)
-        buttons_layout.addWidget(self.edit_btn)
         buttons_layout.addWidget(self.pdf_btn)
         buttons_layout.addWidget(self.eliminar_btn)
         buttons_layout.addWidget(self.refresh_btn)
         buttons_layout.addStretch()
-        
+
         main_layout.addLayout(buttons_layout)
+
+        # Variables d'état
+        self.current_factura_id = None
+        self.is_editing = False
+        self.lineas_factura = []
 
         # Appliquer le style
         self.apply_style()
         
+    def setup_factura_form(self, parent):
+        """Configurer le formulaire d'édition/création de facture"""
+        form_widget = QWidget()
+        form_layout = QVBoxLayout(form_widget)
+
+        # Titre du formulaire
+        self.form_title_label = QLabel("Seleccionar factura para editar o crear nueva")
+        self.form_title_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.form_title_label.setAlignment(Qt.AlignCenter)
+        form_layout.addWidget(self.form_title_label)
+
+        # Scroll area pour le formulaire
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+        # Widget de contenu du formulaire
+        form_content = QWidget()
+        content_layout = QVBoxLayout(form_content)
+
+        # Section informations facture et client sur 2 colonnes
+        self.setup_factura_client_section(content_layout)
+
+        # Section produits/lignes
+        self.setup_products_section(content_layout)
+
+        # Section totaux
+        self.setup_totals_section(content_layout)
+
+        # Ajouter le contenu au scroll area
+        scroll_area.setWidget(form_content)
+        form_layout.addWidget(scroll_area)
+
+        parent.addWidget(form_widget)
+
     def setup_facturas_list(self, parent):
         """Configurer la liste des factures"""
         list_widget = QWidget()
         list_layout = QVBoxLayout(list_widget)
-        
+
         # Label
         list_label = QLabel("Lista de Facturas")
         list_label.setFont(QFont("Arial", 12, QFont.Bold))
         list_layout.addWidget(list_label)
-        
+
         # Table des factures
         self.facturas_table = QTableWidget()
         headers = ["Número", "Cliente", "Fecha", "Total", "Estado"]
         self.setup_table_widget(self.facturas_table, headers)
-        
+
         # Connecter la sélection
         self.facturas_table.itemSelectionChanged.connect(self.on_factura_selected)
-        
+
         list_layout.addWidget(self.facturas_table)
         parent.addWidget(list_widget)
-        
-    def setup_factura_info(self, parent):
-        """Configurer l'affichage des informations de facture"""
-        info_widget = QWidget()
-        info_layout = QVBoxLayout(info_widget)
-        
-        # GroupBox pour les informations
-        info_group = QGroupBox("Información de la Factura")
-        info_group_layout = QGridLayout(info_group)
-        
-        # Labels d'information
-        self.numero_label = QLabel("Número: -")
-        self.cliente_label = QLabel("Cliente: -")
-        self.fecha_label = QLabel("Fecha: -")
-        self.total_label = QLabel("Total: -")
-        self.estado_label = QLabel("Estado: -")
-        
-        info_group_layout.addWidget(self.numero_label, 0, 0)
-        info_group_layout.addWidget(self.cliente_label, 1, 0)
-        info_group_layout.addWidget(self.fecha_label, 2, 0)
-        info_group_layout.addWidget(self.total_label, 3, 0)
-        info_group_layout.addWidget(self.estado_label, 4, 0)
-        
-        info_layout.addWidget(info_group)
-        
-        # Message pour la création de factures
-        message_group = QGroupBox("Crear Nueva Factura")
-        message_layout = QVBoxLayout(message_group)
-        
-        message_label = QLabel("""
-        Para crear una nueva factura:
-        1. Haga clic en "Nueva Factura"
-        2. Seleccione un cliente
-        3. Agregue productos
-        4. Confirme la factura
-        
-        (Funcionalidad completa en desarrollo)
+
+    def setup_factura_client_section(self, parent_layout):
+        """Configurer les sections factura et client sur 2 colonnes"""
+        # Container horizontal pour les 2 colonnes
+        columns_widget = QWidget()
+        columns_layout = QHBoxLayout(columns_widget)
+        columns_layout.setSpacing(15)  # Espacement entre les colonnes
+
+        # Créer les sections et stocker les références
+        info_group = self.create_basic_info_section()
+        client_group = self.create_client_section()
+
+        # Ajouter les sections au layout avec des proportions équilibrées
+        columns_layout.addWidget(info_group, 3)  # 60% pour la factura
+        columns_layout.addWidget(client_group, 2)  # 40% pour le client
+
+        parent_layout.addWidget(columns_widget)
+
+    def apply_combo_style(self, combo_box):
+        """Appliquer un style cohérent aux combo boxes pour éviter le texte blanc"""
+        combo_box.setStyleSheet("""
+            QComboBox {
+                background-color: white;
+                border: 2px solid #cccccc;
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 13px;
+                color: #2c3e50;
+                min-height: 25px;
+            }
+            QComboBox:hover {
+                border-color: #3498db;
+                background-color: #ecf0f1;
+            }
+            QComboBox:focus {
+                border-color: #3498db;
+                background-color: #ffffff;
+            }
+            QComboBox::drop-down {
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 25px;
+                border-left-width: 1px;
+                border-left-color: #bdc3c7;
+                border-left-style: solid;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+                background-color: #ecf0f1;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid #34495e;
+                width: 0px;
+                height: 0px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: white;
+                border: 2px solid #3498db;
+                selection-background-color: #3498db;
+                selection-color: white;
+                color: #2c3e50;
+                outline: none;
+                padding: 5px;
+            }
+            QComboBox QAbstractItemView::item {
+                background-color: white;
+                color: #2c3e50;
+                padding: 8px;
+                border: none;
+            }
+            QComboBox QAbstractItemView::item:selected {
+                background-color: #3498db;
+                color: white;
+            }
+            QComboBox QAbstractItemView::item:hover {
+                background-color: #ecf0f1;
+                color: #2c3e50;
+            }
         """)
-        message_label.setWordWrap(True)
-        message_layout.addWidget(message_label)
-        
-        info_layout.addWidget(message_group)
-        info_layout.addStretch()
-        
-        parent.addWidget(info_widget)
+
+    def create_basic_info_section(self):
+        """Créer et retourner la section d'informations de base"""
+        info_group = QGroupBox("Información de la Factura")
+        info_layout = QGridLayout(info_group)
+
+        # Número de factura
+        info_layout.addWidget(QLabel("Número:"), 0, 0)
+        self.numero_edit = QLineEdit()
+        self.numero_edit.setReadOnly(True)
+        info_layout.addWidget(self.numero_edit, 0, 1)
+
+        # Fecha
+        info_layout.addWidget(QLabel("Fecha:"), 0, 2)
+        self.fecha_edit = QDateEdit()
+        self.fecha_edit.setDate(QDate.currentDate())
+        self.fecha_edit.setCalendarPopup(True)
+        info_layout.addWidget(self.fecha_edit, 0, 3)
+
+        # Estado
+        info_layout.addWidget(QLabel("Estado:"), 1, 0)
+        self.estado_combo = QComboBox()
+        # Les états seront chargés depuis la configuration d'organisation
+        self.apply_combo_style(self.estado_combo)
+        info_layout.addWidget(self.estado_combo, 1, 1)
+
+        return info_group
+
+    def create_client_section(self):
+        """Créer et retourner la section client"""
+        client_group = QGroupBox("Cliente")
+        client_layout = QVBoxLayout(client_group)
+
+        # Widget d'autocomplétion pour le client
+        client_input_layout = QHBoxLayout()
+        client_input_layout.addWidget(QLabel("Cliente:"))
+
+        self.cliente_autocomplete = ClientAutoCompleteWidget()
+        client_input_layout.addWidget(self.cliente_autocomplete, 1)
+
+        client_layout.addLayout(client_input_layout)
+
+        # Widget pour les détails du client
+        self.client_details = ClientDetailsWidget()
+        client_layout.addWidget(self.client_details)
+
+        # Connecter les signaux
+        self.cliente_autocomplete.client_selected.connect(self.on_client_selected)
+        self.cliente_autocomplete.client_created.connect(self.on_client_created)
+        self.cliente_autocomplete.client_changed.connect(self.on_client_changed)
+        self.client_details.client_updated.connect(self.on_client_updated)
+        self.client_details.client_saved.connect(self.on_client_saved)
+        self.client_details.client_changes_discarded.connect(self.on_client_changes_discarded)
+
+        return client_group
+
+    def setup_basic_info_section(self, parent_layout):
+        """Configurer la section d'informations de base"""
+        info_group = QGroupBox("Información de la Factura")
+        info_layout = QGridLayout(info_group)
+
+        # Número de factura
+        info_layout.addWidget(QLabel("Número:"), 0, 0)
+        self.numero_edit = QLineEdit()
+        self.numero_edit.setReadOnly(True)
+        info_layout.addWidget(self.numero_edit, 0, 1)
+
+        # Fecha
+        info_layout.addWidget(QLabel("Fecha:"), 0, 2)
+        self.fecha_edit = QDateEdit()
+        self.fecha_edit.setDate(QDate.currentDate())
+        self.fecha_edit.setCalendarPopup(True)
+        info_layout.addWidget(self.fecha_edit, 0, 3)
+
+        # Estado
+        info_layout.addWidget(QLabel("Estado:"), 1, 0)
+        self.estado_combo = QComboBox()
+        # Les états seront chargés depuis la configuration d'organisation
+        self.apply_combo_style(self.estado_combo)
+        info_layout.addWidget(self.estado_combo, 1, 1)
+
+        parent_layout.addWidget(info_group)
+
+
+
+    def setup_products_section(self, parent_layout):
+        """Configurer la section produits"""
+        products_group = QGroupBox("Productos")
+        products_layout = QVBoxLayout(products_group)
+
+        # Agregar producto
+        add_product_layout = QHBoxLayout()
+        add_product_layout.addWidget(QLabel("Producto:"))
+
+        self.producto_combo = QComboBox()
+        self.producto_combo.setEditable(False)
+        self.apply_combo_style(self.producto_combo)
+        add_product_layout.addWidget(self.producto_combo)
+
+        add_product_layout.addWidget(QLabel("Cantidad:"))
+        self.cantidad_spin = QSpinBox()
+        self.cantidad_spin.setMinimum(1)
+        self.cantidad_spin.setMaximum(9999)
+        self.cantidad_spin.setValue(1)
+        add_product_layout.addWidget(self.cantidad_spin)
+
+        self.add_product_btn = QPushButton("➕ Agregar")
+        add_product_layout.addWidget(self.add_product_btn)
+        add_product_layout.addStretch()
+
+        products_layout.addLayout(add_product_layout)
+
+        # Tabla de productos
+        self.productos_table = QTableWidget()
+        productos_headers = ["Producto", "Cantidad", "Precio Unit.", "Total", "Acciones"]
+        self.productos_table.setColumnCount(len(productos_headers))
+        self.productos_table.setHorizontalHeaderLabels(productos_headers)
+        self.productos_table.horizontalHeader().setStretchLastSection(False)
+        self.productos_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.productos_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.productos_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.productos_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.productos_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.productos_table.setMaximumHeight(200)
+
+        products_layout.addWidget(self.productos_table)
+        parent_layout.addWidget(products_group)
+
+    def setup_totals_section(self, parent_layout):
+        """Configurer la section totaux"""
+        totals_group = QGroupBox("Totales")
+        totals_layout = QGridLayout(totals_group)
+
+        # Subtotal
+        totals_layout.addWidget(QLabel("Subtotal:"), 0, 0)
+        self.subtotal_label = QLabel("0.00 €")
+        self.subtotal_label.setAlignment(Qt.AlignRight)
+        totals_layout.addWidget(self.subtotal_label, 0, 1)
+
+        # IVA
+        totals_layout.addWidget(QLabel("IVA (21%):"), 1, 0)
+        self.iva_label = QLabel("0.00 €")
+        self.iva_label.setAlignment(Qt.AlignRight)
+        totals_layout.addWidget(self.iva_label, 1, 1)
+
+        # Total
+        totals_layout.addWidget(QLabel("TOTAL:"), 2, 0)
+        self.total_label = QLabel("0.00 €")
+        self.total_label.setAlignment(Qt.AlignRight)
+        self.total_label.setFont(QFont("Arial", 12, QFont.Bold))
+        totals_layout.addWidget(self.total_label, 2, 1)
+
+        parent_layout.addWidget(totals_group)
+
+    def clear_form(self):
+        """Vider le formulaire"""
+        self.current_factura_id = None
+        self.is_editing = False
+        self.lineas_factura = []
+
+        # Réinitialiser les champs
+        self.numero_edit.clear()
+        self.fecha_edit.setDate(QDate.currentDate())
+        self.estado_combo.setCurrentIndex(0)  # Borrador
+        self.cliente_autocomplete.clear_client()
+        self.client_details.clear()
+
+        # Vider la table des produits
+        self.productos_table.setRowCount(0)
+
+        # Réinitialiser les totaux
+        self.update_totals()
+
+        # Mettre à jour le titre
+        self.form_title_label.setText("Nueva Factura")
+
+        # Activer/désactiver les boutons
+        self.save_btn.setEnabled(False)
+        self.cancel_btn.setEnabled(False)
+
+    def load_form_data(self):
+        """Charger les données pour les combos"""
+        try:
+            # Charger les clients dans le widget d'autocomplétion
+            clientes = db.get_all_clients()
+            self.cliente_autocomplete.load_clients(clientes)
+
+            # Charger les états de factures depuis la configuration d'organisation
+            self.estado_combo.clear()
+            estados = invoice_status_manager.get_all_statuses()
+            for estado in estados:
+                self.estado_combo.addItem(estado['nombre'], estado['id'])
+
+            self.logger.info(f"Cargados {len(estados)} estados de facturas desde la configuración")
+
+            # Charger les produits
+            self.producto_combo.clear()
+            self.producto_combo.addItem("Seleccionar producto...", None)
+
+            productos = db.get_all_products()
+            for producto in productos:
+                stock = producto.get('stock_actual', 0)
+                precio = producto.get('precio', 0.0)
+                self.producto_combo.addItem(
+                    f"{producto['nombre']} - {precio:.2f}€ (Stock: {stock})",
+                    producto['id']
+                )
+
+        except Exception as e:
+            self.logger.error(f"Error cargando datos del formulario: {e}")
+            self.show_error("Error", f"Error al cargar los datos: {str(e)}")
+
+    def update_totals(self):
+        """Actualizar los totales de la factura"""
+        subtotal = 0.0
+
+        for row in range(self.productos_table.rowCount()):
+            total_item = self.productos_table.item(row, 3)
+            if total_item:
+                try:
+                    total_value = float(total_item.text().replace('€', '').strip())
+                    subtotal += total_value
+                except ValueError:
+                    continue
+
+        iva = subtotal * 0.21  # 21% IVA
+        total = subtotal + iva
+
+        self.subtotal_label.setText(f"{subtotal:.2f} €")
+        self.iva_label.setText(f"{iva:.2f} €")
+        self.total_label.setText(f"{total:.2f} €")
         
     def setup_connections(self):
         """Configurer les connexions de signaux"""
-        self.new_btn.clicked.connect(self.new_factura)
+        # Boutons principaux
+        self.new_btn.clicked.connect(self.new_factura_inline)
+        self.save_btn.clicked.connect(self.save_factura)
+        self.cancel_btn.clicked.connect(self.cancel_edit)
         self.view_btn.clicked.connect(self.view_factura)
-        self.edit_btn.clicked.connect(self.edit_factura)
         self.pdf_btn.clicked.connect(self.exportar_pdf)
         self.eliminar_btn.clicked.connect(self.eliminar_factura)
         self.refresh_btn.clicked.connect(self.load_facturas)
-        
+
+        # Formulaire
+        self.add_product_btn.clicked.connect(self.add_product_to_invoice)
+
+        # Charger les données du formulaire
+        self.load_form_data()
+
+        # Initialiser le formulaire en mode vide
+        self.clear_form()
+
+    def new_factura_inline(self):
+        """Créer une nouvelle facture dans le formulaire intégré"""
+        try:
+            self.logger.info("Iniciando creación de nueva factura")
+
+            # Nettoyer le formulaire
+            self.clear_form()
+
+            # Générer un nouveau numéro de factura
+            try:
+                last_number = db.get_last_invoice_number()
+                if last_number:
+                    # Extraire le numéro et l'incrémenter
+                    import re
+                    match = re.search(r'(\d+)$', last_number)
+                    if match:
+                        next_num = int(match.group(1)) + 1
+                        numero = f"FAC-{next_num:04d}"
+                    else:
+                        numero = "FAC-0001"
+                else:
+                    numero = "FAC-0001"
+            except Exception as e:
+                self.logger.error(f"Error generando número de factura: {e}")
+                # Fallback: usar timestamp
+                from datetime import datetime
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                numero = f"FAC-{timestamp}"
+
+            self.numero_edit.setText(numero)
+
+            # Définir la date actuelle
+            self.fecha_edit.setDate(QDate.currentDate())
+
+            # Activer le mode édition/création
+            self.is_editing = True
+            self.current_factura_id = None
+
+            # Activer les boutons
+            self.save_btn.setEnabled(True)
+            self.cancel_btn.setEnabled(True)
+
+            # Mettre à jour le titre
+            self.form_title_label.setText("Nueva Factura")
+
+        except Exception as e:
+            self.logger.error(f"Error creando nueva factura: {e}")
+            self.show_error("Error", f"Error al crear nueva factura: {str(e)}")
+
+        # Générer un nouveau numéro de facture
+        self.numero_edit.setText(self.generate_invoice_number())
+
+        # Activer les boutons
+        self.save_btn.setEnabled(True)
+        self.cancel_btn.setEnabled(True)
+
+        self.form_title_label.setText("Nueva Factura")
+        self.logger.info("Iniciando creación de nueva factura")
+
+    def cancel_edit(self):
+        """Annuler l'édition/création"""
+        if self.ask_confirmation("Cancelar", "¿Está seguro de cancelar? Se perderán los cambios no guardados."):
+            self.clear_form()
+            self.form_title_label.setText("Seleccionar factura para editar o crear nueva")
+
+    def on_client_selected(self, client):
+        """Gérer la sélection d'un client existant"""
+        self.logger.info(f"Cliente seleccionado: {client.get('nombre', '')} (ID: {client.get('id', 'N/A')})")
+        self.client_details.show_client_details(client)
+
+    def on_client_created(self, client):
+        """Gérer la création d'un nouveau client"""
+        self.logger.info(f"Nuevo cliente creado: {client.get('nombre', '')}")
+        self.client_details.show_client_details(client)
+
+    def on_client_changed(self):
+        """Gérer le changement de client"""
+        current_client = self.cliente_autocomplete.get_current_client()
+        if current_client:
+            self.client_details.show_client_details(current_client)
+        else:
+            self.client_details.clear()
+
+    def on_client_updated(self, client):
+        """Gérer la mise à jour des données client"""
+        self.logger.info(f"Datos del cliente actualizados: {client.get('nombre', '')}")
+        # Les données sont automatiquement mises à jour dans le widget
+
+    def on_client_saved(self, client):
+        """Gérer la sauvegarde d'un client"""
+        try:
+            self.logger.info(f"Guardando cliente: {client.get('nombre', '')}")
+
+            if client.get('is_new', False):
+                # Nouveau client - créer en base de données
+                client_data = {
+                    'nombre': client.get('nombre', ''),
+                    'nif': client.get('nif', ''),
+                    'direccion': client.get('direccion', ''),
+                    'telefono': client.get('telefono', ''),
+                    'email': client.get('email', '')
+                }
+
+                # Créer le client en base
+                client_id = db.add_client(client_data)
+                if client_id:
+                    # Mettre à jour l'ID et marquer comme non nouveau
+                    client['id'] = client_id
+                    client['is_new'] = False
+
+                    # Recharger la liste des clients pour l'autocomplétion
+                    self.load_form_data()
+
+                    self.logger.info(f"Nuevo cliente creado con ID: {client_id}")
+                    self.show_message("Éxito", f"Cliente '{client.get('nombre', '')}' creado correctamente")
+                else:
+                    self.show_message("Error", "Error al crear el cliente")
+                    return
+            else:
+                # Client existant - mettre à jour en base de données
+                client_id = client.get('id')
+                if client_id:
+                    client_data = {
+                        'id': client_id,
+                        'nombre': client.get('nombre', ''),
+                        'nif': client.get('nif', ''),
+                        'direccion': client.get('direccion', ''),
+                        'telefono': client.get('telefono', ''),
+                        'email': client.get('email', '')
+                    }
+
+                    # Mettre à jour le client en base
+                    if db.update_client(client_data):
+                        # Recharger la liste des clients pour l'autocomplétion
+                        self.load_form_data()
+
+                        self.logger.info(f"Cliente actualizado: {client.get('nombre', '')}")
+                        self.show_message("Éxito", f"Cliente '{client.get('nombre', '')}' actualizado correctamente")
+                    else:
+                        self.show_message("Error", "Error al actualizar el cliente")
+                        return
+                else:
+                    self.show_message("Error", "ID de cliente no válido")
+                    return
+
+            # Actualizar la tabla de clientes si está abierta
+            self.refresh_clients_table()
+
+        except Exception as e:
+            self.logger.error(f"Error al guardar cliente: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            self.show_message("Error", f"Error al guardar cliente: {str(e)}")
+
+    def on_client_changes_discarded(self, client):
+        """Gérer l'annulation des changements client"""
+        self.logger.info(f"Cambios descartados para cliente: {client.get('nombre', '')}")
+        # Les données ont été restaurées automatiquement dans le widget
+
+    def refresh_clients_table(self):
+        """Actualiser la table des clients si elle est ouverte"""
+        try:
+            # Vérifier si la fenêtre de clients est ouverte
+            from ui.clientes_pyqt5 import ClientesPyQt5Window
+            for widget in QApplication.allWidgets():
+                if isinstance(widget, ClientesPyQt5Window) and widget.isVisible():
+                    widget.load_clientes()
+                    self.logger.info("Tabla de clientes actualizada")
+                    break
+        except Exception as e:
+            self.logger.debug(f"No se pudo actualizar la tabla de clientes: {e}")
+
+    def show_message(self, title, message):
+        """Afficher un message à l'utilisateur"""
+        from PyQt5.QtWidgets import QMessageBox
+        msg = QMessageBox()
+        msg.setWindowTitle(title)
+        msg.setText(message)
+        if title == "Error":
+            msg.setIcon(QMessageBox.Critical)
+        else:
+            msg.setIcon(QMessageBox.Information)
+        msg.exec_()
+
+    def add_product_to_invoice(self):
+        """Agregar producto a la factura"""
+        producto_id = self.producto_combo.currentData()
+        cantidad = self.cantidad_spin.value()
+
+        if not producto_id:
+            self.show_warning("Validación", "Seleccione un producto")
+            return
+
+        try:
+            # Obtener información del producto
+            producto = db.get_product_by_id(producto_id)
+            if not producto:
+                self.show_error("Error", "Producto no encontrado")
+                return
+
+            # Verificar stock
+            stock_actual = producto.get('stock_actual', 0)
+            if cantidad > stock_actual:
+                self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
+                return
+
+            # Verificar si el producto ya está en la factura
+            for row in range(self.productos_table.rowCount()):
+                item = self.productos_table.item(row, 0)
+                if item and item.data(Qt.UserRole) == producto_id:
+                    # Producto ya existe, actualizar cantidad
+                    cantidad_actual = int(self.productos_table.item(row, 1).text())
+                    nueva_cantidad = cantidad_actual + cantidad
+
+                    if nueva_cantidad > stock_actual:
+                        self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
+                        return
+
+                    self.productos_table.item(row, 1).setText(str(nueva_cantidad))
+                    precio_unit = float(self.productos_table.item(row, 2).text().replace('€', ''))
+                    nuevo_total = nueva_cantidad * precio_unit
+                    self.productos_table.item(row, 3).setText(f"{nuevo_total:.2f}€")
+                    self.update_totals()
+                    return
+
+            # Agregar nuevo producto
+            row = self.productos_table.rowCount()
+            self.productos_table.insertRow(row)
+
+            precio_unit = producto.get('precio', 0.0)
+            total_linea = cantidad * precio_unit
+
+            # Nombre del producto
+            nombre_item = QTableWidgetItem(producto['nombre'])
+            nombre_item.setData(Qt.UserRole, producto_id)
+            self.productos_table.setItem(row, 0, nombre_item)
+
+            # Cantidad
+            self.productos_table.setItem(row, 1, QTableWidgetItem(str(cantidad)))
+
+            # Precio unitario
+            self.productos_table.setItem(row, 2, QTableWidgetItem(f"{precio_unit:.2f}€"))
+
+            # Total
+            self.productos_table.setItem(row, 3, QTableWidgetItem(f"{total_linea:.2f}€"))
+
+            # Botón eliminar
+            delete_btn = QPushButton("🗑️")
+            delete_btn.clicked.connect(lambda: self.remove_product_from_invoice(row))
+            self.productos_table.setCellWidget(row, 4, delete_btn)
+
+            # Actualizar totales
+            self.update_totals()
+
+            # Resetear selección
+            self.producto_combo.setCurrentIndex(0)
+            self.cantidad_spin.setValue(1)
+
+        except Exception as e:
+            self.logger.error(f"Error agregando producto: {e}")
+            self.show_error("Error", f"Error al agregar producto: {str(e)}")
+
+    def remove_product_from_invoice(self, row):
+        """Eliminar producto de la factura"""
+        if self.ask_confirmation("Eliminar", "¿Eliminar este producto de la factura?"):
+            self.productos_table.removeRow(row)
+            self.update_totals()
+
+            # Reconectar los botones (los índices de fila han changé)
+            for i in range(self.productos_table.rowCount()):
+                delete_btn = self.productos_table.cellWidget(i, 4)
+                if delete_btn:
+                    delete_btn.clicked.disconnect()
+                    delete_btn.clicked.connect(lambda checked, r=i: self.remove_product_from_invoice(r))
+
+    def generate_invoice_number(self):
+        """Générer un numéro de facture unique"""
+        try:
+            # Obtenir le dernier numéro de facture
+            last_number = db.get_last_invoice_number()
+            if last_number:
+                # Extraire le numéro et l'incrémenter
+                import re
+                match = re.search(r'(\d+)$', last_number)
+                if match:
+                    next_num = int(match.group(1)) + 1
+                    return f"FAC-{next_num:04d}"
+
+            # Si pas de facture précédente, commencer à 1
+            return "FAC-0001"
+
+        except Exception as e:
+            self.logger.error(f"Error generando número de factura: {e}")
+            from datetime import datetime
+            return f"FAC-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+
     def load_facturas(self):
         """Charger les factures depuis la base de données"""
         try:
@@ -192,16 +817,248 @@ class FacturasPyQt5Window(BasePyQt5Window):
         if current_row >= 0 and current_row < len(self.facturas):
             factura = self.facturas[current_row]
             self.selected_factura_id = factura.get('id')
-            self.load_factura_info(factura)
-            self.factura_selected.emit(factura)
 
-    def load_factura_info(self, factura):
-        """Charger les informations d'une facture"""
-        self.numero_label.setText(f"Número: {factura.get('numero', '-')}")
-        self.cliente_label.setText(f"Cliente: {factura.get('cliente', '-')}")
-        self.fecha_label.setText(f"Fecha: {factura.get('fecha', '-')}")
-        self.total_label.setText(f"Total: {factura.get('total', 0):.2f}€")
-        self.estado_label.setText(f"Estado: {factura.get('estado', '-')}")
+            # Récupérer les données complètes de la facture pour l'édition
+            factura_completa = db.get_invoice_by_id(self.selected_factura_id)
+            if factura_completa:
+                self.load_factura_in_form(factura_completa)
+                self.factura_selected.emit(factura_completa)
+            else:
+                self.logger.warning(f"Impossible de charger la factura {self.selected_factura_id}")
+                self.load_factura_in_form(factura)  # Fallback avec données limitées
+                self.factura_selected.emit(factura)
+
+    def load_factura_in_form(self, factura):
+        """Charger une facture dans le formulaire pour édition"""
+        try:
+            self.is_editing = True
+            self.current_factura_id = factura.get('id')
+
+            # Charger les informations de base
+            self.numero_edit.setText(factura.get('numero', ''))
+
+            # Charger la date
+            fecha_str = factura.get('fecha', '')
+            if fecha_str:
+                try:
+                    from datetime import datetime
+                    fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+                    self.fecha_edit.setDate(QDate(fecha))
+                except ValueError:
+                    self.fecha_edit.setDate(QDate.currentDate())
+
+            # Charger l'état
+            estado = factura.get('estado', 'Borrador')
+            index = self.estado_combo.findText(estado)
+            if index >= 0:
+                self.estado_combo.setCurrentIndex(index)
+                self.logger.info(f"Estado seleccionado: {estado}")
+            else:
+                # Si l'état n'est pas trouvé, sélectionner le premier (par défaut)
+                if self.estado_combo.count() > 0:
+                    self.estado_combo.setCurrentIndex(0)
+                    self.logger.warning(f"Estado '{estado}' no encontrado, usando el primero disponible")
+
+            # Charger le client
+            cliente_data = None
+
+            # Essayer d'obtenir les données du client depuis la facture
+            if 'cliente' in factura and isinstance(factura['cliente'], dict):
+                cliente_data = factura['cliente']
+            elif 'cliente_id' in factura:
+                cliente_id = factura.get('cliente_id')
+                if cliente_id:
+                    try:
+                        cliente_data = db.get_client_by_id(cliente_id)
+                    except Exception as e:
+                        self.logger.error(f"Error obteniendo cliente por ID {cliente_id}: {e}")
+
+            if cliente_data:
+                # Définir le client dans le widget d'autocomplétion
+                self.cliente_autocomplete.set_client(cliente_data)
+                self.logger.info(f"Cliente cargado: {cliente_data.get('nombre', '')}")
+            else:
+                # Fallback: buscar por nombre si no hay données complètes
+                cliente_nombre = factura.get('cliente_nombre')
+                if cliente_nombre:
+                    # Créer des données de client minimales
+                    cliente_data = {
+                        'id': factura.get('cliente_id'),
+                        'nombre': cliente_nombre,
+                        'nif': '',
+                        'telefono': '',
+                        'email': '',
+                        'direccion': ''
+                    }
+                    self.cliente_autocomplete.set_client(cliente_data)
+                    self.logger.info(f"Cliente cargado por nombre: {cliente_nombre}")
+                else:
+                    self.logger.warning("No se pudo cargar información del cliente")
+
+            # Charger les lignes de la facture
+            self.load_factura_lines(factura.get('id'))
+
+            # Mettre à jour l'interface
+            self.form_title_label.setText(f"Editando Factura {factura.get('numero', '')}")
+            self.save_btn.setEnabled(True)
+            self.cancel_btn.setEnabled(True)
+
+        except Exception as e:
+            self.logger.error(f"Error cargando factura en formulario: {e}")
+            self.show_error("Error", f"Error al cargar la factura: {str(e)}")
+
+    def load_factura_lines(self, factura_id):
+        """Charger les lignes d'une facture"""
+        try:
+            # Vider la table
+            self.productos_table.setRowCount(0)
+
+            # Obtenir les lignes de la facture
+            lineas = db.get_invoice_items(factura_id)
+
+            for linea in lineas:
+                row = self.productos_table.rowCount()
+                self.productos_table.insertRow(row)
+
+                # Nom du produit
+                producto_nombre = linea.get('producto_nombre', 'Producto desconocido')
+                nombre_item = QTableWidgetItem(producto_nombre)
+                nombre_item.setData(Qt.UserRole, linea.get('producto_id'))
+                self.productos_table.setItem(row, 0, nombre_item)
+
+                # Quantité
+                cantidad = linea.get('cantidad', 0)
+                self.productos_table.setItem(row, 1, QTableWidgetItem(str(cantidad)))
+
+                # Prix unitaire
+                precio_unit = linea.get('precio_unitario', 0.0)
+                self.productos_table.setItem(row, 2, QTableWidgetItem(f"{precio_unit:.2f}€"))
+
+                # Total
+                total_linea = cantidad * precio_unit
+                self.productos_table.setItem(row, 3, QTableWidgetItem(f"{total_linea:.2f}€"))
+
+                # Bouton supprimer
+                delete_btn = QPushButton("🗑️")
+                delete_btn.clicked.connect(lambda checked, r=row: self.remove_product_from_invoice(r))
+                self.productos_table.setCellWidget(row, 4, delete_btn)
+
+            # Mettre à jour les totaux
+            self.update_totals()
+
+        except Exception as e:
+            self.logger.error(f"Error cargando líneas de factura: {e}")
+            self.show_error("Error", f"Error al cargar las líneas de la factura: {str(e)}")
+
+    def save_factura(self):
+        """Sauvegarder la facture"""
+        try:
+            # Validation
+            if not self.numero_edit.text().strip():
+                self.show_warning("Validación", "El número de factura es requerido")
+                return
+
+            # Obtenir les données du client
+            client_data = self.cliente_autocomplete.get_current_client()
+            if not client_data or not client_data.get('nombre', '').strip():
+                self.show_warning("Validación", "Seleccione o escriba un cliente")
+                return
+
+            # Obtenir les détails complets du client
+            complete_client_data = self.client_details.get_client_data()
+            if complete_client_data:
+                client_data.update(complete_client_data)
+
+            if self.productos_table.rowCount() == 0:
+                self.show_warning("Validación", "Agregue al menos un producto")
+                return
+
+            # Sauvegarder le client s'il est nouveau
+            if client_data.get('is_new', False):
+                try:
+                    # Créer le nouveau client dans la base de données
+                    new_client_id = db.add_client({
+                        'nombre': client_data['nombre'],
+                        'nif': client_data.get('nif', ''),
+                        'telefono': client_data.get('telefono', ''),
+                        'email': client_data.get('email', ''),
+                        'direccion': client_data.get('direccion', '')
+                    })
+                    client_data['id'] = new_client_id
+                    client_data['is_new'] = False
+                    self.logger.info(f"Nuevo cliente creado con ID: {new_client_id}")
+
+                    # Recharger les clients dans l'autocomplétion
+                    clientes = db.get_all_clients()
+                    self.cliente_autocomplete.load_clients(clientes)
+
+                except Exception as e:
+                    self.logger.error(f"Error creando nuevo cliente: {e}")
+                    self.show_error("Error", f"Error al crear el cliente: {str(e)}")
+                    return
+
+            # Préparer les données de la facture
+            factura_data = {
+                'numero': self.numero_edit.text().strip(),
+                'fecha': self.fecha_edit.date().toString('yyyy-MM-dd'),
+                'cliente_id': client_data.get('id'),
+                'estado': self.estado_combo.currentText(),
+                'subtotal': float(self.subtotal_label.text().replace('€', '').strip()),
+                'iva': float(self.iva_label.text().replace('€', '').strip()),
+                'total': float(self.total_label.text().replace('€', '').strip())
+            }
+
+            # Préparer les lignes
+            lineas = []
+            for row in range(self.productos_table.rowCount()):
+                producto_id = self.productos_table.item(row, 0).data(Qt.UserRole)
+                cantidad = int(self.productos_table.item(row, 1).text())
+                precio_unit = float(self.productos_table.item(row, 2).text().replace('€', ''))
+
+                lineas.append({
+                    'producto_id': producto_id,
+                    'cantidad': cantidad,
+                    'precio_unitario': precio_unit
+                })
+
+            # Sauvegarder
+            if self.is_editing and self.current_factura_id:
+                # Mise à jour
+                factura_data['id'] = self.current_factura_id
+                # Adapter le format pour update_invoice
+                factura_data['cliente'] = {
+                    'id': client_data.get('id'),
+                    'nombre': client_data.get('nombre', ''),
+                    'nif': client_data.get('nif', ''),
+                    'direccion': client_data.get('direccion', '')
+                }
+                factura_data['iva_total'] = factura_data.pop('iva')
+                factura_data['lineas'] = lineas
+                db.update_invoice(factura_data)
+                self.show_info("Éxito", "Factura actualizada correctamente")
+            else:
+                # Nouvelle facture
+                # Adapter le format pour add_invoice
+                factura_data['cliente'] = {
+                    'id': client_data.get('id'),
+                    'nombre': client_data.get('nombre', ''),
+                    'nif': client_data.get('nif', ''),
+                    'direccion': client_data.get('direccion', '')
+                }
+                factura_data['iva_total'] = factura_data.pop('iva')
+                factura_data['lineas'] = lineas
+                factura_id = db.add_invoice(factura_data)
+                self.current_factura_id = factura_id
+                self.show_info("Éxito", "Factura creada correctamente")
+
+            # Recharger la liste et nettoyer le formulaire
+            self.load_facturas()
+            self.clear_form()
+            self.form_title_label.setText("Factura guardada - Seleccionar otra o crear nueva")
+
+        except Exception as e:
+            self.logger.error(f"Error guardando factura: {e}")
+            self.show_error("Error", f"Error al guardar la factura: {str(e)}")
 
     def new_factura(self):
         """Créer une nouvelle facture"""

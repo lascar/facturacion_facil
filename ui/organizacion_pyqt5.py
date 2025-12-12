@@ -262,11 +262,17 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # Estado
         header.setSectionResizeMode(1, QHeaderView.Stretch)  # Descripción
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Permite Modificación
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Color
+        header.setSectionResizeMode(3, QHeaderView.Fixed)  # Color - taille fixe pour éviter débordement
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Orden
+
+        # Définir une largeur fixe pour la colonne Color (60px pour afficher le titre complet)
+        header.resizeSection(3, 60)
 
         self.statuses_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.statuses_table.setAlternatingRowColors(True)
+
+        # Définir une hauteur de ligne minimale pour les boutons de couleur
+        self.statuses_table.verticalHeader().setDefaultSectionSize(30)  # Réduit pour éviter débordement
 
         statuses_layout.addWidget(self.statuses_table)
 
@@ -708,12 +714,19 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 checkbox.setEnabled(False)  # Solo lectura en la tabla
                 self.statuses_table.setCellWidget(row, 2, checkbox)
 
-                # Color (botón con color de fondo)
-                color_btn = QPushButton()
-                color_btn.setFixedSize(30, 20)
-                color_btn.setStyleSheet(f"background-color: {status['color']}; border: 1px solid #ccc;")
-                color_btn.setEnabled(False)  # Solo visual
-                self.statuses_table.setCellWidget(row, 3, color_btn)
+                # Color (widget con color de fondo)
+                color_widget = QLabel()
+                color_widget.setFixedSize(30, 18)  # Taille réduite pour éviter débordement
+                color_widget.setStyleSheet(f"""
+                    QLabel {{
+                        background-color: {status['color']};
+                        border: 1px solid #999;
+                        border-radius: 2px;
+                        margin: 1px;
+                    }}
+                """)
+                color_widget.setToolTip(f"Color: {status['color']}")  # Tooltip informatif
+                self.statuses_table.setCellWidget(row, 3, color_widget)
 
                 # Orden
                 order_item = QTableWidgetItem(str(status['orden']))

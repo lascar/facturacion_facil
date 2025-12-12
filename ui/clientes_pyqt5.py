@@ -64,10 +64,10 @@ class ClientesPyQt5Window(BasePyQt5Window):
         buttons_widget.setLayout(buttons_layout)
         buttons_widget.setMaximumWidth(150)
         main_layout.addWidget(buttons_widget)
-        
-        # Connexions
-        self.setup_connections()
-        
+
+        # Note: setup_connections() est déjà appelé par la classe parent BasePyQt5Window
+        # Pas besoin de l'appeler ici pour éviter les doubles connexions
+
         # Appliquer le style
         self.apply_style()
         

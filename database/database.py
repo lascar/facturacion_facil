@@ -943,6 +943,36 @@ class Database:
             self.logger.error(f"Error buscando cliente: {e}")
             return None
 
+    def get_client_by_id(self, client_id):
+        """Obtiene un cliente por su ID"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, nombre, dni_nie, direccion, email, telefono, fecha_creacion
+                FROM clientes
+                WHERE id = ?
+            """, (client_id,))
+
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                return {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'nif': row[2] or '',  # Mapear dni_nie a nif
+                    'direccion': row[3] or '',
+                    'email': row[4] or '',
+                    'telefono': row[5] or '',
+                    'fecha_creacion': row[6]
+                }
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo cliente {client_id}: {e}")
+            return None
+
     def delete_client(self, client_id):
         """Elimina un cliente por ID"""
         try:
