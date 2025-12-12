@@ -1,11 +1,18 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.pyc
+*.pyo
 *.py[cod]
 *$py.class
+
+# Python cache directories (tous niveaux)
+*/__pycache__/
+**/__pycache__/
 *__pycache__*
-ui/__pycache__/
-common/__pycache__/*
+
+# Fichiers compilés Python spécifiques
+*.cpython-*.pyc
+*.cpython-*.pyo
 assets/
 
 # C extensions
