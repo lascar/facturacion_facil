@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Debug visuel de la fenêtre principale PyQt6
+Debug visuel de la fenêtre principale PyQt5
 """
 
 import sys
@@ -17,7 +17,7 @@ def create_simple_test_window():
     """Crée une fenêtre de test simple avec tous les boutons"""
     print("=== Création fenêtre de test simple ===")
     
-    # Définir PyQt6
+    # Définir PyQt5
     set_gui_framework('pyqt6')
     factory = get_gui_factory()
     

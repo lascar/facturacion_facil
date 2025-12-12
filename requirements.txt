@@ -11,4 +11,4 @@ reportlab==4.2.2        # Génération PDF - Compatible Windows 11
 
 # Dépendances système (installées automatiquement)
 # - Microsoft Visual C++ Redistributable (inclus avec Python sur Windows 11)
-# - Qt6 runtime libraries (incluses avec PyQt6)
+# - Qt5 runtime libraries (incluses avec PyQt5)

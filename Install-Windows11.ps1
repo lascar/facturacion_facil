@@ -1,5 +1,5 @@
 # Script d'installation PowerShell pour Windows 11
-# Facturación Fácil - Version PyQt6 optimisée
+# Facturación Fácil - Version PyQt5 stable
 
 param(
     [switch]$SkipPythonCheck,

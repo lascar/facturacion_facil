@@ -36,7 +36,7 @@ def main():
         db.init_database()
         log_info("Base de datos inicializada correctamente")
 
-        # Crear y ejecutar la aplicación PyQt6
+        # Crear y ejecutar la aplicación PyQt5
         log_info("Creando ventana principal")
 
         # Créer l'application PyQt5 si elle n'existe pas

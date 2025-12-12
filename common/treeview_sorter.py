@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Module de tri pour TreeView - Compatibilité PyQt6
+Module de tri pour TreeView - Compatibilité PyQt5
 """
 
 class TreeViewSorter:
@@ -24,7 +24,7 @@ class TreeViewSorter:
             return False
 
         try:
-            # Pour PyQt6, activer le tri sur les colonnes
+            # Pour PyQt5, activer le tri sur les colonnes
             if hasattr(self.treeview, 'setSortingEnabled'):
                 self.treeview.setSortingEnabled(True)
 
@@ -36,7 +36,7 @@ class TreeViewSorter:
                 if hasattr(header, 'setSortIndicatorShown'):
                     header.setSortIndicatorShown(True)
 
-            print("Tri activé pour TreeView PyQt6")
+            print("Tri activé pour TreeView PyQt5")
             return True
 
         except Exception as e:
@@ -52,10 +52,10 @@ class TreeViewSorter:
 
 def add_sorting_to_treeview(treeview):
     """
-    Ajoute la fonctionnalité de tri à un TreeView PyQt6
+    Ajoute la fonctionnalité de tri à un TreeView PyQt5
 
     Args:
-        treeview: Widget TreeView PyQt6
+        treeview: Widget TreeView PyQt5
     """
     sorter = TreeViewSorter(treeview)
     return sorter.enable_sorting()

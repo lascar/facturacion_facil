@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Mixin pour les méthodes de facturas - Version PyQt6 complète
+Mixin pour les méthodes de facturas - Version PyQt5 stable
 """
 
 from database.models import Stock, StockMovement, Producto

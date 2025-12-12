@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gestionnaire GUI pour PyQt6 - Version simplifiée
+Gestionnaire GUI pour PyQt5 - Version simplifiée
 """
 
 class GUIManager:
-    """Gestionnaire GUI simplifié pour PyQt6"""
+    """Gestionnaire GUI simplifié pour PyQt5"""
     
     def __init__(self):
         self.current_framework = 'pyqt6'

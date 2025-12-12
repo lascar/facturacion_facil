@@ -22,7 +22,7 @@ class AbstractFormHelper:
                 native_widget = entry_widget.get_native_widget()
                 
                 # Detectar el tipo de widget nativo y usar la API apropiada
-                if hasattr(native_widget, 'clear'):  # PyQt6
+                if hasattr(native_widget, 'clear'):  # PyQt5
                     native_widget.clear()
                     if default_value:
                         native_widget.setText(str(default_value))
@@ -40,7 +40,7 @@ class AbstractFormHelper:
             if text_widget is not None:
                 native_widget = text_widget.get_native_widget()
                 
-                if hasattr(native_widget, 'clear'):  # PyQt6
+                if hasattr(native_widget, 'clear'):  # PyQt5
                     native_widget.clear()
                 elif hasattr(native_widget, 'delete'):  # Tkinter
                     native_widget.delete("1.0", 'end')
@@ -54,7 +54,7 @@ class AbstractFormHelper:
             if entry_widget is not None:
                 native_widget = entry_widget.get_native_widget()
                 
-                if hasattr(native_widget, 'text'):  # PyQt6
+                if hasattr(native_widget, 'text'):  # PyQt5
                     value = native_widget.text().strip()
                 elif hasattr(native_widget, 'get'):  # Tkinter
                     value = native_widget.get().strip()
@@ -73,7 +73,7 @@ class AbstractFormHelper:
             if text_widget is not None:
                 native_widget = text_widget.get_native_widget()
                 
-                if hasattr(native_widget, 'toPlainText'):  # PyQt6
+                if hasattr(native_widget, 'toPlainText'):  # PyQt5
                     value = native_widget.toPlainText().strip()
                 elif hasattr(native_widget, 'get'):  # Tkinter
                     value = native_widget.get("1.0", 'end').strip()
@@ -92,7 +92,7 @@ class AbstractFormHelper:
             if entry_widget is not None:
                 native_widget = entry_widget.get_native_widget()
                 
-                if hasattr(native_widget, 'setText'):  # PyQt6
+                if hasattr(native_widget, 'setText'):  # PyQt5
                     native_widget.setText(str(value))
                 elif hasattr(native_widget, 'delete') and hasattr(native_widget, 'insert'):  # Tkinter
                     native_widget.delete(0, 'end')
@@ -107,7 +107,7 @@ class AbstractFormHelper:
             if text_widget is not None:
                 native_widget = text_widget.get_native_widget()
                 
-                if hasattr(native_widget, 'setPlainText'):  # PyQt6
+                if hasattr(native_widget, 'setPlainText'):  # PyQt5
                     native_widget.setPlainText(str(value))
                 elif hasattr(native_widget, 'delete') and hasattr(native_widget, 'insert'):  # Tkinter
                     native_widget.delete("1.0", 'end')
@@ -245,8 +245,8 @@ class AbstractImageSelector:
                 # Nota: La implementación específica dependerá del framework
                 native_display = self.imagen_display.get_native_widget()
 
-                if hasattr(native_display, 'setPixmap'):  # PyQt6
-                    from PyQt6.QtGui import QPixmap
+                if hasattr(native_display, 'setPixmap'):  # PyQt5
+                    from PyQt5.QtGui import QPixmap
                     # Convertir PIL Image a QPixmap
                     import io
                     img_bytes = io.BytesIO()
@@ -266,7 +266,7 @@ class AbstractImageSelector:
             else:
                 # Limpiar la imagen
                 native_display = self.imagen_display.get_native_widget()
-                if hasattr(native_display, 'clear'):  # PyQt6
+                if hasattr(native_display, 'clear'):  # PyQt5
                     native_display.clear()
                 else:  # Tkinter
                     native_display.configure(image="", text="Sin imagen")

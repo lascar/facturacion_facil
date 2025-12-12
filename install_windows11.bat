@@ -1,6 +1,6 @@
 @echo off
 REM Script d'installation automatisée pour Windows 11
-REM Facturación Fácil - Version PyQt6
+REM Facturación Fácil - Version PyQt5
 
 echo.
 echo ========================================

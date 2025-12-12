@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Componentes UI comunes para productos y facturas
-MIGRADO A PYQT6: Usa exclusivamente PyQt6 para la interfaz
+MIGRADO A PYQT5: Usa exclusivamente PyQt5 para la interfaz
 """
-# Importar las versiones PyQt6
+# Importar las versiones PyQt5
 from common.ui_components_abstract import (
     AbstractFormHelper,
     AbstractBaseWindow,
