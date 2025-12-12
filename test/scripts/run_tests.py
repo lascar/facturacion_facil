@@ -57,15 +57,20 @@ def run_specific_tests():
     python_cmd = sys.executable
 
     test_commands = {
-        "unit": [python_cmd, "-m", "pytest", "tests/test_database/", "-v"],
-        "ui": [python_cmd, "-m", "pytest", "tests/test_ui/", "-v"],
-        "utils": [python_cmd, "-m", "pytest", "tests/test_utils/", "-v"],
-        "advanced": [python_cmd, "-m", "pytest", "tests/test_advanced/", "-v"],
-        "parametrized": [python_cmd, "-m", "pytest", "tests/test_advanced/test_parametrized.py", "-v"],
-        "property": [python_cmd, "-m", "pytest", "tests/test_advanced/test_property_based.py", "-v"],
-        "performance": [python_cmd, "-m", "pytest", "tests/test_advanced/test_performance.py", "-v"],
-        "integration": [python_cmd, "-m", "pytest", "tests/test_advanced/test_integration.py", "-v"],
-        "security": [python_cmd, "-m", "pytest", "tests/test_advanced/test_security.py", "-v"],
+        "unit": [python_cmd, "-m", "pytest", "test/unit/", "-v"],
+        "integration": [python_cmd, "-m", "pytest", "test/integration/", "-v"],
+        "productos": [python_cmd, "-m", "pytest", "-k", "productos_factura", "-v"],
+        "productos-unit": [python_cmd, "-m", "pytest", "test/unit/test_productos_factura.py", "-v"],
+        "productos-integration": [python_cmd, "-m", "pytest", "test/integration/test_productos_factura_integration.py", "-v"],
+        "ui": [python_cmd, "-m", "pytest", "test/", "-k", "ui", "-v"],
+        "utils": [python_cmd, "-m", "pytest", "test/utils/", "-v"],
+        "advanced": [python_cmd, "-m", "pytest", "test/", "-v"],
+        "parametrized": [python_cmd, "-m", "pytest", "test/unit/test_parametrized.py", "-v"],
+        "property": [python_cmd, "-m", "pytest", "test/property_based/", "-v"],
+        "performance": [python_cmd, "-m", "pytest", "test/performance/", "-v"],
+        "regression": [python_cmd, "-m", "pytest", "test/regression/", "-v"],
+        "stress": [python_cmd, "-m", "pytest", "test/stress/", "-v"],
+        "security": [python_cmd, "-m", "pytest", "test/unit/test_security.py", "-v"],
         "benchmark": [python_cmd, "-m", "pytest", "--benchmark-only", "-v"],
         "fast": [python_cmd, "-m", "pytest", "-v", "-m", "not slow"],
         "slow": [python_cmd, "-m", "pytest", "-v", "-m", "slow"],
@@ -92,8 +97,9 @@ def run_specific_tests():
     else:
         print(f"❌ Tipo de test desconocido: {test_type}")
         print("📋 Tipos disponibles:")
-        print("  Básicos: unit, ui, utils, advanced")
-        print("  Avanzados: parametrized, property, performance, integration, security")
+        print("  Básicos: unit, integration, ui, utils, advanced")
+        print("  Productos: productos, productos-unit, productos-integration")
+        print("  Avanzados: parametrized, property, performance, regression, stress, security")
         print("  Especiales: benchmark, fast, slow, parallel, coverage")
         print("  Calidad: lint, format")
         return False
@@ -110,16 +116,23 @@ Tipos de tests disponibles:
     (sin argumentos)  - Ejecuta todos los tests con cobertura
 
     Tests básicos:
-    unit             - Tests de base de datos y modelos
+    unit             - Tests unitarios (base de datos, modelos)
+    integration      - Tests de integración (workflows completos)
     ui               - Tests de interfaz de usuario
     utils            - Tests de utilidades
     advanced         - Todos los tests avanzados
+
+    Tests de productos (NUEVO):
+    productos        - Todos los tests de productos en facturas
+    productos-unit   - Tests unitarios de productos
+    productos-integration - Tests d'intégration de productos
 
     Tests avanzados:
     parametrized     - Tests parametrizados con múltiples casos
     property         - Tests basados en propiedades (Hypothesis)
     performance      - Tests de rendimiento y benchmarks
-    integration      - Tests de integración de workflows
+    regression       - Tests de régression (bugs corrigés)
+    stress           - Tests de stress et charge
     security         - Tests de seguridad y validación
 
     Tests especiales:

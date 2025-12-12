@@ -1,0 +1,9 @@
+PRAGMA table_info(clientes)
+PRAGMA table_info(productos)
+PRAGMA table_info(stock)
+PRAGMA table_info(stock_movements)
+PRAGMA table_info(facturas)
+PRAGMA table_info(factura_estados)
+PRAGMA table_info(factura_items)
+PRAGMA table_info(organizacion)
+

@@ -429,19 +429,30 @@ class Database:
             return []  # Retourner liste vide en cas d'erreur
 
     def get_all_products(self):
-        """Obtiene todos los productos"""
+        """Obtiene todos los productos con stock híbrido (migración progresiva)"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
+
+            # Approche hybride sécurisée: utiliser stock table si disponible, sinon productos.stock_actual
             cursor.execute("""
-                SELECT id, nombre, referencia, precio, categoria, descripcion,
-                       iva_recomendado, stock_actual, stock_minimo, fecha_creacion
-                FROM productos
-                ORDER BY nombre
+                SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
+                       p.iva_recomendado, p.stock_actual, p.stock_minimo, p.fecha_creacion,
+                       s.cantidad_disponible
+                FROM productos p
+                LEFT JOIN stock s ON p.id = s.producto_id
+                ORDER BY p.nombre
             """)
 
             products = []
             for row in cursor.fetchall():
+                # Logique hybride: préférer stock table si disponible, sinon productos.stock_actual
+                stock_from_table = row[10]  # s.cantidad_disponible
+                stock_from_productos = row[7] or 0  # p.stock_actual
+
+                # Utiliser stock table si disponible, sinon fallback vers productos
+                final_stock = stock_from_table if stock_from_table is not None else stock_from_productos
+
                 products.append({
                     'id': row[0],
                     'nombre': row[1],
@@ -451,7 +462,7 @@ class Database:
                     'categoria': row[4],
                     'descripcion': row[5],
                     'iva_recomendado': row[6],
-                    'stock_actual': row[7] or 0,
+                    'stock_actual': final_stock,  # Stock hybride sécurisé
                     'stock_minimo': row[8] or 5,
                     'fecha_creacion': row[9]
                 })

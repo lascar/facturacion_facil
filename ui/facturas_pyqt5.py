@@ -14,6 +14,7 @@ from PyQt5.QtCore import Qt, pyqtSignal as Signal, QDate
 from PyQt5.QtGui import QFont
 
 from ui.client_autocomplete_widget import ClientAutoCompleteWidget, ClientDetailsWidget
+from ui.product_autocomplete_widget import ProductAutoCompleteWidget
 from datetime import datetime
 
 from ui.base_pyqt5_window import BasePyQt5Window
@@ -337,10 +338,13 @@ class FacturasPyQt5Window(BasePyQt5Window):
         add_product_layout = QHBoxLayout()
         add_product_layout.addWidget(QLabel("Producto:"))
 
-        self.producto_combo = QComboBox()
-        self.producto_combo.setEditable(False)
-        self.apply_combo_style(self.producto_combo)
-        add_product_layout.addWidget(self.producto_combo)
+        # Widget d'autocomplétion pour les produits
+        self.producto_autocomplete = ProductAutoCompleteWidget()
+        add_product_layout.addWidget(self.producto_autocomplete, 2)
+
+        # Connecter les signaux du produit autocomplete
+        self.producto_autocomplete.product_selected.connect(self.on_product_selected)
+        self.producto_autocomplete.product_changed.connect(self.on_product_changed)
 
         add_product_layout.addWidget(QLabel("Cantidad:"))
         self.cantidad_spin = QSpinBox()
@@ -409,6 +413,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.estado_combo.setCurrentIndex(0)  # Borrador
         self.cliente_autocomplete.clear_client()
         self.client_details.clear()
+        self.producto_autocomplete.clear_product()
 
         # Vider la table des produits
         self.productos_table.setRowCount(0)
@@ -438,18 +443,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
             self.logger.info(f"Cargados {len(estados)} estados de facturas desde la configuración")
 
-            # Charger les produits
-            self.producto_combo.clear()
-            self.producto_combo.addItem("Seleccionar producto...", None)
-
+            # Charger les produits dans l'autocomplete
             productos = db.get_all_products()
-            for producto in productos:
-                stock = producto.get('stock_actual', 0)
-                precio = producto.get('precio', 0.0)
-                self.producto_combo.addItem(
-                    f"{producto['nombre']} - {precio:.2f}€ (Stock: {stock})",
-                    producto['id']
-                )
+            self.producto_autocomplete.load_products(productos)
 
         except Exception as e:
             self.logger.error(f"Error cargando datos del formulario: {e}")
@@ -667,6 +663,19 @@ class FacturasPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.debug(f"No se pudo actualizar la tabla de clientes: {e}")
 
+    def on_product_selected(self, product):
+        """Gérer la sélection d'un produit"""
+        try:
+            self.logger.info(f"Producto seleccionado: {product.get('nombre', '')}")
+            # Le produit est automatiquement stocké dans le widget
+        except Exception as e:
+            self.logger.error(f"Error al seleccionar producto: {e}")
+
+    def on_product_changed(self):
+        """Gérer le changement de produit"""
+        # Rien de spécial à faire, le widget gère tout
+        pass
+
     def show_message(self, title, message):
         """Afficher un message à l'utilisateur"""
         from PyQt5.QtWidgets import QMessageBox
@@ -681,18 +690,18 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
     def add_product_to_invoice(self):
         """Agregar producto a la factura"""
-        producto_id = self.producto_combo.currentData()
+        # Obtener producto desde autocomplete
+        producto = self.producto_autocomplete.get_current_product()
         cantidad = self.cantidad_spin.value()
 
-        if not producto_id:
+        if not producto:
             self.show_warning("Validación", "Seleccione un producto")
             return
 
         try:
-            # Obtener información del producto
-            producto = db.get_product_by_id(producto_id)
-            if not producto:
-                self.show_error("Error", "Producto no encontrado")
+            producto_id = producto.get('id')
+            if not producto_id:
+                self.show_error("Error", "Producto no válido")
                 return
 
             # Verificar stock
@@ -724,7 +733,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             row = self.productos_table.rowCount()
             self.productos_table.insertRow(row)
 
-            precio_unit = producto.get('precio', 0.0)
+            precio_unit = producto.get('precio_venta', 0.0)  # Corregido: usar precio_venta
             total_linea = cantidad * precio_unit
 
             # Nombre del producto
@@ -750,7 +759,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.update_totals()
 
             # Resetear selección
-            self.producto_combo.setCurrentIndex(0)
+            self.producto_autocomplete.clear_product()
             self.cantidad_spin.setValue(1)
 
         except Exception as e:
@@ -771,25 +780,22 @@ class FacturasPyQt5Window(BasePyQt5Window):
                     delete_btn.clicked.connect(lambda checked, r=i: self.remove_product_from_invoice(r))
 
     def generate_invoice_number(self):
-        """Générer un numéro de facture unique"""
+        """Generar número de factura automático usando el servicio de numeración"""
         try:
-            # Obtenir le dernier numéro de facture
-            last_number = db.get_last_invoice_number()
-            if last_number:
-                # Extraire le numéro et l'incrémenter
-                import re
-                match = re.search(r'(\d+)$', last_number)
-                if match:
-                    next_num = int(match.group(1)) + 1
-                    return f"FAC-{next_num:04d}"
+            from utils.factura_numbering import FacturaNumberingService
 
-            # Si pas de facture précédente, commencer à 1
-            return "FAC-0001"
+            # Usar el servicio de numeración que respeta la configuración
+            numbering_service = FacturaNumberingService()
+            numero_factura = numbering_service.get_next_numero_factura()
+
+            self.logger.info(f"Número de factura generado: {numero_factura}")
+            return numero_factura
 
         except Exception as e:
             self.logger.error(f"Error generando número de factura: {e}")
+            # Fallback simple en caso de error
             from datetime import datetime
-            return f"FAC-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            return f"F-{datetime.now().strftime('%Y%m%d')}-001"
 
     def load_facturas(self):
         """Charger les factures depuis la base de données"""
@@ -1464,7 +1470,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 
         # Selector de productos
         selector_layout = QHBoxLayout()
-        self.producto_combo = QComboBox()
+        self.producto_autocomplete = ProductAutoCompleteWidget()
         self.cantidad_spin = QSpinBox()
         self.cantidad_spin.setMinimum(1)
         self.cantidad_spin.setMaximum(999)
@@ -1474,7 +1480,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.agregar_btn.clicked.connect(self.agregar_producto)
 
         selector_layout.addWidget(QLabel("Producto:"))
-        selector_layout.addWidget(self.producto_combo, 2)
+        selector_layout.addWidget(self.producto_autocomplete, 2)
         selector_layout.addWidget(QLabel("Cantidad:"))
         selector_layout.addWidget(self.cantidad_spin)
         selector_layout.addWidget(self.agregar_btn)
@@ -1554,17 +1560,8 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Llamando db.get_all_products()")
             self.productos = db.get_all_products()
             self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Recibidos {len(self.productos)} productos")
-            self.producto_combo.clear()
-            self.producto_combo.addItem("Seleccionar producto...", None)
-            for producto in self.productos:
-                stock = producto.get('stock_actual', 0)
-                from datetime import datetime
-                timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Producto: {producto['nombre']}, Stock: {stock}, ID: {producto.get('id')}")
-                self.producto_combo.addItem(
-                    f"{producto['nombre']} - {producto['precio_venta']:.2f}€ (Stock: {stock})",
-                    producto
-                )
+            # Cargar productos en autocomplete
+            self.producto_autocomplete.load_products(self.productos)
 
         except Exception as e:
             self.logger.error(f"Error cargando datos: {e}")
@@ -1589,7 +1586,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 
     def agregar_producto(self):
         """Agregar producto a la factura"""
-        producto_data = self.producto_combo.currentData()
+        producto_data = self.producto_autocomplete.get_current_product()
         if not producto_data:
             return
 
@@ -1627,7 +1624,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.calculate_totals()
 
         # Reset selección
-        self.producto_combo.setCurrentIndex(0)
+        self.producto_autocomplete.clear_product()
         self.cantidad_spin.setValue(1)
 
     def on_table_item_changed(self, item):
@@ -1651,10 +1648,10 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
                 # Verificar stock
                 producto_id = self.lineas_factura[row]['producto_id']
                 producto_data = None
-                for i in range(self.producto_combo.count()):
-                    data = self.producto_combo.itemData(i)
-                    if data and data.get('id') == producto_id:
-                        producto_data = data
+                # Buscar en la lista de productos cargados
+                for producto in self.productos:
+                    if producto.get('id') == producto_id:
+                        producto_data = producto
                         break
 
                 if producto_data:
@@ -1949,7 +1946,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 
         # Selector de productos
         selector_layout = QHBoxLayout()
-        self.producto_combo = QComboBox()
+        self.producto_autocomplete = ProductAutoCompleteWidget()
         self.cantidad_spin = QSpinBox()
         self.cantidad_spin.setMinimum(1)
         self.cantidad_spin.setMaximum(999)
@@ -1959,7 +1956,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.agregar_btn.clicked.connect(self.agregar_producto)
 
         selector_layout.addWidget(QLabel("Producto:"))
-        selector_layout.addWidget(self.producto_combo, 2)
+        selector_layout.addWidget(self.producto_autocomplete, 2)
         selector_layout.addWidget(QLabel("Cantidad:"))
         selector_layout.addWidget(self.cantidad_spin)
         selector_layout.addWidget(self.agregar_btn)
@@ -2027,17 +2024,8 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Llamando db.get_all_products()")
             self.productos = db.get_all_products()
             self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Recibidos {len(self.productos)} productos")
-            self.producto_combo.clear()
-            self.producto_combo.addItem("Seleccionar producto...", None)
-            for producto in self.productos:
-                stock = producto.get('stock_actual', 0)
-                from datetime import datetime
-                timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Producto: {producto['nombre']}, Stock: {stock}, ID: {producto.get('id')}")
-                self.producto_combo.addItem(
-                    f"{producto['nombre']} - {producto['precio_venta']:.2f}€ (Stock: {stock})",
-                    producto
-                )
+            # Cargar productos en autocomplete
+            self.producto_autocomplete.load_products(self.productos)
 
         except Exception as e:
             self.logger.error(f"Error cargando datos: {e}")
@@ -2172,7 +2160,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 
     def agregar_producto(self):
         """Agregar producto a la factura"""
-        producto_data = self.producto_combo.currentData()
+        producto_data = self.producto_autocomplete.get_current_product()
         if not producto_data:
             return
 
@@ -2220,7 +2208,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.calculate_totals()
 
         # Reset selección
-        self.producto_combo.setCurrentIndex(0)
+        self.producto_autocomplete.clear_product()
         self.cantidad_spin.setValue(1)
 
     def on_table_item_changed(self, item):

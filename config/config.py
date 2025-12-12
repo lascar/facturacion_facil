@@ -146,7 +146,7 @@ class Config:
         try:
             # Leer desde la tabla organizacion en lugar del archivo config.json
             import sqlite3
-            conn = sqlite3.connect("facturacion.db")
+            conn = sqlite3.connect("base_de_datos/facturacion.db")
             cursor = conn.cursor()
             cursor.execute("SELECT numero_factura_inicial FROM organizacion WHERE id = 1")
             result = cursor.fetchone()
