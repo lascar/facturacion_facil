@@ -6,8 +6,12 @@ echo    🚀 Facturacion Facil - Lancement
 echo ========================================
 echo.
 
-REM Changer vers le répertoire du script
+REM Changer vers le répertoire du script (CRITIQUE pour fonctionner depuis n'importe où)
+echo 📁 Directorio actual: %CD%
+echo 📁 Directorio del script: %~dp0
 cd /d "%~dp0"
+echo 📁 Cambiado a: %CD%
+echo.
 
 REM Vérifier si l'environnement virtuel existe d'abord
 echo 🔍 Vérification de l'environnement virtuel...

@@ -3,10 +3,13 @@ chcp 65001 >nul
 
 REM Script de lancement rapide pour Facturacion Facil
 REM Utilise l'environnement virtuel existant
+REM FONCTIONNE DEPUIS N'IMPORTE QUELLE UBICACIÓN
 
+REM Changer vers le répertoire du script (CRITIQUE)
 cd /d "%~dp0"
 
 echo 🚀 Lancement rapide de Facturacion Facil...
+echo 📁 Directorio: %CD%
 
 REM Vérifier l'environnement virtuel
 if not exist "venv\Scripts\activate.bat" (
