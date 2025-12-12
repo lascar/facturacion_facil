@@ -12,26 +12,75 @@ echo.
 echo 🔍 Verificando requisitos del sistema...
 echo.
 
-REM Verificar si Python está instalado
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Python no está instalado o no está en el PATH
-    echo.
-    echo 🔍 Buscando Python en ubicaciones comunes...
+REM Verificar si Python está instalado (evitando Microsoft Store)
+set "PYTHON_FOUND="
+set "PYTHON_CMD="
 
-    REM Buscar Python en ubicaciones típicas
-    set "PYTHON_FOUND="
-    for %%p in (
-        "%LOCALAPPDATA%\Programs\Python\Python*\python.exe"
-        "%PROGRAMFILES%\Python*\python.exe"
-        "%PROGRAMFILES(X86)%\Python*\python.exe"
-        "C:\Python*\python.exe"
-    ) do (
-        if exist "%%p" (
-            set "PYTHON_FOUND=%%p"
+echo 🔍 Buscando Python en el sistema...
+
+REM Método 1: Verificar py.exe (Python Launcher) - MÁS CONFIABLE
+echo    • Verificando Python Launcher (py.exe)...
+py --version >nul 2>&1
+if not errorlevel 1 (
+    echo    ✅ Python Launcher encontrado
+    set "PYTHON_FOUND=Python Launcher"
+    set "PYTHON_CMD=py"
+    goto :python_found
+) else (
+    echo    ❌ Python Launcher no disponible
+)
+
+REM Método 2: Verificar python.exe con where (evitando Microsoft Store stub)
+echo    • Verificando python.exe en PATH...
+where python.exe >nul 2>&1
+if not errorlevel 1 (
+    for /f "tokens=*" %%i in ('where python.exe 2^>nul') do (
+        echo    • Probando: %%i
+        REM Verificar que no sea el stub de Microsoft Store
+        echo import sys; print("OK") | "%%i" >nul 2>&1
+        if not errorlevel 1 (
+            echo    ✅ Python funcional encontrado: %%i
+            set "PYTHON_FOUND=%%i"
+            set "PYTHON_CMD=%%i"
             goto :python_found
+        ) else (
+            echo    ❌ Este python.exe no funciona (posiblemente Microsoft Store stub)
         )
     )
+) else (
+    echo    ❌ python.exe no encontrado en PATH
+)
+
+REM Método 3: Buscar Python en ubicaciones típicas
+echo    • Buscando en ubicaciones estándar...
+set "LOCATIONS_CHECKED=0"
+for %%p in (
+    "%LOCALAPPDATA%\Programs\Python\Python*\python.exe"
+    "%PROGRAMFILES%\Python*\python.exe"
+    "%PROGRAMFILES(X86)%\Python*\python.exe"
+    "C:\Python*\python.exe"
+) do (
+    if exist "%%p" (
+        set /a LOCATIONS_CHECKED+=1
+        echo    • Probando: %%p
+        echo import sys; print("OK") | "%%p" >nul 2>&1
+        if not errorlevel 1 (
+            echo    ✅ Python funcional encontrado: %%p
+            set "PYTHON_FOUND=%%p"
+            set "PYTHON_CMD=%%p"
+            goto :python_found
+        ) else (
+            echo    ❌ Este Python no funciona
+        )
+    )
+)
+
+if %LOCATIONS_CHECKED%==0 (
+    echo    ❌ No se encontró Python en ubicaciones estándar
+)
+
+echo.
+echo ❌ Python no está instalado o no está disponible
 
     :python_not_found
     echo ❌ Python no encontrado en el sistema
@@ -49,16 +98,31 @@ if errorlevel 1 (
             echo ❌ Error en instalación automática
             goto :python_not_found
         )
-        REM Verificar instalación
-        python --version >nul 2>&1
-        if errorlevel 1 (
-            echo ⚠️  Python instalado pero no disponible en PATH
-            echo 🔄 Reinicie la terminal o el sistema
-            pause
-            exit /b 1
+        REM Verificar instalación después de instalar Python
+        echo 🔄 Verificando instalación de Python...
+
+        REM Intentar diferentes métodos de verificación
+        where python.exe >nul 2>&1
+        if not errorlevel 1 (
+            for /f "tokens=*" %%i in ('where python.exe 2^>nul') do (
+                "%%i" --version >nul 2>&1
+                if not errorlevel 1 (
+                    set "PYTHON_CMD=%%i"
+                    goto :python_found
+                )
+            )
         )
-        set "PYTHON_CMD=python"
-        goto :python_found
+
+        py --version >nul 2>&1
+        if not errorlevel 1 (
+            set "PYTHON_CMD=py"
+            goto :python_found
+        )
+
+        echo ⚠️  Python instalado pero no disponible en PATH
+        echo 🔄 Reinicie la terminal o el sistema
+        pause
+        exit /b 1
     ) else (
         echo 📥 Abriendo página de descarga de Python...
         start https://www.python.org/downloads/
@@ -72,26 +136,33 @@ if errorlevel 1 (
         exit /b 1
     )
 
-    :python_found
-    echo ✅ Python encontrado en: %PYTHON_FOUND%
-    set "PYTHON_CMD=%PYTHON_FOUND%"
-) else (
-    set "PYTHON_CMD=python"
+:python_found
+echo ✅ Python encontrado: %PYTHON_FOUND%
+echo ✅ Comando Python: %PYTHON_CMD%
+
+echo 🔍 Verificando versión de Python:
+%PYTHON_CMD% --version
+if errorlevel 1 (
+    echo ❌ Error al ejecutar Python
+    echo 💡 Intente ejecutar el script como administrador
+    pause
+    exit /b 1
 )
 
-echo ✅ Python detectado:
-%PYTHON_CMD% --version
-
-REM Verificar pip
-pip --version >nul 2>&1
+REM Verificar pip usando el Python detectado
+echo 🔍 Verificando pip...
+%PYTHON_CMD% -m pip --version >nul 2>&1
 if errorlevel 1 (
     echo ❌ pip no está disponible
     echo 📥 Instalando pip...
-    python -m ensurepip --upgrade
+    %PYTHON_CMD% -m ensurepip --upgrade
+    if errorlevel 1 (
+        echo ⚠️  Error al instalar pip, continuando...
+    )
 )
 
 echo ✅ pip disponible:
-pip --version
+%PYTHON_CMD% -m pip --version
 
 echo.
 echo 🔧 Configurando entorno virtual...
