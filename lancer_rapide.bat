@@ -16,9 +16,8 @@ if not exist "venv\Scripts\activate.bat" (
     exit /b 1
 )
 
-REM Activer et lancer
-call venv\Scripts\activate.bat
-python main.py
+REM Lancer directement avec Python du venv (plus rapide)
+venv\Scripts\python.exe main.py
 
 if errorlevel 1 (
     echo ❌ Erreur - Consultez les logs dans 'logs/'

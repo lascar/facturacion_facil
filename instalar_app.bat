@@ -45,6 +45,20 @@ if errorlevel 1 (
     if "%install_option%"=="1" (
         echo 🚀 Iniciando instalación automática de Python...
         call :install_python_auto
+        if errorlevel 1 (
+            echo ❌ Error en instalación automática
+            goto :python_not_found
+        )
+        REM Verificar instalación
+        python --version >nul 2>&1
+        if errorlevel 1 (
+            echo ⚠️  Python instalado pero no disponible en PATH
+            echo 🔄 Reinicie la terminal o el sistema
+            pause
+            exit /b 1
+        )
+        set "PYTHON_CMD=python"
+        goto :python_found
     ) else (
         echo 📥 Abriendo página de descarga de Python...
         start https://www.python.org/downloads/
@@ -85,15 +99,35 @@ echo 🔧 Configurando entorno virtual...
 REM Crear entorno virtual si no existe
 if not exist "venv" (
     echo 📦 Creando entorno virtual...
-    python -m venv venv
+    %PYTHON_CMD% -m venv venv
     if errorlevel 1 (
         echo ❌ Error al crear el entorno virtual
-        pause
-        exit /b 1
+        echo 🔄 Intentando con virtualenv...
+        %PYTHON_CMD% -m pip install virtualenv
+        %PYTHON_CMD% -m virtualenv venv
+        if errorlevel 1 (
+            echo ❌ Error al crear el entorno virtual con virtualenv
+            pause
+            exit /b 1
+        )
     )
     echo ✅ Entorno virtual creado
 ) else (
     echo ℹ️  Entorno virtual ya existe
+)
+
+REM Verificar que el entorno virtual se creó correctamente
+if not exist "venv\Scripts\python.exe" (
+    echo ❌ El entorno virtual no se creó correctamente
+    echo 🗑️ Eliminando entorno virtual corrupto...
+    rmdir /s /q "venv" 2>nul
+    echo 🔄 Recreando entorno virtual...
+    %PYTHON_CMD% -m venv venv
+    if errorlevel 1 (
+        echo ❌ Error crítico al crear el entorno virtual
+        pause
+        exit /b 1
+    )
 )
 
 REM Activar entorno virtual
@@ -101,54 +135,89 @@ echo 🔌 Activando entorno virtual...
 call venv\Scripts\activate.bat
 if errorlevel 1 (
     echo ❌ Error al activar el entorno virtual
-    pause
-    exit /b 1
+    echo 🔧 Verificando estructura del entorno...
+    if exist "venv\Scripts\activate.bat" (
+        echo ✅ Script de activación existe
+        echo 🔄 Intentando activación directa...
+        set "PATH=%CD%\venv\Scripts;%PATH%"
+        set "VIRTUAL_ENV=%CD%\venv"
+    ) else (
+        echo ❌ Script de activación no encontrado
+        pause
+        exit /b 1
+    )
+) else (
+    echo ✅ Entorno virtual activado
 )
-
-echo ✅ Entorno virtual activado
 
 echo.
 echo 📦 Instalando dependencias...
 
-REM Actualizar pip
-echo 🔄 Actualizando pip...
-python -m pip install --upgrade pip
+REM Actualizar pip en el entorno virtual
+echo 🔄 Actualizando pip en el entorno virtual...
+venv\Scripts\python.exe -m pip install --upgrade pip
+if errorlevel 1 (
+    echo ⚠️  Error al actualizar pip, continuando...
+)
 
-REM Instalar dependencias desde requirements.txt
+REM Instalar dependencias en el entorno virtual
+echo 📦 Instalando dependencias en el entorno virtual...
 if exist "requirements.txt" (
     echo 📋 Instalando desde requirements.txt...
-    pip install -r requirements.txt
+    venv\Scripts\pip.exe install -r requirements.txt
     if errorlevel 1 (
-        echo ❌ Error al instalar dependencias
+        echo ❌ Error al instalar dependencias desde requirements.txt
         echo 🔄 Intentando instalación individual...
-        
+
         echo 📦 Instalando PyQt5...
-        pip install PyQt5
-        
+        venv\Scripts\pip.exe install PyQt5
+
         echo 📦 Instalando reportlab...
-        pip install reportlab
-        
+        venv\Scripts\pip.exe install reportlab
+
         echo 📦 Instalando Pillow...
-        pip install Pillow
-        
+        venv\Scripts\pip.exe install Pillow
+
         echo 📦 Instalando python-dateutil...
-        pip install python-dateutil
+        venv\Scripts\pip.exe install python-dateutil
+
+        if errorlevel 1 (
+            echo ❌ Error en instalación individual
+            echo 🔄 Verificando conectividad...
+            venv\Scripts\pip.exe install --upgrade pip
+        )
     )
 ) else (
     echo 📦 Instalando dependencias básicas...
-    pip install PyQt5 reportlab Pillow python-dateutil
+    venv\Scripts\pip.exe install PyQt5 reportlab Pillow python-dateutil
+    if errorlevel 1 (
+        echo ❌ Error al instalar dependencias básicas
+        echo 🔄 Intentando con --user...
+        venv\Scripts\pip.exe install --user PyQt5 reportlab Pillow python-dateutil
+    )
 )
 
 echo.
 echo 🧪 Verificando instalación...
 
-REM Verificar que PyQt5 funciona
-python -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 OK')" 2>nul
+REM Verificar que PyQt5 funciona en el entorno virtual
+echo 🧪 Verificando PyQt5 en el entorno virtual...
+venv\Scripts\python.exe -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 OK')" 2>nul
 if errorlevel 1 (
-    echo ❌ PyQt5 no funciona correctamente
+    echo ❌ PyQt5 no funciona correctamente en el entorno virtual
     echo 🔄 Reinstalando PyQt5...
-    pip uninstall -y PyQt5
-    pip install PyQt5
+    venv\Scripts\pip.exe uninstall -y PyQt5
+    venv\Scripts\pip.exe install PyQt5
+
+    REM Verificar nuevamente
+    venv\Scripts\python.exe -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 OK después de reinstalación')" 2>nul
+    if errorlevel 1 (
+        echo ❌ PyQt5 sigue sin funcionar
+        echo 🔄 Intentando instalación alternativa...
+        venv\Scripts\pip.exe install PyQt5 --force-reinstall --no-cache-dir
+    )
+) else (
+    echo ✅ PyQt5 funciona correctamente en el entorno virtual
 )
 
 echo.

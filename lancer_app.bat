@@ -9,79 +9,43 @@ echo.
 REM Changer vers le répertoire du script
 cd /d "%~dp0"
 
-REM Vérifier si Python est installé
-echo 🔍 Vérification de Python...
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ ERREUR: Python n'est pas installé ou pas dans le PATH
-    echo.
-    echo 💡 Veuillez installer Python depuis https://python.org
-    echo    N'oubliez pas de cocher "Add Python to PATH"
-    echo.
-    pause
-    exit /b 1
-)
-
-python --version
-echo ✅ Python détecté
-
-REM Vérifier si l'environnement virtuel existe
-echo.
+REM Vérifier si l'environnement virtuel existe d'abord
 echo 🔍 Vérification de l'environnement virtuel...
-if not exist "venv\Scripts\activate.bat" (
-    echo 📦 Création de l'environnement virtuel...
-    python -m venv venv
-    if errorlevel 1 (
-        echo ❌ ERREUR: Impossible de créer l'environnement virtuel
-        pause
-        exit /b 1
-    )
-    echo ✅ Environnement virtuel créé
-) else (
-    echo ✅ Environnement virtuel trouvé
-)
-
-REM Activer l'environnement virtuel
-echo.
-echo 🔧 Activation de l'environnement virtuel...
-call venv\Scripts\activate.bat
-if errorlevel 1 (
-    echo ❌ ERREUR: Impossible d'activer l'environnement virtuel
+if not exist "venv\Scripts\python.exe" (
+    echo ❌ Environnement virtuel non trouvé
+    echo 📥 Exécutez d'abord: instalar_app.bat
+    echo.
     pause
     exit /b 1
 )
 
-echo ✅ Environnement virtuel activé
+echo ✅ Environnement virtuel trouvé
+venv\Scripts\python.exe --version
 
-REM Vérifier si PyQt5 est installé
+REM Utiliser directement Python du venv (pas besoin d'activation)
+echo 🔧 Utilisation de l'environnement virtuel...
+
+REM Vérifier si PyQt5 est installé dans le venv
 echo.
-echo 🔍 Vérification de PyQt5...
-python -c "import PyQt5" >nul 2>&1
+echo 🔍 Vérification de PyQt5 dans l'environnement virtuel...
+venv\Scripts\python.exe -c "import PyQt5" >nul 2>&1
 if errorlevel 1 (
-    echo 📚 Installation des dépendances...
-    echo    - Mise à jour de pip...
-    python -m pip install --upgrade pip
-    echo    - Installation de PyQt5 et autres dépendances...
-    pip install -r requirements.txt
-    if errorlevel 1 (
-        echo ❌ ERREUR: Impossible d'installer les dépendances
-        echo.
-        echo 💡 Vérifiez votre connexion internet et réessayez
-        pause
-        exit /b 1
-    )
-    echo ✅ Dépendances installées
+    echo ❌ PyQt5 non trouvé dans l'environnement virtuel
+    echo 📥 Exécutez d'abord: instalar_app.bat
+    echo.
+    pause
+    exit /b 1
 ) else (
-    echo ✅ PyQt5 détecté
+    echo ✅ PyQt5 détecté dans l'environnement virtuel
 )
 
-REM Test rapide de PyQt5
+REM Test rapide de PyQt5 dans le venv
 echo.
 echo 🧪 Test de PyQt5...
-python -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 fonctionne!')" 2>nul
+venv\Scripts\python.exe -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 fonctionne!')" 2>nul
 if errorlevel 1 (
     echo ❌ PyQt5 ne fonctionne pas correctement
-    echo 💡 Réinstallez les dépendances avec: pip install --force-reinstall PyQt5
+    echo 📥 Exécutez: instalar_app.bat pour réinstaller
     pause
     exit /b 1
 )
@@ -117,7 +81,7 @@ echo.
 echo 🔧 En cas de problème, consultez les logs dans le dossier 'logs/'
 echo.
 
-python main.py
+venv\Scripts\python.exe main.py
 
 REM Gestion des erreurs
 if errorlevel 1 (
