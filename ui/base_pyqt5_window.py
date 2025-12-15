@@ -18,9 +18,9 @@ from ui.scroll_mixin_pyqt5 import ScrollableMixin
 import os
 
 class BasePyQt5Window(ScrollableMixin, QDialog):
-    """Classe de base pour toutes les fenêtres secondaires PySide2"""
-    
-    # Signaux PySide2
+    """Classe de base pour toutes les fenêtres secondaires PyQt5"""
+
+    # Signaux PyQt5
     window_closed = Signal()
     data_changed = Signal()
     

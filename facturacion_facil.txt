@@ -1,488 +1,323 @@
-ne code rien, montre et explique
-je voudrais une application python (avec ce pyenv)qui utilise sqlite. avec customTkinker ici nommer facturacion_facile. l'interface doit être très simple, le code aussi.
-l'interface doit être en espagnol mais pas hardcoder.
-on doit pouvoir rentrer des produits avec nom, reference, prix, quantité, catégorie, description, image s'il y en a une, iva applicable recomandée
-on doit pouvoir rentrer une organisation avec nom, adresse, téléphone, mail, cif, logo
-on doit pouvoir gérer un stock de ces produits (une seule location) avec le nombre de produit disponible qui se met à jour à chaque facture
-on doit pouvoir faire une facture avec le logo de l'organisation, le nom de l'organisation, son adresse, son téléphone, son cif, le nom du client, son dni ou nie, son adresse, son mail, son numéro de teléphone, la date de la facture, le numéro de la facture, la liste des produits, la quantité, le prix unitaire, le prix total, l'iva applicable, le total TTC, le total HT, le total remise, le total TVA, le total à payer, le mode de paiement, la liste des produits et l'iva appliquée à chaque fois (l'iva recommendée est celle du produit mais on peut la changer)
-# 📋 FACTURACIÓN FÁCIL - Résumé Complet pour Reprise du Travail
-
-## 🎯 **ÉTAT ACTUEL DE L'APPLICATION**
-
-### **Localisation:**
-- **Répertoire principal**: `/home/pascal/for_django/facturacion_facil/`
-- **Exécution**: `cd facturacion_facil && ./run_with_correct_python.sh main.py`
-- **Tests**: `cd facturacion_facil && ./run_with_correct_python.sh -m pytest`
-
-### **Application Fonctionnelle:**
-✅ **Interface graphique CustomTkinter** complètement opérationnelle
-✅ **Base de données SQLite** avec modèles Producto, Organizacion, Stock
-✅ **Gestion de produits** avec images, validation, CRUD complet
-✅ **Système de logging** détaillé et configuré
-✅ **Tests complets** (243 tests, coverage 22%)
-✅ **Configuration pytest** sans warnings
-
----
-
-## 🔧 **PROBLÈMES RÉSOLUS AUJOURD'HUI**
-
-### **1. Bouton "Guardar" Manquant ✅**
-- **Problème**: Pas de bouton save pour nouveaux produits
-- **Solution**: Bouton vert 120x35px créé et fonctionnel
-- **Fichier**: `ui/productos.py` lignes 231-244
-- **Test**: `test_productos_buttons.py`
-
-### **2. Erreurs TclError ✅**
-- **Problème**: Widgets détruits causaient des crashes
-- **Solution**: Vérifications `window.winfo_exists()` partout
-- **Fichiers**: `ui/productos.py` méthodes load_productos, limpiar_formulario
-- **Pattern**: `if not hasattr(self, 'window') or not self.window.winfo_exists(): return`
-
-### **3. Gestion des Fenêtres ✅**
-- **Problème**: Fenêtres multiples, popups derrière
-- **Solution**: Réutilisation + parent correct pour messageboxes
-- **Fichiers**: `ui/main_window.py`, `ui/productos.py`
-- **Méthode**: `_show_message()` avec `parent=self.window`
-
-### **4. Affichage d'Image lors Sélection ✅**
-- **Problème**: Image ne s'affichait pas quand produit sélectionné
-- **Solution**: `load_producto_to_form()` appelle `update_image_display()`
-- **Fichier**: `ui/productos.py` ligne 338
-
-### **5. Filedialog Derrière Fenêtre ✅**
-- **Problème**: Dialog sélection fichier invisible
-- **Solution**: `parent=self.window` + `window.lift()` + `focus_force()`
-- **Fichiers**: `ui/productos.py` lignes 428, 547
-
-### **6. Scrollbars pour Petites Fenêtres ✅**
-- **Problème**: Contenu coupé sur petits écrans
-- **Solution**: `CTkScrollableFrame` + fenêtre redimensionnable
-- **Fichier**: `ui/productos.py` ligne 75
-- **Config**: Taille min 800x600, max 1600x1200
-
-### **7. Warnings Pytest ✅**
-- **Problème**: `PytestUnknownMarkWarning: Unknown pytest.mark.slow`
-- **Solution**: `pytest.ini` format `[pytest]` + `.coveragerc`
-- **Fichiers**: `pytest.ini`, `.coveragerc`
-
----
-
-## 📁 **STRUCTURE DU PROJET**
-
-```
-facturacion_facil/
-├── main.py                     # Point d'entrée
-├── run_with_correct_python.sh  # Script d'exécution
-├── pytest.ini                  # Config pytest (CORRIGÉ)
-├── .coveragerc                  # Config coverage (NOUVEAU)
-├── database/
-│   ├── database.py             # Connexion SQLite
-│   └── models.py               # Modèles Producto, Organizacion, Stock
-├── ui/
-│   ├── main_window.py          # Fenêtre principale (gestion fenêtres CORRIGÉE)
-│   ├── productos.py            # Gestion produits (MASSIVEMENT AMÉLIORÉ)
-│   ├── organizacion.py         # Config organisation
-│   ├── stock.py                # Gestion stock
-│   └── facturas.py             # Gestion factures
-├── utils/
-│   ├── config.py               # Configuration app
-│   ├── logger.py               # Système logging
-│   └── translations.py         # Traductions
-├── tests/                      # 243 tests organisés
-├── logs/                       # Logs détaillés
-└── assets/                     # Images par défaut
-```
-
----
-
-## 🔑 **FONCTIONNALITÉS CLÉS IMPLÉMENTÉES**
-
-### **Interface Utilisateur:**
-- **Fenêtre principale** avec menu navigation
-- **Gestion produits** complète (CRUD + images)
-- **Scrollbars automatiques** pour adaptation écran
-- **Redimensionnement** intelligent des fenêtres
-- **Popups toujours visibles** (parent correct)
-
-### **Base de Données:**
-- **SQLite** avec modèles ORM simples
-- **Migrations** automatiques
-- **Logging** des opérations DB
-- **Validation** des données
-
-### **Système de Tests:**
-- **243 tests** organisés par catégories
-- **Markers pytest**: unit, integration, ui, slow, performance, regression
-- **Coverage 22%** avec rapport HTML
-- **Tests de régression** pour éviter bugs
-
-### **Logging et Configuration:**
-- **Logs rotatifs** dans `logs/facturacion_facil.log`
-- **Configuration centralisée** dans `utils/config.py`
-- **Traductions** pour internationalisation
-- **Gestion d'erreurs** robuste
-
----
-
-## 🚀 **COMMANDES UTILES**
-
-### **Exécution:**
-```bash
-cd /home/pascal/for_django/facturacion_facil
-./run_with_correct_python.sh main.py
-```
-
-### **Tests:**
-```bash
-# Tous les tests
-./run_with_correct_python.sh -m pytest
-
-# Tests rapides seulement
-./run_with_correct_python.sh -m pytest -m 'not slow'
-
-# Tests spécifiques
-./run_with_correct_python.sh -m pytest tests/test_ui/
-./run_with_correct_python.sh -m pytest -m slow
-```
-
-### **Vérifications:**
-```bash
-# Test bouton guardar
-./run_with_correct_python.sh test_productos_buttons.py
-
-# Test scrollbars
-./run_with_correct_python.sh test_scrollable_window.py
-
-# Test gestion fenêtres
-./run_with_correct_python.sh test_window_management.py
-
-# Test markers pytest
-./run_with_correct_python.sh test_pytest_markers.py
-```
-
----
-
-## 📋 **PROCHAINES ÉTAPES POSSIBLES**
-
-### **Fonctionnalités à Développer:**
-1. **Module Facturation** - Créer/éditer factures
-2. **Gestion Stock** - Entrées/sorties, alertes stock bas
-3. **Rapports** - Statistiques ventes, exports PDF
-4. **Clients** - Base de données clients
-5. **Paramètres** - Configuration avancée app
-
-### **Améliorations Techniques:**
-1. **Tests UI automatisés** - Selenium/pytest-qt
-2. **Base de données** - Migration vers PostgreSQL
-3. **API REST** - Backend séparé
-4. **Packaging** - Création exécutable
-5. **Documentation** - Sphinx/ReadTheDocs
-
-### **UX/UI:**
-1. **Thèmes** - Mode sombre/clair
-2. **Raccourcis clavier** - Navigation rapide
-3. **Drag & drop** - Images, fichiers
-4. **Notifications** - Toast messages
-5. **Aide contextuelle** - Tooltips, aide
-
----
-
-## 🔍 **POINTS D'ATTENTION**
-
-### **Code Critique:**
-- **`ui/productos.py`**: Fichier principal, beaucoup de logique
-- **`database/models.py`**: Modèles de données, validation
-- **`utils/logger.py`**: Système logging, ne pas casser
-- **`pytest.ini`**: Configuration tests, format important
-
-### **Patterns Établis:**
-- **Vérification fenêtre**: `if not hasattr(self, 'window') or not self.window.winfo_exists(): return`
-- **Messageboxes**: Utiliser `_show_message()` avec parent
-- **Logging**: `self.logger.info/debug/error()` partout
-- **Tests**: Markers appropriés, mocks complets
-
-### **Dépendances:**
-- **Python 3.13.7** via pyenv
-- **CustomTkinter** pour UI moderne
-- **Pillow** pour gestion images
-- **pytest** + plugins pour tests
-- **SQLite** intégré Python
-
----
-
-## 📞 **CONTACT ET CONTEXTE**
-
-### **Utilisateur:**
-- **Nom**: Pascal
-- **Localisation**: `/home/pascal/for_django/`
-- **Environnement**: Linux, Python 3.13.7 (pyenv)
-- **Préférences**: Interface moderne, code robuste, tests complets
-
-### **Historique Session:**
-- **Problèmes résolus**: 7 problèmes majeurs
-- **Fichiers modifiés**: ~15 fichiers
-- **Tests ajoutés**: ~10 nouveaux tests
-- **Documentation**: 6 fichiers MD détaillés
-
-### **État Mental:**
-- **Application fonctionnelle** ✅
-- **Problèmes critiques résolus** ✅
-- **Base solide pour développement** ✅
-- **Prêt pour nouvelles fonctionnalités** ✅
-
----
-
-## 🎯 **RÉSUMÉ EXÉCUTIF**
-
-**FACTURACIÓN FÁCIL** est une application de gestion commerciale en Python/CustomTkinter, complètement fonctionnelle avec gestion de produits, images, base de données SQLite, et interface moderne. 
-
-**TOUS LES PROBLÈMES CRITIQUES SONT RÉSOLUS** : boutons manquants, erreurs TclError, gestion fenêtres, affichage images, scrollbars, warnings pytest.
-
-**L'APPLICATION EST PRÊTE** pour le développement de nouvelles fonctionnalités (facturation, stock, clients, rapports).
-
-**BASE DE CODE SOLIDE** avec 243 tests, logging complet, configuration robuste, et patterns établis pour développement futur.
-
-**PROCHAINE SESSION** : Choisir nouvelle fonctionnalité à développer ou amélioration technique à implémenter.
-
----
-
-## 🆕 **NOUVELLES FONCTIONNALITÉS DÉVELOPPÉES (Session 2025-09-21)**
-
-### **8. Système de Numérotation de Facturas ✅**
-- **Fonctionnalité**: Format FACT-XXX-2025 (année à la fin)
-- **Fichier**: `utils/factura_numbering.py` - Service complet
-- **Caractéristiques**: Séries personnalisées, incrémentation automatique, persistance
-- **Test**: `test_nueva_numeracion.py` - 100% réussite
-
-### **9. Sélection Automatique Premier Produit ✅**
-- **Fonctionnalité**: Premier produit sélectionné automatiquement dans facturas
-- **Fichier**: `ui/facturas.py` - Méthode `auto_select_first_product()`
-- **Amélioration**: Validation automatique, UX fluide
-- **Test**: `test_producto_selection_fix.py` - 100% réussite
-
-### **10. Édition Automatique des Facturas ✅**
-- **Fonctionnalité**: Suppression bouton "Editar Factura", édition directe
-- **Fichier**: `ui/facturas.py` - Interface simplifiée
-- **Amélioration**: Titre dynamique, workflow naturel
-- **Test**: `test_edicion_automatica_facturas.py` - 100% réussite
-
-### **11. Module Organisation Complet ✅**
-- **Fonctionnalité**: Gestion complète organisation avec logo et configuration
-- **Fichier**: `ui/organizacion.py` - 547 lignes, interface moderne
-- **Caractéristiques**:
-  - Données de base (nom, CIF, adresse, téléphone, email)
-  - Gestion de logo avec vue préalable
-  - Directorio por defecto para imágenes de productos
-  - Número inicial para serie de facturas
-- **Base de données**: Nouvelles colonnes ajoutées avec compatibilité
-- **Test**: `test_organizacion_completo.py` - 6 tests, 100% réussite
-
-### **12. Correction Dialogues en Arrière-Plan ✅**
-- **Problème**: Dialogues filedialog restaient en arrière-plan
-- **Solution**: Parent window + topmost + lift/focus
-- **Fichiers**: `ui/organizacion.py` - Méthodes `select_logo()` et `select_directorio()`
-- **Test**: `test_dialogo_logo_fix.py` - 100% réussite
-
-### **13. Correction MessageBoxes en Arrière-Plan ✅**
-- **Problème**: Tous les messageboxes (succès, erreurs) en arrière-plan
-- **Solution**: Méthode helper centralisée `_show_message()`
-- **Fichier**: `ui/organizacion.py` - 8 remplacements de messageboxes
-- **Caractéristiques**: Parent window, topmost, gestion d'erreurs
-- **Test**: `test_messageboxes_fix.py` - 100% réussite
-
-### **14. Correction Erreur TclError du Logo ✅**
-- **Problème**: `TclError: image "pyimage1" doesn't exist`
-- **Solution**: Gestion robuste des images CTkImage avec méthodes helper
-- **Fichier**: `ui/organizacion.py` - Méthodes `load_logo_image()` améliorées
-- **Caractéristiques**:
-  - Nettoyage des références d'images
-  - Multiples tentatives de configuration
-  - Gestion d'erreurs complète
-- **Test**: `test_logo_image_fix.py` - 100% réussite
-
-### **15. Validation Optionnelle Facturas ✅ NOUVEAU**
-- **Fonctionnalité**: NIF, téléphone, email optionnels mais validés si renseignés
-- **Fichier**: `common/validators.py` - Validateurs améliorés
-- **Caractéristiques**:
-  - Champs vides = valides (optionnels)
-  - Formats validés si données saisies
-  - Messages d'erreur informatifs
-  - Validation DNI/NIE/NIF, email, téléphone
-- **Tests**:
-  - `test_validacion_facturas_opcional.py` - Tests validateurs
-  - `test_facturas_validacion_integracion.py` - Tests intégration UI
-  - `test_ejemplos_validacion_facturas.py` - 10 cas d'usage réels
-- **Résultat**: 100% réussite sur tous les tests
-
----
-
-## 📊 **STATISTIQUES FINALES SESSION**
-
-### **Tests Globaux:**
-```
-📈 ESTADÍSTICAS FINALES:
-   Tests ejecutados: 10 suites completas
-   Tests pasados: 10/10 (100.0%)
-   Tests fallidos: 0
-   Aplicación: Funciona perfectamente
-
-🚀 El sistema está listo para producción!
-```
-
-### **Fonctionnalités Totales Implémentées:**
-1. ✅ **Gestion de produits** (session précédente)
-2. ✅ **Interface moderne** (session précédente)
-3. ✅ **Base de données SQLite** (session précédente)
-4. ✅ **Système de tests** (session précédente)
-5. ✅ **Système de numérotation** FACT-XXX-2025
-6. ✅ **Sélection automatique** premier produit
-7. ✅ **Édition automatique** facturas
-8. ✅ **Module organisation** complet avec logo
-9. ✅ **Dialogues au premier plan**
-10. ✅ **Messages au premier plan**
-11. ✅ **Chargement d'images** sans erreurs
-12. ✅ **Validation optionnelle** NIF/Email/Téléphone
-
----
-
-## 🔧 **FICHIERS CLÉS MODIFIÉS/CRÉÉS AUJOURD'HUI**
-
-### **Nouveaux Fichiers:**
-- `utils/factura_numbering.py` - Service de numérotation
-- `test_nueva_numeracion.py` - Tests numérotation
-- `test_producto_selection_fix.py` - Tests sélection automatique
-- `test_edicion_automatica_facturas.py` - Tests édition automatique
-- `test_organizacion_completo.py` - Tests module organisation
-- `test_dialogo_logo_fix.py` - Tests dialogues
-- `test_messageboxes_fix.py` - Tests messageboxes
-- `test_logo_image_fix.py` - Tests images
-- `test_validacion_facturas_opcional.py` - Tests validation optionnelle
-- `test_facturas_validacion_integracion.py` - Tests intégration validation
-- `test_ejemplos_validacion_facturas.py` - Tests cas d'usage
-- `test_global_todas_correcciones.py` - Test global final
-- `VALIDACION_OPCIONAL_FACTURAS_RESUMEN.md` - Documentation validation
-
-### **Fichiers Modifiés:**
-- `ui/facturas.py` - Sélection automatique, édition automatique
-- `ui/organizacion.py` - Interface complète (547 lignes), corrections dialogues/messages/images
-- `database/models.py` - Modèle Organizacion amélioré
-- `database/database.py` - Nouvelles colonnes organisation
-- `common/validators.py` - Validateurs améliorés pour validation optionnelle
-
----
-
-## 🎯 **EXEMPLES PRATIQUES VALIDATION OPTIONNELLE**
-
-### **✅ CAS VALIDES (Optionnels):**
-```
-✅ DNI/NIE : (vide)           → Pas obligatoire
-✅ DNI     : 12345678Z        → Format espagnol correct
-✅ NIE     : X1234567L        → Format NIE correct
-✅ Email   : (vide)           → Pas obligatoire
-✅ Email   : user@domain.com  → Format correct
-✅ Téléphone: (vide)          → Pas obligatoire
-✅ Téléphone: +34 91 123 45 67 → Avec préfixe
-✅ Téléphone: 91 123 45 67    → Sans préfixe
-```
-
-### **❌ CAS INVALIDES (Si renseignés):**
-```
-❌ DNI     : 1234567          → Trop court
-❌ Email   : user@domain      → Sans extension
-❌ Email   : @domain.com      → Sans utilisateur
-❌ Téléphone: 12345           → Trop court
-❌ Téléphone: abc123          → Avec lettres
-```
-
----
-
-## 🚀 **COMMANDES MISES À JOUR**
-
-### **Test Global Final:**
-```bash
-cd /home/pascal/for_django/facturacion_facil
-./run_with_correct_python.sh test_global_todas_correcciones.py
-```
-
-### **Tests Spécifiques Nouveaux:**
-```bash
-# Test validation optionnelle
-./run_with_correct_python.sh test_validacion_facturas_opcional.py
-./run_with_correct_python.sh test_facturas_validacion_integracion.py
-./run_with_correct_python.sh test_ejemplos_validacion_facturas.py
-
-# Test numérotation
-./run_with_correct_python.sh test_nueva_numeracion.py
-
-# Test organisation
-./run_with_correct_python.sh test_organizacion_completo.py
-
-# Test corrections UI
-./run_with_correct_python.sh test_dialogo_logo_fix.py
-./run_with_correct_python.sh test_messageboxes_fix.py
-./run_with_correct_python.sh test_logo_image_fix.py
-```
-
----
-
-## 📋 **PROCHAINES ÉTAPES POSSIBLES (MISES À JOUR)**
-
-### **Fonctionnalités Restantes à Développer:**
-1. **Gestion Stock Avancée** - Entrées/sorties, alertes, historique
-2. **Rapports et Statistiques** - Ventes, bénéfices, exports PDF
-3. **Base de Données Clients** - Gestion complète clients
-4. **Système de Remises** - Remises produits, clients, globales
-5. **Backup/Restore** - Sauvegarde automatique données
-6. **Multi-utilisateurs** - Gestion permissions, sessions
-7. **Intégration Comptable** - Export formats comptables
-8. **Notifications** - Alertes stock, factures impayées
-9. **Thèmes Personnalisés** - Mode sombre, couleurs entreprise
-10. **API REST** - Backend pour applications mobiles
-
-### **Améliorations Techniques Prioritaires:**
-1. **Performance** - Optimisation requêtes DB, cache
-2. **Sécurité** - Chiffrement données sensibles
-3. **Internationalisation** - Support multilingue complet
-4. **Packaging** - Création installateur/exécutable
-5. **Documentation** - Manuel utilisateur, API docs
-
----
-
-## 🔍 **POINTS D'ATTENTION ACTUALISÉS**
-
-### **Code Critique Nouveau:**
-- **`utils/factura_numbering.py`**: Service numérotation, ne pas modifier format
-- **`ui/organizacion.py`**: Interface complexe (547 lignes), gestion images critique
-- **`common/validators.py`**: Validateurs optionnels, logique importante
-- **Tests globaux**: `test_global_todas_correcciones.py` - Point de vérification complet
-
-### **Patterns Établis Nouveaux:**
-- **Validation optionnelle**: `if not field or not field.strip(): return None`
-- **Gestion images CTkImage**: Nettoyage références + multiples tentatives
-- **Dialogues/Messages**: Toujours avec parent + topmost + lift/focus
-- **Tests complets**: Toujours créer tests unitaires + intégration + exemples
-
----
-
-## 🎯 **RÉSUMÉ EXÉCUTIF FINAL**
-
-**FACTURACIÓN FÁCIL** est maintenant une application de gestion commerciale **COMPLÈTE ET ROBUSTE** avec :
-
-✅ **15 fonctionnalités majeures** implémentées et testées
-✅ **Interface moderne** CustomTkinter avec UX optimisée
-✅ **Validation intelligente** optionnelle pour flexibilité maximale
-✅ **Gestion complète organisation** avec logo et configuration
-✅ **Système de numérotation** professionnel FACT-XXX-2025
-✅ **Base de code solide** avec 10 suites de tests (100% réussite)
-✅ **Corrections UI complètes** (dialogues, messages, images)
-
-**L'APPLICATION EST PRODUCTION-READY** pour gestion commerciale complète.
-
-**PROCHAINE SESSION** : Développer gestion stock avancée, rapports, ou clients selon priorités business.
-
----
-
-📅 **Dernière mise à jour**: 2025-09-21
-🔧 **Version**: Production-Ready avec validation optionnelle
-✅ **Statut**: Système complet et opérationnel
-🎯 **Tests**: 10/10 suites passent (100% réussite)
+# Facturacion Facil - Documentation Complète de l'Interface
+
+## Fenêtre Principale (MainWindow)
+### Titre : "💼 Facturación Fácil"
+### Boutons principaux (grille 3x2) :
+- **📦 Productos** : Ouvre la fenêtre de gestion des produits
+- **🏢 Organización** : Ouvre la fenêtre de configuration de l'entreprise
+- **📊 Stock** : Ouvre la fenêtre de gestion du stock
+- **🧾 Facturas** : Ouvre la fenêtre de gestion des factures
+- **👥 Clientes** : Ouvre la fenêtre de gestion des clients
+- **🔍 Búsqueda Avanzada** : Ouvre la fenêtre de recherche avancée
+
+## Fenêtre Organización
+### Section "Información Básica"
+- **Nombre de la Empresa** : `<input text>` (ex: "Mi Empresa S.L.")
+- **CIF/NIF** : `<input text>` (ex: "B12345678")
+- **Teléfono** : `<input text>` (ex: "+34 911234567")
+- **Email** : `<input text>` (ex: "info@miempresa.com")
+
+### Section "Dirección"
+- **Dirección** : `<textarea>` (ex : "Calle Mayor, 1, 28001 Madrid")
+
+### Section "Configuración"
+- **Logo de la Empresa** : `<input text>` (ex : "logo/logo.png")
+  - **Bouton 📁 Buscar** : Ouvre un sélecteur de fichier pour choisir le logo (va chercher prioritairement dans Directorio de Imágenes)
+  - **Aperçu du logo** : Affichage miniature du logo sélectionné
+- **Orientación del Logo** :
+  - `<radio>` 🖼️ Horizontal (Landscape) - par défaut
+  - `<radio>` 📱 Vertical (Portrait)
+- **Número Inicial de Factura** : `<input number>` (numéro de départ pour les factures ex. 'FACT-2005-1')
+
+### Section "Configuración de Directorios"
+- **Directorio de Imágenes** : `<input text>` + **Bouton 📁 Buscar** (où l'on cherche prioritairement les images)
+- **Directorio de Logos** : `<input text>` + **Bouton 📁 Buscar** (oú l'image du logo sera copiée)
+- **Directorio de PDFs** : `<input text>` + **Bouton 📁 Buscar** (où seront stockés les PDFs générés, attention si une factura est modifiable, le pdf sera recréé avec le même nom, si elle n'est pas modifiable, on cherchera s'il y a un pdf existant, sinon on le crée). le nom sera 'factura-<numéro>.pdf'
+
+### Section "Configuración de Estados de Facturas"
+- **Description** : `<textarea>` "Configure los estados posibles para las facturas y determine cuáles permiten modificación"
+- **Tableau des états** avec colonnes :
+  - Estado (nom de l'état) : `<input text>`
+  - Descripción : `<textarea>`
+  - Permite Modificación (checkbox)
+  - Color (aperçu couleur)
+  - Orden (ordre d'affichage)
+- **Boutons** :
+  - **➕ Agregar Estado** : Ouvre le dialogue de création d'état
+  - **✏️ Editar Estado** : Ouvre le dialogue d'édition d'état
+  - **🗑️ Eliminar Estado** : Supprime l'état sélectionné
+
+### Boutons principaux
+- **💾 Guardar Configuración** : Sauvegarde toute la configuration
+- **🔄 Restablecer** : Recharge les données depuis la base
+- **📝 TODO Editor** : Ouvre l'éditeur de tâches
+- **🧹 Limpiar Datos** : Ouvre le dialogue de nettoyage des données
+
+#### Dialogue "Configurar Estado de Factura" (InvoiceStatusDialog)
+- **Titre** : "Nuevo Estado" ou "Editar Estado"
+- **Nombre del Estado** : `<input text>` (ex: "Borrador", "Enviada", "Pagada")
+- **Descripción** : `<textarea>` (description de l'état)
+- **Permite Modificación** : `<checkbox>` "Permitir editar facturas en este estado"
+- **Color** :
+  - **Aperçu couleur** : Bouton coloré montrant la couleur sélectionnée
+  - **🎨 Elegir Color** : Ouvre le sélecteur de couleur
+- **Orden** : `<spinbox>` (1-100, ordre d'affichage)
+- **Boutons** :
+  - **💾 Guardar** : Sauvegarde l'état
+  - **❌ Cancelar** : Annule les modifications
+
+#### Dialogue "Limpiar Datos" (DataCleanupDialog)
+- **Titre** : "🧹 Limpieza de Datos de la Base de Datos"
+- **Section "📊 Estado Actual de la Base de Datos"** : Affiche les statistiques actuelles
+- **Section "🎯 Opciones de Limpieza"** :
+  - `<checkbox>` 🧾 Eliminar todas las facturas y sus items
+  - `<checkbox>` 📦 Eliminar todos los productos y stocks
+  - `<checkbox>` 👤 Eliminar clientes sin facturas
+  - `<checkbox>` 👥 Eliminar TODOS los clientes
+  - `<checkbox>` 💥 ELIMINAR TODO (facturas, productos, clientes) - en rouge
+- **Section "💾 Seguridad"** :
+  - `<checkbox>` ✅ Crear backup automático antes de eliminar (activé par défaut)
+- **Boutons** :
+  - **🧹 Ejecutar Limpieza** : Lance le nettoyage
+  - **❌ Cancelar** : Annule l'opération
+
+## Fenêtre Productos
+### Section gauche - "Lista de Productos"
+- **Tableau des produits** avec colonnes :
+  - ID
+  - Nombre
+  - Referencia
+  - Precio
+  - IVA
+  - Categoría
+  - Stock
+  (les colonnes ne sont pas modifiables, mais si l'on clique sur un produit, il est sélectionné et les détails sont affichés à droite. et s'il y a un changement à droite il doit être reflèté à gauche)
+
+### Section droite - "Detalles del Producto"
+- **Nombre** : `<input text>` (nom du produit)
+- **Referencia** : `<input text>` (ex: "REF001", optionnel)
+- **Precio** : `<spinbox double>` (0.00-999999.99, 2 décimales)
+- **IVA** : `<spinbox double>` (0.0-100.0%, défaut 21.0%)
+- **Categoría** : `<combobox>` (sélection de catégorie)
+- **Descripción** : `<textarea>` (description détaillée)
+
+### Boutons
+- **Actualizar** : Rafraîchit la liste des produits
+- **Nuevo** : Crée un nouveau produit
+- **Guardar** : Sauvegarde le produit actuel
+- **Eliminar** : Supprime le produit sélectionné
+- **Cerrar** : Ferme la fenêtre
+ on mettra les fenêtres l'une au dessus de l'autre (celle de droite en haut)
+ ainsi la largeur permettra de voir mieux les détails
+
+## Fenêtre Stock
+### Section gauche - "Lista de Stock"
+- **Tableau du stock** avec colonnes :
+  - Producto
+  - Stock Actual
+  - Stock Mínimo
+  - Estado (Disponible/Stock bajo/Sin stock)
+
+### Section droite - "Ajustar Stock"
+- **Producto** : `<label>` (nom du produit sélectionné)
+- **Stock Actual** : `<label>` (stock actuel)
+- **Nuevo Stock** : `<spinbox>` (nouveau stock à définir)
+- **Stock Mínimo** : `<spinbox>` (seuil d'alerte)
+
+### Boutons
+- **🔄 Actualizar** : Rafraîchit les données de stock
+- **📊 Ajustar Stock** : Applique les modifications de stock
+
+## Fenêtre Clientes
+### Section gauche - "Lista de Clientes"
+- **Tableau des clients** avec colonnes :
+  - ID
+  - Nombre
+  - NIF/DNI
+  - Email
+  - Teléfono
+
+### Section droite - "Detalles del Cliente"
+- **Nombre** : `<input text>` (nom du client)
+- **NIF/DNI** : `<input text>` (numéro d'identification)
+- **Email** : `<input text>` (adresse email)
+- **Teléfono** : `<input text>` (numéro de téléphone)
+- **Dirección** : `<textarea>` (adresse complète)
+
+### Boutons
+- **➕ Nuevo** : Crée un nouveau client
+- **💾 Guardar** : Sauvegarde le client actuel
+- **🗑️ Eliminar** : Supprime le client sélectionné
+- **🔄 Actualizar** : Rafraîchit la liste des clients
+
+## Fenêtre Facturas
+### Section supérieure - Informations de la facture
+- **Número de Factura** : `<input text>` (numéro automatique ou manuel)
+- **Fecha** : `<date picker>` (date de la facture, défaut aujourd'hui)
+- **Cliente** : `<autocomplete widget>` (recherche et sélection de client)
+  - Autocomplétion en temps réel
+  - Création automatique de nouveau client si non trouvé
+  - Format d'affichage : "Nom (NIF)"
+- **Estado** : `<combobox>` (état de la facture : Borrador, Enviada, Pagada, etc.)
+
+### Section centrale - Détails du client sélectionné
+- **Nom du client** : `<label>` (nom affiché)
+- **NIF/DNI** : `<label>` (numéro d'identification)
+- **Dirección** : `<label>` (adresse complète)
+- **Teléfono** : `<label>` (téléphone)
+- **Email** : `<label>` (email)
+
+### Section produits - "Productos de la Factura"
+- **Tableau des produits** avec colonnes :
+  - Producto (nom du produit)
+  - Cantidad (quantité)
+  - Precio Unit. (prix unitaire)
+  - IVA % (pourcentage IVA)
+  - Descuento % (pourcentage remise)
+  - Total (total ligne)
+
+### Section ajout de produit
+- **Producto** : `<autocomplete widget>` (recherche de produit)
+  - Autocomplétion avec informations de stock
+  - Format : "Nom - Prix€ (Stock: X)"
+  - Filtrage automatique (produits avec stock > 0)
+- **Cantidad** : `<spinbox>` (quantité à ajouter)
+- **Precio Unitario** : `<input number>` (prix unitaire, pré-rempli)
+- **IVA %** : `<input number>` (pourcentage IVA, pré-rempli)
+- **Descuento %** : `<input number>` (pourcentage remise, défaut 0)
+- **Bouton ➕ Agregar** : Ajoute le produit à la facture
+
+### Section totaux - "Totales de la Factura"
+- **Subtotal** : `<label>` (total hors taxes)
+- **IVA** : `<label>` (montant total IVA)
+- **Descuentos** : `<label>` (montant total remises)
+- **TOTAL** : `<label>` (montant total TTC, en gras)
+
+### Boutons principaux
+- **Nueva Factura** : Crée une nouvelle factura vierge
+- **Guardar** : Sauvegarde la factura actuelle
+- **Eliminar** : Supprime la factura sélectionnée
+- **Generar PDF** : Génère le PDF de la factura
+- **Configuración** : Ouvre la configuration de numérotation
+- **Cerrar** : Ferme la fenêtre
+
+#### Dialogue "Agregar/Editar Producto" (PyQt5)
+- **Type** : QDialog modal avec layout vertical
+- **Titre** : "Configurar Producto para Factura"
+- **Section "Buscar Producto"** :
+  - **ProductAutoCompleteWidget** : QLineEdit avec QCompleter intégré
+  - **Informations produit** : QLabel pour affichage des détails
+- **Section "Configuración"** :
+  - **Cantidad** : QSpinBox (quantité, obligatoire)
+  - **Precio Unitario** : QDoubleSpinBox (prix unitaire, obligatoire)
+  - **IVA Aplicado** : QDoubleSpinBox (pourcentage IVA, obligatoire)
+  - **Descuento (%)** : QDoubleSpinBox (pourcentage remise, défaut 0)
+- **Section "Preview de Totales"** :
+  - **QGroupBox** avec calculs automatiques en temps réel
+  - **Connexions** : textChanged signals pour mise à jour instantanée
+- **Boutons** :
+  - **QPushButton "Cancelar"** : reject() du dialogue
+  - **QPushButton "Aceptar"** : accept() avec validation
+
+#### Dialogue "Configuración de Numeración" (PyQt5)
+- **Type** : QDialog modal avec QGridLayout
+- **Titre** : "Configuración de Numeración de Facturas"
+- **Champs** :
+  - **Número inicial** : QSpinBox (ex: 1, 100, 1000)
+  - **Prefijo** : QLineEdit (ex: "FAC-", "2024-", optionnel)
+  - **Sufijo** : QLineEdit (ex: "-ES", "/24", optionnel)
+  - **Serie personalizada** : QLineEdit (format personnalisé, optionnel)
+- **Vista previa** : QLabel avec mise à jour automatique
+- **Información** : QTextEdit en lecture seule pour les explications
+- **Boutons** :
+  - **QPushButton "Cancelar"** : reject() du dialogue
+  - **QPushButton "Guardar"** : accept() avec sauvegarde
+
+## Fenêtre Búsqueda Avanzada (SearchWindow)
+### Section "Filtros de Búsqueda"
+#### Colonne 1 - Type et texte
+- **Buscar en** : `<combobox>` (facturas, productos, clientes, todo)
+- **Texto de búsqueda** : `<input text>` (recherche libre)
+
+#### Colonne 2 - Dates
+- **Fecha desde** : `<date picker>` (date de début)
+- **Fecha hasta** : `<date picker>` (date de fin)
+
+#### Colonne 3 - Montants et filtres
+- **Cliente** : `<combobox>` (filtre par client)
+- **Estado** : `<combobox>` (filtre par état de factura)
+- **Monto desde** : `<input number>` (montant minimum)
+- **Monto hasta** : `<input number>` (montant maximum)
+
+### Boutons de recherche rapide
+- **Hoy** : Recherche du jour
+- **Esta semana** : Recherche de la semaine
+- **Este mes** : Recherche du mois
+- **Stock bajo** : Produits avec stock faible
+- **Limpiar** : Efface tous les filtres
+- **🔍 Buscar** : Lance la recherche
+
+### Section "Resultados de búsqueda"
+- **Tableau des résultats** : Colonnes variables selon le type de recherche
+  - **Facturas** : Número, Fecha, Cliente, Total, Estado
+  - **Productos** : Referencia, Nombre, Precio, Categoría, Stock
+  - **Clientes** : Nombre, NIF, Email, Teléfono, Facturas
+  - **Todo** : Tipo, ID, Nombre, Descripción, Valor
+
+### Boutons d'action
+- **👁️ Ver Detalles** : Affiche les détails de l'élément sélectionné
+- **📊 Exportar** : Exporte les résultats en CSV
+- **Información de résultats** : Nombre de résultats trouvés
+
+## Widgets d'Autocomplétion
+
+### ClientAutoCompleteWidget
+- **Fonctionnalité** : Autocomplétion pour les clients avec création automatique
+- **Placeholder** : "Escriba el nombre del cliente..."
+- **Format d'affichage** : "Nom (NIF)" ou "Nom" si pas de NIF
+- **Recherche** : Par nom ou NIF, insensible à la casse
+- **Création automatique** : Si client non trouvé, propose la création
+- **États visuels** :
+  - Normal : bordure grise
+  - Client trouvé : bordure verte, fond vert clair
+  - Nouveau client : bordure orange, fond orange clair
+- **Signaux émis** :
+  - `client_selected` : Client existant sélectionné
+  - `client_created` : Nouveau client créé
+  - `client_changed` : Client changé
+
+### ProductAutoCompleteWidget
+- **Fonctionnalité** : Autocomplétion pour les produits (lecture seule)
+- **Placeholder** : "Escriba el nombre del producto..."
+- **Format d'affichage** : "Nom - Prix€ (Stock: X)"
+- **Filtrage automatique** : Seuls les produits avec stock > 0
+- **Recherche** : Par nom de produit, temps réel avec délai de 300ms
+- **Validation** : Sélection obligatoire depuis la liste
+- **Signaux émis** :
+  - `product_selected` : Produit sélectionné
+  - `product_changed` : Produit changé
+
+## Architecture Technique
+
+### Framework GUI
+- **Framework principal** : PyQt5 (migration complète depuis CustomTkinter)
+- **Fenêtres** : QMainWindow, QDialog pour les dialogues modaux
+- **Layouts** : QGridLayout, QVBoxLayout, QHBoxLayout pour l'organisation
+- **Widgets natifs** : QLineEdit, QPushButton, QTableWidget, QComboBox, etc.
+
+### Composants spécialisés
+- **BasePyQt5Window** : Classe de base pour toutes les fenêtres secondaires
+- **ScrollableMixin** : Support du scroll pour les fenêtres avec contenu long
+- **Event Manager** : Gestion centralisée des événements PyQt5
+- **Autocomplétion native** : QCompleter avec QStringListModel
+
+### Signaux et communication
+- **pyqtSignal** : Communication entre widgets (client_selected, product_selected, etc.)
+- **Connexions automatiques** : setup_connections() dans chaque fenêtre
+- **Gestion d'état** : Synchronisation temps réel entre composants
+
+### Styles et apparence
+- **Feuilles de style Qt** : CSS-like pour personnaliser l'apparence
+- **Icônes** : Support des émojis et icônes dans les boutons
+- **Responsive** : Adaptation automatique à la taille de fenêtre
+- **Thème cohérent** : Couleurs et polices standardisées

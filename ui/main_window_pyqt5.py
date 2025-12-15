@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Fenêtre principale PySide2 native
+Fenêtre principale PyQt5 native
 """
 
 import sys
@@ -26,10 +26,10 @@ class MainWindowPyQt5(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Créer l'application PySide2 si elle n'existe pas
+        # Créer l'application PyQt5 si elle n'existe pas
         self.app = QApplication.instance() or QApplication([])
-        
-        self.setWindowTitle("Facturación Fácil - PySide2")
+
+        self.setWindowTitle("Facturación Fácil - PyQt5")
         self.setGeometry(100, 100, 1200, 800)
         
         # Variables pour les fenêtres
@@ -77,7 +77,7 @@ class MainWindowPyQt5(QMainWindow):
         main_layout.addStretch()
         
         # Barre de statut
-        self.statusBar().showMessage("Prêt - PySide2")
+        self.statusBar().showMessage("Prêt - PyQt5")
 
         # Appliquer le style
         self.apply_modern_style()

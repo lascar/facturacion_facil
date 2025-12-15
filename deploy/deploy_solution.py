@@ -75,7 +75,7 @@ def install_dependencies():
     
     # Dépendances principales
     dependencies = [
-        "customtkinter",
+        "PyQt5",
         "reportlab",
         "pillow"
     ]

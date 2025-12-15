@@ -1,0 +1,768 @@
+[0;34m🔧 Vérification de l'environnement...[0m
+[0;32m📁 Activation de l'environnement virtuel...[0m
+[0;32m✅ Environnement prêt[0m
+
+[0;34m🧪 === TESTS ORGANISÉS - FACTURACIÓN FÁCIL ===[0m
+[1;33m📁 Répertoire de travail:[0m /home/pascal/development/for_django/facturacion_facil
+[1;33m🎯 Type de tests:[0m all
+[1;33m⚙️  Options:[0m 
+
+[0;35m🧪 Exécution de TOUS les tests[0m
+============================= test session starts ==============================
+platform linux -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0 -- /home/pascal/.pyenv/versions/3.13.7/bin/python3.13
+cachedir: .pytest_cache
+benchmark: 4.0.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase(PosixPath('/home/pascal/development/for_django/facturacion_facil/.hypothesis/examples'))
+rootdir: /home/pascal/development/for_django/facturacion_facil/test
+configfile: pytest.ini
+plugins: cov-4.1.0, xdist-3.3.1, benchmark-4.0.0, Faker-20.1.0, mock-3.12.0, hypothesis-6.88.1
+collecting ... collected 377 items
+
+test/integration/test_clientes_integration.py::TestClientesIntegration::test_cliente_crud_operations PASSED [  0%]
+test/integration/test_clientes_integration.py::TestClientesIntegration::test_cliente_factura_integration PASSED [  0%]
+test/integration/test_clientes_integration.py::TestClientesIntegration::test_cliente_interface_simulation PASSED [  0%]
+test/integration/test_complete_functionality.py::test_complete_functionality PASSED [  1%]
+test/integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_dialog_creation PASSED [  1%]
+test/integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_organization_window_button PASSED [  1%]
+test/integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_database_stats_loading PASSED [  1%]
+test/integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_all_data_cleanup_integration PASSED [  2%]
+test/integration/test_facturas_implementation.py::test_imports PASSED    [  2%]
+test/integration/test_facturas_implementation.py::test_database_tables PASSED [  2%]
+test/integration/test_facturas_implementation.py::test_factura_model PASSED [  2%]
+test/integration/test_facturas_implementation.py::test_validators PASSED [  3%]
+test/integration/test_facturas_implementation.py::test_translations PASSED [  3%]
+test/integration/test_facturas_implementation.py::test_ui_components PASSED [  3%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_complete_factura_workflow PASSED [  3%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_factura_validation_workflow PASSED [  4%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_stock_update_after_factura PASSED [  4%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_factura_number_generation PASSED [  4%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_complex_calculation_scenarios PASSED [  5%]
+test/integration/test_facturas_integration.py::TestFacturasIntegration::test_factura_crud_operations PASSED [  5%]
+test/integration/test_global_todas_correcciones.py::test_global_todas_correcciones PASSED [  5%]
+test/integration/test_global_todas_correcciones.py::test_aplicacion_completa PASSED [  5%]
+test/integration/test_integration.py::TestIntegrationWorkflows::test_complete_product_lifecycle PASSED [  6%]
+test/integration/test_integration.py::TestIntegrationWorkflows::test_organization_setup_workflow PASSED [  6%]
+test/integration/test_integration.py::TestIntegrationWorkflows::test_inventory_management_workflow PASSED [  6%]
+test/integration/test_integration.py::TestIntegrationWorkflows::test_database_transaction_workflow PASSED [  6%]
+test/integration/test_integration.py::TestIntegrationWorkflows::test_error_handling_workflow PASSED [  7%]
+test/integration/test_integration.py::TestSystemIntegration::test_database_backup_restore_simulation PASSED [  7%]
+test/integration/test_integration.py::TestSystemIntegration::test_stress_test_simulation PASSED [  7%]
+test/integration/test_pdf_download_feature.py::test_pdf_download_feature PASSED [  7%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_factura_data_completeness PASSED [  8%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_factura_get_by_numero PASSED [  8%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_factura_selection_simulation PASSED [  8%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_multiple_facturas_selection PASSED [  9%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_pdf_export_method_call PASSED [  9%]
+test/integration/test_pdf_export_integration.py::PDFExportIntegrationTest::test_pdf_export_validation PASSED [  9%]
+test/integration/test_pdf_logo_end_to_end.py::TestPDFLogoEndToEnd::test_complete_pdf_logo_workflow PASSED [  9%]
+test/integration/test_pdf_logo_end_to_end.py::TestPDFLogoEndToEnd::test_pdf_without_logo_fallback PASSED [ 10%]
+test/integration/test_pdf_logo_end_to_end.py::TestPDFLogoEndToEnd::test_logo_error_handling PASSED [ 10%]
+test/integration/test_pdf_logo_integration.py::TestPDFLogoIntegration::test_generate_pdf_with_logo_visual_check PASSED [ 10%]
+test/integration/test_pdf_logo_integration.py::TestPDFLogoIntegration::test_logo_positioning_and_scaling PASSED [ 10%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_crear_factura_dialog_carga_productos PASSED [ 11%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_editar_factura_dialog_carga_productos PASSED [ 11%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_seleccion_producto_en_crear_factura PASSED [ 11%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_formato_precio_venta_correcto PASSED [ 11%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_agregar_producto_a_factura PASSED [ 12%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_carga_productos_performance PASSED [ 12%]
+test/integration/test_productos_factura_integration.py::TestProductosFacturaIntegration::test_manejo_productos_sin_stock PASSED [ 12%]
+test/integration/test_stock_facturacion_integration.py::test_stock_facturacion_integration PASSED [ 12%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_dialog_fallback_system PASSED [ 13%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_multiple_products_stock_update PASSED [ 13%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_stock_update_insufficient_stock PASSED [ 13%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_stock_update_low_stock_warning PASSED [ 14%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_stock_update_with_cancellation PASSED [ 14%]
+test/integration/test_stock_update_integration.py::StockUpdateIntegrationTest::test_stock_update_with_confirmation PASSED [ 14%]
+test/integration/test_stock_update_integration.py::StockButtonsInterfaceIntegrationTest::test_stock_buttons_interface_integration PASSED [ 14%]
+test/integration/test_todo_editor_integration.py::TestTodoEditorIntegration::test_todo_dialog_creation PASSED [ 15%]
+test/integration/test_todo_editor_integration.py::TestTodoEditorIntegration::test_organization_window_todo_button PASSED [ 15%]
+test/integration/test_todo_editor_integration.py::TestTodoEditorIntegration::test_todo_content_loading PASSED [ 15%]
+test/integration/test_todo_editor_integration.py::TestTodoEditorIntegration::test_all_todo_editor_integration PASSED [ 15%]
+test/integration/test_visor_pdf_personalizado.py::test_visor_pdf_personalizado PASSED [ 16%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_producto_creation_benchmark PASSED [ 16%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_producto_save_benchmark PASSED [ 16%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_producto_get_all_benchmark PASSED [ 16%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_translation_lookup_benchmark PASSED [ 17%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_stock_update_benchmark PASSED [ 17%]
+test/performance/test_performance.py::TestPerformanceBenchmarks::test_bulk_operations_benchmark PASSED [ 17%]
+test/performance/test_performance.py::TestMemoryUsage::test_memory_usage_large_dataset PASSED [ 18%]
+test/performance/test_performance.py::TestMemoryUsage::test_memory_leak_detection PASSED [ 18%]
+test/performance/test_performance.py::TestConcurrency::test_concurrent_database_access PASSED [ 18%]
+test/performance/test_performance.py::TestScalability::test_search_performance_scaling[10] PASSED [ 18%]
+test/performance/test_performance.py::TestScalability::test_search_performance_scaling[100] PASSED [ 19%]
+test/performance/test_performance.py::TestScalability::test_search_performance_scaling[500] PASSED [ 19%]
+test/performance/test_performance.py::TestScalability::test_calculation_complexity[1] PASSED [ 19%]
+test/performance/test_performance.py::TestScalability::test_calculation_complexity[2] PASSED [ 19%]
+test/performance/test_performance.py::TestScalability::test_calculation_complexity[3] PASSED [ 20%]
+test/performance/test_performance.py::TestScalability::test_database_query_optimization PASSED [ 20%]
+test/performance/test_performance_comparison.py::TestPerformanceComparison::test_facturas_performance_comparison PASSED [ 20%]
+test/performance/test_performance_comparison.py::TestPerformanceComparison::test_stock_performance_comparison PASSED [ 20%]
+test/performance/test_performance_comparison.py::TestPerformanceComparison::test_productos_with_stock_performance PASSED [ 21%]
+test/performance/test_performance_comparison.py::TestPerformanceComparison::test_cache_performance PASSED [ 21%]
+test/performance/test_performance_comparison.py::TestPerformanceComparison::test_memory_usage_comparison PASSED [ 21%]
+test/property_based/test_property_based.py::TestPropertyBased::test_precio_always_positive PASSED [ 22%]
+test/property_based/test_property_based.py::TestPropertyBased::test_iva_within_bounds PASSED [ 22%]
+test/property_based/test_property_based.py::TestPropertyBased::test_nombre_not_empty_after_strip PASSED [ 22%]
+test/property_based/test_property_based.py::TestPropertyBased::test_referencia_uniqueness_property PASSED [ 22%]
+test/property_based/test_property_based.py::TestPropertyBased::test_precio_con_iva_calculation_property PASSED [ 23%]
+test/property_based/test_property_based.py::TestPropertyBased::test_stock_never_negative PASSED [ 23%]
+test/property_based/test_property_based.py::TestPropertyBased::test_factura_total_sum_property PASSED [ 23%]
+test/property_based/test_property_based.py::TestPropertyBased::test_descripcion_length_property PASSED [ 23%]
+test/property_based/test_property_based.py::TestPropertyBasedAdvanced::test_multiple_productos_property PASSED [ 24%]
+test/property_based/test_property_based.py::TestPropertyBasedAdvanced::test_discount_calculation_property PASSED [ 24%]
+test/property_based/test_property_based.py::TestPropertyBasedAdvanced::test_line_total_calculation_property PASSED [ 24%]
+test/property_based/test_property_based.py::TestPropertyBasedAdvanced::test_producto_creation_with_examples PASSED [ 24%]
+test/property_based/test_property_based.py::TestStatefulTesting::test_stock_operations_sequence PASSED [ 25%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_column_exists_in_table_headers PASSED [ 25%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_column_resize_mode_configured PASSED [ 25%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_combo_exists_in_form PASSED [ 25%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_combo_placeholder_configured PASSED [ 26%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_data_flow_in_table_update PASSED [ 26%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_categoria_combo_loads_existing_categories PASSED [ 26%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_no_default_categories_regression PASSED [ 27%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_table_headers_order_regression PASSED [ 27%]
+test/regression/test_categoria_display_regression.py::TestCategoriaDisplayRegression::test_all_columns_resize_modes_configured PASSED [ 27%]
+test/regression/test_nueva_factura_positioning.py::TestNuevaFacturaPositioningRegression::test_regression_nueva_factura_never_behind PASSED [ 27%]
+test/regression/test_nueva_factura_positioning.py::TestNuevaFacturaPositioningRegression::test_regression_multiple_attempts PASSED [ 28%]
+test/regression/test_nueva_factura_positioning.py::TestNuevaFacturaPositioningRegression::test_regression_with_window_manager_interference PASSED [ 28%]
+test/regression/test_nueva_factura_positioning.py::TestNuevaFacturaPositioningRegression::test_regression_solution_components PASSED [ 28%]
+test/regression/test_nueva_factura_positioning.py::TestNuevaFacturaPositioningRegression::test_regression_timing_stability PASSED [ 28%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_crear_factura_dialog_can_be_created PASSED [ 29%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_crear_factura_dialog_inherits_mixin PASSED [ 29%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_dialog_foreground_mixin_exists PASSED [ 29%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_editar_factura_dialog_can_be_created PASSED [ 29%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_editar_factura_dialog_inherits_mixin PASSED [ 30%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_force_dialog_to_foreground_function_exists PASSED [ 30%]
+test/regression/test_ventana_primer_plano_regression.py::TestVentanaPrimerPlanoRegression::test_regression_problema_original PASSED [ 30%]
+test/regression/test_ventana_primer_plano_regression.py::test_regression_integration PASSED [ 31%]
+test/test_logo_resilience.py::test_missing_logo_recovery PASSED          [ 31%]
+test/test_logo_resilience.py::test_no_logos_available PASSED             [ 31%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionWithInvoices::test_client_deletion_without_invoices PASSED [ 31%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionWithInvoices::test_client_window_initialization PASSED [ 32%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionWithInvoices::test_database_constraint_prevents_deletion PASSED [ 32%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionWithInvoices::test_invoice_count_verification PASSED [ 32%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionWithInvoices::test_multiple_invoice_deletion PASSED [ 32%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionUI::test_dialog_creation PASSED [ 33%]
+test/unit/test_client_deletion_with_invoices.py::TestClientDeletionUI::test_method_signatures PASSED [ 33%]
+test/unit/test_database.py::TestDatabase::test_database_initialization PASSED [ 33%]
+test/unit/test_database.py::TestDatabase::test_database_tables_creation PASSED [ 33%]
+test/unit/test_database.py::TestDatabase::test_productos_table_structure PASSED [ 34%]
+test/unit/test_database.py::TestDatabase::test_execute_query_select PASSED [ 34%]
+test/unit/test_database.py::TestDatabase::test_execute_query_insert PASSED [ 34%]
+test/unit/test_database.py::TestDatabase::test_execute_query_update PASSED [ 35%]
+test/unit/test_database.py::TestDatabase::test_execute_query_delete PASSED [ 35%]
+test/unit/test_database.py::TestDatabase::test_get_next_factura_number PASSED [ 35%]
+test/unit/test_database.py::TestDatabase::test_database_connection_error_handling PASSED [ 35%]
+test/unit/test_database.py::TestDatabase::test_database_performance PASSED [ 36%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_temp_db_isolation PASSED [ 36%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_temp_db_isolation_second_test PASSED [ 36%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_isolated_db_fixture PASSED [ 36%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_clean_db_fixture PASSED [ 37%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_isolated_environment_context_manager PASSED [ 37%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_database_manager_stats PASSED [ 37%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_database_reset_functionality PASSED [ 37%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_concurrent_database_isolation PASSED [ 38%]
+test/unit/test_database_isolation.py::TestDatabaseIsolation::test_database_path_uniqueness PASSED [ 38%]
+test/unit/test_ejemplos_validacion_facturas.py::test_ejemplos_validacion_facturas PASSED [ 38%]
+test/unit/test_factura_models.py::TestFacturaModel::test_factura_creation PASSED [ 38%]
+test/unit/test_factura_models.py::TestFacturaModel::test_factura_save_and_retrieve PASSED [ 39%]
+test/unit/test_factura_models.py::TestFacturaModel::test_factura_get_all PASSED [ 39%]
+test/unit/test_factura_models.py::TestFacturaModel::test_factura_delete PASSED [ 39%]
+test/unit/test_factura_models.py::TestFacturaModel::test_factura_calculate_totals PASSED [ 40%]
+test/unit/test_factura_models.py::TestFacturaModel::test_get_next_numero PASSED [ 40%]
+test/unit/test_factura_models.py::TestFacturaItemModel::test_factura_item_creation PASSED [ 40%]
+test/unit/test_factura_models.py::TestFacturaItemModel::test_factura_item_calculate_totals PASSED [ 40%]
+test/unit/test_factura_models.py::TestFacturaItemModel::test_factura_item_no_discount PASSED [ 41%]
+test/unit/test_factura_models.py::TestFacturaItemModel::test_factura_item_save_and_retrieve PASSED [ 41%]
+test/unit/test_file_manager.py::test_file_manager_basic PASSED           [ 41%]
+test/unit/test_file_manager.py::test_image_file_manager PASSED           [ 41%]
+test/unit/test_file_manager.py::test_logo_manager_refactored PASSED      [ 42%]
+test/unit/test_logging_system.py::test_logger_creation PASSED            [ 42%]
+test/unit/test_logging_system.py::test_module_loggers PASSED             [ 42%]
+test/unit/test_logging_system.py::test_logging_functions PASSED          [ 42%]
+test/unit/test_logging_system.py::test_log_file_content PASSED           [ 43%]
+test/unit/test_logging_system.py::test_log_rotation PASSED               [ 43%]
+test/unit/test_logging_system.py::test_session_logger PASSED             [ 43%]
+test/unit/test_models.py::TestProducto::test_producto_creation PASSED    [ 44%]
+test/unit/test_models.py::TestProducto::test_producto_creation_with_defaults PASSED [ 44%]
+test/unit/test_models.py::TestProducto::test_producto_save_new PASSED    [ 44%]
+test/unit/test_models.py::TestProducto::test_producto_save_existing PASSED [ 44%]
+test/unit/test_models.py::TestProducto::test_producto_delete PASSED      [ 45%]
+test/unit/test_models.py::TestProducto::test_producto_get_all PASSED     [ 45%]
+test/unit/test_models.py::TestProducto::test_producto_get_by_id PASSED   [ 45%]
+test/unit/test_models.py::TestProducto::test_producto_get_by_id_not_found PASSED [ 45%]
+test/unit/test_models.py::TestProducto::test_producto_unique_referencia PASSED [ 46%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_creation PASSED [ 46%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_creation_with_defaults PASSED [ 46%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_save_new PASSED [ 46%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_save_update PASSED [ 47%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_get PASSED [ 47%]
+test/unit/test_models.py::TestOrganizacion::test_organizacion_get_empty PASSED [ 47%]
+test/unit/test_models.py::TestStock::test_stock_creation PASSED          [ 48%]
+test/unit/test_models.py::TestStock::test_stock_creation_with_defaults PASSED [ 48%]
+test/unit/test_models.py::TestStock::test_stock_create_for_product PASSED [ 48%]
+test/unit/test_models.py::TestStock::test_stock_get_by_product PASSED    [ 48%]
+test/unit/test_models.py::TestStock::test_stock_get_by_product_not_found PASSED [ 49%]
+test/unit/test_models.py::TestStock::test_stock_update_stock PASSED      [ 49%]
+test/unit/test_models.py::TestStock::test_stock_update_stock_negative_allowed PASSED [ 49%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_precio_con_iva_calculation[100.0-21.0-121.0] PASSED [ 49%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_precio_con_iva_calculation[50.0-10.0-55.0] PASSED [ 50%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_precio_con_iva_calculation[25.5-4.0-26.52] PASSED [ 50%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_precio_con_iva_calculation[0.0-21.0-0.0] PASSED [ 50%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_precio_con_iva_calculation[999.99-0.0-999.99] PASSED [ 50%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[PROD001-True] PASSED [ 51%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[TEST-123-True] PASSED [ 51%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[ABC_456-True] PASSED [ 51%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[-False] PASSED [ 51%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[   -False] PASSED [ 52%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[PROD 001-True] PASSED [ 52%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_referencia_validation[TR\xc8S-LONG-R\xc9F\xc9RENCE-QUI-D\xc9PASSE-LIMITE-True] PASSED [ 52%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Electr\xf3nicos] PASSED [ 53%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Ropa y Accesorios] PASSED [ 53%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Hogar y Jard\xedn] PASSED [ 53%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Deportes] PASSED [ 53%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Libros] PASSED [ 54%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Alimentaci\xf3n] PASSED [ 54%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_categorias_validas[Salud y Belleza] PASSED [ 54%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_iva_rates_spain[0] PASSED [ 54%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_iva_rates_spain[4] PASSED [ 55%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_iva_rates_spain[10] PASSED [ 55%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_iva_rates_spain[21] PASSED [ 55%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_translations_quality[app_title-str-5] PASSED [ 55%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_translations_quality[productos-str-3] PASSED [ 56%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_translations_quality[nueva_factura-str-5] PASSED [ 56%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_translations_quality[confirmar_eliminacion-str-10] PASSED [ 56%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_translations_quality[campo_requerido-str-5] PASSED [ 57%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_calcul_ligne_factura[10.0-1-0-10.0] PASSED [ 57%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_calcul_ligne_factura[10.0-2-0-20.0] PASSED [ 57%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_calcul_ligne_factura[10.0-1-10-9.0] PASSED [ 57%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_calcul_ligne_factura[100.0-3-15-255.0] PASSED [ 58%]
+test/unit/test_parametrized.py::TestParametrizedAdvanced::test_calcul_ligne_factura[50.0-0-0-0.0] PASSED [ 58%]
+test/unit/test_parametrized.py::TestDataCombinations::test_producto_combinations[Laptop Dell-DELL-001] PASSED [ 58%]
+test/unit/test_parametrized.py::TestDataCombinations::test_producto_combinations[iPhone 15-APPLE-IP15] PASSED [ 58%]
+test/unit/test_parametrized.py::TestDataCombinations::test_producto_combinations[Mesa de Oficina-OFFICE-DESK] PASSED [ 59%]
+test/unit/test_parametrized.py::TestDataCombinations::test_producto_combinations[Caf\xe9 Colombiano-CAFE-COL] PASSED [ 59%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[10.0-0] PASSED [ 59%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[10.0-4] PASSED [ 59%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[10.0-10] PASSED [ 60%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[10.0-21] PASSED [ 60%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[25.5-0] PASSED [ 60%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[25.5-4] PASSED [ 61%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[25.5-10] PASSED [ 61%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[25.5-21] PASSED [ 61%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[100.0-0] PASSED [ 61%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[100.0-4] PASSED [ 62%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[100.0-10] PASSED [ 62%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[100.0-21] PASSED [ 62%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[999.99-0] PASSED [ 62%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[999.99-4] PASSED [ 63%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[999.99-10] PASSED [ 63%]
+test/unit/test_parametrized.py::TestDataCombinations::test_all_precio_iva_combinations[999.99-21] PASSED [ 63%]
+test/unit/test_parametrized.py::TestEdgeCases::test_precio_edge_cases[0.01] PASSED [ 63%]
+test/unit/test_parametrized.py::TestEdgeCases::test_precio_edge_cases[999999.99] PASSED [ 64%]
+test/unit/test_parametrized.py::TestEdgeCases::test_precio_edge_cases[0.001] PASSED [ 64%]
+test/unit/test_parametrized.py::TestEdgeCases::test_precio_edge_cases[1e-10] PASSED [ 64%]
+test/unit/test_parametrized.py::TestEdgeCases::test_precio_edge_cases[10000000000.0] PASSED [ 64%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xf1] PASSED [ 65%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xe1] PASSED [ 65%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xe9] PASSED [ 65%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xed] PASSED [ 66%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xf3] PASSED [ 66%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xfa] PASSED [ 66%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xfc] PASSED [ 66%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xd1] PASSED [ 67%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\u20ac] PASSED [ 67%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xa3] PASSED [ 67%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[$] PASSED [ 67%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xa5] PASSED [ 68%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xa9] PASSED [ 68%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\xae] PASSED [ 68%]
+test/unit/test_parametrized.py::TestEdgeCases::test_special_characters_handling[\u2122] PASSED [ 68%]
+test/unit/test_parametrized.py::TestEdgeCases::test_long_descriptions[100] PASSED [ 69%]
+test/unit/test_parametrized.py::TestEdgeCases::test_long_descriptions[500] PASSED [ 69%]
+test/unit/test_parametrized.py::TestEdgeCases::test_long_descriptions[1000] PASSED [ 69%]
+test/unit/test_parametrized.py::TestEdgeCases::test_long_descriptions[2000] PASSED [ 70%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_bulk_product_creation[10] PASSED [ 70%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_bulk_product_creation[100] PASSED [ 70%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_bulk_product_creation[500] PASSED [ 70%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_search_performance[Producto-0] PASSED [ 71%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_search_performance[BULK-0] PASSED [ 71%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_search_performance[001-0] PASSED [ 71%]
+test/unit/test_parametrized.py::TestPerformanceParametrized::test_search_performance[NonExistent-0] PASSED [ 71%]
+test/unit/test_pdf_logo.py::TestPDFLogo::test_pdf_with_logo PASSED       [ 72%]
+test/unit/test_pdf_logo.py::TestPDFLogo::test_pdf_without_logo PASSED    [ 72%]
+test/unit/test_pdf_logo.py::TestPDFLogo::test_create_logo_image_method PASSED [ 72%]
+test/unit/test_pdf_no_open.py::TestPDFNoOpen::test_environment_variables_set PASSED [ 72%]
+test/unit/test_pdf_no_open.py::TestPDFNoOpen::test_pdf_generation_without_opening PASSED [ 73%]
+test/unit/test_pdf_no_open.py::TestPDFNoOpen::test_pdf_generator_respects_environment PASSED [ 73%]
+test/unit/test_pdf_no_open.py::TestPDFNoOpen::test_manual_disable_pdf_open PASSED [ 73%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_productos_disponibles_estructura PASSED [ 74%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_formato_combo_productos PASSED [ 74%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_precio_venta_vs_precio PASSED [ 74%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_carga_productos_en_combo_mock PASSED [ 74%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_productos_sin_stock PASSED [ 75%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_productos_vacios_base_datos PASSED [ 75%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_manejo_errores_carga_productos PASSED [ 75%]
+test/unit/test_productos_factura.py::TestProductosFactura::test_productos_reales_disponibles PASSED [ 75%]
+test/unit/test_pytest_markers.py::test_pytest_markers_configuration PASSED [ 76%]
+test/unit/test_pytest_markers.py::test_pytest_ini_file_exists PASSED     [ 76%]
+test/unit/test_pytest_markers.py::test_coveragerc_file_exists PASSED     [ 76%]
+test/unit/test_pytest_markers.py::test_slow_marker_no_warnings PASSED    [ 76%]
+test/unit/test_safe_organizacion_defaults.py::TestOrganizacionDefaults::test_organizacion_get_with_empty_database_returns_defaults FAILED [ 77%]
+test/unit/test_safe_organizacion_defaults.py::TestOrganizacionDefaults::test_organizacion_get_with_existing_data_preserves_values PASSED [ 77%]
+test/unit/test_safe_organizacion_defaults.py::TestOrganizacionDefaults::test_config_has_organizacion_defaults PASSED [ 77%]
+test/unit/test_safe_organizacion_defaults.py::TestOrganizacionDefaults::test_default_directories_are_valid_paths PASSED [ 77%]
+test/unit/test_scroll_functionality.py::TestScrollableMixin::test_get_scrollable_layout PASSED [ 78%]
+test/unit/test_scroll_functionality.py::TestScrollableMixin::test_scrollable_mixin_initialization PASSED [ 78%]
+test/unit/test_scroll_functionality.py::TestScrollableMixin::test_setup_scrollable_content PASSED [ 78%]
+test/unit/test_scroll_functionality.py::TestScrollableMixin::test_wheel_event_handling PASSED [ 79%]
+test/unit/test_scroll_functionality.py::TestBasePyQt5WindowScroll::test_base_window_with_scroll_disabled PASSED [ 79%]
+test/unit/test_scroll_functionality.py::TestBasePyQt5WindowScroll::test_base_window_with_scroll_enabled PASSED [ 79%]
+test/unit/test_scroll_functionality.py::TestBasePyQt5WindowScroll::test_enable_window_scroll_method PASSED [ 79%]
+test/unit/test_scroll_functionality.py::TestBasePyQt5WindowScroll::test_get_content_layout_with_scroll PASSED [ 80%]
+test/unit/test_scroll_functionality.py::TestBasePyQt5WindowScroll::test_get_content_layout_without_scroll PASSED [ 80%]
+test/unit/test_scroll_functionality.py::TestScrollIntegration::test_scroll_mixin_integration PASSED [ 80%]
+test/unit/test_security.py::TestSQLInjectionPrevention::test_producto_name_sql_injection_attempt PASSED [ 80%]
+test/unit/test_security.py::TestSQLInjectionPrevention::test_referencia_sql_injection_attempt PASSED [ 81%]
+test/unit/test_security.py::TestSQLInjectionPrevention::test_organization_data_sql_injection PASSED [ 81%]
+test/unit/test_security.py::TestSQLInjectionPrevention::test_search_sql_injection_simulation PASSED [ 81%]
+test/unit/test_security.py::TestInputValidation::test_invalid_precio_handling[-1.0] PASSED [ 81%]
+test/unit/test_security.py::TestInputValidation::test_invalid_precio_handling[-999.99] PASSED [ 82%]
+test/unit/test_security.py::TestInputValidation::test_invalid_precio_handling[inf] PASSED [ 82%]
+test/unit/test_security.py::TestInputValidation::test_invalid_precio_handling[-inf] PASSED [ 82%]
+test/unit/test_security.py::TestInputValidation::test_invalid_iva_handling[-5.0] PASSED [ 83%]
+test/unit/test_security.py::TestInputValidation::test_invalid_iva_handling[150.0] PASSED [ 83%]
+test/unit/test_security.py::TestInputValidation::test_invalid_iva_handling[nan] PASSED [ 83%]
+test/unit/test_security.py::TestInputValidation::test_empty_required_fields PASSED [ 83%]
+test/unit/test_security.py::TestInputValidation::test_extremely_long_inputs PASSED [ 84%]
+test/unit/test_security.py::TestInputValidation::test_unicode_and_special_characters PASSED [ 84%]
+test/unit/test_security.py::TestDataIntegrity::test_referencia_uniqueness_constraint PASSED [ 84%]
+test/unit/test_security.py::TestDataIntegrity::test_foreign_key_integrity PASSED [ 84%]
+test/unit/test_security.py::TestDataIntegrity::test_data_consistency_after_operations PASSED [ 85%]
+test/unit/test_security.py::TestDataIntegrity::test_transaction_rollback_simulation PASSED [ 85%]
+test/unit/test_security.py::TestAccessControl::test_read_only_operations_safety PASSED [ 85%]
+test/unit/test_security.py::TestAccessControl::test_data_modification_tracking PASSED [ 85%]
+test/unit/test_stock_models.py::test_stock_models PASSED                 [ 86%]
+test/unit/test_translations.py::TestTranslations::test_get_text_existing_key PASSED [ 86%]
+test/unit/test_translations.py::TestTranslations::test_get_text_non_existing_key PASSED [ 86%]
+test/unit/test_translations.py::TestTranslations::test_get_text_empty_key PASSED [ 87%]
+test/unit/test_translations.py::TestTranslations::test_get_text_none_key PASSED [ 87%]
+test/unit/test_translations.py::TestTranslations::test_all_main_sections_have_translations PASSED [ 87%]
+test/unit/test_translations.py::TestTranslations::test_producto_fields_have_translations PASSED [ 87%]
+test/unit/test_translations.py::TestTranslations::test_organizacion_fields_have_translations PASSED [ 88%]
+test/unit/test_translations.py::TestTranslations::test_factura_fields_have_translations PASSED [ 88%]
+test/unit/test_translations.py::TestTranslations::test_button_texts_have_translations PASSED [ 88%]
+test/unit/test_translations.py::TestTranslations::test_message_texts_have_translations PASSED [ 88%]
+test/unit/test_translations.py::TestTranslations::test_payment_methods_have_translations PASSED [ 89%]
+test/unit/test_translations.py::TestTranslations::test_translations_are_in_spanish PASSED [ 89%]
+test/unit/test_translations.py::TestTranslations::test_no_empty_translations PASSED [ 89%]
+test/unit/test_translations.py::TestTranslations::test_translations_consistency PASSED [ 89%]
+test/unit/test_translations.py::TestTranslations::test_special_characters_in_translations PASSED [ 90%]
+test/unit/test_translations.py::TestTranslations::test_translation_types[app_title-str] PASSED [ 90%]
+test/unit/test_translations.py::TestTranslations::test_translation_types[productos-str] PASSED [ 90%]
+test/unit/test_translations.py::TestTranslations::test_translation_types[precio-str] PASSED [ 90%]
+test/unit/test_translations.py::TestTranslations::test_translation_types[guardar-str] PASSED [ 91%]
+test/unit/test_translations.py::TestTranslations::test_translation_types[error-str] PASSED [ 91%]
+test/unit/test_validacion_facturas_opcional.py::test_validacion_facturas_opcional PASSED [ 91%]
+test/unit/test_validate_form.py::test_validate_form_directly PASSED      [ 92%]
+test/unit/test_validate_form.py::test_translations_used_in_validate PASSED [ 92%]
+test/unit/test_validate_form.py::test_join_operation PASSED              [ 92%]
+test/unit/test_validate_form.py::test_mock_behavior PASSED               [ 92%]
+test/unit/test_validators.py::TestFormValidator::test_validate_required_field_valid PASSED [ 93%]
+test/unit/test_validators.py::TestFormValidator::test_validate_required_field_empty PASSED [ 93%]
+test/unit/test_validators.py::TestFormValidator::test_validate_required_field_whitespace PASSED [ 93%]
+test/unit/test_validators.py::TestFormValidator::test_validate_required_field_none PASSED [ 93%]
+test/unit/test_validators.py::TestFormValidator::test_validate_precio_valid PASSED [ 94%]
+test/unit/test_validators.py::TestFormValidator::test_validate_precio_invalid PASSED [ 94%]
+test/unit/test_validators.py::TestFormValidator::test_validate_cantidad_valid PASSED [ 94%]
+test/unit/test_validators.py::TestFormValidator::test_validate_cantidad_invalid PASSED [ 94%]
+test/unit/test_validators.py::TestFormValidator::test_validate_iva_valid PASSED [ 95%]
+test/unit/test_validators.py::TestFormValidator::test_validate_iva_invalid PASSED [ 95%]
+test/unit/test_validators.py::TestFormValidator::test_validate_email_valid PASSED [ 95%]
+test/unit/test_validators.py::TestFormValidator::test_validate_email_invalid PASSED [ 96%]
+test/unit/test_validators.py::TestFormValidator::test_validate_phone_valid PASSED [ 96%]
+test/unit/test_validators.py::TestFormValidator::test_validate_phone_invalid PASSED [ 96%]
+test/unit/test_validators.py::TestFormValidator::test_validate_dni_nie_valid PASSED [ 96%]
+test/unit/test_validators.py::TestFormValidator::test_validate_dni_nie_invalid PASSED [ 97%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_iva_amount PASSED [ 97%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_iva_amount_invalid_input PASSED [ 97%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_precio_con_iva PASSED [ 97%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_line_total_basic PASSED [ 98%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_line_total_with_discount PASSED [ 98%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_line_total_complex PASSED [ 98%]
+test/unit/test_validators.py::TestCalculationHelper::test_calculate_line_total_invalid_input PASSED [ 98%]
+test/unit/test_validators.py::TestCalculationHelper::test_format_currency PASSED [ 99%]
+test/unit/test_validators.py::TestCalculationHelper::test_format_currency_invalid_input PASSED [ 99%]
+test/unit/test_validators.py::TestCalculationHelper::test_format_percentage PASSED [ 99%]
+test/unit/test_validators.py::TestCalculationHelper::test_format_percentage_invalid_input PASSED [100%]
+
+=================================== FAILURES ===================================
+_ TestOrganizacionDefaults.test_organizacion_get_with_empty_database_returns_defaults _
+test/unit/test_safe_organizacion_defaults.py:43: in test_organizacion_get_with_empty_database_returns_defaults
+    results = self.test_db.execute_query("SELECT COUNT(*) FROM organizacion")
+              ^^^^^^^^^^^^
+E   AttributeError: 'TestOrganizacionDefaults' object has no attribute 'test_db'
+---------------------------- Captured stdout setup -----------------------------
+DEBUG: Columna referencia encontrada: (2, 'referencia', 'TEXT', 0, None, 0)
+DEBUG: Referencia déjà optionnelle, migration non nécessaire
+17:14:20 - INFO - Estados de factura por defecto inicializados
+------------------------------ Captured log setup ------------------------------
+INFO     facturacion_facil.database:database.py:359 Estados de factura por defecto inicializados
+DEBUG    facturacion_facil.test_database_manager:test_database_manager.py:53 Base de données de test créée: test_test_organizacion_get_with_empty_database_returns_defaults_vr7nur6l.db
+DEBUG    facturacion_facil.test_database_manager:test_database_manager.py:78 Répertoire de test créé: test_test_organizacion_get_with_empty_database_returns_defaults_assets_xxerwldu
+---------------------------- Captured log teardown -----------------------------
+DEBUG    facturacion_facil.test_database_manager:test_database_manager.py:98 Base de données supprimée: test_test_organizacion_get_with_empty_database_returns_defaults_vr7nur6l.db
+DEBUG    facturacion_facil.test_database_manager:test_database_manager.py:109 Répertoire supprimé: test_test_organizacion_get_with_empty_database_returns_defaults_assets_xxerwldu
+=============================== warnings summary ===============================
+integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_dialog_creation
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_dialog_creation returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_organization_window_button
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_organization_window_button returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_database_stats_loading
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_data_cleanup_integration.py::TestDataCleanupIntegration::test_database_stats_loading returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_imports
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_imports returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_database_tables
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_database_tables returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_factura_model
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_factura_model returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_validators
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_validators returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_translations
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_translations returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_facturas_implementation.py::test_ui_components
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_facturas_implementation.py::test_ui_components returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_global_todas_correcciones.py::test_global_todas_correcciones
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_global_todas_correcciones.py::test_global_todas_correcciones returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_global_todas_correcciones.py::test_aplicacion_completa
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_global_todas_correcciones.py::test_aplicacion_completa returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_pdf_download_feature.py::test_pdf_download_feature
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_pdf_download_feature.py::test_pdf_download_feature returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+integration/test_visor_pdf_personalizado.py::test_visor_pdf_personalizado
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but integration/test_visor_pdf_personalizado.py::test_visor_pdf_personalizado returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+regression/test_ventana_primer_plano_regression.py::test_regression_integration
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but regression/test_ventana_primer_plano_regression.py::test_regression_integration returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+test_logo_resilience.py::test_missing_logo_recovery
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but test_logo_resilience.py::test_missing_logo_recovery returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+test_logo_resilience.py::test_no_logos_available
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but test_logo_resilience.py::test_no_logos_available returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_ejemplos_validacion_facturas.py::test_ejemplos_validacion_facturas
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_ejemplos_validacion_facturas.py::test_ejemplos_validacion_facturas returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_file_manager.py::test_file_manager_basic
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_file_manager.py::test_file_manager_basic returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_file_manager.py::test_image_file_manager
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_file_manager.py::test_image_file_manager returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_file_manager.py::test_logo_manager_refactored
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_file_manager.py::test_logo_manager_refactored returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_logger_creation
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_logger_creation returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_module_loggers
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_module_loggers returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_logging_functions
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_logging_functions returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_log_file_content
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_log_file_content returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_log_rotation
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_log_rotation returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_logging_system.py::test_session_logger
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_logging_system.py::test_session_logger returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_pytest_markers.py::test_pytest_markers_configuration
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_pytest_markers.py::test_pytest_markers_configuration returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_pytest_markers.py::test_pytest_ini_file_exists
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_pytest_markers.py::test_pytest_ini_file_exists returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_pytest_markers.py::test_coveragerc_file_exists
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_pytest_markers.py::test_coveragerc_file_exists returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_pytest_markers.py::test_slow_marker_no_warnings
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_pytest_markers.py::test_slow_marker_no_warnings returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_validacion_facturas_opcional.py::test_validacion_facturas_opcional
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_validacion_facturas_opcional.py::test_validacion_facturas_opcional returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_validate_form.py::test_validate_form_directly
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_validate_form.py::test_validate_form_directly returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_validate_form.py::test_translations_used_in_validate
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_validate_form.py::test_translations_used_in_validate returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_validate_form.py::test_join_operation
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_validate_form.py::test_join_operation returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+unit/test_validate_form.py::test_mock_behavior
+  /home/pascal/.pyenv/versions/3.13.7/lib/python3.13/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but unit/test_validate_form.py::test_mock_behavior returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform linux, python 3.13.7-final-0 -----------
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+build_exe.py                                 112    112     0%   8-183
+check_codificacion_tutorial_links.py          63     63     0%   6-96
+check_tutorial_links.py                       55     55     0%   7-86
+common/__init__.py                             0      0   100%
+common/treeview_sorter.py                     34     34     0%   7-61
+common/ui_components.py                        4      0   100%
+common/ui_components_abstract.py             211    176    17%   20-34, 39-48, 53-67, 72-86, 91-101, 106-116, 122-138, 142-146, 150-157, 161-165, 169-174, 180-186, 190-231, 235-279, 283-286, 290-310
+common/validators.py                         123      5    96%   68, 100, 105, 153-154
+config/__init__.py                             3      0   100%
+config/config.py                             116     57    51%   46-49, 61-68, 72-78, 82-88, 96-97, 101-106, 110-113, 117, 121, 125, 130, 134-137, 141, 145, 149, 153, 173-180, 184-187, 191, 195, 203, 207, 211, 215, 219
+convert_to_pyqt5.py                           45     45     0%   6-116
+create_test_products.py                       39     39     0%   7-102
+database/__init__.py                           0      0   100%
+database/database.py                         727    460    37%   107-170, 174-178, 189-222, 361-362, 412-413, 420-429, 473-475, 479-501, 505-536, 540-567, 576-635, 643-686, 690-692, 696-707, 711-740, 773-775, 779-810, 814-826, 843-852, 857-859, 884-886, 890-918, 922-955, 959-985, 1010-1012, 1020-1057, 1091, 1119-1123, 1127-1129, 1133-1243, 1247-1276, 1280-1325, 1329-1373, 1377-1413, 1430-1436, 1457-1459, 1463-1475, 1507-1509, 1513-1554, 1558-1571, 1575-1601, 1640-1642, 1646-1677, 1681-1713
+database/database_context_manager.py         108     73    32%   48-57, 66-76, 80-116, 120-132, 136-144, 152-155, 159-162
+database/database_improved.py                142     88    38%   40-42, 171-212, 216-231, 248, 266-268, 284-286, 290-336, 340-363, 368-389, 393-405
+database/migration_manager.py                145     69    52%   37-41, 54-56, 73-75, 85-106, 118-119, 124-125, 144, 153-158, 162-194, 205-209, 213-232, 247-248, 253
+database/models.py                           338    123    64%   3, 12-16, 21, 28-30, 33, 36, 47, 50, 60, 63, 73, 76, 90, 102-106, 113, 121-132, 135, 147, 150, 161, 181-185, 194, 205-210, 215-227, 238-240, 243, 248-250, 253, 257, 262, 272-280, 288, 292-295, 298, 311, 314, 319, 323, 336, 339, 344, 348, 361, 364-366, 377, 383-397, 406-410, 419-421, 425, 428, 444, 459-461, 466-471, 477, 480, 485, 490-494, 504, 509, 511, 527, 530, 540, 544-547, 555-556, 559, 572-574, 589, 592, 595, 611-630
+database/optimized_models.py                 151    151     0%   7-379
+debug_categoria_combo.py                     107    107     0%   7-172
+debug_client_data.py                          65     65     0%   7-101
+debug_client_flow.py                         139    139     0%   7-217
+debug_database_categoria.py                  104    104     0%   7-162
+debug_eliminar_issue.py                      105    105     0%   7-166
+debug_main_window.py                          81     81     0%   7-155
+debug_organizacion_table.py                   63     63     0%   7-97
+debug_stock_inconsistencia.py                 93     93     0%   8-150
+demo_application_finale.py                   118    118     0%   7-143
+demo_categoria_resuelto.py                   119    119     0%   7-185
+demo_corrections_pdf.py                       69     69     0%   7-139
+demo_data_cleanup.py                          63     63     0%   8-90
+demo_relation_stocks_factures.py             114    114     0%   7-184
+demo_todo_editor.py                           54     54     0%   8-85
+disable_debug_messages.py                     47     47     0%   7-87
+finalize_stock_unification.py                135    135     0%   7-235
+fix_database_locks.py                        137    137     0%   8-229
+fix_debug_syntax_errors.py                    50     50     0%   7-110
+fix_interface_cache_problem.py               123    123     0%   7-191
+fix_pyqt5_signals.py                          31     31     0%   6-71
+fix_signal_usage.py                           29     29     0%   6-60
+fix_stock_sync_problema.py                   104    104     0%   10-174
+fix_sync_direct.py                            87     87     0%   7-146
+fix_tests_database_issues.py                 115    115     0%   9-232
+force_interface_refresh.py                    80     80     0%   7-165
+gui/__init__.py                               16      6    62%   20, 25-26, 31, 35-36
+gui/abstract_components.py                   130    130     0%   7-228
+gui/abstract_gui.py                           59     59     0%   7-187
+gui/gui_manager.py                            42     42     0%   7-71
+main.py                                       31     31     0%   9-65
+migrate_to_context_managers.py               100    100     0%   8-217
+migration_stock_safe.py                      188    188     0%   7-303
+refactor_stock_single_source.py              108    108     0%   7-229
+restore_and_migrate.py                       145    145     0%   7-240
+restore_missing_products.py                   86     86     0%   8-181
+run_nueva_factura_tests.py                    75     75     0%   8-137
+simulate_stock_problem.py                    111    111     0%   7-200
+test/__init__.py                               0      0   100%
+test/integration/__init__.py                   0      0   100%
+test/performance/__init__.py                   0      0   100%
+test/performance/benchmark_solution.py       220    220     0%   8-388
+test/property_based/__init__.py                0      0   100%
+test/regression/__init__.py                    0      0   100%
+test/unit/__init__.py                          0      0   100%
+test/validate_solution.py                    154    154     0%   8-256
+ui/__init__.py                                 0      0   100%
+ui/base_pyqt5_window.py                      101     19    81%   242-243, 267-275, 279, 283, 287, 291-296, 302, 307-314
+ui/client_autocomplete_widget.py             367    331    10%   26-43, 47-58, 62-63, 68-81, 85, 111-113, 117-136, 141-164, 168-213, 218-246, 250-342, 346, 350-356, 360-365, 376-382, 386-486, 490-558, 563-594, 598-608, 613-638, 656-683, 687-714, 718-726
+ui/clientes_pyqt5.py                         234    137    41%   152-154, 161-165, 169-174, 178-183, 187-193, 197-231, 235-271, 275-329, 333-349, 354-391
+ui/data_cleanup_dialog.py                    224    124    45%   26-29, 33-105, 121-124, 273-275, 279-295, 300-359, 363-364, 368-386, 391-404
+ui/facturas_methods.py                       228    151    34%   17-19, 23-33, 37-42, 46-51, 55-56, 60-65, 69-74, 78-83, 87-92, 96-101, 105-110, 114-119, 123-128, 132-137, 141-146, 155-156, 175, 185-187, 216-218, 224-225, 256-258, 268-304, 308-312, 316-320, 324-332, 336-354
+ui/facturas_pyqt5.py                        1360   1051    23%   36-49, 56-108, 112-144, 148-165, 170-182, 186, 250-273, 277-301, 305-328, 334-376, 380-402, 406-429, 433-452, 456-472, 477-492, 496-551, 555-557, 561-562, 566-567, 571-575, 579, 584-646, 650, 655-664, 668-672, 677, 681-689, 694-767, 771-780, 784-798, 802-807, 811-818, 822-835, 839-914, 918-957, 961-1067, 1071-1095, 1099-1129, 1133-1182, 1186-1239, 1243-1273, 1278-1352, 1356-1360, 1529-1543, 1554-1555, 1566-1567, 1581-1585, 1589-1628, 1632-1690, 1694-1710, 1714-1767, 1771-1774, 1778-1784, 1788-1833, 2012-2013, 2030-2031, 2035-2059, 2074-2078, 2084-2088, 2108-2118, 2124-2125, 2145-2147, 2158-2159, 2163-2212, 2216-2272, 2276-2292, 2300-2349, 2353-2356, 2370-2418, 2425-2435, 2439-2500
+ui/invoice_status_dialog_pyqt5.py            107    107     0%   7-229
+ui/main_window_pyqt5.py                      136    113    17%   27-42, 47-83, 88-124, 128-144, 148-155, 159-166, 170-177, 181-188, 192-193, 197-219, 223
+ui/organizacion_pyqt5.py                     485    213    56%   352-354, 433-474, 478-479, 483-484, 488-521, 525-543, 547-565, 569-587, 591, 596, 604, 610-639, 643-646, 652-690, 737-739, 743-754, 758-787, 791-825, 829-846, 850-867
+ui/product_autocomplete_widget.py            121     46    62%   89-91, 101-102, 118-120, 125-136, 140-141, 145-153, 157-175, 180, 203-204, 212-214, 218
+ui/productos_pyqt5.py                        326    174    47%   57-61, 217-219, 236-241, 246-304, 308, 312-320, 324-388, 392-404, 408-432, 441-442, 448-454, 458-468, 472-486, 490-498, 516-527, 531-555
+ui/scroll_mixin_pyqt5.py                      86     35    59%   44-45, 49-54, 71, 80-81, 89-90, 105-110, 117-125, 132, 144-153, 159-160, 164-166
+ui/stock_pyqt5.py                            134    115    14%   23-31, 36-65, 69-86, 90-122, 126-127, 131-136, 140-159, 163-167, 171-174, 178-210, 214-222
+ui/todo_editor_dialog.py                      89     35    61%   33-36, 124-131, 135-162, 170-186
+ui/widgets/__init__.py                         2      2     0%   6-8
+utils/__init__.py                              0      0   100%
+utils/apply_performance_optimizations.py     169    169     0%   7-373
+utils/auto_backup_system.py                  119    105    12%   16-18, 22-46, 50-62, 66-83, 87-113, 117-141, 145-169, 173-202
+utils/cleanup_test_pdfs.py                   110    110     0%   7-212
+utils/dialog_foreground.py                    99     99     0%   8-231
+utils/dialog_foreground_linux.py             116    101    13%   15-28, 32-41, 45-71, 84-130, 134-140, 144-166, 170-176, 181-189, 193-198, 203-220
+utils/dialog_simple_foreground.py             55     27    51%   49-50, 70-71, 75-88, 93-96, 100, 104-119
+utils/emergency_copyable_dialog.py            60     60     0%   8-147
+utils/event_manager_pyqt5.py                  44     18    59%   35-36, 40-41, 45-46, 50-51, 55-56, 60-61, 65-66, 70-71, 75-76
+utils/factura_numbering.py                   171    129    25%   34-42, 48, 56-71, 86-100, 107-136, 143-174, 192, 198-200, 206-220, 226-233, 240-251, 257, 268-283, 290-327
+utils/file_manager.py                        177    100    44%   42-43, 59-60, 64, 68, 80-85, 101-118, 132-146, 162-173, 186-218, 230-251, 262, 270, 285-286, 290-292, 298, 310-311, 315-328, 336-337
+utils/fix_missing_logo.py                     67     67     0%   8-109
+utils/image_manager.py                       133    133     0%   6-312
+utils/image_utils.py                          86     86     0%   4-173
+utils/invoice_status_manager.py               71     53    25%   22, 26-29, 33-36, 40-41, 45-46, 50-81, 85-97, 101, 105-106, 113-126
+utils/linux_window_manager.py                139    139     0%   8-214
+utils/logger.py                               92      8    91%   30, 86-88, 144, 177-179
+utils/logo_manager.py                         23      5    78%   45, 59-60, 72, 93
+utils/logo_persistence_fix.py                146    146     0%   7-249
+utils/logo_persistence_fix_simple.py         139    139     0%   7-240
+utils/pdf_generator.py                       233     50    79%   116-118, 136-140, 383-384, 406-424, 463-468, 531, 537-539, 565-567, 583-601
+utils/translations.py                          3      0   100%
+utils/window_manager.py                       74     74     0%   7-144
+validation_complete_2024.py                  109    109     0%   8-176
+validation_tests_integres.py                 126    126     0%   7-228
+verification_repertoire_pdf.py                50     50     0%   7-87
+web_app.py                                    28     28     0%   6-124
+------------------------------------------------------------------------
+TOTAL                                      12752  10021    21%
+Coverage HTML written to dir htmlcov
+
+17:14:28 - INFO - Toutes les ressources de test nettoyées
+
+------------------------------------------------------------------------------------------------------------------- benchmark: 13 tests --------------------------------------------------------------------------------------------------------------------
+Name (time in ns)                                    Min                        Max                       Mean                  StdDev                     Median                     IQR            Outliers              OPS            Rounds  Iterations
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+test_translation_lookup_benchmark                88.4650 (1.0)             336.1900 (1.0)              91.3023 (1.0)            6.6459 (1.0)              90.7200 (1.0)            1.1051 (1.0)      801;2374  10,952,626.8099 (1.0)       52285         200
+test_calculation_complexity[1]               16,350.9976 (184.83)       79,680.9909 (237.01)       17,128.7517 (187.60)     1,147.8344 (172.71)       16,981.9978 (187.19)       270.9858 (245.22)  1009;3163      58,381.3706 (0.01)      46662           1
+test_producto_creation_benchmark             25,799.0032 (291.63)      174,271.9905 (518.37)       28,878.4454 (316.29)     4,858.7529 (731.09)       27,853.0060 (307.02)     1,011.9693 (915.75)    469;711      34,627.9028 (0.00)       7287           1
+test_calculation_complexity[2]               32,792.0134 (370.68)      247,381.0164 (735.84)       33,906.8680 (371.37)     2,178.5770 (327.81)       33,673.9758 (371.19)       260.0136 (235.29)   493;2631      29,492.5500 (0.00)      26874           1
+test_calculation_complexity[3]               49,434.0202 (558.80)      214,467.9893 (637.94)       52,134.6319 (571.01)     4,446.5421 (669.07)       51,448.0053 (567.11)     1,303.0076 (>1000.0)   501;862      19,181.1079 (0.00)      17878           1
+test_database_query_optimization            167,890.0153 (>1000.0)     184,760.9819 (549.57)      172,912.0908 (>1000.0)    5,672.6851 (853.56)      170,509.4910 (>1000.0)    6,803.0204 (>1000.0)       2;0       5,783.2856 (0.00)         10           1
+test_producto_get_all_benchmark             177,757.9891 (>1000.0)     371,788.0172 (>1000.0)     186,022.0575 (>1000.0)   15,924.3493 (>1000.0)     181,715.9937 (>1000.0)    3,266.4975 (>1000.0)   271;673       5,375.7066 (0.00)       4695           1
+test_search_performance_scaling[10]         179,732.0147 (>1000.0)     418,848.0088 (>1000.0)     189,739.7712 (>1000.0)   18,331.1668 (>1000.0)     184,401.0112 (>1000.0)    3,957.0150 (>1000.0)   322;747       5,270.3763 (0.00)       4746           1
+test_producto_save_benchmark                228,494.9878 (>1000.0)     474,903.9945 (>1000.0)     241,662.2251 (>1000.0)   21,798.2762 (>1000.0)     235,027.9974 (>1000.0)    5,371.0100 (>1000.0)   125;258       4,138.0071 (0.00)       1748           1
+test_search_performance_scaling[100]        372,608.9781 (>1000.0)     566,146.9768 (>1000.0)     386,340.1124 (>1000.0)   15,138.3783 (>1000.0)     380,934.9728 (>1000.0)    7,304.0137 (>1000.0)   218;261       2,588.3929 (0.00)       2295           1
+test_stock_update_benchmark                 613,347.0160 (>1000.0)   1,032,084.9833 (>1000.0)     645,572.2456 (>1000.0)   47,304.5257 (>1000.0)     627,845.0019 (>1000.0)   24,912.7261 (>1000.0)   137;152       1,549.0133 (0.00)       1479           1
+test_search_performance_scaling[500]      1,238,997.9966 (>1000.0)   1,652,464.9982 (>1000.0)   1,262,579.5857 (>1000.0)   27,494.0264 (>1000.0)   1,256,351.0099 (>1000.0)   19,031.2494 (>1000.0)     53;36         792.0293 (0.00)        671           1
+test_bulk_operations_benchmark           48,108,412.0111 (>1000.0)  50,238,736.9925 (>1000.0)  49,006,748.9984 (>1000.0)  533,833.0666 (>1000.0)  48,984,544.4972 (>1000.0)  659,179.9902 (>1000.0)       4;0          20.4054 (0.00)         20           1
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
+=========================== short test summary info ============================
+FAILED test/unit/test_safe_organizacion_defaults.py::TestOrganizacionDefaults::test_organizacion_get_with_empty_database_returns_defaults
+================= 1 failed, 376 passed, 35 warnings in 45.29s ==================

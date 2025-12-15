@@ -1,9 +1,10 @@
 """
-Utilitaires pour la gestion des images dans l'application
+Utilitaires pour la gestion des images dans l'application - Version PyQt5
 """
 import os
-from PIL import Image, ImageTk
-import tkinter as tk
+from PIL import Image
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import QSize
 from utils.logger import get_logger
 
 class ImageUtils:
@@ -23,7 +24,7 @@ class ImageUtils:
             size (tuple): Taille désirée (largeur, hauteur)
 
         Returns:
-            ImageTk.PhotoImage: Image redimensionnée prête pour tkinter
+            QPixmap: Image redimensionnée prête pour PyQt5
             None: Si erreur ou image inexistante
         """
         logger = get_logger("image_utils")
@@ -33,17 +34,7 @@ class ImageUtils:
                 logger.debug(f"Image non trouvée: {image_path}")
                 return None
 
-            # Vérifier qu'il y a une fenêtre tkinter disponible
-            try:
-                import tkinter as tk
-                root = tk._default_root
-                if root is None:
-                    # Créer une fenêtre racine temporaire si nécessaire
-                    temp_root = tk.Tk()
-                    temp_root.withdraw()  # Cacher la fenêtre
-            except:
-                logger.debug("Pas de fenêtre tkinter disponible")
-                return None
+            # PyQt5 ne nécessite pas de vérification de fenêtre racine
 
             # Ouvrir et redimensionner l'image
             with Image.open(image_path) as img:
@@ -70,11 +61,16 @@ class ImageUtils:
 
                 final_img.paste(img, (x, y))
 
-                # Convertir pour tkinter
-                photo = ImageTk.PhotoImage(final_img)
+                # Convertir pour PyQt5
+                # Sauvegarder temporairement l'image pour la charger avec QPixmap
+                import tempfile
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
+                    final_img.save(tmp_file.name, 'PNG')
+                    pixmap = QPixmap(tmp_file.name)
+                    os.unlink(tmp_file.name)  # Supprimer le fichier temporaire
 
                 logger.debug(f"Mini image créée: {os.path.basename(image_path)} -> {size}")
-                return photo
+                return pixmap
 
         except Exception as e:
             logger.warning(f"Erreur lors de la création de mini image pour {image_path}: {e}")
@@ -90,29 +86,20 @@ class ImageUtils:
             text (str): Texte à afficher
 
         Returns:
-            ImageTk.PhotoImage: Image placeholder
+            QPixmap: Image placeholder pour PyQt5
         """
         try:
-            # Vérifier qu'il y a une fenêtre tkinter disponible
-            try:
-                import tkinter as tk
-                root = tk._default_root
-                if root is None:
-                    # Créer une fenêtre racine temporaire si nécessaire
-                    temp_root = tk.Tk()
-                    temp_root.withdraw()  # Cacher la fenêtre
-            except:
-                logger = get_logger("image_utils")
-                logger.debug("Pas de fenêtre tkinter disponible pour placeholder")
-                return None
-
             # Créer une image avec fond gris clair
             img = Image.new('RGB', size, (240, 240, 240))
 
-            # Pour l'instant, on retourne juste l'image unie
-            # On pourrait ajouter du texte avec PIL.ImageDraw si nécessaire
-            photo = ImageTk.PhotoImage(img)
-            return photo
+            # Convertir pour PyQt5
+            import tempfile
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
+                img.save(tmp_file.name, 'PNG')
+                pixmap = QPixmap(tmp_file.name)
+                os.unlink(tmp_file.name)  # Supprimer le fichier temporaire
+
+            return pixmap
 
         except Exception as e:
             logger = get_logger("image_utils")

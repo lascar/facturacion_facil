@@ -207,25 +207,34 @@ class ImageManager:
             self.logger.error(f"Erreur chargement image: {e}")
             return None
     
-    def get_cached_tkinter_image(self, image_path, size=None):
+    def get_cached_pyqt5_image(self, image_path, size=None):
         """
-        Obtenir une image Tkinter depuis le cache
-        
+        Obtenir une image PyQt5 depuis le cache
+
         Args:
             image_path (str): Chemin vers l'image
             size (tuple): Taille souhaitée (optionnel)
-            
+
         Returns:
-            ImageTk.PhotoImage: Image Tkinter, ou None si erreur
+            QPixmap: Image PyQt5, ou None si erreur
         """
         try:
+            from PyQt5.QtGui import QPixmap
+            from PyQt5.QtCore import QSize
+
             pil_image = self.get_cached_image(image_path, size)
             if pil_image:
-                return ImageTk.PhotoImage(pil_image)
+                # Convertir PIL vers QPixmap
+                import tempfile
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
+                    pil_image.save(tmp_file.name, 'PNG')
+                    pixmap = QPixmap(tmp_file.name)
+                    os.unlink(tmp_file.name)
+                return pixmap
             return None
-            
+
         except Exception as e:
-            self.logger.error(f"Erreur création image Tkinter: {e}")
+            self.logger.error(f"Erreur création image PyQt5: {e}")
             return None
     
     def create_placeholder_image(self, size=(64, 64), color='lightgray', text=None):

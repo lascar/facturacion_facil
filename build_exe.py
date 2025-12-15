@@ -17,7 +17,7 @@ def check_requirements():
     
     required_packages = [
         'pyinstaller',
-        'customtkinter',
+        'PyQt5',
         'pillow',
         'openpyxl',
         'reportlab'

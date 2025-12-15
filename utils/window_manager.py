@@ -1,96 +1,104 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gestionnaire de ventanas mejorado para evitar bloqueos y problemas de topmost
+Gestionnaire de ventanas mejorado para evitar bloqueos y problemas de topmost - Version PyQt5
 """
 
-import tkinter as tk
+from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtCore import Qt
 from utils.logger import get_logger
 
 class WindowManager:
-    """Gestiona ventanas de forma segura para evitar bloqueos"""
-    
+    """Gestiona ventanas PyQt5 de forma segura para evitar bloqueos"""
+
     def __init__(self):
         self.logger = get_logger("window_manager")
         self._topmost_windows = set()  # Ventanas que están en topmost
-        
+
     def make_window_visible(self, window, temporary_topmost=True, duration_ms=100):
         """
-        Hace que una ventana sea visible de forma segura
-        
+        Hace que una ventana PyQt5 sea visible de forma segura
+
         Args:
-            window: La ventana a hacer visible
+            window: La ventana PyQt5 a hacer visible
             temporary_topmost: Si usar topmost temporal
             duration_ms: Duración del topmost en milisegundos
         """
         try:
-            if not window or not window.winfo_exists():
+            if not window or not isinstance(window, QWidget):
                 return False
-                
+
             # Traer al frente
-            window.lift()
-            window.focus_force()
-            
+            window.raise_()
+            window.activateWindow()
+            window.show()
+
             if temporary_topmost:
                 # Configurar topmost temporal
-                window.attributes('-topmost', True)
+                window.setWindowFlags(window.windowFlags() | Qt.WindowStaysOnTopHint)
+                window.show()  # Necesario después de cambiar flags
                 self._topmost_windows.add(window)
-                
-                # Programar remoción del topmost
-                window.after(duration_ms, lambda: self._remove_topmost_safely(window))
-                
-            self.logger.debug(f"Ventana hecha visible: {window}")
+
+                # Programar remoción del topmost usando QTimer
+                from PyQt5.QtCore import QTimer
+                timer = QTimer()
+                timer.setSingleShot(True)
+                timer.timeout.connect(lambda: self._remove_topmost_safely(window))
+                timer.start(duration_ms)
+
+            self.logger.debug(f"Ventana PyQt5 hecha visible: {window}")
             return True
-            
+
         except Exception as e:
-            self.logger.error(f"Error haciendo ventana visible: {e}")
+            self.logger.error(f"Error haciendo ventana PyQt5 visible: {e}")
             return False
     
     def _remove_topmost_safely(self, window):
-        """Remueve topmost de forma segura"""
+        """Remueve topmost de forma segura en PyQt5"""
         try:
             if window in self._topmost_windows:
                 self._topmost_windows.remove(window)
-                
-            if window and window.winfo_exists():
-                window.attributes('-topmost', False)
-                self.logger.debug(f"Topmost removido de ventana: {window}")
-                
+
+            if window and isinstance(window, QWidget):
+                # Remover el flag WindowStaysOnTopHint
+                flags = window.windowFlags()
+                flags &= ~Qt.WindowStaysOnTopHint
+                window.setWindowFlags(flags)
+                window.show()  # Necesario después de cambiar flags
+                self.logger.debug(f"Topmost removido de ventana PyQt5: {window}")
+
         except Exception as e:
-            self.logger.debug(f"Error removiendo topmost: {e}")
-    
+            self.logger.debug(f"Error removiendo topmost PyQt5: {e}")
+
     def close_window_safely(self, window):
-        """Cierra una ventana de forma segura"""
+        """Cierra una ventana PyQt5 de forma segura"""
         try:
             if not window:
                 return True
-                
+
             # Remover topmost si está activo
             if window in self._topmost_windows:
                 self._remove_topmost_safely(window)
-            
+
             # Verificar si existe antes de cerrar
-            if window.winfo_exists():
+            if isinstance(window, QWidget):
                 # Quitar topmost por si acaso
                 try:
-                    window.attributes('-topmost', False)
+                    flags = window.windowFlags()
+                    flags &= ~Qt.WindowStaysOnTopHint
+                    window.setWindowFlags(flags)
                 except:
                     pass
-                
+
                 # Cerrar la ventana
-                window.destroy()
-                self.logger.debug(f"Ventana cerrada exitosamente: {window}")
-                
+                window.close()
+                self.logger.debug(f"Ventana PyQt5 cerrada exitosamente: {window}")
+
             return True
-            
+
         except Exception as e:
-            self.logger.error(f"Error cerrando ventana: {e}")
-            # Intentar forzar cierre
-            try:
-                if window:
-                    window.quit()
-            except:
-                pass
+            self.logger.error(f"Error cerrando ventana PyQt5: {e}")
+            return False
             return False
     
     def cleanup_all_topmost(self):

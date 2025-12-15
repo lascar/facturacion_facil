@@ -1,0 +1,16 @@
+{
+  "organizacion_defaults": {
+    "nombre": "Mi Empresa",
+    "direccion": "Calle Principal, 123\n12345 Ciudad",
+    "telefono": "+34 123 456 789",
+    "email": "contacto@miempresa.com",
+    "cif": "B12345678",
+    "numero_factura_inicial": "1",
+    "directorio_imagenes_defecto": "images",
+    "directorio_descargas_pdf": "facturas",
+    "directorio_logos_storage": "logos",
+    "logo_path": "",
+    "logo_orientation": "landscape",
+    "visor_pdf_personalizado": ""
+  }
+}

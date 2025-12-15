@@ -2,8 +2,8 @@
 # Compatible avec Python 3.10+ et Windows 10/11
 PyQt5
 
-# Frameworks GUI de compatibilité (pour systèmes anciens)
-customtkinter==5.2.2
+# Framework GUI principal (migration complète vers PyQt5)
+# customtkinter==5.2.2  # SUPPRIMÉ - Migration complète vers PyQt5
 
 # Dépendances principales
 Pillow==10.4.0          # Traitement d'images - Compatible Windows 11

@@ -1,7 +1,7 @@
 attrs==25.3.0
 chardet==5.2.0
 coverage==7.10.6
-customtkinter==5.2.2
+# customtkinter==5.2.2  # SUPPRIMÉ - Migration complète vers PyQt5
 darkdetect==0.8.0
 Faker==37.8.0
 hypothesis==6.139.2

@@ -6,8 +6,7 @@ Mixin pour les méthodes de facturas - Version PyQt5 stable
 
 from database.models import Stock, StockMovement, Producto
 from utils.logger import get_logger
-import tkinter as tk
-from tkinter import messagebox
+from PyQt5.QtWidgets import QMessageBox, QApplication
 
 class FacturasMethodsMixin:
     """Mixin avec les méthodes pour la gestion de facturas"""
@@ -272,26 +271,22 @@ class FacturasMethodsMixin:
             if hasattr(self, '_show_message'):
                 return self._show_message("yesno", titulo, mensaje)
 
-            # Método 4: Fallback a tkinter
+            # Método 4: Fallback a PyQt5
             try:
-                import tkinter as tk
-                from tkinter import messagebox
+                app = QApplication.instance()
+                if app is None:
+                    app = QApplication([])
 
-                # Crear ventana temporal si no existe
-                root = None
-                if not tk._default_root:
-                    root = tk.Tk()
-                    root.withdraw()
+                reply = QMessageBox.question(
+                    None, titulo, mensaje,
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
 
-                result = messagebox.askyesno(titulo, mensaje)
-
-                if root:
-                    root.destroy()
-
-                return result
+                return reply == QMessageBox.Yes
 
             except Exception as e:
-                self.logger.warning(f"Error con tkinter messagebox: {e}")
+                self.logger.warning(f"Error con PyQt5 messagebox: {e}")
 
             # Método 5: Fallback a consola
             print(f"\n{titulo}")

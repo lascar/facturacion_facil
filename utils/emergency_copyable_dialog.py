@@ -2,170 +2,154 @@
 # -*- coding: utf-8 -*-
 
 """
-Diálogo copiable de emergencia usando tkinter puro
+Diálogo copiable de emergencia usando PyQt5
 """
 
-import tkinter as tk
-from tkinter import ttk
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                            QTextEdit, QPushButton, QApplication, QMessageBox)
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 def show_emergency_copyable_warning(parent, title, message):
-    """Diálogo copiable de emergencia usando tkinter puro"""
-    print("🚨 EMERGENCY: Usando diálogo de emergencia tkinter puro")
-    
+    """Diálogo copiable de emergencia usando PyQt5"""
+    print("🚨 EMERGENCY: Usando diálogo de emergencia PyQt5")
+
     try:
-        # Crear ventana de diálogo con tkinter puro
-        dialog = tk.Toplevel(parent if parent else None)
-        dialog.title(title)
-        dialog.geometry("450x300")
-        dialog.resizable(False, False)
-        
-        if parent:
-            dialog.transient(parent)
-            dialog.grab_set()
-        
+        # Crear aplicación si no existe
+        app = QApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        # Crear ventana de diálogo con PyQt5
+        dialog = QDialog(parent)
+        dialog.setWindowTitle(title)
+        dialog.setFixedSize(450, 300)
+        dialog.setModal(True)
+
         # Centrar en pantalla
-        dialog.geometry("+300+200")
-        
-        print("✅ EMERGENCY: Ventana tkinter creada")
-        
-        # Frame principal
-        main_frame = ttk.Frame(dialog, padding="20")
-        main_frame.pack(fill="both", expand=True)
-        
+        dialog.move(300, 200)
+
+        print("✅ EMERGENCY: Ventana PyQt5 creada")
+
+        # Layout principal
+        layout = QVBoxLayout(dialog)
+
         # Título
-        title_label = ttk.Label(
-            main_frame,
-            text=title,
-            font=("Arial", 14, "bold")
-        )
-        title_label.pack(pady=(0, 20))
-        
-        # Mensaje en Text widget (copiable)
-        text_frame = ttk.Frame(main_frame)
-        text_frame.pack(fill="both", expand=True, pady=(0, 20))
-        
-        text_widget = tk.Text(
-            text_frame,
-            height=8,
-            width=50,
-            wrap="word",
-            font=("Arial", 11),
-            relief="sunken",
-            borderwidth=2
-        )
-        text_widget.pack(side="left", fill="both", expand=True)
-        
-        # Scrollbar
-        scrollbar = ttk.Scrollbar(text_frame, orient="vertical", command=text_widget.yview)
-        scrollbar.pack(side="right", fill="y")
-        text_widget.configure(yscrollcommand=scrollbar.set)
-        
-        # Insertar mensaje
-        text_widget.insert("1.0", message)
-        text_widget.configure(state="disabled")  # Solo lectura pero seleccionable
-        
+        title_label = QLabel(title)
+        title_font = QFont("Arial", 14, QFont.Bold)
+        title_label.setFont(title_font)
+        layout.addWidget(title_label)
+
+        # Mensaje en TextEdit (copiable)
+        text_widget = QTextEdit()
+        text_widget.setPlainText(message)
+        text_widget.setReadOnly(True)
+        text_widget.setFont(QFont("Arial", 11))
+        layout.addWidget(text_widget)
+
         # Frame de botones
-        buttons_frame = ttk.Frame(main_frame)
-        buttons_frame.pack(fill="x")
-        
+        buttons_layout = QHBoxLayout()
+
         result = {"clicked": None}
-        
+
         def copy_message():
             """Copiar mensaje al portapapeles"""
             try:
-                dialog.clipboard_clear()
-                dialog.clipboard_append(f"{title}\n\n{message}")
+                clipboard = QApplication.clipboard()
+                clipboard.setText(f"{title}\n\n{message}")
                 print("✅ EMERGENCY: Mensaje copiado al portapapeles")
-                
+
                 # Cambiar texto del botón temporalmente
-                copy_btn.configure(text="✅ COPIADO")
-                dialog.after(1500, lambda: copy_btn.configure(text="📋 COPIAR"))
-                
+                copy_btn.setText("✅ COPIADO")
+                from PyQt5.QtCore import QTimer
+                timer = QTimer()
+                timer.setSingleShot(True)
+                timer.timeout.connect(lambda: copy_btn.setText("📋 COPIAR"))
+                timer.start(1500)
+
             except Exception as e:
                 print(f"❌ EMERGENCY: Error copiando: {e}")
-        
+
         def ok_clicked():
             result["clicked"] = "ok"
-            dialog.destroy()
-        
+            dialog.accept()
+
         # Botón COPIAR - ESTILO LLAMATIVO
-        copy_btn = tk.Button(
-            buttons_frame,
-            text="📋 COPIAR",
-            command=copy_message,
-            font=("Arial", 12, "bold"),
-            bg="#FF4444",  # Rojo brillante
-            fg="white",
-            activebackground="#FF6666",
-            activeforeground="white",
-            relief="raised",
-            borderwidth=3,
-            padx=20,
-            pady=10
-        )
-        copy_btn.pack(side="left", padx=(0, 10))
-        
+        copy_btn = QPushButton("📋 COPIAR")
+        copy_btn.clicked.connect(copy_message)
+        copy_btn.setFont(QFont("Arial", 12, QFont.Bold))
+        copy_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #FF4444;
+                color: white;
+                border: 3px solid #FF4444;
+                padding: 10px 20px;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #FF6666;
+            }
+        """)
+        buttons_layout.addWidget(copy_btn)
+
         # Botón OK
-        ok_btn = tk.Button(
-            buttons_frame,
-            text="OK",
-            command=ok_clicked,
-            font=("Arial", 12),
-            bg="#4CAF50",
-            fg="white",
-            activebackground="#66BB6A",
-            activeforeground="white",
-            relief="raised",
-            borderwidth=2,
-            padx=20,
-            pady=10
-        )
-        ok_btn.pack(side="right")
-        
-        print("✅ EMERGENCY: Botones creados - COPIAR debería ser MUY VISIBLE (rojo)")
-        
+        ok_btn = QPushButton("OK")
+        ok_btn.clicked.connect(ok_clicked)
+        ok_btn.setFont(QFont("Arial", 12))
+        ok_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                border: 3px solid #4CAF50;
+                padding: 10px 20px;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #66BB6A;
+            }
+        """)
+        buttons_layout.addWidget(ok_btn)
+
+        layout.addLayout(buttons_layout)
+
+        print("✅ EMERGENCY: Botones PyQt5 creados - COPIAR debería ser MUY VISIBLE (rojo)")
+
         # Focus en OK
-        ok_btn.focus()
-        
+        ok_btn.setFocus()
+
         # Mostrar diálogo
-        dialog.focus()
-        dialog.lift()
-        
-        print("🔍 EMERGENCY: Mostrando diálogo tkinter...")
-        dialog.wait_window()
-        
-        print("✅ EMERGENCY: Diálogo tkinter cerrado")
+        dialog.raise_()
+        dialog.activateWindow()
+
+        print("🔍 EMERGENCY: Mostrando diálogo PyQt5...")
+        dialog.exec_()
+
+        print("✅ EMERGENCY: Diálogo PyQt5 cerrado")
         return result["clicked"]
-        
+
     except Exception as e:
-        print(f"❌ EMERGENCY: Error en diálogo de emergencia: {e}")
+        print(f"❌ EMERGENCY: Error en diálogo de emergencia PyQt5: {e}")
         import traceback
         print(f"❌ EMERGENCY: Traceback: {traceback.format_exc()}")
-        
-        # Último recurso: messagebox estándar
-        import tkinter.messagebox as messagebox
-        return messagebox.showwarning(title, message, parent=parent)
+
+        # Último recurso: messagebox estándar PyQt5
+        return QMessageBox.warning(parent, title, message)
 
 if __name__ == "__main__":
-    print("🧪 Test: Diálogo de Emergencia Tkinter")
-    
+    print("🧪 Test: Diálogo de Emergencia PyQt5")
+
     try:
-        import tkinter as tk
-        
-        root = tk.Tk()
-        root.title("Test Emergency")
-        root.geometry("300x200")
-        root.withdraw()
-        
+        app = QApplication([])
+
         # Test del diálogo de emergencia
         result = show_emergency_copyable_warning(
-            root,
+            None,
             "Emergency Test",
-            "Este es un diálogo de emergencia usando tkinter puro.\n\nDebe tener un botón COPIAR rojo muy visible.\n\nEste es el último recurso si CustomTkinter falla."
+            "Este es un diálogo de emergencia usando PyQt5.\n\nDebe tener un botón COPIAR rojo muy visible.\n\nEste es el último recurso si otros frameworks fallan."
         )
-        
+
         print(f"Resultado: {result}")
-        
+
     except Exception as e:
         print(f"Error en test: {e}")
         import traceback

@@ -130,8 +130,8 @@ def clean_db(temp_db):
 
 @pytest.fixture
 def mock_messagebox(mocker):
-    """Mock para tkinter.messagebox"""
-    return mocker.patch('tkinter.messagebox')
+    """Mock para PyQt5.QtWidgets.QMessageBox"""
+    return mocker.patch('PyQt5.QtWidgets.QMessageBox')
 
 # Hooks pytest pour nettoyage automatique
 def pytest_runtest_teardown(item, nextitem):
@@ -175,5 +175,5 @@ def pytest_configure(config):
 
 @pytest.fixture
 def mock_filedialog(mocker):
-    """Mock para tkinter.filedialog"""
-    return mocker.patch('tkinter.filedialog')
+    """Mock para PyQt5.QtWidgets.QFileDialog"""
+    return mocker.patch('PyQt5.QtWidgets.QFileDialog')

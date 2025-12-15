@@ -19,6 +19,7 @@
  - ** lorque tu fais un nouveau test dans le developpement intègre-le à la suite de test
  - ** TOUJOURS utiliser test_safe_*.py comme modèle pour les nouveaux tests
  - ** INTERDICTION ABSOLUE : Modifier, créer ou supprimer des données en production via les tests
+ - ** TRAVAILLER EN TDD test first
 
  ### Structure de données - CRITIQUE ⚠️
  - ** JAMAIS modifier la structure de base de données sans sauvegarde préalable obligatoire
