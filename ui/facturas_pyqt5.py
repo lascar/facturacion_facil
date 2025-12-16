@@ -18,7 +18,7 @@ from ui.product_autocomplete_widget import ProductAutoCompleteWidget
 from datetime import datetime
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database.database import db
+from database.database import Database
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
 from utils.invoice_status_manager import invoice_status_manager
@@ -34,8 +34,13 @@ class FacturasPyQt5Window(BasePyQt5Window):
     
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
+
+        # Instance dédiée de base de données (évite les problèmes avec l'instance globale)
+        # IMPORTANT: Doit être défini AVANT super().__init__() car setup_ui() l'utilise
+        self.database = Database("base_de_datos/facturacion.db")
+
         super().__init__(parent, "Gestión de Facturas", 1200, 800)
-        
+
         # Variables
         self.facturas = []
         self.selected_factura_id = None
@@ -432,7 +437,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         """Charger les données pour les combos"""
         try:
             # Charger les clients dans le widget d'autocomplétion
-            clientes = db.get_all_clients()
+            clientes = self.database.get_all_clients()
             self.cliente_autocomplete.load_clients(clientes)
 
             # Charger les états de factures depuis la configuration d'organisation
@@ -444,7 +449,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.logger.info(f"Cargados {len(estados)} estados de facturas desde la configuración")
 
             # Charger les produits dans l'autocomplete
-            productos = db.get_all_products()
+            productos = self.database.get_all_products()
             self.producto_autocomplete.load_products(productos)
 
         except Exception as e:
@@ -501,7 +506,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
             # Générer un nouveau numéro de factura
             try:
-                last_number = db.get_last_invoice_number()
+                last_number = self.database.get_last_invoice_number()
                 if last_number:
                     # Extraire le numéro et l'incrémenter
                     import re
@@ -595,7 +600,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 }
 
                 # Créer le client en base
-                client_id = db.add_client(client_data)
+                client_id = self.database.add_client(client_data)
                 if client_id:
                     # Mettre à jour l'ID et marquer comme non nouveau
                     client['id'] = client_id
@@ -623,7 +628,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                     }
 
                     # Mettre à jour le client en base
-                    if db.update_client(client_data):
+                    if self.database.update_client(client_data):
                         # Recharger la liste des clients pour l'autocomplétion
                         self.load_form_data()
 
@@ -800,7 +805,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
     def load_facturas(self):
         """Charger les factures depuis la base de données"""
         try:
-            self.facturas = db.get_all_invoices()
+            self.facturas = self.database.get_all_invoices()
             self.update_facturas_table()
         except Exception as e:
             self.logger.error(f"Erreur chargement factures: {e}")
@@ -825,7 +830,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.selected_factura_id = factura.get('id')
 
             # Récupérer les données complètes de la facture pour l'édition
-            factura_completa = db.get_invoice_by_id(self.selected_factura_id)
+            factura_completa = self.database.get_invoice_by_id(self.selected_factura_id)
             if factura_completa:
                 self.load_factura_in_form(factura_completa)
                 self.factura_selected.emit(factura_completa)
@@ -875,7 +880,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 cliente_id = factura.get('cliente_id')
                 if cliente_id:
                     try:
-                        cliente_data = db.get_client_by_id(cliente_id)
+                        cliente_data = self.database.get_client_by_id(cliente_id)
                     except Exception as e:
                         self.logger.error(f"Error obteniendo cliente por ID {cliente_id}: {e}")
 
@@ -920,7 +925,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.productos_table.setRowCount(0)
 
             # Obtenir les lignes de la facture
-            lineas = db.get_invoice_items(factura_id)
+            lineas = self.database.get_invoice_items(factura_id)
 
             for linea in lineas:
                 row = self.productos_table.rowCount()
@@ -983,7 +988,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             if client_data.get('is_new', False):
                 try:
                     # Créer le nouveau client dans la base de données
-                    new_client_id = db.add_client({
+                    new_client_id = self.database.add_client({
                         'nombre': client_data['nombre'],
                         'nif': client_data.get('nif', ''),
                         'telefono': client_data.get('telefono', ''),
@@ -995,7 +1000,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                     self.logger.info(f"Nuevo cliente creado con ID: {new_client_id}")
 
                     # Recharger les clients dans l'autocomplétion
-                    clientes = db.get_all_clients()
+                    clientes = self.database.get_all_clients()
                     self.cliente_autocomplete.load_clients(clientes)
 
                 except Exception as e:
@@ -1040,7 +1045,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 }
                 factura_data['iva_total'] = factura_data.pop('iva')
                 factura_data['lineas'] = lineas
-                db.update_invoice(factura_data)
+                self.database.update_invoice(factura_data)
                 self.show_info("Éxito", "Factura actualizada correctamente")
             else:
                 # Nouvelle facture
@@ -1053,7 +1058,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 }
                 factura_data['iva_total'] = factura_data.pop('iva')
                 factura_data['lineas'] = lineas
-                factura_id = db.add_invoice(factura_data)
+                factura_id = self.database.add_invoice(factura_data)
                 self.current_factura_id = factura_id
                 self.show_info("Éxito", "Factura creada correctamente")
 
@@ -1079,7 +1084,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         # Créer un nouveau dialog SANS parent pour éviter les problèmes de hiérarchie
         # Le dialog s'affiche automatiquement au premier plan grâce à son constructeur
-        self.crear_dialog = CrearFacturaDialog(None)
+        self.crear_dialog = CrearFacturaDialog(self.database, None)
 
         # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
         def on_dialog_finished(result):
@@ -1108,7 +1113,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 self.ver_dialog.activateWindow()
                 return
 
-            factura = db.get_invoice_by_id(self.selected_factura_id)
+            factura = self.database.get_invoice_by_id(self.selected_factura_id)
             if factura:
                 self.ver_dialog = VerFacturaDialog(factura, None)
 
@@ -1148,9 +1153,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 self.editar_dialog.activateWindow()
                 return
 
-            factura = db.get_invoice_by_id(self.selected_factura_id)
+            factura = self.database.get_invoice_by_id(self.selected_factura_id)
             if factura:
-                self.editar_dialog = EditarFacturaDialog(factura, None)
+                self.editar_dialog = EditarFacturaDialog(factura, self.database, None)
 
                 # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
                 def on_edit_dialog_finished(result):
@@ -1189,7 +1194,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         try:
             # Obtener la factura seleccionada
-            factura_data = db.get_invoice_by_id(self.selected_factura_id)
+            factura_data = self.database.get_invoice_by_id(self.selected_factura_id)
             if not factura_data:
                 self.show_error("Error", "No se pudo cargar la factura seleccionada")
                 return
@@ -1318,7 +1323,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 return
 
             # Eliminar de la base de datos
-            success = db.delete_invoice(self.selected_factura_id)
+            success = self.database.delete_invoice(self.selected_factura_id)
 
             if success:
                 self.show_info("Éxito", f"Factura {numero_factura} eliminada correctamente")
@@ -1363,11 +1368,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
 class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
     """Dialog para crear una nueva factura"""
 
-    def __init__(self, parent=None):
+    def __init__(self, database_instance, parent=None):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
         self.setWindowTitle("Crear Nueva Factura")
         self.resize(800, 600)
+
+        # Instance de base de données
+        self.database = database_instance
 
         # Variables
         self.clientes = []
@@ -1546,7 +1554,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         """Charger les données nécessaires"""
         try:
             # Charger les clients
-            self.clientes = db.get_all_clients()
+            self.clientes = self.database.get_all_clients()
             self.cliente_combo.clear()
             self.cliente_combo.addItem("📋 Seleccionar cliente...", None)
             for cliente in self.clientes:
@@ -1557,8 +1565,8 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             # Charger les produits
             from datetime import datetime
             timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Llamando db.get_all_products()")
-            self.productos = db.get_all_products()
+            self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Llamando database.get_all_products()")
+            self.productos = self.database.get_all_products()
             self.logger.debug(f"[{timestamp}] CrearFacturaDialog - Recibidos {len(self.productos)} productos")
             # Cargar productos en autocomplete
             self.producto_autocomplete.load_products(self.productos)
@@ -1820,7 +1828,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
                 print(f"  Línea {i+1}: Producto ID {linea['producto_id']}, Cantidad {linea['cantidad']}")
 
             # Guardar en la base de datos
-            factura_id = db.add_invoice(factura_data)
+            factura_id = self.database.add_invoice(factura_data)
 
             from PyQt5.QtWidgets import QMessageBox
             QMessageBox.information(self, "Éxito", f"Factura {self.numero_edit.text()} creada correctamente\nID: {factura_id}")
@@ -1836,12 +1844,15 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
     """Dialog para editar una factura existente"""
 
-    def __init__(self, factura_data, parent=None):
+    def __init__(self, factura_data, database_instance, parent=None):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
         self.factura_data = factura_data
         self.setWindowTitle(f"Editar Factura {factura_data['numero']}")
         self.resize(800, 600)
+
+        # Instance de base de données
+        self.database = database_instance
 
         # Variables
         self.clientes = []
@@ -2004,7 +2015,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         """Charger les données nécessaires"""
         try:
             # Charger les clients
-            self.clientes = db.get_all_clients()
+            self.clientes = self.database.get_all_clients()
             self.cliente_combo.clear()
             self.cliente_combo.addItem("📋 Seleccionar cliente...", None)
             for cliente in self.clientes:
@@ -2021,8 +2032,8 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             # Charger les produits
             from datetime import datetime
             timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Llamando db.get_all_products()")
-            self.productos = db.get_all_products()
+            self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Llamando database.get_all_products()")
+            self.productos = self.database.get_all_products()
             self.logger.debug(f"[{timestamp}] EditarFacturaDialog - Recibidos {len(self.productos)} productos")
             # Cargar productos en autocomplete
             self.producto_autocomplete.load_products(self.productos)
@@ -2403,7 +2414,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             }
 
             # Actualizar en la base de datos
-            success = db.update_invoice(factura_data)
+            success = self.database.update_invoice(factura_data)
 
             from PyQt5.QtWidgets import QMessageBox
             if success:

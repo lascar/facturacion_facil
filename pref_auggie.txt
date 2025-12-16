@@ -43,3 +43,6 @@
  - ** EN CAS D'ERREUR : Nettoyer immédiatement et informer l'utilisateur
  - ** UTILISER EXCLUSIVEMENT : get_test_database() pour tous les tests
  - ** INTERDICTION : Importer directement database.db dans les tests
+
+souviens toi tu dois agir en TDD, seulement sur la base de test et intégré les tests dans la suite de test    │
+│   l'environement est activé par source ./activate_env.sh et python est à /home/pascal/.pyenv/shims/python , pytest est installé dans l'environement
