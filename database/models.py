@@ -1,5 +1,7 @@
 from .database import db
 from datetime import datetime
+import sqlite3
+import os
 
 class Cliente:
     def __init__(self, id=None, nombre="", dni_nie="", direccion="", email="", telefono=""):
@@ -89,7 +91,7 @@ class Cliente:
         return clientes
 
 class Producto:
-    def __init__(self, id=None, nombre="", referencia="", precio=0.0, 
+    def __init__(self, id=None, nombre="", referencia="", precio=0.0,
                  categoria="", descripcion="", imagen_path="", iva_recomendado=21.0):
         self.id = id
         self.nombre = nombre
@@ -99,6 +101,16 @@ class Producto:
         self.descripcion = descripcion
         self.imagen_path = imagen_path
         self.iva_recomendado = iva_recomendado
+
+    def get_stock_actual(self, db_path=None):
+        """Obtiene el stock actual desde la tabla stock"""
+        return Stock.get_by_product(self.id, db_path) if self.id else 0
+
+    def get_stock_minimo(self):
+        """Obtiene el stock mínimo desde la tabla stock (por defecto 5)"""
+        # Por ahora, usamos un valor por defecto de 5
+        # Más tarde, on pourrait ajouter une colonne stock_minimo à la table stock
+        return 5
     
     def save(self):
         """Guarda el producto en la base de datos"""
@@ -503,9 +515,10 @@ class Organizacion:
         return Organizacion()
 
 class Stock:
-    def __init__(self, producto_id, cantidad_disponible=0):
+    def __init__(self, producto_id, cantidad_disponible=0, stock_minimo=5):
         self.producto_id = producto_id
         self.cantidad_disponible = cantidad_disponible
+        self.stock_minimo = stock_minimo
     
     def save(self):
         """Actualiza el stock del producto"""
@@ -520,32 +533,124 @@ class Stock:
         db.execute_query(query, (producto_id,))
     
     @staticmethod
-    def get_all():
+    def get_all(db_path=None):
         """Obtiene todo el stock con información de productos"""
-        query = '''SELECT s.producto_id, s.cantidad_disponible, p.nombre, p.referencia 
-                  FROM stock s 
-                  JOIN productos p ON s.producto_id = p.id 
-                  ORDER BY p.nombre'''
-        return db.execute_query(query)
+        if db_path:
+            # Usar connexion directe pour tests
+            try:
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                cursor.execute('''SELECT s.producto_id, s.cantidad_disponible, p.nombre, p.referencia
+                              FROM stock s
+                              JOIN productos p ON s.producto_id = p.id
+                              ORDER BY p.nombre''')
+                results = cursor.fetchall()
+                conn.close()
+                return results
+            except Exception:
+                return []
+        else:
+            # Usar la connexion par défaut
+            query = '''SELECT s.producto_id, s.cantidad_disponible, p.nombre, p.referencia
+                      FROM stock s
+                      JOIN productos p ON s.producto_id = p.id
+                      ORDER BY p.nombre'''
+            return db.execute_query(query)
     
     @staticmethod
-    def get_by_product(producto_id):
+    def get_by_product(producto_id, db_path=None):
         """Obtiene el stock de un producto específico"""
-        query = "SELECT cantidad_disponible FROM stock WHERE producto_id=?"
-        results = db.execute_query(query, (producto_id,))
-        return results[0][0] if results else 0
+        if db_path:
+            # Usar conexión directa para tests
+            try:
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                cursor.execute("SELECT cantidad_disponible FROM stock WHERE producto_id=?", (producto_id,))
+                result = cursor.fetchone()
+                conn.close()
+                return result[0] if result else 0
+            except Exception:
+                return 0
+        else:
+            # Usar la connexion par défaut
+            query = "SELECT cantidad_disponible FROM stock WHERE producto_id=?"
+            results = db.execute_query(query, (producto_id,))
+            return results[0][0] if results else 0
     
     @staticmethod
-    def update_stock(producto_id, cantidad_vendida):
+    def update_stock(producto_id, cantidad_vendida, db_path=None):
         """Actualiza el stock después de una venta - permite stocks negativos"""
-        current_stock = Stock.get_by_product(producto_id)
+        current_stock = Stock.get_by_product(producto_id, db_path)
         new_stock = current_stock - cantidad_vendida  # Permitir stocks negativos
-        query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
-                  WHERE producto_id=?'''
-        db.execute_query(query, (new_stock, producto_id))
 
-        # Registrar movimiento en historial
-        StockMovement.create(producto_id, -cantidad_vendida, "VENTA", f"Venta de {cantidad_vendida} unidades")
+        if db_path:
+            # Usar connexion directe pour tests
+            try:
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                cursor.execute('''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                              WHERE producto_id=?''', (new_stock, producto_id))
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                print(f"Erreur mise à jour stock: {e}")
+        else:
+            # Usar la connexion par défaut
+            query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                      WHERE producto_id=?'''
+            db.execute_query(query, (new_stock, producto_id))
+
+        # Registrar movimiento en historial (seulement si pas de db_path spécifique)
+        if not db_path:
+            StockMovement.create(producto_id, -cantidad_vendida, "VENTA", f"Venta de {cantidad_vendida} unidades")
+
+    @staticmethod
+    def update_stock_direct(producto_id, nuevo_stock, db_path=None):
+        """Actualiza directamente el stock a un valor específico"""
+        if db_path:
+            # Usar connexion directe pour tests
+            try:
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                cursor.execute('''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                              WHERE producto_id=?''', (nuevo_stock, producto_id))
+                if cursor.rowcount == 0:
+                    # Si no existe, crear la entrada
+                    cursor.execute('''INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                                  VALUES (?, ?, CURRENT_TIMESTAMP)''', (producto_id, nuevo_stock))
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                print(f"Erreur mise à jour stock direct: {e}")
+        else:
+            # Usar la connexion par défaut
+            try:
+                # D'abord essayer de mettre à jour
+                query = '''UPDATE stock SET cantidad_disponible=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                          WHERE producto_id=?'''
+                conn = db.get_connection()
+                cursor = conn.cursor()
+                cursor.execute(query, (nuevo_stock, producto_id))
+
+                # Si aucune ligne n'a été mise à jour, créer l'entrée
+                if cursor.rowcount == 0:
+                    query_insert = '''INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                                    VALUES (?, ?, CURRENT_TIMESTAMP)'''
+                    cursor.execute(query_insert, (producto_id, nuevo_stock))
+
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                if conn:
+                    conn.close()
+                raise e
+
+    @staticmethod
+    def get_stock_minimo(producto_id, default=5):
+        """Obtiene el stock mínimo de un producto (por defecto 5)"""
+        # Por ahora, retornamos el valor por defecto
+        # Más tarde, se podría agregar una columna stock_minimo a la tabla stock
+        return default
 
     @staticmethod
     def get_low_stock(threshold=5):

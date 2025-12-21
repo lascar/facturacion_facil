@@ -31,6 +31,12 @@ class DatabaseContextManager:
         """Gestionnaire de contexte pour les connexions de base de données"""
         conn = None
         try:
+            # S'assurer que le répertoire parent existe
+            db_dir = os.path.dirname(self.db_path)
+            if db_dir and not os.path.exists(db_dir):
+                os.makedirs(db_dir, exist_ok=True)
+                self.logger.debug(f"Répertoire créé: {db_dir}")
+
             # Créer la connexion avec configuration optimisée
             conn = sqlite3.connect(self.db_path, **self.get_connection_config())
             

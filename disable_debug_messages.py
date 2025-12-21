@@ -61,8 +61,7 @@ def main():
         "ui/stock.py",
         "ui/facturas.py",
         "ui/organizacion.py",
-        "ui/clientes.py",
-        "ui/search_window.py"
+        "ui/clientes.py"
     ]
     
     modified_count = 0

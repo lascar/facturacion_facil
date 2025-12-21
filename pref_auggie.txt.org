@@ -1,0 +1,80 @@
+# Préférences de développement pour facturacion_facil
+
+ ## Communication et workflow
+ - **Langue** : Communiquer exclusivement en français avec tutoiement
+ - **Validation obligatoire** : Aucune modification de code ou système sans confirmation préalable explicite de l'utilisateur. Toujours expliquer en détail le code. Présenter les modifications sous la forme d'un git diff
+
+ ### Localisation
+ - **Textes en dur** : ne jamais harcoder des textes en dur dans le code
+ - **Langues obligatoires** : ES pour chaque nouveau texte une fois qu'il passe
+
+ ### Tests - PROTECTION PRODUCTION CRITIQUE ⚠️
+ - ** JAMAIS utiliser la base de données de production pour les tests - INCIDENT GRAVE
+ - ** OBLIGATOIRE : Utiliser database/test_database.py pour créer une base de test isolée
+ - ** OBLIGATOIRE : Vérifier le chemin de la base avant tout test (doit contenir "test" ou "temp")
+ - ** OBLIGATOIRE : Nettoyer automatiquement les bases de test après utilisation
+ - ** OBLIGATOIRE : Préfixer tous les noms de test par "Test" ou "TEST" pour identification
+ - ** CRITIQUE : Si des données de test apparaissent en production, les supprimer IMMÉDIATEMENT
+ - ** lorque tu fais un nouveau test dans le developpement intègre-le à la suite de test
+ - ** INTERDICTION ABSOLUE : Modifier, créer ou supprimer des données en production via les tests
+ - ** TRAVAILLER EN BDD test behaviour first
+
+ ### Système de Fixtures - OBLIGATOIRE ⚠️
+ - ** UTILISATION OBLIGATOIRE : Tous les tests DOIVENT utiliser le système de fixtures standardisées
+ - ** CLASSE DE BASE OBLIGATOIRE : Hériter de BaseTestWithFixtures pour tous les nouveaux tests
+ - ** DONNÉES STANDARDISÉES : Utiliser les 3 produits, 3 clients, 3 factures des fixtures
+ - ** RESET AUTOMATIQUE : setUp() remet automatiquement à l'état initial entre chaque test
+ - ** INTERDICTION : Créer des données de test manuellement - utiliser les fixtures
+ - ** GUIDE OBLIGATOIRE : Consulter GUIDE_FIXTURES.md avant de créer des tests
+ - ** DÉMONSTRATION : Lancer test_fixtures_demo.py pour comprendre le fonctionnement
+ - ** STRUCTURE OBLIGATOIRE : test/base_test_with_fixtures.py comme classe parent
+ - ** MÉTHODES UTILITAIRES : Utiliser get_test_products(), get_test_clients(), get_test_invoices()
+ - ** ÉTAT INITIAL GARANTI : Chaque test commence avec des données propres et prévisibles
+
+ ### Structure de données - CRITIQUE ⚠️
+ - ** JAMAIS modifier la structure de base de données sans sauvegarde préalable obligatoire
+ - ** JAMAIS supprimer ou perdre des données de production - INCIDENT GRAVE
+ - ** JAMAIS utiliser la base de production pour tester des modifications - UTILISER database/test_database.py
+ - ** si la structure de la base de donnée change, modifier ou créer un fichier migration.bat pour windows et migration.sh pour linux pour passer la base de donnée de l'ancienne à la nouvelle
+ - ** privileger utiliser des migrations progressives (ADD COLUMN) au lieu de DROP/CREATE
+ - ** TOUJOURS tester les migrations sur une copie avant application en production
+ - ** TOUJOURS vérifier que les données sont préservées après migration
+ - ** En cas de doute sur une modification de structure : DEMANDER CONFIRMATION EXPLICITE
+ - ** UTILISER OBLIGATOIREMENT le système de migration : database/migration_manager.py
+ - ** CONSULTER la documentation : GUIDE_MIGRATIONS_BASE_DONNEES.md
+ - ** TESTER avec le script : test_migration_system.py avant toute modification
+ - ** En cas de perte de données : utiliser restore_and_migrate.py pour récupération
+
+ ### Protocole de sécurité des données - NOUVEAU ⚠️
+ - ** AVANT tout test : Vérifier que database.db_path contient "test" ou "temp"
+ - ** AVANT toute modification : Confirmer explicitement avec l'utilisateur
+ - ** APRÈS tout test : Vérifier qu'aucune donnée de test n'est restée en production
+ - ** EN CAS D'ERREUR : Nettoyer immédiatement et informer l'utilisateur
+ - ** UTILISER EXCLUSIVEMENT : get_test_database() pour tous les tests
+ - ** INTERDICTION : Importer directement database.db dans les tests
+
+souviens toi tu dois agir en BDD, seulement sur la base de test et intégré les tests dans la suite de test
+l'environement est activé par source ./activate_env.sh et python est à /home/pascal/.pyenv/shims/python , pytest est installé dans l'environement
+
+### Workflow de Développement avec Fixtures - OBLIGATOIRE ⚠️
+- ** ÉTAPE 1 OBLIGATOIRE : Créer d'abord les tests de comportement avec BaseTestWithFixtures
+- ** ÉTAPE 2 OBLIGATOIRE : Utiliser les fixtures standardisées (3 produits, 3 clients, 3 factures)
+- ** ÉTAPE 3 OBLIGATOIRE : Vérifier que setUp() remet bien à l'état initial
+- ** ÉTAPE 4 OBLIGATOIRE : Tester les modifications sur les données des fixtures
+- ** ÉTAPE 5 OBLIGATOIRE : Valider que le reset fonctionne entre les tests
+- ** EXEMPLE OBLIGATOIRE : Suivre le modèle de test/test_stock_with_fixtures.py
+- ** DÉMONSTRATION OBLIGATOIRE : Lancer test_fixtures_demo.py avant tout nouveau développement
+- ** INTÉGRATION OBLIGATOIRE : Ajouter tous les nouveaux tests à la suite de test existante
+- ** DOCUMENTATION OBLIGATOIRE : Mettre à jour GUIDE_FIXTURES.md si nouvelles fonctionnalités
+
+### Tests de Comportement PyQt5 - FERMETURE AUTOMATIQUE OBLIGATOIRE ⚠️
+- ** PROBLÈME RÉSOLU : Les boîtes de dialogue "Êtes-vous sûr de fermer?" ne bloquent plus les tests
+- ** MODE TEST AUTOMATIQUE : Variable PYTEST_RUNNING=1 activée automatiquement pendant les tests
+- ** FERMETURE SANS CONFIRMATION : closeEvent() détecte le mode test et ferme sans demander
+- ** PATCH QMESSAGEBOX : QMessageBox.question() retourne automatiquement Yes en mode test
+- ** CLASSE DE BASE OBLIGATOIRE : Hériter de BaseBehaviourTest pour fermeture automatique
+- ** TEARDOWN AUTOMATIQUE : teardown_method() ferme toutes les fenêtres après chaque test
+- ** COMMANDE TESTS : pytest test/behaviour/ -v -s (sans blocage garanti)
+- ** VALIDATION OBLIGATOIRE : Lancer test_no_confirmation_dialogs.py pour vérifier
+- ** GUIDE OBLIGATOIRE : Consulter INSTRUCTIONS_TESTS_BEHAVIOUR_SANS_BLOCAGE.md
+- ** INTERDICTION : Ne jamais appeler manuellement window.close() dans les tests

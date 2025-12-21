@@ -38,6 +38,7 @@ if [[ "$VIRTUAL_ENV" != "" ]]; then
     echo "🚀 Pour lancer l'application: python main.py"
     echo "🧪 Pour lancer les tests: ./run_organized_tests.sh all"
     echo "🧪 Pour lancer les tests (pytest direct): pytest test/"
+    echo "🎭 Pour lancer les tests de comportement: pytest test/behaviour/ -v -s"
 else
     echo "❌ Erreur: L'activation de l'environnement virtuel a échoué"
     echo "💡 Vérifiez que l'environnement virtuel est correctement installé"

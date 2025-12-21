@@ -8,9 +8,8 @@
 4. [Configuración de Organización](#configuración-de-organización)
 5. [Gestión de Stock](#gestión-de-stock)
 6. [Creación de Facturas](#creación-de-facturas)
-7. [Búsqueda Avanzada](#búsqueda-avanzada)
-8. [Consejos y Trucos](#consejos-y-trucos)
-9. [Solución de Problemas](#solución-de-problemas)
+7. [Consejos y Trucos](#consejos-y-trucos)
+8. [Solución de Problemas](#solución-de-problemas)
 
 ---
 
@@ -23,7 +22,6 @@
 - 🖱️ **Navegación intuitiva** con botones grandes y claros
 - 📱 **Diseño responsivo** que se adapta al tamaño de ventana
 - 🎨 **Colores diferenciados** para cada función
-- 🔍 **Búsqueda avanzada** en todos los módulos
 - 🔄 **Tri par colonnes** avec indicateurs visuels dans toutes les listes
 
 ---
@@ -40,9 +38,8 @@ La ventana principal es el centro de control de la aplicación. Desde aquí pued
 2. **Organización** (Azul) - Configuración de datos de empresa
 3. **Stock** (Azul) - Control de inventario
 4. **Facturas** (Azul) - Gestión de facturas existentes
-5. **🔍 Búsqueda Avanzada** (Azul Oscuro) - Búsqueda global
-6. **Nueva Factura** (Verde) - Crear factura rápidamente
-7. **Salir** (Rojo) - Cerrar la aplicación
+5. **Nueva Factura** (Verde) - Crear factura rápidamente
+6. **Salir** (Rojo) - Cerrar la aplicación
 
 #### 📐 Diseño de la Ventana
 - **Tamaño inicial**: 800x600 píxeles
@@ -344,31 +341,11 @@ Columnas mostradas:
 
 ---
 
-## 🔍 Búsqueda Avanzada
-
-### Acceso
-Haz clic en el botón **"🔍 Búsqueda Avanzada"** en la ventana principal.
-
-### Funcionalidades
-- **Búsqueda global** en productos, facturas y clientes
-- **Filtros múltiples** por categoría, fecha, precio
-- **Resultados en tiempo real**
-- **Exportación de resultados**
-
-### Tipos de Búsqueda
-1. **Por Producto** - Nombre, referencia, categoría
-2. **Por Cliente** - Nombre, CIF, email
-3. **Por Factura** - Número, fecha, total
-4. **Búsqueda Combinada** - Múltiples criterios
-
----
-
 ## 💡 Consejos y Trucos
 
 ### 🚀 Productividad
 - **Atajos de teclado**: Enter para guardar, Escape para cancelar
 - **Ventanas múltiples**: Mantén abiertas las ventanas que uses frecuentemente
-- **Búsqueda rápida**: Usa la búsqueda avanzada para encontrar información rápidamente
 
 ### 🎨 Personalización
 - **Directorio de imágenes**: Configura una carpeta específica para organizar mejor

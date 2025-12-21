@@ -326,7 +326,6 @@ La aplicación utiliza SQLite con las siguientes tablas:
 
 ### 🚀 **Próximas Mejoras Posibles**
 - 📊 **Reportes Avanzados**: Estadísticas de ventas y análisis
-- 🔍 **Búsqueda Avanzada**: Filtros complejos en todas las listas
 - 💾 **Backup Automático**: Respaldo programado de datos
 - 🌐 **API REST**: Backend para aplicaciones móviles
 - 📱 **Aplicación Móvil**: Versión para tablets y smartphones
@@ -452,7 +451,7 @@ La documentación completa del proyecto está organizada en el directorio `docs/
 - **Arquitectura factorizada**: Código simplificado y reutilizable
 - **Gestión de archivos**: FileManager, ImageManager, LogoManager
 - **Tests organizados**: Suite completa de tests automatizados
-- **Funcionalidades**: PDF, stock, numeración, búsqueda
+- **Funcionalidades**: PDF, stock, numeración
 - **Soluciones robustas**: Stock automático y exportación PDF
 
 ---

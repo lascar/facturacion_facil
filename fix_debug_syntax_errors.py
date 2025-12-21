@@ -84,8 +84,7 @@ def main():
         "ui/productos.py",
         "ui/facturas.py",
         "ui/organizacion.py",
-        "ui/clientes.py",
-        "ui/search_window.py"
+        "ui/clientes.py"
     ]
     
     fixed_count = 0

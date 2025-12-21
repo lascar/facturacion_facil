@@ -303,9 +303,22 @@ class BasePyQt5Window(ScrollableMixin, QDialog):
     
     def closeEvent(self, event):
         """Gérer la fermeture de la fenêtre"""
+        import os
+
+        # En mode test, fermer sans confirmation
+        if os.environ.get('PYTEST_RUNNING') == '1':
+            if hasattr(self, 'logger'):
+                self.logger.debug("🧪 Mode test détecté - Fermeture sans confirmation")
+            else:
+                print("🧪 Mode test détecté - Fermeture sans confirmation")
+            self.window_closed.emit()
+            event.accept()
+            return
+
+        # En mode normal, vérifier les modifications
         if self.data_modified:
             if self.ask_confirmation(
-                "Données modifiées", 
+                "Données modifiées",
                 "Des modifications non sauvegardées seront perdues.\nVoulez-vous vraiment fermer?"
             ):
                 self.window_closed.emit()

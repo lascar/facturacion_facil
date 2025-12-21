@@ -11,7 +11,18 @@ class Database:
     
     def get_connection(self):
         """Obtiene una conexión a la base de datos"""
-        return sqlite3.connect(self.db_path)
+        try:
+            conn = sqlite3.connect(self.db_path, timeout=30.0)  # Timeout de 30 segundos
+            conn.row_factory = sqlite3.Row  # Para acceder a las columnas por nombre
+            # Configurar WAL mode para mejor concurrencia
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            conn.execute("PRAGMA cache_size=10000")
+            conn.execute("PRAGMA temp_store=MEMORY")
+            return conn
+        except Exception as e:
+            self.logger.error(f"Error conectando a la base de datos: {e}")
+            raise
     
     def init_database(self):
         """Inicializa la base de datos con las tablas necesarias"""
@@ -59,6 +70,26 @@ class Database:
 
         try:
             cursor.execute('ALTER TABLE organizacion ADD COLUMN numero_factura_inicial TEXT DEFAULT \'1\'')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_descargas_pdf TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN visor_pdf_personalizado TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN logo_orientation TEXT DEFAULT \'landscape\'')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_logos_storage TEXT')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
 
@@ -1474,6 +1505,25 @@ class Database:
             self.logger.error(f"Error obteniendo ID de factura {numero_factura}: {e}")
             return None
 
+    def get_last_invoice_number(self):
+        """Obtiene el último número de factura"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT numero_factura FROM facturas
+                ORDER BY id DESC LIMIT 1
+            """)
+
+            row = cursor.fetchone()
+            conn.close()
+
+            return row[0] if row else None
+
+        except Exception as e:
+            self.logger.error(f"Error obteniendo último número de factura: {e}")
+            return None
+
     # ==================== MÉTODOS PARA ESTADOS DE FACTURAS ====================
 
     def get_all_invoice_statuses(self):
@@ -1600,6 +1650,49 @@ class Database:
             self.logger.error(f"Error obteniendo estado por nombre {status_name}: {e}")
             return None
 
+    def add_invoice_state(self, state_data):
+        """Añade un nuevo estado de factura"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+
+            # Valores por defecto
+            nombre = state_data.get('nombre', '')
+            descripcion = state_data.get('descripcion', '')
+            permite_modificacion = state_data.get('permite_modificacion', True)
+            color = state_data.get('color', '#007bff')
+            orden = state_data.get('orden', 0)
+
+            # Verificar si ya existe un estado con ese nombre
+            cursor.execute("SELECT id FROM factura_estados WHERE nombre = ?", (nombre,))
+            existing = cursor.fetchone()
+            if existing:
+                conn.close()
+                self.logger.warning(f"Estado de factura ya existe: {nombre}")
+                return existing[0]
+
+            # Si no se especifica orden, usar el siguiente disponible
+            if orden == 0:
+                cursor.execute("SELECT MAX(orden) FROM factura_estados")
+                max_orden = cursor.fetchone()[0]
+                orden = (max_orden or 0) + 1
+
+            cursor.execute("""
+                INSERT INTO factura_estados (nombre, descripcion, permite_modificacion, color, orden)
+                VALUES (?, ?, ?, ?, ?)
+            """, (nombre, descripcion, permite_modificacion, color, orden))
+
+            state_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Estado de factura añadido: {nombre} (ID: {state_id})")
+            return state_id
+
+        except Exception as e:
+            self.logger.error(f"Error añadiendo estado de factura: {e}")
+            return None
+
     # ==================== MÉTODOS PARA ORGANIZACIÓN ====================
 
     def get_organization_info(self):
@@ -1675,6 +1768,44 @@ class Database:
         except Exception as e:
             self.logger.error(f"Error creando organización: {e}")
             raise e
+
+    def create_organization(self, org_data):
+        """Crea una nueva organización"""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO organizacion (
+                    nombre, direccion, telefono, email, cif, logo_path,
+                    directorio_imagenes_defecto, numero_factura_inicial,
+                    directorio_descargas_pdf, visor_pdf_personalizado,
+                    logo_orientation, directorio_logos_storage
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                org_data.get('nombre', ''),
+                org_data.get('direccion', ''),
+                org_data.get('telefono', ''),
+                org_data.get('email', ''),
+                org_data.get('cif', ''),
+                org_data.get('logo_path', ''),
+                org_data.get('directorio_imagenes_defecto', ''),
+                org_data.get('numero_factura_inicial', '1'),
+                org_data.get('directorio_descargas_pdf', ''),
+                org_data.get('visor_pdf_personalizado', ''),
+                org_data.get('logo_orientation', 'landscape'),
+                org_data.get('directorio_logos_storage', '')
+            ))
+
+            org_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+
+            self.logger.info(f"Organización creada con ID: {org_id}")
+            return org_id
+
+        except Exception as e:
+            self.logger.error(f"Error creando organización: {e}")
+            return None
 
     def update_organization(self, org_data):
         """Actualiza la información de la organización"""

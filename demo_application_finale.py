@@ -50,7 +50,6 @@ def main():
     print("│  │ [Stock] ✅      │───▶│  StockWindow ✅             │ │")
     print("│  │ [Facturas] ✅   │───▶│  FacturasWindow ✅          │ │")
     print("│  │ [Clientes] ✅   │───▶│  ClientesWindow ✅          │ │")
-    print("│  │ [Buscar] ✅     │───▶│  SearchWindow ✅            │ │")
     print("│  └─────────────────┘    └─────────────────────────────┘ │")
     print("│           │                           ▲                 │")
     print("│           │        ┌─────────────────┐ │                 │")

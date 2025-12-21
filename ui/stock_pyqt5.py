@@ -12,9 +12,13 @@ from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database.database import db
+from database.database_improved import DatabaseImproved
+from database.models import Stock
 from utils.logger import get_logger
 from utils.event_manager_pyqt5 import event_manager
+
+# Instance globale de la base de données améliorée
+db_improved = DatabaseImproved()
 
 class StockPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion du stock avec PyQt5"""
@@ -129,7 +133,7 @@ class StockPyQt5Window(BasePyQt5Window):
     def load_stock_data(self):
         """Charger les données de stock depuis la base de données"""
         try:
-            self.productos = db.get_all_products()
+            self.productos = db_improved.get_all_products()
             self.update_stock_table()
         except Exception as e:
             self.logger.error(f"Erreur chargement stock: {e}")
@@ -190,11 +194,11 @@ class StockPyQt5Window(BasePyQt5Window):
             nuevo_stock = self.nuevo_stock_edit.value()
             stock_minimo = self.stock_minimo_edit.value()
 
-            # Mettre à jour le stock dans la table productos
-            db.update_product_stock(self.selected_product_id, nuevo_stock)
+            # Mettre à jour le stock dans la table stock (nouvelle structure)
+            Stock.update_stock_direct(self.selected_product_id, nuevo_stock)
 
-            # Mettre à jour aussi le stock minimum
-            self.update_stock_minimo(self.selected_product_id, stock_minimo)
+            # Note: stock_minimo sera géré plus tard dans la table stock
+            # Pour l'instant, on utilise la valeur par défaut
 
             # Émettre un signal pour notifier les autres fenêtres
             self.logger.info(f"📤 ÉMISSION SIGNAL - Stock ajusté: produit {self.selected_product_id}, {old_stock} -> {nuevo_stock}")
@@ -209,14 +213,5 @@ class StockPyQt5Window(BasePyQt5Window):
             self.logger.error(f"Erreur ajustement stock: {e}")
             self.show_error("Error", f"Error al ajustar el stock: {str(e)}")
 
-    def update_stock_minimo(self, product_id, stock_minimo):
-        """Mettre à jour le stock minimum d'un produit"""
-        try:
-            conn = db.get_connection()
-            cursor = conn.cursor()
-            cursor.execute("UPDATE productos SET stock_minimo = ? WHERE id = ?", (stock_minimo, product_id))
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            self.logger.error(f"Erreur mise à jour stock minimum: {e}")
-            raise e
+    # Note: update_stock_minimo supprimé car stock_minimo n'est plus dans productos
+    # Plus tard, on pourrait ajouter une colonne stock_minimo à la table stock

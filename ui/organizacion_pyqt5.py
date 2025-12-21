@@ -15,7 +15,7 @@ from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont, QPixmap, QTransform, QColor
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database.database import db
+from database import database  # Import du module, pas de l'instance
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
 from ui.data_cleanup_dialog import DataCleanupDialog
@@ -30,10 +30,10 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Configuración de la Organización", 800, 600)
-        
+
         # Variables
         self.organizacion_data = {}
-        
+
         # Charger les données
         self.load_organizacion()
         
@@ -299,10 +299,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         """Configurer les connexions de signaux"""
         # Vérifier si les connexions ont déjà été faites
         if hasattr(self, '_connections_setup'):
-            print("DEBUG: Connexions déjà configurées, ignoré")
             return
-
-        print("DEBUG: setup_connections() appelée")
 
         self.save_btn.clicked.connect(self.save_organizacion)
         self.reset_btn.clicked.connect(self.load_organizacion)
@@ -343,7 +340,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     def load_organizacion(self):
         """Charger les données de l'organisation depuis la base de données"""
         try:
-            self.organizacion_data = db.get_organization_info()
+            self.organizacion_data = database.db.get_organization_info()
             if self.organizacion_data:
                 self.load_organization_data(self.organizacion_data)
             else:
@@ -674,11 +671,11 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             if self.organizacion_data and self.organizacion_data.get('id'):
                 # Mise à jour
                 organizacion_data['id'] = self.organizacion_data['id']
-                db.update_organization(organizacion_data)
+                database.db.update_organization(organizacion_data)
                 self.show_info("Éxito", "Configuración actualizada correctamente")
             else:
                 # Nouvelle organisation
-                db.create_organization(organizacion_data)
+                database.db.create_organization(organizacion_data)
                 self.show_info("Éxito", "Configuración creada correctamente")
 
             # Recharger les données

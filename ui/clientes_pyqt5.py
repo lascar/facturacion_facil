@@ -238,16 +238,15 @@ class ClientesPyQt5Window(BasePyQt5Window):
 
         # Vérifier d'abord si le client a des factures
         try:
-            conn = db.get_connection()
-            cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM facturas WHERE cliente_id = ?", (self.selected_cliente_id,))
-            invoice_count = cursor.fetchone()[0]
+            with db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT COUNT(*) FROM facturas WHERE cliente_id = ?", (self.selected_cliente_id,))
+                invoice_count = cursor.fetchone()[0]
 
-            # Obtenir les informations du client
-            cursor.execute("SELECT nombre FROM clientes WHERE id = ?", (self.selected_cliente_id,))
-            client_result = cursor.fetchone()
-            client_name = client_result[0] if client_result else "Cliente"
-            conn.close()
+                # Obtenir les informations du client
+                cursor.execute("SELECT nombre FROM clientes WHERE id = ?", (self.selected_cliente_id,))
+                client_result = cursor.fetchone()
+                client_name = client_result[0] if client_result else "Cliente"
 
             if invoice_count > 0:
                 # Le client a des factures, proposer des options

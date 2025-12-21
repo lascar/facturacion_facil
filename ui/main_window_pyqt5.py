@@ -194,29 +194,42 @@ class MainWindowPyQt5(QMainWindow):
         
     def closeEvent(self, event):
         """Gérer la fermeture de l'application"""
+        import os
+
+        # En mode test, fermer sans confirmation
+        if os.environ.get('PYTEST_RUNNING') == '1':
+            print("🧪 Mode test détecté - Fermeture sans confirmation")
+            self._close_all_child_windows()
+            event.accept()
+            return
+
+        # En mode normal, demander confirmation
         reply = QMessageBox.question(
-            self, 'Fermer', 
+            self, 'Fermer',
             'Êtes-vous sûr de vouloir fermer l\'application?',
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )
-        
+
         if reply == QMessageBox.Yes:
-            # Fermer toutes les fenêtres ouvertes
-            if self.productos_window:
-                self.productos_window.close()
-            if self.organizacion_window:
-                self.organizacion_window.close()
-            if self.stock_window:
-                self.stock_window.close()
-            if self.facturas_window:
-                self.facturas_window.close()
-            if self.clientes_window:
-                self.clientes_window.close()
-                
+            self._close_all_child_windows()
             event.accept()
         else:
             event.ignore()
+
+    def _close_all_child_windows(self):
+        """Fermer toutes les fenêtres enfants"""
+        # Fermer toutes les fenêtres ouvertes
+        if self.productos_window:
+            self.productos_window.close()
+        if self.organizacion_window:
+            self.organizacion_window.close()
+        if self.stock_window:
+            self.stock_window.close()
+        if self.facturas_window:
+            self.facturas_window.close()
+        if self.clientes_window:
+            self.clientes_window.close()
 
     def apply_modern_style(self):
         """Appliquer un style moderne à l'application"""

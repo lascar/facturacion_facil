@@ -35,7 +35,6 @@
 │  │ [Stock]         │───▶│  StockWindow                │ │
 │  │ [Facturas]      │───▶│  FacturasWindow             │ │
 │  │ [Clientes]      │───▶│  ClientesWindow             │ │
-│  │ [Buscar]        │───▶│  SearchWindow               │ │
 │  └─────────────────┘    └─────────────────────────────┘ │
 │           │                           ▲                 │
 │           │        ┌─────────────────┐ │                 │
@@ -127,7 +126,6 @@ Lancement Application    ✅ Sans erreur
 - ✅ **Stock** : Gestion du stock (CustomTkinter via adaptateur)
 - ✅ **Facturas** : Gestion des factures (CustomTkinter via adaptateur)
 - ✅ **Clientes** : Gestion des clients (CustomTkinter via adaptateur)
-- ✅ **Búsqueda** : Recherche globale (CustomTkinter via adaptateur)
 
 ### 💡 **Avantages Obtenus :**
 
