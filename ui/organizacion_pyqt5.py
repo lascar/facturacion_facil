@@ -5,6 +5,7 @@ Fenêtre de configuration de l'organisation - Version PyQt5 native
 
 import os
 import shutil
+import json
 from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QGroupBox, QFrame, QWidget, QTextEdit, QFileDialog,
@@ -33,6 +34,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
         # Variables
         self.organizacion_data = {}
+        self.config_file = "config/config.json"
 
         # Charger les données
         self.load_organizacion()
@@ -150,7 +152,29 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         address_layout.addWidget(self.direccion_edit)
         
         parent_layout.addWidget(address_group)
-        
+
+        # GroupBox pour les conditions de paiement
+        payment_group = QGroupBox("Condiciones de Pago")
+        payment_layout = QVBoxLayout(payment_group)
+
+        self.condiciones_pago_edit = QTextEdit()
+        self.condiciones_pago_edit.setMaximumHeight(100)
+        self.condiciones_pago_edit.setPlaceholderText("Ej: El pago deberá realizarse antes de la fecha de vencimiento...")
+        payment_layout.addWidget(self.condiciones_pago_edit)
+
+        parent_layout.addWidget(payment_group)
+
+        # GroupBox pour l'information légale
+        legal_group = QGroupBox("Información Legal")
+        legal_layout = QVBoxLayout(legal_group)
+
+        self.informacion_legal_edit = QTextEdit()
+        self.informacion_legal_edit.setMaximumHeight(100)
+        self.informacion_legal_edit.setPlaceholderText("Ej: Esta factura se emite de acuerdo con la normativa fiscal vigente...")
+        legal_layout.addWidget(self.informacion_legal_edit)
+
+        parent_layout.addWidget(legal_group)
+
         # GroupBox pour la configuration
         config_group = QGroupBox("Configuración")
         config_layout = QGridLayout(config_group)
@@ -337,6 +361,87 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         # Marquer les connexions comme configurées
         self._connections_setup = True
         
+    def get_default_config(self):
+        """Obtenir la configuration par défaut"""
+        return {
+            'nombre': 'Mi Empresa',
+            'direccion': 'Calle Principal, 123\n12345 Ciudad',
+            'telefono': '+34 123 456 789',
+            'email': 'contacto@miempresa.com',
+            'cif': 'B12345678',
+            'numero_factura_inicial': '1',
+            'directorio_imagenes_defecto': 'images',
+            'directorio_descargas_pdf': 'facturas/',
+            'directorio_logos_storage': 'logo/',
+            'logo_path': 'logo/logo.png',
+            'logo_orientation': 'landscape',
+            'visor_pdf_personalizado': '',
+            'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
+            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.'
+        }
+
+    def load_config_json(self):
+        """Charger les données depuis config.json avec fusion intelligente des défauts"""
+        try:
+            # Obtenir les valeurs par défaut
+            defaults = self.get_default_config()
+
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    org_defaults = config.get('organizacion_defaults', {})
+
+                    # Fusionner : defaults + valeurs existantes (les existantes ont priorité)
+                    merged = defaults.copy()
+                    merged.update(org_defaults)
+
+                    # Si des clés manquaient, sauvegarder la version fusionnée
+                    if set(merged.keys()) != set(org_defaults.keys()):
+                        self.logger.info("Ajout des valeurs par défaut manquantes dans config.json")
+                        config['organizacion_defaults'] = merged
+                        with open(self.config_file, 'w', encoding='utf-8') as f_write:
+                            json.dump(config, f_write, indent=2, ensure_ascii=False)
+
+                    return merged
+            else:
+                # Créer le fichier avec les valeurs par défaut
+                self.logger.info("Création de config.json avec les valeurs par défaut")
+                os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
+                config = {'organizacion_defaults': defaults}
+                with open(self.config_file, 'w', encoding='utf-8') as f:
+                    json.dump(config, f, indent=2, ensure_ascii=False)
+                return defaults
+
+        except Exception as e:
+            self.logger.error(f"Erreur chargement config.json: {e}")
+            return self.get_default_config()
+
+    def save_config_json(self, condiciones_pago, informacion_legal):
+        """Sauvegarder condiciones_pago et informacion_legal dans config.json"""
+        try:
+            # Charger le fichier existant
+            config = {}
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+
+            # Mettre à jour les valeurs
+            if 'organizacion_defaults' not in config:
+                config['organizacion_defaults'] = {}
+
+            config['organizacion_defaults']['condiciones_pago'] = condiciones_pago
+            config['organizacion_defaults']['informacion_legal'] = informacion_legal
+
+            # Sauvegarder
+            with open(self.config_file, 'w', encoding='utf-8') as f:
+                json.dump(config, f, indent=2, ensure_ascii=False)
+
+            self.logger.info("Config.json sauvegardé avec succès")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur sauvegarde config.json: {e}")
+            return False
+
     def load_organizacion(self):
         """Charger les données de l'organisation depuis la base de données"""
         try:
@@ -346,6 +451,12 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             else:
                 # Données par défaut si aucune organisation n'existe
                 self.clear_form()
+
+            # Charger aussi les données depuis config.json
+            config_data = self.load_config_json()
+            if config_data:
+                self.condiciones_pago_edit.setPlainText(config_data.get('condiciones_pago', ''))
+                self.informacion_legal_edit.setPlainText(config_data.get('informacion_legal', ''))
         except Exception as e:
             self.logger.error(f"Erreur chargement organisation: {e}")
             self.show_error("Erreur", f"Impossible de charger les données: {str(e)}")
@@ -667,16 +778,23 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip()
             }
 
-            # Sauvegarder
+            # Sauvegarder dans la base de données
             if self.organizacion_data and self.organizacion_data.get('id'):
                 # Mise à jour
                 organizacion_data['id'] = self.organizacion_data['id']
                 database.db.update_organization(organizacion_data)
-                self.show_info("Éxito", "Configuración actualizada correctamente")
             else:
                 # Nouvelle organisation
                 database.db.create_organization(organizacion_data)
-                self.show_info("Éxito", "Configuración creada correctamente")
+
+            # Sauvegarder condiciones_pago et informacion_legal dans config.json
+            condiciones_pago = self.condiciones_pago_edit.toPlainText().strip()
+            informacion_legal = self.informacion_legal_edit.toPlainText().strip()
+
+            if self.save_config_json(condiciones_pago, informacion_legal):
+                self.show_info("Éxito", "Configuración actualizada correctamente")
+            else:
+                self.show_warning("Advertencia", "Configuración guardada pero hubo un error al guardar condiciones de pago e información legal")
 
             # Recharger les données
             self.load_organizacion()

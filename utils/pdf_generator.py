@@ -7,6 +7,7 @@ import os
 import platform
 import subprocess
 import tempfile
+import json
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -24,7 +25,8 @@ class FacturaPDFGenerator:
         self.logger = get_logger("pdf_generator")
         self.page_width, self.page_height = A4
         self.margin = 2 * cm
-        
+        self.config_file = "config/config.json"
+
         # Styles
         self.styles = getSampleStyleSheet()
         self.setup_custom_styles()
@@ -332,23 +334,81 @@ class FacturaPDFGenerator:
 
         return elements
 
+    def get_default_config(self):
+        """Obtenir la configuration par défaut"""
+        return {
+            'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
+            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.'
+        }
+
+    def load_config_data(self):
+        """Charger les données depuis config.json avec fusion intelligente des défauts"""
+        try:
+            # Obtenir les valeurs par défaut
+            defaults = self.get_default_config()
+
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    org_defaults = config.get('organizacion_defaults', {})
+
+                    # Commencer avec toutes les valeurs existantes
+                    merged = org_defaults.copy()
+
+                    # Ajouter les valeurs par défaut pour les clés manquantes
+                    missing_keys = set(defaults.keys()) - set(org_defaults.keys())
+                    if missing_keys:
+                        self.logger.info(f"Ajout des valeurs par défaut manquantes dans config.json: {missing_keys}")
+                        # Mettre à jour seulement les clés manquantes
+                        for key in missing_keys:
+                            merged[key] = defaults[key]
+                            org_defaults[key] = defaults[key]
+
+                        # Sauvegarder la version fusionnée
+                        config['organizacion_defaults'] = org_defaults
+                        with open(self.config_file, 'w', encoding='utf-8') as f_write:
+                            json.dump(config, f_write, indent=2, ensure_ascii=False)
+
+                    return merged
+            else:
+                # Si le fichier n'existe pas, retourner les défauts
+                # (le fichier sera créé par organizacion_pyqt5.py)
+                self.logger.warning("config.json n'existe pas, utilisation des valeurs par défaut")
+                return defaults
+
+        except Exception as e:
+            self.logger.error(f"Erreur chargement config.json: {e}")
+            return self.get_default_config()
+
     def create_footer(self, invoice_data):
         """Crée le pied de page avec conditions"""
         elements = []
 
-        # Conditions de paiement
-        footer_text = """
+        # Charger les condiciones_pago et informacion_legal depuis config.json
+        config_data = self.load_config_data()
+        condiciones_pago = config_data.get('condiciones_pago',
+            '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n'
+            '• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n'
+            '• Para cualquier consulta, contacte con nosotros.')
+
+        informacion_legal = config_data.get('informacion_legal',
+            '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n'
+            '• Conserve este documento para sus registros contables.')
+
+        # Convertir les sauts de ligne en <br/>
+        condiciones_pago_html = condiciones_pago.replace('\n', '<br/>')
+        informacion_legal_html = informacion_legal.replace('\n', '<br/>')
+
+        # Construire le footer avec les données configurables
+        footer_text = f"""
         <b>CONDICIONES DE PAGO:</b><br/>
-        • El pago de esta factura deberá realizarse antes de la fecha de vencimiento.<br/>
-        • Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.<br/>
-        • Para cualquier consulta, contacte con nosotros en info@facturacionfacil.com<br/><br/>
+        {condiciones_pago_html}<br/><br/>
 
         <b>INFORMACIÓN LEGAL:</b><br/>
-        • Esta factura se emite de acuerdo con la normativa fiscal vigente.<br/>
-        • Conserve este documento para sus registros contables.<br/><br/>
+        {informacion_legal_html}<br/><br/>
 
-        <i>Factura generada automáticamente por Facturación Fácil - {}</i>
-        """.format(datetime.now().strftime("%d/%m/%Y %H:%M"))
+        <i>Factura generada automáticamente por Facturación Fácil - {datetime.now().strftime("%d/%m/%Y %H:%M")}</i>
+        """
 
         footer_style = ParagraphStyle(
             name='Footer',

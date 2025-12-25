@@ -203,3 +203,4 @@ lpt[1-9]
 # Garder seulement le README principal à la racine
 !/README.md
 /logo/*
+/facturas/*
