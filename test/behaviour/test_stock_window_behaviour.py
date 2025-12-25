@@ -141,23 +141,23 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
     def test_stock_adjustment_workflow_specification(self):
         """Test: Workflow d'ajustement du stock selon spécifications"""
         self.logger.info("🧪 Test: Workflow ajustement stock selon spécifications")
-        
+
         # Ouvrir la fenêtre Stock
         stock_btn = self.automation.find_button_by_text(self.main_window, "📊 Stock")
         QTest.mouseClick(stock_btn, Qt.LeftButton)
         self.wait_and_process_events(500)
-        
+
         # Trouver la fenêtre stock
         stock_window = None
         for widget in self.app.topLevelWidgets():
             if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle():
                 stock_window = widget
                 break
-        
+
         if not stock_window:
             self.logger.warning("Fenêtre Stock non trouvée, test ignoré")
             return
-        
+
         # 1. Sélectionner un produit dans la liste selon spécifications
         stock_table = self.automation.find_widget_by_name(stock_window, "stock_table")
         if stock_table and stock_table.rowCount() > 0:
@@ -171,6 +171,12 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
                 product_name = producto_label.text()
                 self.logger.info(f"✅ Produit sélectionné: {product_name}")
 
+        # 1.5. Vérifier que le bouton Guardar est désactivé initialement
+        guardar_btn = self.automation.find_button_by_text(stock_window, "💾 Guardar Cambios")
+        if guardar_btn:
+            assert not guardar_btn.isEnabled(), "Le bouton Guardar devrait être désactivé initialement"
+            self.logger.info("✅ Bouton Guardar désactivé initialement (correct)")
+
         # 2. Modifier le stock selon spécifications
         nuevo_stock_spinbox = self.automation.find_widget_by_name(stock_window, "nuevo_stock")
         if nuevo_stock_spinbox:
@@ -179,6 +185,11 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
             self.wait_and_process_events(100)
             self.logger.info("✅ Nouveau stock défini: 50")
 
+            # Vérifier que le bouton Guardar s'active après modification
+            if guardar_btn:
+                assert guardar_btn.isEnabled(), "Le bouton Guardar devrait s'activer après modification"
+                self.logger.info("✅ Bouton Guardar activé après modification (correct)")
+
         # 3. Modifier le stock minimum selon spécifications
         stock_minimo_spinbox = self.automation.find_widget_by_name(stock_window, "stock_minimo")
         if stock_minimo_spinbox:
@@ -186,14 +197,17 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
             stock_minimo_spinbox.setValue(15)
             self.wait_and_process_events(100)
             self.logger.info("✅ Stock minimum défini: 15")
-        
-        # 4. Appliquer les modifications selon spécifications
-        ajustar_btn = self.automation.find_button_by_text(stock_window, "📊 Ajustar Stock")
-        if ajustar_btn:
-            QTest.mouseClick(ajustar_btn, Qt.LeftButton)
+
+        # 4. Appliquer les modifications selon spécifications (nouveau bouton Guardar)
+        if guardar_btn:
+            QTest.mouseClick(guardar_btn, Qt.LeftButton)
             self.wait_and_process_events(500)
-            self.logger.info("✅ Ajustement stock appliqué")
-        
+            self.logger.info("✅ Changements sauvegardés via bouton Guardar")
+
+            # Vérifier que le bouton se désactive après sauvegarde
+            assert not guardar_btn.isEnabled(), "Le bouton Guardar devrait se désactiver après sauvegarde"
+            self.logger.info("✅ Bouton Guardar désactivé après sauvegarde (correct)")
+
         # 5. Vérifier que les changements sont reflétés dans la liste
         if stock_table:
             # Actualiser la liste
@@ -202,54 +216,217 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
                 QTest.mouseClick(actualizar_btn, Qt.LeftButton)
                 self.wait_and_process_events(500)
                 self.logger.info("✅ Liste actualisée")
-        
+
         stock_window.close()
         self.wait_and_process_events(200)
-        
+
         self.logger.info("✅ Test workflow ajustement stock terminé")
     
     def test_stock_status_indicators_specification(self):
         """Test: Indicateurs d'état du stock selon spécifications"""
         self.logger.info("🧪 Test: Indicateurs état stock selon spécifications")
-        
+
         # Ouvrir la fenêtre Stock
         stock_btn = self.automation.find_button_by_text(self.main_window, "📊 Stock")
         QTest.mouseClick(stock_btn, Qt.LeftButton)
         self.wait_and_process_events(500)
-        
+
         # Trouver la fenêtre stock
         stock_window = None
         for widget in self.app.topLevelWidgets():
             if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle():
                 stock_window = widget
                 break
-        
+
         if not stock_window:
             self.logger.warning("Fenêtre Stock non trouvée, test ignoré")
             return
-        
+
         # Vérifier les états selon spécifications
         # Estado: Disponible/Stock bajo/Sin stock
         stock_table = self.automation.find_widget_by_name(stock_window, "stock_table")
         if stock_table:
             expected_states = ["Disponible", "Stock bajo", "Sin stock"]
             found_states = []
-            
+
             # Parcourir les lignes pour vérifier les états
             for row in range(stock_table.rowCount()):
                 estado_item = stock_table.item(row, 3)  # Colonne Estado
                 if estado_item:
                     estado_text = estado_item.text()
                     found_states.append(estado_text)
-                    
+
                     # Vérifier que l'état correspond aux spécifications
                     if any(expected in estado_text for expected in expected_states):
                         self.logger.info(f"✅ État valide trouvé: {estado_text}")
-            
+
             # Vérifier qu'on a au moins quelques états
             assert len(found_states) > 0, "Aucun état de stock trouvé"
-        
+
         stock_window.close()
         self.wait_and_process_events(200)
-        
+
         self.logger.info("✅ Test indicateurs état stock terminé")
+
+    def test_guardar_button_behavior(self):
+        """Test: Comportement du bouton Guardar Cambios"""
+        self.logger.info("🧪 Test: Comportement bouton Guardar Cambios")
+
+        # Ouvrir la fenêtre Stock
+        stock_btn = self.automation.find_button_by_text(self.main_window, "📊 Stock")
+        QTest.mouseClick(stock_btn, Qt.LeftButton)
+        self.wait_and_process_events(500)
+
+        # Trouver la fenêtre stock
+        stock_window = None
+        for widget in self.app.topLevelWidgets():
+            if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle():
+                stock_window = widget
+                break
+
+        if not stock_window:
+            self.logger.warning("Fenêtre Stock non trouvée, test ignoré")
+            return
+
+        # Trouver le bouton Guardar
+        guardar_btn = self.automation.find_button_by_text(stock_window, "💾 Guardar Cambios")
+        if not guardar_btn:
+            self.logger.warning("Bouton Guardar non trouvé, test ignoré")
+            stock_window.close()
+            return
+
+        # Test 1: Le bouton doit être désactivé sans sélection
+        assert not guardar_btn.isEnabled(), "Le bouton Guardar devrait être désactivé sans sélection"
+        self.logger.info("✅ Bouton désactivé sans sélection")
+
+        # Sélectionner un produit
+        stock_table = self.automation.find_widget_by_name(stock_window, "stock_table")
+        if stock_table and stock_table.rowCount() > 0:
+            stock_table.selectRow(0)
+            self.wait_and_process_events(200)
+
+            # Test 2: Le bouton doit rester désactivé après sélection (sans modification)
+            assert not guardar_btn.isEnabled(), "Le bouton Guardar devrait rester désactivé après sélection sans modification"
+            self.logger.info("✅ Bouton désactivé après sélection sans modification")
+
+            # Test 3: Le bouton doit s'activer après modification du stock
+            nuevo_stock_spinbox = self.automation.find_widget_by_name(stock_window, "nuevo_stock")
+            if nuevo_stock_spinbox:
+                original_value = nuevo_stock_spinbox.value()
+                nuevo_stock_spinbox.setValue(original_value + 10)
+                self.wait_and_process_events(100)
+
+                assert guardar_btn.isEnabled(), "Le bouton Guardar devrait s'activer après modification du stock"
+                self.logger.info("✅ Bouton activé après modification du stock")
+
+                # Test 4: Le bouton doit se désactiver après sauvegarde
+                QTest.mouseClick(guardar_btn, Qt.LeftButton)
+                self.wait_and_process_events(500)
+
+                assert not guardar_btn.isEnabled(), "Le bouton Guardar devrait se désactiver après sauvegarde"
+                self.logger.info("✅ Bouton désactivé après sauvegarde")
+
+            # Test 5: Le bouton doit s'activer après modification du stock minimum
+            stock_minimo_spinbox = self.automation.find_widget_by_name(stock_window, "stock_minimo")
+            if stock_minimo_spinbox:
+                original_value = stock_minimo_spinbox.value()
+                stock_minimo_spinbox.setValue(original_value + 5)
+                self.wait_and_process_events(100)
+
+                assert guardar_btn.isEnabled(), "Le bouton Guardar devrait s'activer après modification du stock minimum"
+                self.logger.info("✅ Bouton activé après modification du stock minimum")
+
+        stock_window.close()
+        self.wait_and_process_events(200)
+
+        self.logger.info("✅ Test comportement bouton Guardar terminé")
+
+    def test_stock_persistence_after_guardar(self):
+        """Test: Vérifier que les changements sont persistés en base de données après Guardar"""
+        self.logger.info("🧪 Test: Persistance des changements après Guardar")
+
+        # Ouvrir la fenêtre Stock
+        stock_btn = self.automation.find_button_by_text(self.main_window, "📊 Stock")
+        QTest.mouseClick(stock_btn, Qt.LeftButton)
+        self.wait_and_process_events(500)
+
+        # Trouver la fenêtre stock
+        stock_window = None
+        for widget in self.app.topLevelWidgets():
+            if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle():
+                stock_window = widget
+                break
+
+        if not stock_window:
+            self.logger.warning("Fenêtre Stock non trouvée, test ignoré")
+            return
+
+        # Sélectionner un produit
+        stock_table = self.automation.find_widget_by_name(stock_window, "stock_table")
+        if stock_table and stock_table.rowCount() > 0:
+            stock_table.selectRow(0)
+            self.wait_and_process_events(200)
+
+            # Récupérer l'ID du produit sélectionné
+            product_id_item = stock_table.item(0, 0)  # Colonne ID
+            if product_id_item:
+                product_id = int(product_id_item.text())
+                self.logger.info(f"Produit sélectionné ID: {product_id}")
+
+                # Modifier le stock
+                nuevo_stock_spinbox = self.automation.find_widget_by_name(stock_window, "nuevo_stock")
+                if nuevo_stock_spinbox:
+                    new_stock_value = 123  # Valeur unique pour le test
+                    nuevo_stock_spinbox.setValue(new_stock_value)
+                    self.wait_and_process_events(100)
+
+                    # Sauvegarder
+                    guardar_btn = self.automation.find_button_by_text(stock_window, "💾 Guardar Cambios")
+                    if guardar_btn:
+                        QTest.mouseClick(guardar_btn, Qt.LeftButton)
+                        self.wait_and_process_events(500)
+                        self.logger.info(f"Stock modifié à {new_stock_value} et sauvegardé")
+
+                        # Vérifier en base de données
+                        from database.models import Stock
+                        db_stock = Stock.get_by_product(product_id, self.database.db_path)
+
+                        assert db_stock == new_stock_value, f"Le stock en base devrait être {new_stock_value}, obtenu: {db_stock}"
+                        self.logger.info(f"✅ Stock persisté en base de données: {db_stock}")
+
+                        # Fermer et rouvrir la fenêtre pour vérifier la persistance
+                        stock_window.close()
+                        self.wait_and_process_events(200)
+
+                        # Rouvrir
+                        stock_btn = self.automation.find_button_by_text(self.main_window, "📊 Stock")
+                        QTest.mouseClick(stock_btn, Qt.LeftButton)
+                        self.wait_and_process_events(500)
+
+                        # Trouver la nouvelle fenêtre
+                        stock_window = None
+                        for widget in self.app.topLevelWidgets():
+                            if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle():
+                                stock_window = widget
+                                break
+
+                        if stock_window:
+                            # Vérifier que le stock est toujours correct
+                            stock_table = self.automation.find_widget_by_name(stock_window, "stock_table")
+                            if stock_table:
+                                # Trouver la ligne du produit
+                                for row in range(stock_table.rowCount()):
+                                    id_item = stock_table.item(row, 0)
+                                    if id_item and int(id_item.text()) == product_id:
+                                        stock_item = stock_table.item(row, 3)  # Colonne Stock Actual
+                                        if stock_item:
+                                            displayed_stock = int(stock_item.text())
+                                            assert displayed_stock == new_stock_value, f"Le stock affiché devrait être {new_stock_value}, obtenu: {displayed_stock}"
+                                            self.logger.info(f"✅ Stock correctement affiché après réouverture: {displayed_stock}")
+                                            break
+
+        if stock_window:
+            stock_window.close()
+            self.wait_and_process_events(200)
+
+        self.logger.info("✅ Test persistance des changements terminé")

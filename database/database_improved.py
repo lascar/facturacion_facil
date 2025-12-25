@@ -175,8 +175,8 @@ class DatabaseImproved(DatabaseContextManager):
 
                 cursor.execute("""
                     INSERT INTO productos (nombre, referencia, precio, categoria, descripcion,
-                                         imagen_path, iva_recomendado)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                                         imagen_path, iva_recomendado, talla)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     product_data['nombre'],
                     product_data.get('referencia'),
@@ -184,7 +184,8 @@ class DatabaseImproved(DatabaseContextManager):
                     product_data.get('categoria'),
                     product_data.get('descripcion', ''),
                     product_data.get('imagen_path', ''),
-                    product_data.get('iva_recomendado', 21.0)
+                    product_data.get('iva_recomendado', 21.0),
+                    product_data.get('talla')
                 ))
 
                 product_id = cursor.lastrowid
@@ -197,7 +198,7 @@ class DatabaseImproved(DatabaseContextManager):
 
                 self.logger.info(f"Produit ajouté avec ID: {product_id}, catégorie: {product_data.get('categoria', 'N/A')}")
                 return product_id
-                
+
         except sqlite3.IntegrityError as e:
             if "UNIQUE constraint failed" in str(e):
                 raise Exception(f"La référence '{product_data['referencia']}' existe déjà")
@@ -232,7 +233,7 @@ class DatabaseImproved(DatabaseContextManager):
                 cursor = conn.cursor()
                 cursor.execute("""
                     SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
-                           p.imagen_path, p.iva_recomendado, p.fecha_creacion, p.fecha_actualizacion,
+                           p.imagen_path, p.iva_recomendado, p.talla, p.fecha_creacion, p.fecha_actualizacion,
                            COALESCE(s.cantidad_disponible, 0) as stock_actual
                     FROM productos p
                     LEFT JOIN stock s ON p.id = s.producto_id
@@ -251,9 +252,10 @@ class DatabaseImproved(DatabaseContextManager):
                         'descripcion': row[5],
                         'imagen_path': row[6],
                         'iva_recomendado': row[7],
-                        'fecha_creacion': row[8],
-                        'fecha_actualizacion': row[9],
-                        'stock_actual': row[10] or 0,
+                        'talla': row[8],
+                        'fecha_creacion': row[9],
+                        'fecha_actualizacion': row[10],
+                        'stock_actual': row[11] or 0,
                         'stock_minimo': 5  # Valeur par défaut, plus tard on pourrait l'ajouter à la table stock
                     })
 
@@ -293,7 +295,7 @@ class DatabaseImproved(DatabaseContextManager):
                 cursor.execute("""
                     UPDATE productos
                     SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?,
-                        imagen_path = ?, iva_recomendado = ?
+                        imagen_path = ?, iva_recomendado = ?, talla = ?
                     WHERE id = ?
                 """, (
                     product_data['nombre'],
@@ -303,6 +305,7 @@ class DatabaseImproved(DatabaseContextManager):
                     product_data.get('descripcion', ''),
                     product_data.get('imagen_path', ''),
                     product_data.get('iva_recomendado', 21.0),
+                    product_data.get('talla'),
                     product_data['id']
                 ))
 
@@ -470,7 +473,7 @@ class DatabaseImproved(DatabaseContextManager):
                 cursor = conn.cursor()
                 cursor.execute("""
                     SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
-                           p.iva_recomendado, p.fecha_creacion,
+                           p.iva_recomendado, p.talla, p.fecha_creacion,
                            COALESCE(s.cantidad_disponible, 0) as stock_actual
                     FROM productos p
                     LEFT JOIN stock s ON p.id = s.producto_id
@@ -489,8 +492,9 @@ class DatabaseImproved(DatabaseContextManager):
                         'categoria': row[4],
                         'descripcion': row[5],
                         'iva_recomendado': row[6],
-                        'fecha_creacion': row[7],
-                        'stock_actual': row[8] or 0
+                        'talla': row[7],
+                        'fecha_creacion': row[8],
+                        'stock_actual': row[9] or 0
                     }
                 return None
 

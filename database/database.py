@@ -114,15 +114,18 @@ class Database:
             pass  # La columna ya existe
 
         # Migración: Añadir columnas de stock a productos
-        try:
-            cursor.execute('ALTER TABLE productos ADD COLUMN stock_actual INTEGER DEFAULT 0')
-        except sqlite3.OperationalError:
-            pass  # La columna ya existe
-
-        try:
-            cursor.execute('ALTER TABLE productos ADD COLUMN stock_minimo INTEGER DEFAULT 5')
-        except sqlite3.OperationalError:
-            pass  # La columna ya existe
+        # ⚠️ DÉSACTIVÉ: Les colonnes stock_actual et stock_minimo ont été supprimées
+        # On utilise maintenant uniquement la table stock dédiée
+        # Ne pas réactiver ces lignes car elles causent des conflits avec le système de migration
+        # try:
+        #     cursor.execute('ALTER TABLE productos ADD COLUMN stock_actual INTEGER DEFAULT 0')
+        # except sqlite3.OperationalError:
+        #     pass  # La columna ya existe
+        #
+        # try:
+        #     cursor.execute('ALTER TABLE productos ADD COLUMN stock_minimo INTEGER DEFAULT 5')
+        # except sqlite3.OperationalError:
+        #     pass  # La columna ya existe
 
         # Migración: Hacer la referencia opcional (no obligatoria)
         try:
@@ -460,16 +463,16 @@ class Database:
             return []  # Retourner liste vide en cas d'erreur
 
     def get_all_products(self):
-        """Obtiene todos los productos con stock híbrido (migración progresiva)"""
+        """Obtiene todos los productos con información de stock desde tabla stock"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
 
-            # Approche hybride sécurisée: utiliser stock table si disponible, sinon productos.stock_actual
+            # Utiliser uniquement la table stock comme source de vérité
             cursor.execute("""
                 SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
-                       p.iva_recomendado, p.stock_actual, p.stock_minimo, p.fecha_creacion,
-                       s.cantidad_disponible
+                       p.iva_recomendado, p.fecha_creacion,
+                       COALESCE(s.cantidad_disponible, 0) as stock_actual
                 FROM productos p
                 LEFT JOIN stock s ON p.id = s.producto_id
                 ORDER BY p.nombre
@@ -477,13 +480,6 @@ class Database:
 
             products = []
             for row in cursor.fetchall():
-                # Logique hybride: préférer stock table si disponible, sinon productos.stock_actual
-                stock_from_table = row[10]  # s.cantidad_disponible
-                stock_from_productos = row[7] or 0  # p.stock_actual
-
-                # Utiliser stock table si disponible, sinon fallback vers productos
-                final_stock = stock_from_table if stock_from_table is not None else stock_from_productos
-
                 products.append({
                     'id': row[0],
                     'nombre': row[1],
@@ -493,9 +489,9 @@ class Database:
                     'categoria': row[4],
                     'descripcion': row[5],
                     'iva_recomendado': row[6],
-                    'stock_actual': final_stock,  # Stock hybride sécurisé
-                    'stock_minimo': row[8] or 5,
-                    'fecha_creacion': row[9]
+                    'fecha_creacion': row[7],
+                    'stock_actual': row[8],  # Depuis stock table uniquement
+                    'stock_minimo': 5  # Valeur par défaut
                 })
 
             conn.close()
@@ -506,55 +502,57 @@ class Database:
             return []
 
     def update_product_stock(self, product_id, new_stock):
-        """Actualiza el stock de un producto"""
+        """Actualiza el stock de un producto en la tabla stock"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
 
+            # Actualizar o insertar en la tabla stock
             cursor.execute("""
-                UPDATE productos
-                SET stock_actual = ?
-                WHERE id = ?
-            """, (new_stock, product_id))
+                INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(producto_id) DO UPDATE SET
+                    cantidad_disponible = excluded.cantidad_disponible,
+                    fecha_actualizacion = CURRENT_TIMESTAMP
+            """, (product_id, new_stock))
 
-            if cursor.rowcount > 0:
-                conn.commit()
-                conn.close()
-                self.logger.info(f"Stock actualizado para producto {product_id}: {new_stock}")
-                return True
-            else:
-                conn.close()
-                self.logger.warning(f"Producto {product_id} no encontrado para actualizar stock")
-                return False
+            conn.commit()
+            conn.close()
+            self.logger.info(f"Stock actualizado para producto {product_id}: {new_stock}")
+            return True
 
         except Exception as e:
             self.logger.error(f"Error actualizando stock del producto {product_id}: {e}")
             raise e
 
     def adjust_product_stock(self, product_id, adjustment):
-        """Ajusta el stock de un producto (+ o -)"""
+        """Ajusta el stock de un producto (+ o -) en la tabla stock"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
 
-            # Obtener el stock actual
-            cursor.execute("SELECT stock_actual FROM productos WHERE id = ?", (product_id,))
+            # Obtener el stock actual desde la tabla stock
+            cursor.execute("SELECT cantidad_disponible FROM stock WHERE producto_id = ?", (product_id,))
             result = cursor.fetchone()
 
             if not result:
-                conn.close()
-                self.logger.warning(f"Producto {product_id} no encontrado")
-                return False
+                # Si no existe entrada en stock, crearla con el ajuste
+                new_stock = max(0, adjustment)
+                cursor.execute("""
+                    INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                """, (product_id, new_stock))
+                current_stock = 0
+            else:
+                current_stock = result[0] or 0
+                new_stock = max(0, current_stock + adjustment)  # No permitir stock negativo
 
-            current_stock = result[0] or 0
-            new_stock = max(0, current_stock + adjustment)  # No permitir stock negativo
-
-            # Actualizar el stock
-            cursor.execute("""
-                UPDATE productos
-                SET stock_actual = ?
-                WHERE id = ?
-            """, (new_stock, product_id))
+                # Actualizar el stock
+                cursor.execute("""
+                    UPDATE stock
+                    SET cantidad_disponible = ?, fecha_actualizacion = CURRENT_TIMESTAMP
+                    WHERE producto_id = ?
+                """, (new_stock, product_id))
 
             conn.commit()
             conn.close()
@@ -572,11 +570,15 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
 
+            # Utiliser la tabla stock, stock_minimo par défaut = 5
             cursor.execute("""
-                SELECT id, nombre, referencia, stock_actual, stock_minimo
-                FROM productos
-                WHERE stock_actual < stock_minimo
-                ORDER BY (stock_actual - stock_minimo) ASC
+                SELECT p.id, p.nombre, p.referencia,
+                       COALESCE(s.cantidad_disponible, 0) as stock_actual,
+                       5 as stock_minimo
+                FROM productos p
+                LEFT JOIN stock s ON p.id = s.producto_id
+                WHERE COALESCE(s.cantidad_disponible, 0) < 5
+                ORDER BY COALESCE(s.cantidad_disponible, 0) ASC
             """)
 
             products = []
@@ -585,8 +587,8 @@ class Database:
                     'id': row[0],
                     'nombre': row[1],
                     'referencia': row[2],
-                    'stock_actual': row[3] or 0,
-                    'stock_minimo': row[4] or 5
+                    'stock_actual': row[3],
+                    'stock_minimo': row[4]
                 }
                 products.append(product)
 
@@ -617,8 +619,13 @@ class Database:
                 if not producto_id or cantidad <= 0:
                     continue
 
-                # Obtener el stock actual
-                cursor.execute("SELECT stock_actual, nombre FROM productos WHERE id = ?", (producto_id,))
+                # Obtener el stock actual desde la tabla stock
+                cursor.execute("""
+                    SELECT COALESCE(s.cantidad_disponible, 0), p.nombre
+                    FROM productos p
+                    LEFT JOIN stock s ON p.id = s.producto_id
+                    WHERE p.id = ?
+                """, (producto_id,))
                 result = cursor.fetchone()
 
                 if not result:
@@ -626,7 +633,6 @@ class Database:
                     continue
 
                 stock_actual, nombre_producto = result
-                stock_actual = stock_actual or 0
 
                 # Calcular el nuevo stock
                 if operation == 'subtract':
@@ -638,12 +644,14 @@ class Database:
                 else:
                     raise ValueError(f"Operación no válida: {operation}")
 
-                # Actualizar el stock
+                # Actualizar el stock en la tabla stock
                 cursor.execute("""
-                    UPDATE productos
-                    SET stock_actual = ?
-                    WHERE id = ?
-                """, (nuevo_stock, producto_id))
+                    INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(producto_id) DO UPDATE SET
+                        cantidad_disponible = excluded.cantidad_disponible,
+                        fecha_actualizacion = CURRENT_TIMESTAMP
+                """, (producto_id, nuevo_stock))
 
                 # Registrar el movimiento
                 movements_processed.append({
@@ -677,8 +685,13 @@ class Database:
                 if not producto_id or cantidad <= 0:
                     continue
 
-                # Obtener el stock actual
-                cursor.execute("SELECT stock_actual, nombre FROM productos WHERE id = ?", (producto_id,))
+                # Obtener el stock actual desde la tabla stock
+                cursor.execute("""
+                    SELECT COALESCE(s.cantidad_disponible, 0), p.nombre
+                    FROM productos p
+                    LEFT JOIN stock s ON p.id = s.producto_id
+                    WHERE p.id = ?
+                """, (producto_id,))
                 result = cursor.fetchone()
 
                 if not result:
@@ -686,7 +699,6 @@ class Database:
                     continue
 
                 stock_actual, nombre_producto = result
-                stock_actual = stock_actual or 0
 
                 # Calcular el nuevo stock
                 if operation == 'subtract':
@@ -698,12 +710,14 @@ class Database:
                 else:
                     raise ValueError(f"Operación no válida: {operation}")
 
-                # Actualizar el stock
+                # Actualizar el stock en la tabla stock
                 cursor.execute("""
-                    UPDATE productos
-                    SET stock_actual = ?
-                    WHERE id = ?
-                """, (nuevo_stock, producto_id))
+                    INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(producto_id) DO UPDATE SET
+                        cantidad_disponible = excluded.cantidad_disponible,
+                        fecha_actualizacion = CURRENT_TIMESTAMP
+                """, (producto_id, nuevo_stock))
 
                 # Registrar el movimiento
                 movements_processed.append({
@@ -778,11 +792,13 @@ class Database:
 
             # Obtenir le stock depuis les données (avec fallback)
             stock_actual = product_data.get('stock', product_data.get('stock_actual', 0))
-            stock_minimo = product_data.get('stock_minimo', 5)
+
+            # Obtenir la talla si elle existe
+            talla = product_data.get('talla', None)
 
             cursor.execute("""
-                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, iva_recomendado, stock_actual, stock_minimo)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, iva_recomendado, talla)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 product_data['nombre'],
                 product_data['referencia'],
@@ -790,11 +806,17 @@ class Database:
                 product_data['categoria'],
                 product_data['descripcion'],
                 product_data.get('iva_recomendado', 21.0),
-                stock_actual,
-                stock_minimo
+                talla
             ))
 
             product_id = cursor.lastrowid
+
+            # Créer l'entrée dans la table stock
+            cursor.execute("""
+                INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+            """, (product_id, stock_actual))
+
             conn.commit()
             conn.close()
 
@@ -813,11 +835,13 @@ class Database:
 
             # Obtenir le stock depuis les données (avec fallback)
             stock_actual = product_data.get('stock', product_data.get('stock_actual', 0))
-            stock_minimo = product_data.get('stock_minimo', 5)
+
+            # Obtenir la talla si elle existe
+            talla = product_data.get('talla', None)
 
             cursor.execute("""
                 UPDATE productos
-                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, iva_recomendado = ?, stock_actual = ?, stock_minimo = ?
+                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, iva_recomendado = ?, talla = ?
                 WHERE id = ?
             """, (
                 product_data['nombre'],
@@ -826,10 +850,18 @@ class Database:
                 product_data['categoria'],
                 product_data['descripcion'],
                 product_data.get('iva_recomendado', 21.0),
-                stock_actual,
-                stock_minimo,
+                talla,
                 product_data['id']
             ))
+
+            # Mettre à jour le stock dans la table stock
+            cursor.execute("""
+                INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(producto_id) DO UPDATE SET
+                    cantidad_disponible = excluded.cantidad_disponible,
+                    fecha_actualizacion = CURRENT_TIMESTAMP
+            """, (product_data['id'], stock_actual))
 
             conn.commit()
             conn.close()

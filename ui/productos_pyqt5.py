@@ -162,15 +162,18 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.stock_edit = QSpinBox()
         self.stock_edit.setMaximum(999999)
         self.stock_edit.setMinimum(0)
-        
+
         self.categoria_combo = QComboBox()
         self.categoria_combo.setEditable(True)  # Permet d'ajouter de nouvelles catégories
         self.categoria_combo.lineEdit().setPlaceholderText("Escribir categoría o dejar vacío")
         self.load_categories()
-        
+
+        self.talla_edit = QLineEdit()
+        self.talla_edit.setPlaceholderText("Ej: M, L, XL (opcional)")
+
         self.descripcion_edit = QTextEdit()
         self.descripcion_edit.setMaximumHeight(100)
-        
+
         # Ajouter les champs au layout
         form_group_layout.addWidget(QLabel("Nombre:"), 0, 0)
         form_group_layout.addWidget(self.nombre_edit, 0, 1)
@@ -190,8 +193,11 @@ class ProductosPyQt5Window(BasePyQt5Window):
         form_group_layout.addWidget(QLabel("Categoría (opcional):"), 5, 0)
         form_group_layout.addWidget(self.categoria_combo, 5, 1)
 
-        form_group_layout.addWidget(QLabel("Descripción:"), 6, 0)
-        form_group_layout.addWidget(self.descripcion_edit, 6, 1)
+        form_group_layout.addWidget(QLabel("Talla (opcional):"), 6, 0)
+        form_group_layout.addWidget(self.talla_edit, 6, 1)
+
+        form_group_layout.addWidget(QLabel("Descripción:"), 7, 0)
+        form_group_layout.addWidget(self.descripcion_edit, 7, 1)
         
         form_layout.addWidget(form_group)
         form_layout.addStretch()
@@ -207,6 +213,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.iva_edit.valueChanged.connect(lambda: self.set_data_modified(True))
         self.stock_edit.valueChanged.connect(lambda: self.set_data_modified(True))
         self.categoria_combo.currentTextChanged.connect(lambda: self.set_data_modified(True))
+        self.talla_edit.textChanged.connect(lambda: self.set_data_modified(True))
         self.descripcion_edit.textChanged.connect(lambda: self.set_data_modified(True))
         
     def load_productos(self):
@@ -249,6 +256,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.iva_edit.blockSignals(True)
         self.stock_edit.blockSignals(True)
         self.categoria_combo.blockSignals(True)
+        self.talla_edit.blockSignals(True)
 
         try:
             self.nombre_edit.setText(str(producto.get('nombre', '')))
@@ -292,6 +300,10 @@ class ProductosPyQt5Window(BasePyQt5Window):
                 # Pas de catégorie, sélectionner l'option vide
                 self.categoria_combo.setCurrentText("")
 
+            # Gérer la talla NULL/None
+            talla = producto.get('talla')
+            self.talla_edit.setText(str(talla) if talla else '')
+
             self.descripcion_edit.setPlainText(str(producto.get('descripcion', '')))
             self.set_data_modified(False)
         finally:
@@ -302,6 +314,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
             self.iva_edit.blockSignals(False)
             self.stock_edit.blockSignals(False)
             self.categoria_combo.blockSignals(False)
+            self.talla_edit.blockSignals(False)
         
     def new_producto(self):
         """Créer un nouveau produit"""
@@ -316,6 +329,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.iva_edit.setValue(21.0)  # IVA par défaut
         self.stock_edit.setValue(0)
         self.categoria_combo.setCurrentText("")  # Commencer vide
+        self.talla_edit.clear()
         self.descripcion_edit.clear()
         self.set_data_modified(False)
         
@@ -337,6 +351,10 @@ class ProductosPyQt5Window(BasePyQt5Window):
             if categoria == "-- Sin categoría --" or not categoria:
                 categoria = None
 
+            # Gérer la talla vide
+            talla = self.talla_edit.text().strip()
+            talla = talla if talla else None
+
             producto_data = {
                 'nombre': self.nombre_edit.text().strip(),
                 'referencia': referencia,
@@ -344,6 +362,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
                 'iva_recomendado': self.iva_edit.value(),
                 'stock': self.stock_edit.value(),
                 'categoria': categoria,
+                'talla': talla,
                 'descripcion': self.descripcion_edit.toPlainText().strip()
             }
             
@@ -502,6 +521,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         # Connecter les changements de texte
         self.nombre_edit.textChanged.connect(self.on_form_data_changed)
         self.referencia_edit.textChanged.connect(self.on_form_data_changed)
+        self.talla_edit.textChanged.connect(self.on_form_data_changed)
 
         # Connecter les changements de valeurs numériques
         self.precio_edit.valueChanged.connect(self.on_form_data_changed)
@@ -550,6 +570,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
                         self.productos[row]['precio_venta'] = self.precio_edit.value()
                         self.productos[row]['stock_actual'] = int(self.stock_edit.value())
                         self.productos[row]['categoria'] = self.categoria_combo.currentText() or None
+                        self.productos[row]['talla'] = self.talla_edit.text() or None
                     break
         except Exception as e:
             self.logger.error(f"Erreur mise à jour ligne table: {e}")

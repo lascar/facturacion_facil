@@ -336,6 +336,15 @@ class MigrationManager:
     def _migrate_stock_data_to_stock_table(self, cursor):
         """Migre les données stock_actual vers la table stock si nécessaire"""
         try:
+            # IMPORTANT: Vérifier d'abord si la colonne stock_actual existe encore
+            cursor.execute("PRAGMA table_info(productos)")
+            columns = cursor.fetchall()
+            column_names = [col[1] for col in columns]
+
+            if 'stock_actual' not in column_names:
+                self.logger.info("Colonne stock_actual n'existe plus, migration des données ignorée")
+                return
+
             # Vérifier s'il y a des produits avec stock_actual mais sans entrée dans stock
             cursor.execute("""
                 SELECT p.id, p.stock_actual
@@ -441,6 +450,7 @@ class MigrationManager:
                     descripcion TEXT,
                     imagen_path TEXT,
                     iva_recomendado REAL DEFAULT 21.0,
+                    talla TEXT,
                     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
@@ -457,6 +467,31 @@ class MigrationManager:
 
         except Exception as e:
             self.logger.error(f"Erreur création table productos (sans stock): {e}")
+            return False
+
+    def migrate_add_talla_column(self):
+        """Migration pour ajouter la colonne talla à la table productos"""
+        self.logger.info("Début migration ajout colonne talla")
+
+        # Créer sauvegarde avant migration
+        backup_path = self.create_backup("add_talla_column")
+        if not backup_path:
+            self.logger.error("Impossible de créer une sauvegarde, migration annulée")
+            return False
+
+        try:
+            # Ajouter la colonne talla (TEXT, optionnelle, NULL par défaut)
+            success = self.add_column_if_not_exists("productos", "talla", "TEXT", None)
+
+            if success:
+                self.logger.info("Migration ajout colonne talla terminée avec succès")
+                return True
+            else:
+                self.logger.error("Erreur durant la migration ajout colonne talla")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Erreur migration ajout colonne talla: {e}")
             return False
 
     def run_all_migrations(self):
@@ -481,7 +516,8 @@ class MigrationManager:
             # Sinon, exécuter la migration productos normale (sans ajouter les colonnes stock)
             migrations.append(("productos_without_stock", self.migrate_productos_table_without_stock))
 
-        # Ajouter d'autres migrations ici
+        # Ajouter la migration pour la colonne talla
+        migrations.append(("add_talla_column", self.migrate_add_talla_column))
 
         success = True
         for migration_name, migration_func in migrations:

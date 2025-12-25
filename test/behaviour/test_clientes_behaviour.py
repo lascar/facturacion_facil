@@ -197,9 +197,9 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.take_screenshot("client_minimal_created")
         self.logger.info("✅ Test validation formulaire réussi")
 
-    @pytest.mark.skip(reason="Test cause un crash fatal - à investiguer séparément")
     @pytest.mark.behaviour
     @pytest.mark.gui
+    @pytest.mark.skip(reason="Test cause un crash fatal - à investiguer séparément")
     def test_client_workflow_with_qtest(self):
         """Test complet du workflow client avec QTest (méthodes PyQt5 natives)"""
         self.logger.info("🧪 Test: Workflow client complet avec QTest")

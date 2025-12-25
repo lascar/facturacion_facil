@@ -46,17 +46,15 @@ class StockPyQt5Window(BasePyQt5Window):
         # Configuration des sections
         self.setup_stock_list(splitter)
         self.setup_stock_form(splitter)
-        
-        # Boutons
+
+        # Boutons (seulement Actualizar dans la barre latérale)
         buttons_layout = QVBoxLayout()
-        
+
         self.refresh_btn = QPushButton("🔄 Actualizar")
-        self.adjust_btn = QPushButton("📊 Ajustar Stock")
-        
+
         buttons_layout.addWidget(self.refresh_btn)
-        buttons_layout.addWidget(self.adjust_btn)
         buttons_layout.addStretch()
-        
+
         buttons_widget = QWidget()
         buttons_widget.setLayout(buttons_layout)
         buttons_widget.setMaximumWidth(150)
@@ -93,42 +91,72 @@ class StockPyQt5Window(BasePyQt5Window):
         """Configurer le formulaire d'ajustement de stock"""
         form_widget = QWidget()
         form_layout = QVBoxLayout(form_widget)
-        
+
         # GroupBox pour le formulaire
         form_group = QGroupBox("Ajustar Stock")
         form_group_layout = QGridLayout(form_group)
-        
+
         # Champs du formulaire
         self.producto_label = QLabel("Producto: -")
         self.stock_actual_label = QLabel("Stock Actual: -")
-        
+
         self.nuevo_stock_edit = QSpinBox()
         self.nuevo_stock_edit.setMaximum(999999)
         self.nuevo_stock_edit.setMinimum(0)
-        
+
         self.stock_minimo_edit = QSpinBox()
         self.stock_minimo_edit.setMaximum(999999)
         self.stock_minimo_edit.setMinimum(0)
-        
+
         # Ajouter les champs au layout
         form_group_layout.addWidget(self.producto_label, 0, 0, 1, 2)
         form_group_layout.addWidget(self.stock_actual_label, 1, 0, 1, 2)
-        
+
         form_group_layout.addWidget(QLabel("Nuevo Stock:"), 2, 0)
         form_group_layout.addWidget(self.nuevo_stock_edit, 2, 1)
-        
+
         form_group_layout.addWidget(QLabel("Stock Mínimo:"), 3, 0)
         form_group_layout.addWidget(self.stock_minimo_edit, 3, 1)
-        
+
+        # Bouton Guardar dans le formulaire
+        self.guardar_btn = QPushButton("💾 Guardar Cambios")
+        self.guardar_btn.setMinimumHeight(40)
+        self.guardar_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+                border-radius: 5px;
+                padding: 8px;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+            QPushButton:pressed {
+                background-color: #3d8b40;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }
+        """)
+        self.guardar_btn.setEnabled(False)  # Désactivé par défaut
+        form_group_layout.addWidget(self.guardar_btn, 4, 0, 1, 2)
+
         form_layout.addWidget(form_group)
         form_layout.addStretch()
-        
+
         parent.addWidget(form_widget)
         
     def setup_connections(self):
         """Configurer les connexions de signaux"""
         self.refresh_btn.clicked.connect(self.load_stock_data)
-        self.adjust_btn.clicked.connect(self.adjust_stock)
+        self.guardar_btn.clicked.connect(self.adjust_stock)
+
+        # Activer le bouton Guardar quand les valeurs changent
+        self.nuevo_stock_edit.valueChanged.connect(self.on_stock_value_changed)
+        self.stock_minimo_edit.valueChanged.connect(self.on_stock_value_changed)
         
     def load_stock_data(self):
         """Charger les données de stock depuis la base de données"""
@@ -177,6 +205,14 @@ class StockPyQt5Window(BasePyQt5Window):
         self.nuevo_stock_edit.setValue(int(producto.get('stock_actual', 0)))
         self.stock_minimo_edit.setValue(int(producto.get('stock_minimo', 5)))
 
+        # Désactiver le bouton Guardar car les valeurs viennent d'être chargées
+        self.guardar_btn.setEnabled(False)
+
+    def on_stock_value_changed(self):
+        """Activer le bouton Guardar quand les valeurs changent"""
+        if self.selected_product_id:
+            self.guardar_btn.setEnabled(True)
+
     def adjust_stock(self):
         """Ajuster le stock du produit sélectionné"""
         if not self.selected_product_id:
@@ -186,9 +222,11 @@ class StockPyQt5Window(BasePyQt5Window):
         try:
             # Obtenir l'ancien stock pour comparaison
             old_stock = 0
+            producto_nombre = ""
             for producto in self.productos:
                 if producto.get('id') == self.selected_product_id:
                     old_stock = int(producto.get('stock_actual', 0))
+                    producto_nombre = producto.get('nombre', '')
                     break
 
             nuevo_stock = self.nuevo_stock_edit.value()
@@ -204,14 +242,22 @@ class StockPyQt5Window(BasePyQt5Window):
             self.logger.info(f"📤 ÉMISSION SIGNAL - Stock ajusté: produit {self.selected_product_id}, {old_stock} -> {nuevo_stock}")
             event_manager.emit_stock_adjusted(self.selected_product_id, old_stock, nuevo_stock)
 
-            self.show_info("Éxito", f"Stock actualizado a {nuevo_stock} unidades\nStock mínimo: {stock_minimo}")
+            # Message de succès plus clair
+            self.show_info("✅ Guardado",
+                          f"Stock de '{producto_nombre}' actualizado correctamente:\n\n"
+                          f"• Stock anterior: {old_stock} unidades\n"
+                          f"• Stock nuevo: {nuevo_stock} unidades\n"
+                          f"• Stock mínimo: {stock_minimo}")
+
+            # Désactiver le bouton Guardar après sauvegarde
+            self.guardar_btn.setEnabled(False)
 
             # Recharger les données
             self.load_stock_data()
 
         except Exception as e:
             self.logger.error(f"Erreur ajustement stock: {e}")
-            self.show_error("Error", f"Error al ajustar el stock: {str(e)}")
+            self.show_error("Error", f"Error al guardar el stock: {str(e)}")
 
     # Note: update_stock_minimo supprimé car stock_minimo n'est plus dans productos
     # Plus tard, on pourrait ajouter une colonne stock_minimo à la table stock
