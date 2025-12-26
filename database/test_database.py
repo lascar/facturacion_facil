@@ -6,11 +6,11 @@ Base de données de test pour éviter d'utiliser la base de production
 import os
 import shutil
 import tempfile
-from database.database_improved import DatabaseImproved
+from database.database import Database
 from database.fixtures import TestFixtures
 from utils.logger import get_logger
 
-class TestDatabase(DatabaseImproved):
+class TestDatabase(Database):
     """Base de données de test qui utilise un fichier temporaire"""
     
     def __init__(self, with_fixtures=True):
@@ -20,7 +20,7 @@ class TestDatabase(DatabaseImproved):
         self.temp_dir = tempfile.mkdtemp(prefix="facturacion_test_")
         self.test_db_path = os.path.join(self.temp_dir, "test_facturacion.db")
 
-        # Initialiser avec le chemin de test (DatabaseImproved s'occupe de tout)
+        # Initialiser avec le chemin de test (Database s'occupe de tout)
         super().__init__(self.test_db_path)
 
         # Gestionnaire de fixtures

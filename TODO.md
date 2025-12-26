@@ -106,5 +106,6 @@
 ---
 
 # ✅ PROBLEMAS
-il faudrait rajouter une colonne optionelle à produit 'talla' <input text>, dans organización on aura un checkbox après estado de factura columna 'talla' visible (si c'est coché la talla sera visible). gardé dans config/config.json
-le fichier 'Productos Tienda.xlsx' a 6 colonnes
+le fichier 'Productos Tienda.xlsx' a 6 colonnes, je voudrais que tu fasses un migracion.bat (pour windows) et un migracion.sh (pour linux) qui mette dans la table 'products_shop' avec les 6 colonnes du fichier 'Productos Tienda.xlsx' dans la base de données 'database.db'
+tu dois adapter les données de 'Productos Tienda.xlsx' à la table, le nom c'est la categorie et la reférencia c'est le nom du produit, la 2eme colonne c'est la talla
+

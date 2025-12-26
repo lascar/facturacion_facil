@@ -1,46 +1,56 @@
 # -*- coding: utf-8 -*-
 """
-Fenêtre de gestion du stock - Version PyQt5 native
+Fenêtre de gestion du stock - Version PyQt5 native - Refactorisée avec StockService
 """
 
 from PyQt5.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, 
+    QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QSpinBox, QGroupBox, QSplitter, QFrame, QWidget
+    QSpinBox, QGroupBox, QSplitter, QFrame, QWidget, QMessageBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database.database_improved import DatabaseImproved
+from database.database import Database
 from database.models import Stock
+from services.stock_service import StockService
 from utils.logger import get_logger
 from utils.event_manager_pyqt5 import event_manager
+from utils.exceptions import (
+    ProductValidationError,
+    ProductNotFoundError,
+    DatabaseError
+)
 
-# Instance globale de la base de données améliorée
-db_improved = DatabaseImproved()
+# Instance globale de la base de données unifiée
+db = Database()
 
 class StockPyQt5Window(BasePyQt5Window):
-    """Fenêtre de gestion du stock avec PyQt5"""
-    
+    """Fenêtre de gestion du stock avec PyQt5 - Refactorisée avec StockService"""
+
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Gestión de Stock", 1000, 700)
-        
+
+        # Service métier - utiliser le même chemin DB que l'ancienne instance
+        db_path = db.db_path if hasattr(db, 'db_path') else None
+        self.stock_service = StockService(db_path)
+
         # Variables
         self.productos = []
         self.selected_product_id = None
-        
+
         # Charger les données
         self.load_stock_data()
         
     def setup_ui(self):
         """Configurer l'interface utilisateur"""
         # Layout principal
-        main_layout = QHBoxLayout(self)
-        
-        # Splitter pour diviser l'interface
-        splitter = QSplitter(Qt.Horizontal)
+        main_layout = QVBoxLayout(self)
+
+        # Splitter pour diviser l'interface (vertical pour plus de lisibilité)
+        splitter = QSplitter(Qt.Vertical)
         main_layout.addWidget(splitter)
         
         # Configuration des sections
@@ -161,11 +171,14 @@ class StockPyQt5Window(BasePyQt5Window):
     def load_stock_data(self):
         """Charger les données de stock depuis la base de données"""
         try:
-            self.productos = db_improved.get_all_products()
+            self.productos = self.stock_service.get_all_stock()
             self.update_stock_table()
-        except Exception as e:
+        except DatabaseError as e:
             self.logger.error(f"Erreur chargement stock: {e}")
-            self.show_error("Erreur", f"Impossible de charger le stock: {str(e)}")
+            QMessageBox.critical(self, "Error", f"Error cargando stock: {str(e)}")
+        except Exception as e:
+            self.logger.error(f"Erreur inattendue chargement stock: {e}")
+            QMessageBox.critical(self, "Error", f"Error inesperado: {str(e)}")
             
     def update_stock_table(self):
         """Mettre à jour la table des stocks"""
@@ -216,7 +229,7 @@ class StockPyQt5Window(BasePyQt5Window):
     def adjust_stock(self):
         """Ajuster le stock du produit sélectionné"""
         if not self.selected_product_id:
-            self.show_warning("Selección", "Seleccione un producto para ajustar el stock")
+            QMessageBox.warning(self, "Selección", "Seleccione un producto para ajustar el stock")
             return
 
         try:
@@ -232,18 +245,17 @@ class StockPyQt5Window(BasePyQt5Window):
             nuevo_stock = self.nuevo_stock_edit.value()
             stock_minimo = self.stock_minimo_edit.value()
 
-            # Mettre à jour le stock dans la table stock (nouvelle structure)
-            Stock.update_stock_direct(self.selected_product_id, nuevo_stock)
+            # Mettre à jour le stock via le service
+            self.stock_service.update_stock(self.selected_product_id, nuevo_stock)
 
-            # Note: stock_minimo sera géré plus tard dans la table stock
-            # Pour l'instant, on utilise la valeur par défaut
+            # Note: stock_minimo sera géré plus tard quand la table stock aura cette colonne
 
             # Émettre un signal pour notifier les autres fenêtres
             self.logger.info(f"📤 ÉMISSION SIGNAL - Stock ajusté: produit {self.selected_product_id}, {old_stock} -> {nuevo_stock}")
             event_manager.emit_stock_adjusted(self.selected_product_id, old_stock, nuevo_stock)
 
             # Message de succès plus clair
-            self.show_info("✅ Guardado",
+            QMessageBox.information(self, "✅ Guardado",
                           f"Stock de '{producto_nombre}' actualizado correctamente:\n\n"
                           f"• Stock anterior: {old_stock} unidades\n"
                           f"• Stock nuevo: {nuevo_stock} unidades\n"
@@ -255,9 +267,15 @@ class StockPyQt5Window(BasePyQt5Window):
             # Recharger les données
             self.load_stock_data()
 
+        except ProductValidationError as e:
+            self.logger.error(f"Erreur validation stock: {e}")
+            QMessageBox.warning(self, "Error de Validación", str(e))
+        except ProductNotFoundError as e:
+            self.logger.error(f"Produit non trouvé: {e}")
+            QMessageBox.warning(self, "Producto No Encontrado", str(e))
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            QMessageBox.critical(self, "Error de Base de Datos", str(e))
         except Exception as e:
-            self.logger.error(f"Erreur ajustement stock: {e}")
-            self.show_error("Error", f"Error al guardar el stock: {str(e)}")
-
-    # Note: update_stock_minimo supprimé car stock_minimo n'est plus dans productos
-    # Plus tard, on pourrait ajouter une colonne stock_minimo à la table stock
+            self.logger.error(f"Erreur inattendue ajustement stock: {e}")
+            QMessageBox.critical(self, "Error", f"Error inesperado: {str(e)}")

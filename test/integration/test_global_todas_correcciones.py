@@ -121,10 +121,10 @@ def test_aplicacion_completa():
         print("4️⃣ Verificando módulo organización...")
         org = Organizacion.get()
         print(f"   ✅ Organización cargada: {org.nombre or 'Sin nombre'}")
-        
+
         print("\n✅ APLICACIÓN FUNCIONA CORRECTAMENTE")
         return True
-        
+
     except Exception as e:
         print(f"\n❌ ERROR EN APLICACIÓN: {e}")
         import traceback

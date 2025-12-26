@@ -6,14 +6,14 @@ Fixtures pour les tests - Données de test standardisées
 
 import sqlite3
 from datetime import datetime, timedelta
-from database.database_improved import DatabaseImproved
+from database.database import Database
 
 class TestFixtures:
     """Gestionnaire de fixtures pour les tests"""
-    
+
     def __init__(self, db_path=None):
         self.db_path = db_path
-        self.db_improved = DatabaseImproved(db_path) if db_path else DatabaseImproved()
+        self.db_improved = Database(db_path) if db_path else Database()
     
     def get_products_fixtures(self):
         """Retourne les données des 3 produits de test"""
@@ -172,19 +172,33 @@ class TestFixtures:
                     product_id = product_ids[item['product_id'] - 1]  # Ajuster l'index
                     product_data = self.get_products_fixtures()[item['product_id'] - 1]
 
+                    # Calculer les montants
+                    cantidad = item['cantidad']
+                    precio_unitario = item['precio_unitario']
+                    iva_aplicado = 21.0
+                    descuento = 0.0
+                    subtotal = cantidad * precio_unitario
+                    descuento_amount = subtotal * (descuento / 100)
+                    subtotal_con_descuento = subtotal - descuento_amount
+                    iva_amount = subtotal_con_descuento * (iva_aplicado / 100)
+                    total = subtotal_con_descuento + iva_amount
+
                     cursor.execute("""
-                        INSERT INTO factura_items (factura_id, producto_id, referencia_producto,
-                                                 nombre_producto, cantidad, precio_unitario, iva, subtotal)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO factura_items (factura_id, producto_id, cantidad, precio_unitario,
+                                                 iva_aplicado, descuento, subtotal, descuento_amount,
+                                                 iva_amount, total)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """, (
                         invoice_id,
                         product_id,
-                        product_data['referencia'],
-                        product_data['nombre'],
-                        item['cantidad'],
-                        item['precio_unitario'],
-                        21.0,  # IVA 21%
-                        item['cantidad'] * item['precio_unitario']
+                        cantidad,
+                        precio_unitario,
+                        iva_aplicado,
+                        descuento,
+                        subtotal,
+                        descuento_amount,
+                        iva_amount,
+                        total
                     ))
 
                 invoice_ids.append(invoice_id)

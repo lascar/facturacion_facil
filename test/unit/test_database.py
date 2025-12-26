@@ -156,24 +156,92 @@ class TestDatabase:
     def test_database_performance(self, temp_db, faker_instance):
         """Test de performance de la base de données"""
         import time
-        
+
         # Insérer beaucoup de produits
         start_time = time.time()
-        
+
         for i in range(100):
             temp_db.execute_query(
                 "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
                 (f"Product {i}", f"PERF{i:03d}", faker_instance.pyfloat(positive=True, max_value=100))
             )
-        
+
         insert_time = time.time() - start_time
-        
+
         # Tester la sélection
         start_time = time.time()
         results = temp_db.execute_query("SELECT * FROM productos")
         select_time = time.time() - start_time
-        
+
         # Vérifications
         assert len(results) == 100
         assert insert_time < 5.0  # Moins de 5 secondes pour 100 insertions
         assert select_time < 1.0  # Moins de 1 seconde pour sélectionner 100 lignes
+
+    def test_get_product_categories(self, temp_db):
+        """Test la récupération des catégories de produits"""
+        # Ajouter des produits avec différentes catégories
+        temp_db.execute_query(
+            "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
+            ("Producto 1", "CAT001", 10.0, "Electrónica")
+        )
+        temp_db.execute_query(
+            "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
+            ("Producto 2", "CAT002", 20.0, "Ropa")
+        )
+        temp_db.execute_query(
+            "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
+            ("Producto 3", "CAT003", 30.0, "Electrónica")
+        )
+
+        # Récupérer les catégories
+        categories = temp_db.get_product_categories()
+
+        # Vérifications
+        assert len(categories) == 2
+        assert "Electrónica" in categories
+        assert "Ropa" in categories
+
+    def test_delete_multiple_clients(self, temp_db):
+        """Test la suppression de plusieurs clients"""
+        # Créer des clients
+        client1_id = temp_db.execute_query(
+            "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
+            ("Cliente 1", "12345678A")
+        )
+        client2_id = temp_db.execute_query(
+            "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
+            ("Cliente 2", "87654321B")
+        )
+
+        # Supprimer les clients
+        deleted_count = temp_db.delete_multiple_clients([client1_id, client2_id])
+
+        # Vérifications
+        assert deleted_count == 2
+
+        # Vérifier qu'ils n'existent plus
+        clients = temp_db.get_all_clients()
+        assert len(clients) == 0
+
+    def test_delete_multiple_clients_with_invoices(self, temp_db):
+        """Test que la suppression de clients avec factures échoue"""
+        # Créer un client
+        client_id = temp_db.execute_query(
+            "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
+            ("Cliente con factura", "12345678A")
+        )
+
+        # Créer une facture pour ce client
+        temp_db.execute_query(
+            "INSERT INTO facturas (numero_factura, fecha_factura, nombre_cliente, cliente_id, subtotal, total_iva, total_factura) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("FAC001", "2024-01-01", "Cliente con factura", client_id, 100.0, 21.0, 121.0)
+        )
+
+        # Tenter de supprimer le client
+        with pytest.raises(Exception) as exc_info:
+            temp_db.delete_multiple_clients([client_id])
+
+        # Vérifier le message d'erreur
+        assert "No se pueden eliminar" in str(exc_info.value)
+        assert "factura" in str(exc_info.value).lower()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Fenêtre de gestion des produits - Version PyQt5 native
+Refactorisée pour utiliser ProductoService (Phase 5)
 """
 
 from PyQt5.QtWidgets import (
@@ -13,29 +14,36 @@ from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database.database import db
-from database.database_improved import DatabaseImproved
+from database.database import db, Database
+from services.producto_service import ProductoService
 from utils.logger import get_logger
 from utils.event_manager_pyqt5 import event_manager
-
-# Utiliser la version améliorée avec gestionnaires de contexte
-db_improved = DatabaseImproved()
+from utils.exceptions import (
+    ProductValidationError, ProductNotFoundError, DatabaseError
+)
 
 class ProductosPyQt5Window(BasePyQt5Window):
-    """Fenêtre de gestion des produits avec PyQt5"""
-    
+    """Fenêtre de gestion des produits avec PyQt5 - Refactorisée avec ProductoService"""
+
     # Signaux
     producto_selected = Signal(dict)
     producto_updated = Signal(int)
-    
+
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Gestión de Productos", 1000, 700)
-        
+
+        # Service métier - utiliser le même chemin DB que l'ancienne instance
+        db_path = db.db_path if hasattr(db, 'db_path') else None
+        self.producto_service = ProductoService(db_path)
+
+        # Référence à l'ancienne DB pour get_product_categories (temporaire)
+        self.db = Database(db_path)
+
         # Variables
         self.productos = []
         self.selected_producto_id = None
-        
+
         # Charger les données
         self.load_productos()
 
@@ -45,7 +53,8 @@ class ProductosPyQt5Window(BasePyQt5Window):
     def load_categories(self):
         """Charger les catégories depuis la base de données"""
         try:
-            categories = db_improved.get_product_categories()
+            # Utiliser l'ancienne DB pour get_product_categories (pas encore dans le service)
+            categories = self.db.get_product_categories()
 
             # Ne pas ajouter de catégories par défaut - laisser vide si aucune catégorie n'existe
 
@@ -76,9 +85,9 @@ class ProductosPyQt5Window(BasePyQt5Window):
         title_font.setBold(True)
         title_label.setFont(title_font)
         main_layout.addWidget(title_label)
-        
-        # Splitter principal
-        splitter = QSplitter(Qt.Horizontal)
+
+        # Splitter principal (vertical pour plus de lisibilité)
+        splitter = QSplitter(Qt.Vertical)
         main_layout.addWidget(splitter)
         
         # Partie gauche - Liste des produits
@@ -217,13 +226,16 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.descripcion_edit.textChanged.connect(lambda: self.set_data_modified(True))
         
     def load_productos(self):
-        """Charger les produits depuis la base de données"""
+        """Charger les produits depuis la base de données via ProductoService"""
         try:
-            self.productos = db_improved.get_all_products()
+            self.productos = self.producto_service.get_all_productos()
             self.update_products_table()
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", f"Impossible de charger les produits: {str(e)}")
         except Exception as e:
             self.logger.error(f"Erreur chargement produits: {e}")
-            self.show_error("Erreur", f"Impossible de charger les produits: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
             
     def update_products_table(self):
         """Mettre à jour la table des produits"""
@@ -366,20 +378,20 @@ class ProductosPyQt5Window(BasePyQt5Window):
                 'descripcion': self.descripcion_edit.toPlainText().strip()
             }
             
-            # Sauvegarder
+            # Sauvegarder via ProductoService
             is_new_product = not bool(self.selected_producto_id)
 
             if self.selected_producto_id:
                 # Mise à jour
                 producto_data['id'] = self.selected_producto_id
-                db_improved.update_product(producto_data)
+                self.producto_service.update_producto(producto_data)
                 self.show_info("Éxito", "Producto actualizado correctamente")
             else:
                 # Nouveau produit
-                new_id = db_improved.add_product(producto_data)
+                new_id = self.producto_service.create_producto(producto_data)
                 self.selected_producto_id = new_id
                 self.show_info("Éxito", "Producto creado correctamente")
-            
+
             # Recharger les données
             self.load_productos()
             self.load_categories()  # Recharger les catégories pour inclure les nouvelles
@@ -401,26 +413,41 @@ class ProductosPyQt5Window(BasePyQt5Window):
                         event_manager.emit_product_updated(producto_data)
 
             self.producto_updated.emit(self.selected_producto_id or 0)
-            
+
+        except ProductValidationError as e:
+            self.logger.error(f"Erreur validation produit: {e}")
+            self.show_error("Error de Validación", str(e))
+        except ProductNotFoundError as e:
+            self.logger.error(f"Produit non trouvé: {e}")
+            self.show_error("Producto No Encontrado", str(e))
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", str(e))
         except Exception as e:
             self.logger.error(f"Erreur sauvegarde produit: {e}")
-            self.show_error("Error", f"Error al guardar el producto: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
             
     def delete_producto(self):
-        """Supprimer le produit sélectionné"""
+        """Supprimer le produit sélectionné via ProductoService"""
         if not self.selected_producto_id:
             self.show_warning("Selección", "Seleccione un producto para eliminar")
             return
-            
+
         if self.ask_confirmation("Confirmar", "¿Está seguro de eliminar este producto?"):
             try:
-                db.delete_product(self.selected_producto_id)
+                self.producto_service.delete_producto(self.selected_producto_id)
                 self.show_info("Éxito", "Producto eliminado correctamente")
                 self.load_productos()
                 self.new_producto()
+            except ProductNotFoundError as e:
+                self.logger.error(f"Produit non trouvé: {e}")
+                self.show_error("Producto No Encontrado", str(e))
+            except DatabaseError as e:
+                self.logger.error(f"Erreur base de données: {e}")
+                self.show_error("Error de Base de Datos", str(e))
             except Exception as e:
                 self.logger.error(f"Erreur suppression produit: {e}")
-                self.show_error("Error", f"Error al eliminar el producto: {str(e)}")
+                self.show_error("Error", f"Error inesperado: {str(e)}")
 
     def refresh_productos(self):
         """Actualiza la lista de productos desde la base de datos"""

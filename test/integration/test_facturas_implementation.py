@@ -27,15 +27,13 @@ def test_imports():
         
         from ui.facturas_methods import FacturasMethodsMixin
         print("   ✅ Métodos de facturas importados")
-        
+
         # ProductoFacturaDialog supprimé (CustomTkinter, pas PyQt5)
         print("   ✅ Imports PyQt5 validés")
-        
-        return True
-        
+
     except Exception as e:
         print(f"   ❌ Error en imports: {e}")
-        return False
+        pytest.fail(f"Error en imports: {e}")
 
 def test_database_tables():
     """Test que las tablas de base de datos existen"""
@@ -56,13 +54,11 @@ def test_database_tables():
                 print(f"   ✅ Tabla '{table}' existe")
             else:
                 print(f"   ❌ Tabla '{table}' NO existe")
-                return False
-        
-        return True
-        
+                pytest.fail(f"Tabla '{table}' NO existe")
+
     except Exception as e:
         print(f"   ❌ Error al verificar tablas: {e}")
-        return False
+        pytest.fail(f"Error al verificar tablas: {e}")
 
 def test_factura_model():
     """Test del modelo Factura"""
@@ -82,16 +78,14 @@ def test_factura_model():
         )
         
         print("   ✅ Factura creada correctamente")
-        
+
         # Test métodos estáticos
         next_numero = Factura.get_next_numero()
         print(f"   ✅ Siguiente número de factura: {next_numero}")
-        
-        return True
-        
+
     except Exception as e:
         print(f"   ❌ Error en modelo Factura: {e}")
-        return False
+        pytest.fail(f"Error en modelo Factura: {e}")
 
 def test_validators():
     """Test de validadores comunes"""
@@ -130,13 +124,11 @@ def test_validators():
             print("   ✅ Formateo de moneda correcto")
         else:
             print(f"   ❌ Error en formateo: {formatted}")
-            return False
-        
-        return True
-        
+            pytest.fail(f"Error en formateo: {formatted}")
+
     except Exception as e:
         print(f"   ❌ Error en validadores: {e}")
-        return False
+        pytest.fail(f"Error en validadores: {e}")
 
 def test_translations():
     """Test de traducciones"""
@@ -159,15 +151,13 @@ def test_translations():
                 missing_translations.append(key)
             else:
                 print(f"   ✅ '{key}' -> '{text}'")
-        
+
         if missing_translations:
             print(f"   ⚠️  Traducciones faltantes: {missing_translations}")
-        
-        return True
-        
+
     except Exception as e:
         print(f"   ❌ Error en traducciones: {e}")
-        return False
+        pytest.fail(f"Error en traducciones: {e}")
 
 def test_ui_components():
     """Test de componentes UI (sin crear ventanas)"""
@@ -184,12 +174,10 @@ def test_ui_components():
         # ProductoFacturaDialog supprimé (CustomTkinter, pas PyQt5)
 
         print("   ✅ Clases UI PyQt5 importadas correctamente")
-        
-        return True
-        
+
     except Exception as e:
         print(f"   ❌ Error en componentes UI: {e}")
-        return False
+        pytest.fail(f"Error en componentes UI: {e}")
 
 def main():
     """Función principal de test"""

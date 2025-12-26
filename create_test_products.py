@@ -101,5 +101,9 @@ def create_test_products():
     print("   • Prêt pour tester la synchronisation")
     print("   • Ouvrez les fenêtres Stock et Productos")
 
-if __name__ == "__main__":
+def main():
+    """Point d'entrée principal du script"""
     create_test_products()
+
+if __name__ == "__main__":
+    main()

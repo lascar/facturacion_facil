@@ -21,6 +21,9 @@ from ui.organizacion_pyqt5 import OrganizacionPyQt5Window
 from ui.stock_pyqt5 import StockPyQt5Window
 from ui.facturas_pyqt5 import FacturasPyQt5Window
 from ui.clientes_pyqt5 import ClientesPyQt5Window
+from ui.informes_selector_pyqt5 import InformesSelectorDialog
+from ui.informe_facturacion_pyqt5 import InformeFacturacionDialog
+from ui.informe_stock_pyqt5 import InformeStockDialog
 
 class MainWindowPyQt5(QMainWindow):
     def __init__(self):
@@ -38,6 +41,7 @@ class MainWindowPyQt5(QMainWindow):
         self.stock_window = None
         self.facturas_window = None
         self.clientes_window = None
+        self.informes_selector = None
         
         self.setup_ui()
         
@@ -119,6 +123,13 @@ class MainWindowPyQt5(QMainWindow):
         btn_clientes.setToolTip("Gestionar base de clientes")
         layout.addWidget(btn_clientes, 2, 0)
 
+        # Bouton Informes
+        btn_informes = QPushButton("📊 Informes")
+        btn_informes.setMinimumSize(220, 90)
+        btn_informes.clicked.connect(self.open_informes)
+        btn_informes.setToolTip("Generar informes de facturación y stock")
+        layout.addWidget(btn_informes, 2, 1)
+
         # Espacement
         layout.setSpacing(15)
         layout.setContentsMargins(30, 20, 30, 20)
@@ -186,6 +197,28 @@ class MainWindowPyQt5(QMainWindow):
             self.clientes_window.activateWindow()
         except Exception as e:
             QMessageBox.critical(self, "Erreur", f"Erreur ouverture Clientes: {str(e)}")
+
+    def open_informes(self):
+        """Ouvrir la fenêtre de sélection d'informes"""
+        try:
+            # Créer le dialogue de sélection
+            selector = InformesSelectorDialog(self)
+
+            # Afficher le dialogue et attendre la sélection
+            if selector.exec() == InformesSelectorDialog.Accepted:
+                selected_type = selector.get_selected_type()
+
+                if selected_type == 'facturacion':
+                    # Ouvrir le rapport de facturation
+                    informe_dialog = InformeFacturacionDialog(self)
+                    informe_dialog.exec()
+                elif selected_type == 'stock':
+                    # Ouvrir le rapport de stock
+                    informe_dialog = InformeStockDialog(self)
+                    informe_dialog.exec()
+
+        except Exception as e:
+            QMessageBox.critical(self, "Erreur", f"Erreur ouverture Informes: {str(e)}")
     
     def run(self):
         """Lancer l'application"""
@@ -326,6 +359,16 @@ class MainWindowPyQt5(QMainWindow):
             QPushButton[text="Clientes"]:hover {
                 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                     stop: 0 #44a8eb, stop: 1 #3498db);
+            }
+
+            QPushButton[text="Informes"] {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #16a085, stop: 1 #138d75);
+            }
+
+            QPushButton[text="Informes"]:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #26b095, stop: 1 #16a085);
             }
 
             /* Barre de statut */

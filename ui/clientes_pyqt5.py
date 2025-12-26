@@ -1,35 +1,43 @@
 # -*- coding: utf-8 -*-
 """
 Fenêtre de gestion des clients - Version PyQt5 native
+Refactorisée pour utiliser ClienteService (Phase 5)
 """
 
 from PyQt5.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, 
+    QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QGroupBox, QSplitter, QFrame, QWidget, QTextEdit
+    QGroupBox, QSplitter, QFrame, QWidget, QTextEdit, QMessageBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 
 from ui.base_pyqt5_window import BasePyQt5Window
 from database.database import db
+from services.cliente_service import ClienteService
 from utils.logger import get_logger
+from utils.exceptions import (
+    ClientValidationError, ClientNotFoundError, DatabaseError
+)
 
 class ClientesPyQt5Window(BasePyQt5Window):
-    """Fenêtre de gestion des clients avec PyQt5"""
-    
+    """Fenêtre de gestion des clients avec PyQt5 - Refactorisée avec ClienteService"""
+
     # Signaux
     cliente_selected = Signal(dict)
     cliente_updated = Signal(int)
-    
+
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Gestión de Clientes", 1000, 700)
-        
+
+        # Service métier - utiliser le même chemin DB que l'ancienne instance
+        self.cliente_service = ClienteService(db.db_path if hasattr(db, 'db_path') else None)
+
         # Variables
         self.clientes = []
         self.selected_cliente_id = None
-        
+
         # Charger les données
         self.load_clientes()
         
@@ -145,13 +153,16 @@ class ClientesPyQt5Window(BasePyQt5Window):
         self.direccion_edit.textChanged.connect(lambda: self.set_data_modified(True))
         
     def load_clientes(self):
-        """Charger les clients depuis la base de données"""
+        """Charger les clients depuis la base de données via ClienteService"""
         try:
-            self.clientes = db.get_all_clients()
+            self.clientes = self.cliente_service.get_all_clientes()
             self.update_clients_table()
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", f"Impossible de charger les clients: {str(e)}")
         except Exception as e:
             self.logger.error(f"Erreur chargement clients: {e}")
-            self.show_error("Erreur", f"Impossible de charger les clients: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
             
     def update_clients_table(self):
         """Mettre à jour la table des clients"""
@@ -209,15 +220,15 @@ class ClientesPyQt5Window(BasePyQt5Window):
                 'direccion': self.direccion_edit.toPlainText().strip()
             }
 
-            # Sauvegarder
+            # Sauvegarder via ClienteService
             if self.selected_cliente_id:
                 # Mise à jour
                 cliente_data['id'] = self.selected_cliente_id
-                db.update_client(cliente_data)
+                self.cliente_service.update_cliente(cliente_data)
                 self.show_info("Éxito", "Cliente actualizado correctamente")
             else:
                 # Nouveau client
-                new_id = db.add_client(cliente_data)
+                new_id = self.cliente_service.create_cliente(cliente_data)
                 self.selected_cliente_id = new_id
                 self.show_info("Éxito", "Cliente creado correctamente")
 
@@ -226,9 +237,18 @@ class ClientesPyQt5Window(BasePyQt5Window):
             self.set_data_modified(False)
             self.cliente_updated.emit(self.selected_cliente_id or 0)
 
+        except ClientValidationError as e:
+            self.logger.error(f"Erreur validation client: {e}")
+            self.show_error("Error de Validación", str(e))
+        except ClientNotFoundError as e:
+            self.logger.error(f"Client non trouvé: {e}")
+            self.show_error("Cliente No Encontrado", str(e))
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", str(e))
         except Exception as e:
             self.logger.error(f"Erreur sauvegarde client: {e}")
-            self.show_error("Error", f"Error al guardar el cliente: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
 
     def delete_cliente(self):
         """Supprimer le client sélectionné"""
@@ -261,13 +281,19 @@ class ClientesPyQt5Window(BasePyQt5Window):
         # Le client n'a pas de factures, procéder à la suppression normale
         if self.ask_confirmation("Confirmar", f"¿Está seguro de eliminar el cliente '{client_name}'?"):
             try:
-                db.delete_client(self.selected_cliente_id)
+                self.cliente_service.delete_cliente(self.selected_cliente_id)
                 self.show_info("Éxito", "Cliente eliminado correctamente")
                 self.load_clientes()
                 self.new_cliente()
+            except ClientNotFoundError as e:
+                self.logger.error(f"Client non trouvé: {e}")
+                self.show_error("Cliente No Encontrado", str(e))
+            except DatabaseError as e:
+                self.logger.error(f"Erreur base de données: {e}")
+                self.show_error("Error de Base de Datos", str(e))
             except Exception as e:
                 self.logger.error(f"Error suppression client: {e}")
-                self.show_error("Error", f"Error al eliminar el cliente: {str(e)}")
+                self.show_error("Error", f"Error inesperado: {str(e)}")
 
     def show_client_with_invoices_dialog(self, client_name, invoice_count):
         """Afficher un dialogue avec options quand le client a des factures"""

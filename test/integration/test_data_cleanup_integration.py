@@ -69,10 +69,10 @@ class TestDataCleanupIntegration:
             
             # Créer des données de test
             self.create_test_data()
-            
+
             print(f"✅ Base de datos de test creada: {self.test_db_path}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error configurando base de test: {e}")
             return False
@@ -185,13 +185,12 @@ class TestDataCleanupIntegration:
             print("   ✅ Diálogo creado correctamente")
             print("   ✅ Todos los controles presentes")
             print("   ✅ Backup activado por defecto")
-            
+
             dialog.close()
-            return True
-            
+
         except Exception as e:
             print(f"   ❌ Error en test de creación: {e}")
-            return False
+            pytest.fail(f"Error en test de creación: {e}")
     
     def test_organization_window_button(self):
         """Testa que el botón aparece en la ventana de organización"""
@@ -215,13 +214,12 @@ class TestDataCleanupIntegration:
             print("   ✅ Botón de limpieza presente")
             print("   ✅ Estilo rojo aplicado")
             print("   ✅ Texto correcto")
-            
+
             window.close()
-            return True
-            
+
         except Exception as e:
             print(f"   ❌ Error en test de botón: {e}")
-            return False
+            pytest.fail(f"Error en test de botón: {e}")
     
     def test_database_stats_loading(self):
         """Testa la carga de estadísticas de la base de datos"""
@@ -243,16 +241,15 @@ class TestDataCleanupIntegration:
             assert "Facturas:" in stats_text
             assert "Productos:" in stats_text
             assert "Clientes:" in stats_text
-            
+
             print("   ✅ Estadísticas cargadas correctamente")
             print(f"   📊 Texto de estadísticas: {stats_text[:100]}...")
-            
+
             dialog.close()
-            return True
-            
+
         except Exception as e:
             print(f"   ❌ Error en test de estadísticas: {e}")
-            return False
+            pytest.fail(f"Error en test de estadísticas: {e}")
     
     def cleanup_test_database(self):
         """Limpia la base de datos de test"""

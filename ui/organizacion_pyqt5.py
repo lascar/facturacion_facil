@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Fenêtre de configuration de l'organisation - Version PyQt5 native
+Refactorisée pour utiliser OrganizacionService (Phase 5)
 """
 
 import os
@@ -17,20 +18,28 @@ from PyQt5.QtGui import QFont, QPixmap, QTransform, QColor
 
 from ui.base_pyqt5_window import BasePyQt5Window
 from database import database  # Import du module, pas de l'instance
+from services.organizacion_service import OrganizacionService
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
+from utils.exceptions import (
+    OrganizationValidationError, OrganizationNotFoundError, DatabaseError
+)
 from ui.data_cleanup_dialog import DataCleanupDialog
 from ui.todo_editor_dialog import TodoEditorDialog
 
 class OrganizacionPyQt5Window(BasePyQt5Window):
-    """Fenêtre de configuration de l'organisation avec PyQt5"""
-    
+    """Fenêtre de configuration de l'organisation avec PyQt5 - Refactorisée avec OrganizacionService"""
+
     # Signaux
     organizacion_updated = Signal()
-    
+
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Configuración de la Organización", 800, 600)
+
+        # Service métier - utiliser le même chemin DB
+        db_path = database.db.db_path if hasattr(database.db, 'db_path') else None
+        self.organizacion_service = OrganizacionService(db_path)
 
         # Variables
         self.organizacion_data = {}
@@ -443,9 +452,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             return False
 
     def load_organizacion(self):
-        """Charger les données de l'organisation depuis la base de données"""
+        """Charger les données de l'organisation depuis la base de données via OrganizacionService"""
         try:
-            self.organizacion_data = database.db.get_organization_info()
+            self.organizacion_data = self.organizacion_service.get_organizacion()
             if self.organizacion_data:
                 self.load_organization_data(self.organizacion_data)
             else:
@@ -457,9 +466,12 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             if config_data:
                 self.condiciones_pago_edit.setPlainText(config_data.get('condiciones_pago', ''))
                 self.informacion_legal_edit.setPlainText(config_data.get('informacion_legal', ''))
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", f"Error al cargar la configuración: {str(e)}")
         except Exception as e:
             self.logger.error(f"Erreur chargement organisation: {e}")
-            self.show_error("Erreur", f"Impossible de charger les données: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
             
     def load_organization_data(self, data):
         """Charger les données dans le formulaire"""
@@ -778,14 +790,14 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip()
             }
 
-            # Sauvegarder dans la base de données
+            # Sauvegarder dans la base de données via OrganizacionService
             if self.organizacion_data and self.organizacion_data.get('id'):
                 # Mise à jour
                 organizacion_data['id'] = self.organizacion_data['id']
-                database.db.update_organization(organizacion_data)
+                self.organizacion_service.update_organizacion(organizacion_data)
             else:
                 # Nouvelle organisation
-                database.db.create_organization(organizacion_data)
+                self.organizacion_service.create_organizacion(organizacion_data)
 
             # Sauvegarder condiciones_pago et informacion_legal dans config.json
             condiciones_pago = self.condiciones_pago_edit.toPlainText().strip()
@@ -800,9 +812,18 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.load_organizacion()
             self.organizacion_updated.emit()
 
+        except OrganizationValidationError as e:
+            self.logger.error(f"Erreur validation organisation: {e}")
+            self.show_error("Error de Validación", str(e))
+        except OrganizationNotFoundError as e:
+            self.logger.error(f"Organisation non trouvée: {e}")
+            self.show_error("Organización No Encontrada", str(e))
+        except DatabaseError as e:
+            self.logger.error(f"Erreur base de données: {e}")
+            self.show_error("Error de Base de Datos", str(e))
         except Exception as e:
             self.logger.error(f"Erreur sauvegarde organisation: {e}")
-            self.show_error("Error", f"Error al guardar la configuración: {str(e)}")
+            self.show_error("Error", f"Error inesperado: {str(e)}")
 
     # ==================== MÉTODOS PARA ESTADOS DE FACTURAS ====================
 

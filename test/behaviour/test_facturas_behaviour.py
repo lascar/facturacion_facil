@@ -271,8 +271,6 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         self.logger.info("🧪 Test: Workflow facture complet avec QTest")
 
         try:
-            from database.database import db
-
             # 1. Préparer les données de test
             # Utiliser index 10 pour éviter conflit avec setup_test_data() qui utilise 1, 2, 3
             client_data = TestDataFactory.create_test_client(10)
@@ -286,6 +284,18 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             assert product_id is not None, "Produit non créé"
 
             # 2. Créer une facture directement en base de données
+            # Calculer les montants pour la ligne
+            cantidad = 2
+            precio_unitario = 100.0
+            iva_aplicado = 21.0
+            descuento = 0.0
+
+            subtotal_linea = cantidad * precio_unitario
+            descuento_amount = subtotal_linea * (descuento / 100)
+            subtotal_con_descuento = subtotal_linea - descuento_amount
+            iva_amount = subtotal_con_descuento * (iva_aplicado / 100)
+            total_linea = subtotal_con_descuento + iva_amount
+
             factura_data = {
                 'numero': 'TEST-WORKFLOW-001',
                 'fecha': '2025-01-01',
@@ -295,23 +305,27 @@ class TestFacturasBehaviour(BaseBehaviourTest):
                     'nif': client_data.get('nif', ''),
                     'direccion': client_data.get('direccion', '')
                 },
-                'subtotal': 200.0,
-                'iva_total': 42.0,
-                'total': 242.0,
+                'subtotal': subtotal_linea,
+                'iva_total': iva_amount,
+                'total': total_linea,
                 'estado': 'Borrador',
                 'lineas': [
                     {
                         'producto_id': product_id,
-                        'cantidad': 2,
-                        'precio_unitario': 100.0,
-                        'iva_aplicado': 21.0,
-                        'descuento': 0.0
+                        'cantidad': cantidad,
+                        'precio_unitario': precio_unitario,
+                        'iva_aplicado': iva_aplicado,
+                        'descuento': descuento,
+                        'subtotal': subtotal_linea,
+                        'descuento_amount': descuento_amount,
+                        'iva_amount': iva_amount,
+                        'total': total_linea
                     }
                 ]
             }
 
             # Sauvegarder la facture
-            factura_id = db.add_invoice(factura_data)
+            factura_id = self.database.add_invoice(factura_data)
             assert factura_id is not None, "Échec de la sauvegarde de la facture"
 
             # 3. Vérifier la création en base de données
@@ -323,7 +337,7 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             assert len(facturas_with_client) > 0, f"Aucune facture trouvée pour le client {client_id}"
 
             # Vérifier que la facture créée a le bon numéro
-            factura_created = db.get_invoice_by_number('TEST-WORKFLOW-001')
+            factura_created = self.database.get_invoice_by_number('TEST-WORKFLOW-001')
             assert factura_created is not None, "Facture non trouvée par numéro"
             assert factura_created['cliente']['id'] == client_id, "Client incorrect dans la facture"
 

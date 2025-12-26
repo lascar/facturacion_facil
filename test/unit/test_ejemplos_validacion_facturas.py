@@ -6,6 +6,7 @@ Test con ejemplos prácticos de validación opcional en facturas
 
 import sys
 import os
+import pytest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def test_ejemplos_validacion_facturas():
@@ -175,17 +176,15 @@ def test_ejemplos_validacion_facturas():
             print("   • Email: @dominio.com - Sin usuario")
             print("   • Teléfono: 12345 - Muy corto")
             print("   • Teléfono: abc123 - Con letras")
-            
-            return True
         else:
             print(f"\n⚠️ {len(casos_prueba) - casos_pasados} casos fallaron")
-            return False
-        
+            pytest.fail(f"{len(casos_prueba) - casos_pasados} casos fallaron")
+
     except Exception as e:
         print(f"❌ Error durante el test: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        pytest.fail(f"Error durante el test: {e}")
 
 if __name__ == "__main__":
     success = test_ejemplos_validacion_facturas()

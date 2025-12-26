@@ -13,6 +13,8 @@ from PyQt5.QtGui import QFont
 
 from utils.logger import get_logger
 from database.database import db
+from services.cliente_service import ClienteService
+from utils.exceptions import ClientNotFoundError, DatabaseError
 
 class ClientAutoCompleteWidget(QLineEdit):
     """Widget d'autocomplétion pour les clients avec création automatique"""
@@ -25,7 +27,11 @@ class ClientAutoCompleteWidget(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.logger = get_logger(self.__class__.__name__)
-        
+
+        # Service métier
+        db_path = db.db_path if hasattr(db, 'db_path') else None
+        self.cliente_service = ClienteService(db_path)
+
         # Variables
         self.clients_data = []
         self.current_client = None
@@ -220,10 +226,13 @@ class ClientAutoCompleteWidget(QLineEdit):
         # Trouver le client correspondant dans les données d'autocomplétion
         for client in self.clients_data:
             if client.get('nombre', '') == client_name:
-                # Récupérer les données complètes depuis la base de données
-                from database.database import db
+                # Récupérer les données complètes via le service
                 self.logger.info(f"Intentando cargar datos completos para cliente ID: {client['id']}")
-                full_client_data = db.get_client_by_id(client['id'])
+                try:
+                    full_client_data = self.cliente_service.get_cliente_by_id(client['id'])
+                except (ClientNotFoundError, DatabaseError) as e:
+                    self.logger.error(f"Error cargando cliente: {e}")
+                    full_client_data = None
 
                 if full_client_data:
                     # Utiliser les données complètes
@@ -263,9 +272,12 @@ class ClientAutoCompleteWidget(QLineEdit):
         for client in self.clients_data:
             client_name = client.get('nombre', '')
             if client_name.lower() == text.lower():
-                # Récupérer les données complètes depuis la base de données
-                from database.database import db
-                full_client_data = db.get_client_by_id(client['id'])
+                # Récupérer les données complètes via le service
+                try:
+                    full_client_data = self.cliente_service.get_cliente_by_id(client['id'])
+                except (ClientNotFoundError, DatabaseError) as e:
+                    self.logger.error(f"Error cargando cliente: {e}")
+                    full_client_data = None
 
                 if full_client_data:
                     self.current_client = full_client_data
@@ -293,9 +305,12 @@ class ClientAutoCompleteWidget(QLineEdit):
                     client_name = suggestion.split(' (')[0].strip()
                     for client in self.clients_data:
                         if client.get('nombre', '') == client_name:
-                            # Récupérer les données complètes depuis la base de données
-                            from database.database import db
-                            full_client_data = db.get_client_by_id(client['id'])
+                            # Récupérer les données complètes via le service
+                            try:
+                                full_client_data = self.cliente_service.get_cliente_by_id(client['id'])
+                            except (ClientNotFoundError, DatabaseError) as e:
+                                self.logger.error(f"Error cargando cliente: {e}")
+                                full_client_data = None
 
                             if full_client_data:
                                 self.current_client = full_client_data

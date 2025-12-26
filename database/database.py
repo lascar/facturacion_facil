@@ -1,12 +1,16 @@
 import sqlite3
 import os
 from datetime import datetime
+from contextlib import contextmanager
+from typing import Optional, List, Dict, Any
+from database.migration_manager import MigrationManager
 from utils.logger import get_logger, log_database_operation, log_exception
 
 class Database:
     def __init__(self, db_path="base_de_datos/facturacion.db"):
         self.db_path = db_path
         self.logger = get_logger("database")
+        self.migration_manager = MigrationManager(db_path)
         self.init_database()
     
     def get_connection(self):
@@ -26,9 +30,13 @@ class Database:
     
     def init_database(self):
         """Inicializa la base de datos con las tablas necesarias"""
+        # Étape 1 : Exécuter les migrations AVANT l'initialisation
+        self.migration_manager.run_all_migrations()
+
+        # Étape 2 : Créer/mettre à jour les tables
         conn = self.get_connection()
         cursor = conn.cursor()
-        
+
         # Tabla productos
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS productos (
@@ -40,11 +48,18 @@ class Database:
                 descripcion TEXT,
                 imagen_path TEXT,
                 iva_recomendado REAL DEFAULT 21.0,
+                talla TEXT,
                 stock_actual INTEGER DEFAULT 0,
                 stock_minimo INTEGER DEFAULT 5,
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+
+        # Ajouter la colonne talla si elle n'existe pas (pour compatibilité avec bases existantes)
+        try:
+            cursor.execute('ALTER TABLE productos ADD COLUMN talla TEXT')
+        except sqlite3.OperationalError:
+            pass  # La colonne existe déjà
         
         # Tabla organización
         cursor.execute('''
@@ -471,7 +486,7 @@ class Database:
             # Utiliser uniquement la table stock comme source de vérité
             cursor.execute("""
                 SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
-                       p.iva_recomendado, p.fecha_creacion,
+                       p.iva_recomendado, p.talla, p.fecha_creacion,
                        COALESCE(s.cantidad_disponible, 0) as stock_actual
                 FROM productos p
                 LEFT JOIN stock s ON p.id = s.producto_id
@@ -489,8 +504,9 @@ class Database:
                     'categoria': row[4],
                     'descripcion': row[5],
                     'iva_recomendado': row[6],
-                    'fecha_creacion': row[7],
-                    'stock_actual': row[8],  # Depuis stock table uniquement
+                    'talla': row[7],
+                    'fecha_creacion': row[8],
+                    'stock_actual': row[9],  # Depuis stock table uniquement
                     'stock_minimo': 5  # Valeur par défaut
                 })
 
@@ -757,10 +773,12 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT id, nombre, referencia, precio, categoria, descripcion,
-                       iva_recomendado, fecha_creacion
-                FROM productos
-                WHERE id = ?
+                SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
+                       p.iva_recomendado, p.talla, p.fecha_creacion,
+                       COALESCE(s.cantidad_disponible, 0) as stock_actual
+                FROM productos p
+                LEFT JOIN stock s ON p.id = s.producto_id
+                WHERE p.id = ?
             """, (product_id,))
 
             row = cursor.fetchone()
@@ -776,7 +794,9 @@ class Database:
                     'categoria': row[4],
                     'descripcion': row[5],
                     'iva_recomendado': row[6],
-                    'fecha_creacion': row[7]
+                    'talla': row[7],
+                    'fecha_creacion': row[8],
+                    'stock_actual': row[9]
                 }
             return None
 
@@ -801,10 +821,10 @@ class Database:
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 product_data['nombre'],
-                product_data['referencia'],
-                product_data['precio_venta'],
-                product_data['categoria'],
-                product_data['descripcion'],
+                product_data.get('referencia', None),
+                product_data.get('precio', product_data.get('precio_venta', 0.0)),
+                product_data.get('categoria', ''),
+                product_data.get('descripcion', ''),
                 product_data.get('iva_recomendado', 21.0),
                 talla
             ))
@@ -867,6 +887,7 @@ class Database:
             conn.close()
 
             self.logger.info(f"Producto {product_data['id']} actualizado, stock: {stock_actual}")
+            return True
 
         except Exception as e:
             self.logger.error(f"Error actualizando producto: {e}")
@@ -1311,7 +1332,7 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT id, numero_factura, fecha_factura, nombre_cliente,
+                SELECT id, numero_factura, fecha_factura, cliente_id, nombre_cliente,
                        total_factura, fecha_creacion, estado
                 FROM facturas
                 ORDER BY fecha_creacion DESC
@@ -1324,10 +1345,11 @@ class Database:
                     'numero': row[1],
                     'fecha': row[2],
                     'vencimiento': row[2],  # Usar la misma fecha por defecto
-                    'cliente_nombre': row[3],
-                    'total': row[4],
-                    'fecha_creacion': row[5],
-                    'estado': row[6] if row[6] else 'Borrador'  # Estado desde la base de datos
+                    'cliente_id': row[3],
+                    'cliente_nombre': row[4],
+                    'total': row[5],
+                    'fecha_creacion': row[6],
+                    'estado': row[7] if row[7] else 'Borrador'  # Estado desde la base de datos
                 }
                 invoices.append(invoice)
 
@@ -1870,6 +1892,7 @@ class Database:
             conn.commit()
             conn.close()
             self.logger.info(f"Información de organización actualizada")
+            return True
 
         except Exception as e:
             self.logger.error(f"Error actualizando organización: {e}")

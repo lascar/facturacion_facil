@@ -132,6 +132,7 @@ class MigrationManager:
             migrations_needed = [
                 ("categoria", "TEXT", None),
                 ("imagen_path", "TEXT", ""),
+                ("talla", "TEXT", None),
                 ("stock_actual", "INTEGER", 0),
                 ("stock_minimo", "INTEGER", 5),
                 ("fecha_creacion", "TIMESTAMP", "CURRENT_TIMESTAMP"),
@@ -173,6 +174,7 @@ class MigrationManager:
                     descripcion TEXT,
                     imagen_path TEXT,
                     iva_recomendado REAL DEFAULT 21.0,
+                    talla TEXT,
                     stock_actual INTEGER DEFAULT 0,
                     stock_minimo INTEGER DEFAULT 5,
                     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -275,6 +277,7 @@ class MigrationManager:
                     descripcion TEXT,
                     imagen_path TEXT,
                     iva_recomendado REAL DEFAULT 21.0,
+                    talla TEXT,
                     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
@@ -287,7 +290,7 @@ class MigrationManager:
 
             # Construire la requête en fonction des colonnes existantes
             base_columns = ['id', 'nombre', 'referencia', 'precio', 'categoria',
-                           'descripcion', 'imagen_path', 'iva_recomendado']
+                           'descripcion', 'imagen_path', 'iva_recomendado', 'talla']
             optional_columns = ['fecha_creacion', 'fecha_actualizacion']
 
             # Filtrer les colonnes qui existent réellement
@@ -411,6 +414,7 @@ class MigrationManager:
             migrations_needed = [
                 ("categoria", "TEXT", None),
                 ("imagen_path", "TEXT", ""),
+                ("talla", "TEXT", None),
                 ("fecha_creacion", "TIMESTAMP", "CURRENT_TIMESTAMP"),
                 ("fecha_actualizacion", "TIMESTAMP", "CURRENT_TIMESTAMP")
             ]
