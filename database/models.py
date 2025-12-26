@@ -457,7 +457,7 @@ class FacturaItem:
 class Organizacion:
     def __init__(self, nombre="", direccion="", telefono="", email="", cif="",
                  logo_path="", directorio_imagenes_defecto="", numero_factura_inicial="1",
-                 directorio_descargas_pdf="", visor_pdf_personalizado=""):
+                 directorio_descargas_pdf="", visor_pdf_personalizado="", directorio_informes=""):
         self.nombre = nombre
         self.direccion = direccion
         self.telefono = telefono
@@ -468,6 +468,7 @@ class Organizacion:
         self.numero_factura_inicial = numero_factura_inicial
         self.directorio_descargas_pdf = directorio_descargas_pdf
         self.visor_pdf_personalizado = visor_pdf_personalizado
+        self.directorio_informes = directorio_informes
     
     def save(self):
         """Guarda los datos de la organización"""
@@ -476,15 +477,15 @@ class Organizacion:
         if existing and existing.nombre:  # Si existe et n'est pas vide
             query = '''UPDATE organizacion SET nombre=?, direccion=?, telefono=?,
                       email=?, cif=?, logo_path=?, directorio_imagenes_defecto=?,
-                      numero_factura_inicial=?, directorio_descargas_pdf=?, visor_pdf_personalizado=?, fecha_actualizacion=CURRENT_TIMESTAMP
+                      numero_factura_inicial=?, directorio_descargas_pdf=?, visor_pdf_personalizado=?, directorio_informes=?, fecha_actualizacion=CURRENT_TIMESTAMP
                       WHERE id=1'''
         else:
             query = '''INSERT INTO organizacion (id, nombre, direccion, telefono,
-                      email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado)
-                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+                      email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado, directorio_informes)
+                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
 
         params = (self.nombre, self.direccion, self.telefono, self.email, self.cif,
-                 self.logo_path, self.directorio_imagenes_defecto, self.numero_factura_inicial, self.directorio_descargas_pdf, self.visor_pdf_personalizado)
+                 self.logo_path, self.directorio_imagenes_defecto, self.numero_factura_inicial, self.directorio_descargas_pdf, self.visor_pdf_personalizado, self.directorio_informes)
         db.execute_query(query, params)
     
     @staticmethod
@@ -494,7 +495,7 @@ class Organizacion:
         results = db.execute_query(query)
         if results:
             row = results[0]
-            # Orden real de columnas: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, fecha_actualizacion, directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation, directorio_logos_storage
+            # Orden real de columnas: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, fecha_actualizacion, directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation, directorio_logos_storage, directorio_informes
             # Manejar compatibilidad avec bases de datos existentes
             logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
             directorio_imagenes = row[7] if len(row) > 7 and row[7] is not None else ""
@@ -503,6 +504,8 @@ class Organizacion:
             directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
             # CORRECTION: visor_pdf_personalizado est à l'index 11, pas 10
             visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
+            # directorio_informes est à l'index 14
+            directorio_informes = row[14] if len(row) > 14 and row[14] is not None else "informes/"
 
             return Organizacion(
                 nombre=row[1], direccion=row[2], telefono=row[3],
@@ -510,7 +513,8 @@ class Organizacion:
                 directorio_imagenes_defecto=directorio_imagenes,
                 numero_factura_inicial=numero_inicial,
                 directorio_descargas_pdf=directorio_pdf,
-                visor_pdf_personalizado=visor_pdf
+                visor_pdf_personalizado=visor_pdf,
+                directorio_informes=directorio_informes
             )
         return Organizacion()
 

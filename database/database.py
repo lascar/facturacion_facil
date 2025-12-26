@@ -109,6 +109,11 @@ class Database:
             pass  # La columna ya existe
 
         try:
+            cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_informes TEXT')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
+
+        try:
             cursor.execute('ALTER TABLE organizacion ADD COLUMN directorio_descargas_pdf TEXT')
         except sqlite3.OperationalError:
             pass  # La columna ya existe
@@ -276,10 +281,17 @@ class Database:
             CREATE TABLE IF NOT EXISTS stock (
                 producto_id INTEGER PRIMARY KEY,
                 cantidad_disponible INTEGER DEFAULT 0,
+                stock_minimo INTEGER DEFAULT 0,
                 fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (producto_id) REFERENCES productos (id)
             )
         ''')
+
+        # Ajouter la colonne stock_minimo si elle n'existe pas
+        try:
+            cursor.execute('ALTER TABLE stock ADD COLUMN stock_minimo INTEGER DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass  # La columna ya existe
 
         # Tabla movimientos de stock
         cursor.execute('''

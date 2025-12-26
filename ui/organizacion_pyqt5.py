@@ -218,7 +218,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.logo_preview.setScaledContents(False)  # Important: ne pas déformer
 
         self.numero_factura_edit = QLineEdit()
-        self.numero_factura_edit.setPlaceholderText("Ej: 1")
+        self.numero_factura_edit.setPlaceholderText("Ej: 1, fact-2005-1, FAC-2025-001")
 
         config_layout.addWidget(QLabel("Logo de la Empresa:"), 0, 0)
         config_layout.addWidget(self.logo_path_edit, 0, 1)
@@ -257,6 +257,11 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.pdfs_dir_edit.setPlaceholderText("Directorio donde guardar las facturas PDF")
         self.pdfs_dir_browse_btn = QPushButton("📁 Buscar")
 
+        # Répertoire des Informes
+        self.informes_dir_edit = QLineEdit()
+        self.informes_dir_edit.setPlaceholderText("Directorio donde guardar los informes PDF")
+        self.informes_dir_browse_btn = QPushButton("📁 Buscar")
+
         directories_layout.addWidget(QLabel("Directorio de Imágenes:"), 0, 0)
         directories_layout.addWidget(self.images_dir_edit, 0, 1)
         directories_layout.addWidget(self.images_dir_browse_btn, 0, 2)
@@ -268,6 +273,10 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         directories_layout.addWidget(QLabel("Directorio de PDFs:"), 2, 0)
         directories_layout.addWidget(self.pdfs_dir_edit, 2, 1)
         directories_layout.addWidget(self.pdfs_dir_browse_btn, 2, 2)
+
+        directories_layout.addWidget(QLabel("Directorio de Informes:"), 3, 0)
+        directories_layout.addWidget(self.informes_dir_edit, 3, 1)
+        directories_layout.addWidget(self.informes_dir_browse_btn, 3, 2)
 
         parent_layout.addWidget(directories_group)
 
@@ -347,6 +356,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.images_dir_browse_btn.clicked.connect(self.browse_images_directory)
         self.logos_storage_dir_browse_btn.clicked.connect(self.browse_logos_storage_directory)
         self.pdfs_dir_browse_btn.clicked.connect(self.browse_pdfs_directory)
+        self.informes_dir_browse_btn.clicked.connect(self.browse_informes_directory)
 
         # Connecter les changements de données
         self.nombre_edit.textChanged.connect(lambda: self.set_data_modified(True))
@@ -361,6 +371,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.images_dir_edit.textChanged.connect(lambda: self.set_data_modified(True))
         self.logos_storage_dir_edit.textChanged.connect(lambda: self.set_data_modified(True))
         self.pdfs_dir_edit.textChanged.connect(lambda: self.set_data_modified(True))
+        self.informes_dir_edit.textChanged.connect(lambda: self.set_data_modified(True))
 
         # Connexions pour les états de factures
         self.add_status_btn.clicked.connect(self.add_invoice_status)
@@ -381,6 +392,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             'numero_factura_inicial': '1',
             'directorio_imagenes_defecto': 'images',
             'directorio_descargas_pdf': 'facturas/',
+            'directorio_informes': 'informes/',
             'directorio_logos_storage': 'logo/',
             'logo_path': 'logo/logo.png',
             'logo_orientation': 'landscape',
@@ -479,7 +491,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         widgets_to_block = [
             self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
             self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
-            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit
+            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit,
+            self.informes_dir_edit
         ]
 
         # Bloquer les signaux
@@ -503,6 +516,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.images_dir_edit.setText(str(data.get('directorio_imagenes_defecto', '')))
             self.logos_storage_dir_edit.setText(str(data.get('directorio_logos_storage', '')))
             self.pdfs_dir_edit.setText(str(data.get('directorio_descargas_pdf', '')))
+            self.informes_dir_edit.setText(str(data.get('directorio_informes', '')))
 
             # Mettre à jour l'aperçu du logo
             self.update_logo_preview()
@@ -521,7 +535,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         widgets_to_block = [
             self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
             self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
-            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit
+            self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit,
+            self.informes_dir_edit
         ]
 
         # Bloquer les signaux
@@ -539,6 +554,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.images_dir_edit.clear()
             self.logos_storage_dir_edit.clear()
             self.pdfs_dir_edit.clear()
+            self.informes_dir_edit.clear()
 
         finally:
             # Débloquer les signaux
@@ -706,6 +722,28 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Erreur sélection répertoire PDFs: {e}")
 
+    def browse_informes_directory(self):
+        """Parcourir pour sélectionner le répertoire des Informes"""
+        try:
+            dialog = QFileDialog(self)
+            dialog.setWindowTitle("Seleccionar Directorio de Informes")
+            dialog.setFileMode(QFileDialog.Directory)
+            dialog.setOption(QFileDialog.ShowDirsOnly, True)
+            dialog.setOption(QFileDialog.DontUseNativeDialog, False)
+
+            current_dir = self.informes_dir_edit.text().strip()
+            if current_dir and os.path.exists(current_dir):
+                dialog.setDirectory(current_dir)
+
+            if dialog.exec_() == QFileDialog.Accepted:
+                selected_dirs = dialog.selectedFiles()
+                directory = selected_dirs[0] if selected_dirs else ""
+                if directory:
+                    self.informes_dir_edit.setText(directory)
+                    print(f"DEBUG: Répertoire Informes défini: {directory}")
+        except Exception as e:
+            self.logger.error(f"Erreur sélection répertoire Informes: {e}")
+
     def get_logo_orientation(self):
         """Obtenir l'orientation sélectionnée"""
         return "landscape" if self.logo_landscape_radio.isChecked() else "portrait"
@@ -787,7 +825,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'numero_factura_inicial': self.numero_factura_edit.text().strip() or '1',
                 'directorio_imagenes_defecto': self.images_dir_edit.text().strip(),
                 'directorio_logos_storage': self.logos_storage_dir_edit.text().strip(),
-                'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip()
+                'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip(),
+                'directorio_informes': self.informes_dir_edit.text().strip()
             }
 
             # Sauvegarder dans la base de données via OrganizacionService

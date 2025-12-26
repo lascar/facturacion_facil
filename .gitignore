@@ -154,10 +154,6 @@ dmypy.json
 # Application specific - Garder les bases de test
 test/base_de_datos/*.db
 logs/*.log
-pdfs/*.pdf
-data/logos/*
-data/test_images/*
-
 # Temporary files
 *.tmp
 *.temp
@@ -204,3 +200,8 @@ lpt[1-9]
 !/README.md
 /logo/*
 /facturas/*
+/informes/*
+/pdfs/*.pdf
+/data/logos/*
+/data/test_images/*
+
