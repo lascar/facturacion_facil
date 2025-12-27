@@ -204,4 +204,4 @@ lpt[1-9]
 /pdfs/*.pdf
 /data/logos/*
 /data/test_images/*
-
+/test/unit/base_de_datos/backups/*.db

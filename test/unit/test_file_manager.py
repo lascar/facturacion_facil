@@ -97,7 +97,7 @@ def test_file_manager_basic():
             print("   ✅ Fichier supprimé avec succès")
             
             print("\n🎉 TOUS LES TESTS FILEMANAGER PASSENT")
-            return True
+            assert True
             
         finally:
             # Nettoyage
@@ -111,7 +111,7 @@ def test_file_manager_basic():
         print(f"   ❌ ERREUR: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 def test_image_file_manager():
     """Test du ImageFileManager spécialisé"""
@@ -193,7 +193,7 @@ def test_image_file_manager():
             image_manager.remove_file(saved_image)
             
             print("\n🎉 TOUS LES TESTS IMAGEFILEMANAGER PASSENT")
-            return True
+            assert True
             
         finally:
             # Nettoyage
@@ -207,7 +207,7 @@ def test_image_file_manager():
         print(f"   ❌ ERREUR: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 def test_logo_manager_refactored():
     """Test du LogoManager refactoré"""
@@ -271,7 +271,7 @@ def test_logo_manager_refactored():
             print("   ✅ Logo supprimé avec succès")
             
             print("\n🎉 LOGOMANAGER REFACTORÉ FONCTIONNE")
-            return True
+            assert True
             
         finally:
             # Nettoyage
@@ -285,7 +285,7 @@ def test_logo_manager_refactored():
         print(f"   ❌ ERREUR: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 if __name__ == "__main__":
     print("🔧 Tests unitaires - Architecture factorée")

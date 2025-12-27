@@ -11,117 +11,137 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-def test_logger_creation():
-    """Test de creación del sistema de logging"""
+def check_logger_creation():
+    """Check de creación del sistema de logging (usado por main)"""
     print("🔍 Test de creación del sistema de logging...")
-    
+
     try:
         from utils.logger import app_logger, get_logger, log_info, log_error, log_warning, log_debug
-        
+
         # Verificar que el directorio de logs existe
         logs_dir = "logs"
         assert os.path.exists(logs_dir), f"Directorio de logs {logs_dir} no existe"
         print(f"✅ Directorio de logs existe: {os.path.abspath(logs_dir)}")
-        
+
         # Verificar archivos de log
         main_log = os.path.join(logs_dir, "facturacion_facil.log")
         error_log = os.path.join(logs_dir, "facturacion_facil_errors.log")
-        
+
         # Los archivos pueden no existir aún si no se ha loggeado nada
         print(f"✅ Archivo principal de log: {main_log}")
         print(f"✅ Archivo de errores: {error_log}")
-        
+
         # Test de funciones de logging
         log_info("Test de mensaje INFO")
         log_warning("Test de mensaje WARNING")
         log_debug("Test de mensaje DEBUG")
         log_error("Test de mensaje ERROR")
-        
+
         print("✅ Funciones de logging ejecutadas sin errores")
-        
+
         # Verificar que los archivos se crearon
         assert os.path.exists(main_log), f"Archivo principal {main_log} no se creó"
         print(f"✅ Archivo principal creado: {main_log}")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de logging: {e}")
         import traceback
         traceback.print_exc()
         return False
 
-def test_module_loggers():
-    """Test de loggers específicos por módulo"""
+def test_logger_creation():
+    """Test pytest wrapper"""
+    assert check_logger_creation(), "Logger creation check failed"
+
+def check_module_loggers():
+    """Check de loggers específicos por módulo (usado por main)"""
     print("\n🔍 Test de loggers por módulo...")
-    
+
     try:
         from utils.logger import get_logger
-        
+
         # Test de loggers específicos
         productos_logger = get_logger("productos")
         database_logger = get_logger("database")
         ui_logger = get_logger("ui")
-        
+
         # Test de logging con diferentes módulos
         productos_logger.info("Test desde módulo productos")
         database_logger.info("Test desde módulo database")
         ui_logger.info("Test desde módulo ui")
-        
+
         print("✅ Loggers por módulo funcionan correctamente")
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de módulos: {e}")
         return False
 
-def test_logging_functions():
-    """Test de funciones específicas de logging"""
+def test_module_loggers():
+    """Test pytest wrapper"""
+    assert check_module_loggers(), "Module loggers check failed"
+
+def check_logging_functions():
+    """Check de funciones específicas de logging (usado por main)"""
     print("\n🔍 Test de funciones específicas de logging...")
-    
+
     try:
         from utils.logger import (
-            log_user_action, log_database_operation, 
+            log_user_action, log_database_operation,
             log_file_operation, log_exception
         )
-        
+
         # Test de funciones específicas
         log_user_action("Test acción", "Detalles de la acción")
         log_database_operation("SELECT", "productos", "Test query")
         log_file_operation("COPY", "/test/file.txt", "Test file operation")
-        
+
         # Test de logging de excepción
         try:
             raise ValueError("Test exception")
         except Exception as e:
             log_exception(e, "test_logging_functions")
-        
+
         print("✅ Funciones específicas de logging funcionan")
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de funciones específicas: {e}")
         return False
 
-def test_log_file_content():
-    """Test del contenido de los archivos de log"""
+def test_logging_functions():
+    """Test pytest wrapper"""
+    assert check_logging_functions(), "Logging functions check failed"
+
+def check_log_file_content():
+    """Check del contenido de los archivos de log (usado por main)"""
     print("\n🔍 Test del contenido de archivos de log...")
-    
+
     try:
+        from utils.logger import log_info, get_logger, log_user_action
+
+        # Escribir los mensajes de log que vamos a buscar
+        log_info("Test de mensaje INFO")
+        productos_logger = get_logger("productos")
+        productos_logger.info("Test desde módulo productos")
+        log_user_action("Test acción", "Detalles de la acción")
+
         logs_dir = "logs"
         main_log = os.path.join(logs_dir, "facturacion_facil.log")
-        
+
         if os.path.exists(main_log):
             with open(main_log, 'r', encoding='utf-8') as f:
                 content = f.read()
-                
+
             # Verificar que contiene logs de los tests
             assert "Test de mensaje INFO" in content, "Log INFO no encontrado"
             assert "Test desde módulo productos" in content, "Log de productos no encontrado"
             assert "Test acción" in content, "Log de acción de usuario no encontrado"
-            
+
             print("✅ Contenido de logs verificado")
-            
+
             # Mostrar últimas líneas del log
             lines = content.strip().split('\n')
             print(f"📄 Últimas 3 líneas del log:")
@@ -129,57 +149,69 @@ def test_log_file_content():
                 print(f"   {line}")
         else:
             print("⚠️  Archivo de log principal no existe aún")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de contenido: {e}")
         return False
 
-def test_log_rotation():
-    """Test de rotación de logs (simulado)"""
+def test_log_file_content():
+    """Test pytest wrapper"""
+    assert check_log_file_content(), "Log file content check failed"
+
+def check_log_rotation():
+    """Check de rotación de logs (usado por main)"""
     print("\n🔍 Test de configuración de rotación...")
-    
+
     try:
         from utils.logger import app_logger
-        
+
         # Verificar configuración de rotación
         for handler in app_logger.logger.handlers:
             if hasattr(handler, 'maxBytes'):
                 print(f"✅ Handler con rotación: {handler.__class__.__name__}")
                 print(f"   - Tamaño máximo: {handler.maxBytes / (1024*1024):.1f} MB")
                 print(f"   - Backups: {handler.backupCount}")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de rotación: {e}")
         return False
 
-def test_session_logger():
-    """Test del logger de sesión"""
+def test_log_rotation():
+    """Test pytest wrapper"""
+    assert check_log_rotation(), "Log rotation check failed"
+
+def check_session_logger():
+    """Check del logger de sesión (usado por main)"""
     print("\n🔍 Test del logger de sesión...")
-    
+
     try:
         from utils.logger import app_logger
-        
+
         # Crear logger de sesión
         session_logger = app_logger.create_session_log()
         session_logger.info("Test de sesión específica")
         session_logger.warning("Test warning en sesión")
-        
+
         # Verificar que se creó archivo de sesión
         logs_dir = "logs"
         session_files = [f for f in os.listdir(logs_dir) if f.startswith("session_")]
-        
+
         assert len(session_files) > 0, "No se creó archivo de sesión"
         print(f"✅ Archivo de sesión creado: {session_files[-1]}")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Error en test de sesión: {e}")
         return False
+
+def test_session_logger():
+    """Test pytest wrapper"""
+    assert check_session_logger(), "Session logger check failed"
 
 def show_log_directory_structure():
     """Muestra la estructura del directorio de logs"""
@@ -201,14 +233,14 @@ def main():
     """Función principal"""
     print("🧪 Test del Sistema de Logging")
     print("=" * 50)
-    
+
     tests = [
-        ("Creación del sistema", test_logger_creation),
-        ("Loggers por módulo", test_module_loggers),
-        ("Funciones específicas", test_logging_functions),
-        ("Contenido de archivos", test_log_file_content),
-        ("Configuración de rotación", test_log_rotation),
-        ("Logger de sesión", test_session_logger)
+        ("Creación del sistema", check_logger_creation),
+        ("Loggers por módulo", check_module_loggers),
+        ("Funciones específicas", check_logging_functions),
+        ("Contenido de archivos", check_log_file_content),
+        ("Configuración de rotación", check_log_rotation),
+        ("Logger de sesión", check_session_logger)
     ]
     
     results = []

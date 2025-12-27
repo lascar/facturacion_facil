@@ -161,13 +161,13 @@ def test_validacion_facturas_opcional():
         print("   ✅ Formatos inválidos rechazados")
         print("\n✨ La validación opcional de facturas funciona correctamente!")
         
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Error durante el test: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 if __name__ == "__main__":
     success = test_validacion_facturas_opcional()

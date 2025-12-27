@@ -212,7 +212,7 @@ class TestInformesService(unittest.TestCase):
 
         # Vérifier que tous les IVA sont à 21%
         for item in informe['desglose_iva']:
-            self.assertEqual(item['iva'], 21.0)
+            self.assertEqual(item['iva_aplicado'], 21.0)
 
     def test_informe_facturacion_productos_mas_vendidos(self):
         """Test: Vérifier les produits les plus vendus"""

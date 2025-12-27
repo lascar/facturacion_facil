@@ -31,9 +31,9 @@ class ProductosPyQt5Window(BasePyQt5Window):
 
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
-        super().__init__(parent, "Gestión de Productos", 1000, 700)
 
         # Service métier - utiliser le même chemin DB que l'ancienne instance
+        # IMPORTANT: Initialiser AVANT super().__init__() car setup_ui() en a besoin
         db_path = db.db_path if hasattr(db, 'db_path') else None
         self.producto_service = ProductoService(db_path)
 
@@ -43,6 +43,9 @@ class ProductosPyQt5Window(BasePyQt5Window):
         # Variables
         self.productos = []
         self.selected_producto_id = None
+
+        # Maintenant appeler super().__init__() qui va appeler setup_ui()
+        super().__init__(parent, "Gestión de Productos", 1200, 700)
 
         # Charger les données
         self.load_productos()
@@ -125,7 +128,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         
         # Table des produits
         self.products_table = QTableWidget()
-        headers = ["ID", "Nombre", "Referencia", "Precio", "Stock", "Categoría"]
+        headers = ["ID", "Nombre", "Referencia", "Precio", "Talla", "Stock", "Categoría"]
         self.setup_table_widget(self.products_table, headers)
 
         # Configuration spécifique des largeurs de colonnes
@@ -134,8 +137,9 @@ class ProductosPyQt5Window(BasePyQt5Window):
         header.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Referencia
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Precio
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Stock
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Categoría
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Talla
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Stock
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Categoría
 
         # Connecter la sélection
         self.products_table.itemSelectionChanged.connect(self.on_product_selected)
@@ -145,14 +149,18 @@ class ProductosPyQt5Window(BasePyQt5Window):
         
     def setup_product_form(self, parent):
         """Configurer le formulaire de produit"""
-        # Widget conteneur
+        # Widget conteneur scrollable
+        form_scroll = QScrollArea()
+        form_scroll.setWidgetResizable(True)
+        form_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
         form_widget = QWidget()
         form_layout = QVBoxLayout(form_widget)
-        
+
         # GroupBox pour le formulaire
         form_group = QGroupBox("Detalles del Producto")
         form_group_layout = QGridLayout(form_group)
-        
+
         # Champs du formulaire
         self.nombre_edit = QLineEdit()
         self.referencia_edit = QLineEdit()
@@ -183,36 +191,47 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.descripcion_edit = QTextEdit()
         self.descripcion_edit.setMaximumHeight(100)
 
-        # Ajouter les champs au layout
-        form_group_layout.addWidget(QLabel("Nombre:"), 0, 0)
-        form_group_layout.addWidget(self.nombre_edit, 0, 1)
+        # Ajouter les champs au layout - Nouvelle disposition
+        row = 0
 
-        form_group_layout.addWidget(QLabel("Referencia (opcional):"), 1, 0)
-        form_group_layout.addWidget(self.referencia_edit, 1, 1)
+        # Ligne 0: Nombre (sur toute la largeur)
+        form_group_layout.addWidget(QLabel("Nombre:"), row, 0)
+        form_group_layout.addWidget(self.nombre_edit, row, 1, 1, 3)
+        row += 1
 
-        form_group_layout.addWidget(QLabel("Precio:"), 2, 0)
-        form_group_layout.addWidget(self.precio_edit, 2, 1)
+        # Ligne 1: Referencia (2/3) et Categoría + Talla (1/3 chacun, moitié-moitié)
+        ref_cat_layout = QHBoxLayout()
+        ref_cat_layout.addWidget(QLabel("Referencia:"))
+        ref_cat_layout.addWidget(self.referencia_edit, 2)  # stretch factor 2 = 2/3
+        ref_cat_layout.addWidget(QLabel("Categoría:"))
+        ref_cat_layout.addWidget(self.categoria_combo, 1)  # stretch factor 1 = 1/6
+        ref_cat_layout.addWidget(QLabel("Talla:"))
+        ref_cat_layout.addWidget(self.talla_edit, 1)  # stretch factor 1 = 1/6
+        form_group_layout.addLayout(ref_cat_layout, row, 0, 1, 4)
+        row += 1
 
-        form_group_layout.addWidget(QLabel("IVA recomendado:"), 3, 0)
-        form_group_layout.addWidget(self.iva_edit, 3, 1)
+        # Ligne 2: Precio et IVA sur la même ligne
+        form_group_layout.addWidget(QLabel("Precio:"), row, 0)
+        form_group_layout.addWidget(self.precio_edit, row, 1)
+        form_group_layout.addWidget(QLabel("IVA:"), row, 2)
+        form_group_layout.addWidget(self.iva_edit, row, 3)
+        row += 1
 
-        form_group_layout.addWidget(QLabel("Stock:"), 4, 0)
-        form_group_layout.addWidget(self.stock_edit, 4, 1)
+        # Ligne 3: Stock (seul)
+        form_group_layout.addWidget(QLabel("Stock:"), row, 0)
+        form_group_layout.addWidget(self.stock_edit, row, 1)
+        row += 1
 
-        form_group_layout.addWidget(QLabel("Categoría (opcional):"), 5, 0)
-        form_group_layout.addWidget(self.categoria_combo, 5, 1)
+        # Ligne 4: Descripción (sur toute la largeur)
+        form_group_layout.addWidget(QLabel("Descripción:"), row, 0)
+        form_group_layout.addWidget(self.descripcion_edit, row, 1, 1, 3)
 
-        form_group_layout.addWidget(QLabel("Talla (opcional):"), 6, 0)
-        form_group_layout.addWidget(self.talla_edit, 6, 1)
-
-        form_group_layout.addWidget(QLabel("Descripción:"), 7, 0)
-        form_group_layout.addWidget(self.descripcion_edit, 7, 1)
-        
         form_layout.addWidget(form_group)
         form_layout.addStretch()
-        
-        parent.addWidget(form_widget)
-        
+
+        form_scroll.setWidget(form_widget)
+        parent.addWidget(form_scroll)
+
     def setup_connections(self):
         """Configurer les connexions de signaux"""
         # Connecter les changements de données
@@ -240,15 +259,17 @@ class ProductosPyQt5Window(BasePyQt5Window):
     def update_products_table(self):
         """Mettre à jour la table des produits"""
         self.products_table.setRowCount(len(self.productos))
-        
+
         for row, producto in enumerate(self.productos):
             self.products_table.setItem(row, 0, QTableWidgetItem(str(producto.get('id', ''))))
             self.products_table.setItem(row, 1, QTableWidgetItem(str(producto.get('nombre', ''))))
             self.products_table.setItem(row, 2, QTableWidgetItem(str(producto.get('referencia', ''))))
             self.products_table.setItem(row, 3, QTableWidgetItem(f"{producto.get('precio_venta', 0):.2f}"))
-            self.products_table.setItem(row, 4, QTableWidgetItem(str(int(producto.get('stock_actual', 0)))))
+            talla = producto.get('talla', '') or ''  # Convertir None en chaîne vide
+            self.products_table.setItem(row, 4, QTableWidgetItem(str(talla)))
+            self.products_table.setItem(row, 5, QTableWidgetItem(str(int(producto.get('stock_actual', 0)))))
             categoria = producto.get('categoria', '') or ''  # Convertir None en chaîne vide
-            self.products_table.setItem(row, 5, QTableWidgetItem(str(categoria)))
+            self.products_table.setItem(row, 6, QTableWidgetItem(str(categoria)))
             
     def on_product_selected(self):
         """Gérer la sélection d'un produit"""
@@ -327,7 +348,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
             self.stock_edit.blockSignals(False)
             self.categoria_combo.blockSignals(False)
             self.talla_edit.blockSignals(False)
-        
+
     def new_producto(self):
         """Créer un nouveau produit"""
         self.clear_form()

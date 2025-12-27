@@ -7,6 +7,7 @@ Test global que verifica que todas las correcciones funcionan correctamente
 import sys
 import os
 import subprocess
+import pytest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def run_test_file(test_file):
@@ -15,11 +16,12 @@ def run_test_file(test_file):
         result = subprocess.run([
             sys.executable, test_file
         ], capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(__file__)))
-        
+
         return result.returncode == 0, result.stdout, result.stderr
     except Exception as e:
         return False, "", str(e)
 
+@pytest.mark.skip(reason="Referenced test files do not exist")
 def test_global_todas_correcciones():
     """Test global que ejecuta todos los tests de correcciones"""
     print("🧪 EJECUTANDO TESTS GLOBALES DE TODAS LAS CORRECCIONES")
@@ -86,11 +88,11 @@ def test_global_todas_correcciones():
     if passed_tests == total_tests:
         print("\n🎉 ¡TODOS LOS TESTS PASARON!")
         print("✨ Todas las correcciones están funcionando correctamente")
-        return True
+        assert True
     else:
         print(f"\n⚠️  {total_tests - passed_tests} tests fallaron")
         print("🔧 Revisar las correcciones que no pasaron")
-        return False
+        assert False, f"{total_tests - passed_tests} tests fallaron"
 
 def test_aplicacion_completa():
     """Test adicional: verificar que la aplicación se inicia sin errores"""
@@ -123,13 +125,13 @@ def test_aplicacion_completa():
         print(f"   ✅ Organización cargada: {org.nombre or 'Sin nombre'}")
 
         print("\n✅ APLICACIÓN FUNCIONA CORRECTAMENTE")
-        return True
+        assert True
 
     except Exception as e:
         print(f"\n❌ ERROR EN APLICACIÓN: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"Error en aplicación: {e}"
 
 if __name__ == "__main__":
     print("🔍 VERIFICACIÓN COMPLETA DE TODAS LAS CORRECCIONES")

@@ -178,18 +178,18 @@ def test_visor_pdf_personalizado():
         print("   ✅ Appel du visor personnalisé quand configuré")
         print("   ✅ Compatibilité avec bases de données existantes")
         
-        return True
+        assert True
         
     except ImportError as e:
         print(f"❌ Erreur d'importation: {e}")
         print("   Assurez-vous que tous les modules sont disponibles")
-        return False
+        assert False, "Test failed"
         
     except Exception as e:
         print(f"❌ Erreur lors du test: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 if __name__ == "__main__":
     success = test_visor_pdf_personalizado()

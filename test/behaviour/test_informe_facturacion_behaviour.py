@@ -56,27 +56,23 @@ class TestInformeFacturacionBehaviour:
         today = datetime.now().strftime('%Y-%m-%d')
 
         self.db.add_invoice({
-            'numero_factura': 'F-001',
-            'fecha_factura': today,
-            'cliente_id': cliente1_id,
-            'nombre_cliente': 'Cliente 1',
-            'dni_nie_cliente': '11111111A',
+            'numero': 'F-001',
+            'fecha': today,
+            'cliente': {'id': cliente1_id, 'nombre': 'Cliente 1', 'nif': '11111111A'},
             'subtotal': 100.0,
-            'total_iva': 21.0,
-            'total_factura': 121.0,
-            'estado': 'Pagada'
+            'iva_total': 21.0,
+            'total': 121.0,
+            'lineas': []
         })
 
         self.db.add_invoice({
-            'numero_factura': 'F-002',
-            'fecha_factura': today,
-            'cliente_id': cliente2_id,
-            'nombre_cliente': 'Cliente 2',
-            'dni_nie_cliente': '22222222B',
+            'numero': 'F-002',
+            'fecha': today,
+            'cliente': {'id': cliente2_id, 'nombre': 'Cliente 2', 'nif': '22222222B'},
             'subtotal': 200.0,
-            'total_iva': 42.0,
-            'total_factura': 242.0,
-            'estado': 'Pagada'
+            'iva_total': 42.0,
+            'total': 242.0,
+            'lineas': []
         })
 
         # Générer l'informe
@@ -117,15 +113,13 @@ class TestInformeFacturacionBehaviour:
         # Créer une facture
         today = datetime.now().strftime('%Y-%m-%d')
         factura_id = self.db.add_invoice({
-            'numero_factura': 'F-001',
-            'fecha_factura': today,
-            'cliente_id': cliente_id,
-            'nombre_cliente': 'Cliente Test',
-            'dni_nie_cliente': '11111111A',
+            'numero': 'F-001',
+            'fecha': today,
+            'cliente': {'id': cliente_id, 'nombre': 'Cliente Test', 'nif': '11111111A'},
             'subtotal': 100.0,
-            'total_iva': 21.0,
-            'total_factura': 121.0,
-            'estado': 'Pagada'
+            'iva_total': 21.0,
+            'total': 121.0,
+            'lineas': []
         })
 
         # Ajouter un item à la facture
@@ -133,10 +127,11 @@ class TestInformeFacturacionBehaviour:
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO factura_items
-            (factura_id, producto_id, nombre_producto, cantidad, precio_unitario, iva_aplicado, descuento)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (factura_id, producto_id, 'Producto Test', 1, 100.0, 21.0, 0.0))
+            (factura_id, producto_id, cantidad, precio_unitario, iva_aplicado, descuento, subtotal, iva_amount, total)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (factura_id, producto_id, 1, 100.0, 21.0, 0.0, 100.0, 21.0, 121.0))
         conn.commit()
+        conn.close()
 
         # Générer l'informe
         fecha_inicio = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -193,27 +188,23 @@ class TestInformeFacturacionBehaviour:
         today = datetime.now().strftime('%Y-%m-%d')
 
         factura1_id = self.db.add_invoice({
-            'numero_factura': 'F-001',
-            'fecha_factura': today,
-            'cliente_id': cliente_id,
-            'nombre_cliente': 'Cliente Test',
-            'dni_nie_cliente': '11111111A',
+            'numero': 'F-001',
+            'fecha': today,
+            'cliente': {'id': cliente_id, 'nombre': 'Cliente Test', 'nif': '11111111A'},
             'subtotal': 100.0,
-            'total_iva': 21.0,
-            'total_factura': 121.0,
-            'estado': 'Pagada'
+            'iva_total': 21.0,
+            'total': 121.0,
+            'lineas': []
         })
 
         factura2_id = self.db.add_invoice({
-            'numero_factura': 'F-002',
-            'fecha_factura': today,
-            'cliente_id': cliente_id,
-            'nombre_cliente': 'Cliente Test',
-            'dni_nie_cliente': '11111111A',
+            'numero': 'F-002',
+            'fecha': today,
+            'cliente': {'id': cliente_id, 'nombre': 'Cliente Test', 'nif': '11111111A'},
             'subtotal': 50.0,
-            'total_iva': 5.0,
-            'total_factura': 55.0,
-            'estado': 'Pagada'
+            'iva_total': 5.0,
+            'total': 55.0,
+            'lineas': []
         })
 
         # Ajouter des items aux factures
@@ -223,18 +214,19 @@ class TestInformeFacturacionBehaviour:
         # Item avec IVA 21%
         cursor.execute("""
             INSERT INTO factura_items
-            (factura_id, producto_id, nombre_producto, cantidad, precio_unitario, iva_aplicado, descuento)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (factura1_id, producto1_id, 'Producto 1', 1, 100.0, 21.0, 0.0))
+            (factura_id, producto_id, cantidad, precio_unitario, iva_aplicado, descuento, subtotal, iva_amount, total)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (factura1_id, producto1_id, 1, 100.0, 21.0, 0.0, 100.0, 21.0, 121.0))
 
         # Item avec IVA 10%
         cursor.execute("""
             INSERT INTO factura_items
-            (factura_id, producto_id, nombre_producto, cantidad, precio_unitario, iva_aplicado, descuento)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (factura2_id, producto2_id, 'Producto 2', 1, 50.0, 10.0, 0.0))
+            (factura_id, producto_id, cantidad, precio_unitario, iva_aplicado, descuento, subtotal, iva_amount, total)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (factura2_id, producto2_id, 1, 50.0, 10.0, 0.0, 50.0, 5.0, 55.0))
 
         conn.commit()
+        conn.close()
 
         # Générer l'informe
         fecha_inicio = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')

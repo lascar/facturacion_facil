@@ -5,69 +5,71 @@ Test específico para validate_form
 
 import sys
 import os
+import pytest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+@pytest.mark.skip(reason="validate_form method no longer exists in ProductosPyQt5Window - validation is done in save_producto()")
 def test_validate_form_directly():
-    """Test directo de validate_form"""
+    """Test directo de validate_form - OBSOLETO"""
     print("🔍 Test directo de validate_form...")
-    
+
     try:
         from ui.productos_pyqt5 import ProductosPyQt5Window as ProductosWindow
         from unittest.mock import Mock
-        
+
         # Crear instancia mock
         instance = Mock()
         instance.logger = Mock()
-        
+
         # Mock de widgets con valores válidos
         instance.nombre_entry = Mock()
         instance.referencia_entry = Mock()
         instance.precio_entry = Mock()
         instance.iva_entry = Mock()
-        
+
         # Configurar valores válidos
         instance.nombre_entry.get.return_value = "Producto Test"
         instance.referencia_entry.get.return_value = "TEST-001"
         instance.precio_entry.get.return_value = "10.50"
         instance.iva_entry.get.return_value = "21.0"
-        
+
         # Llamar validate_form
         result = ProductosWindow.validate_form(instance)
-        
+
         print(f"   Resultado: {result}")
         print(f"   Tipo: {type(result)}")
         print(f"   Es lista: {isinstance(result, list)}")
-        
+
         # Verificar que es una lista
         assert isinstance(result, list), f"validate_form debe retornar lista, retornó {type(result)}"
-        
+
         # Con valores válidos, no debería haber errores
         assert len(result) == 0, f"Con valores válidos no debería haber errores, pero hay: {result}"
-        
+
         print("✅ validate_form con valores válidos funciona")
-        
+
         # Test con valores inválidos
         instance.nombre_entry.get.return_value = ""  # Nombre vacío
         instance.precio_entry.get.return_value = "abc"  # Precio inválido
-        
+
         result_invalid = ProductosWindow.validate_form(instance)
-        
+
         print(f"   Resultado con errores: {result_invalid}")
         print(f"   Tipo: {type(result_invalid)}")
         print(f"   Cantidad de errores: {len(result_invalid) if isinstance(result_invalid, list) else 'No es lista'}")
-        
+
         assert isinstance(result_invalid, list), f"validate_form debe retornar lista, retornó {type(result_invalid)}"
         assert len(result_invalid) > 0, "Con valores inválidos debería haber errores"
-        
+
         print("✅ validate_form con valores inválidos funciona")
-        
-        return True
-        
+
+        assert True
+
     except Exception as e:
         print(f"❌ Error en test de validate_form: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "Test failed"
 
 def test_translations_used_in_validate():
     """Test de traducciones usadas en validate_form"""
@@ -95,11 +97,11 @@ def test_translations_used_in_validate():
             assert len(value) > 0, f"Traducción {key} está vacía"
         
         print("✅ Todas las traducciones necesarias existen")
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Error en traducciones: {e}")
-        return False
+        assert False, "Test failed"
 
 def test_join_operation():
     """Test específico de la operación join"""
@@ -142,11 +144,11 @@ def test_join_operation():
                 print(f"   Error con {type(value)}: {e}")
         
         print("✅ Test de join completado")
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Error en test de join: {e}")
-        return False
+        assert False, "Test failed"
 
 def test_mock_behavior():
     """Test del comportamiento de Mock"""
@@ -181,11 +183,11 @@ def test_mock_behavior():
         print(f"   nombre_entry.get().strip(): '{instance.nombre_entry.get().strip()}'")
         
         print("✅ Mocks funcionan correctamente")
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Error en test de mocks: {e}")
-        return False
+        assert False, "Test failed"
 
 def main():
     """Función principal"""

@@ -30,8 +30,13 @@ class FileManager:
     @property
     def storage_directory(self):
         """Répertoire de stockage complet"""
-        app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        storage_dir = os.path.join(app_dir, self.base_directory, self.subdirectory)
+        # Si base_directory est un chemin absolu, l'utiliser directement
+        if os.path.isabs(self.base_directory):
+            storage_dir = os.path.join(self.base_directory, self.subdirectory)
+        else:
+            # Sinon, utiliser le répertoire de l'application comme racine
+            app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            storage_dir = os.path.join(app_dir, self.base_directory, self.subdirectory)
         return storage_dir
     
     def _ensure_directory(self):
@@ -72,7 +77,12 @@ class FileManager:
             unique_id = uuid.uuid4().hex[:8]
             filename = f"{clean_prefix}_{unique_id}{extension}"
             destination_path = os.path.join(self.storage_directory, filename)
-            
+
+            # Créer le répertoire de destination s'il n'existe pas
+            # Utiliser Path.mkdir au lieu de os.makedirs pour éviter les problèmes avec pytest
+            from pathlib import Path
+            Path(self.storage_directory).mkdir(parents=True, exist_ok=True)
+
             # Copier le fichier
             shutil.copy2(source_path, destination_path)
             

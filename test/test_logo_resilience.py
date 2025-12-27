@@ -100,11 +100,11 @@ def test_missing_logo_recovery():
         except:
             pass
             
-        return True
+        assert True
         
     except Exception as e:
         print(f"   ❌ Test FALLÓ: {e}")
-        return False
+        assert False, "Test failed"
     finally:
         db_manager.cleanup_all_test_resources()
 
@@ -145,11 +145,11 @@ def test_no_logos_available():
         assert org_final.logo_path == "", "Logo path debe estar vacío"
         
         print("   ✅ Test PASADO")
-        return True
+        assert True
         
     except Exception as e:
         print(f"   ❌ Test FALLÓ: {e}")
-        return False
+        assert False, "Test failed"
     finally:
         db_manager.cleanup_all_test_resources()
 

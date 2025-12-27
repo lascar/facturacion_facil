@@ -57,17 +57,17 @@ class TestCategoriaDisplayRegression:
         # Assert
         assert "Categoría" in headers, "La colonne 'Categoría' doit être présente dans les headers de la table"
         categoria_index = headers.index("Categoría")
-        assert categoria_index == 5, f"La colonne 'Categoría' doit être à l'index 5, trouvée à l'index {categoria_index}"
+        assert categoria_index == 6, f"La colonne 'Categoría' doit être à l'index 6, trouvée à l'index {categoria_index}"
     
     def test_categoria_column_resize_mode_configured(self):
         """Test de régression: Vérifier que la colonne 'Categoría' a le bon mode de redimensionnement."""
         # Arrange
         window = ProductosPyQt5Window()
         header = window.products_table.horizontalHeader()
-        
+
         # Act
-        categoria_resize_mode = header.sectionResizeMode(5)  # Index 5 = Categoría
-        
+        categoria_resize_mode = header.sectionResizeMode(6)  # Index 6 = Categoría
+
         # Assert
         assert categoria_resize_mode == QHeaderView.ResizeToContents, \
             f"La colonne 'Categoría' doit avoir le mode ResizeToContents, trouvé: {categoria_resize_mode}"
@@ -133,9 +133,9 @@ class TestCategoriaDisplayRegression:
         
         # Assert
         assert window.products_table.rowCount() == 3, "La table doit contenir 3 lignes"
-        
-        # Vérifier les catégories dans la table (colonne 5)
-        categoria_col = 5
+
+        # Vérifier les catégories dans la table (colonne 6)
+        categoria_col = 6
         assert window.products_table.item(0, categoria_col).text() == 'Electrónicos'
         assert window.products_table.item(1, categoria_col).text() == 'Servicios'
         assert window.products_table.item(2, categoria_col).text() == ''  # None devient chaîne vide
@@ -194,7 +194,7 @@ class TestCategoriaDisplayRegression:
                 headers.append(header.text())
         
         # Assert
-        expected_headers = ["ID", "Nombre", "Referencia", "Precio", "Stock", "Categoría"]
+        expected_headers = ["ID", "Nombre", "Referencia", "Precio", "Talla", "Stock", "Categoría"]
         assert headers == expected_headers, \
             f"L'ordre des headers doit être {expected_headers}, trouvé: {headers}"
     
@@ -210,8 +210,9 @@ class TestCategoriaDisplayRegression:
             1: QHeaderView.Stretch,           # Nombre
             2: QHeaderView.ResizeToContents,  # Referencia
             3: QHeaderView.ResizeToContents,  # Precio
-            4: QHeaderView.ResizeToContents,  # Stock
-            5: QHeaderView.ResizeToContents,  # Categoría
+            4: QHeaderView.ResizeToContents,  # Talla
+            5: QHeaderView.ResizeToContents,  # Stock
+            6: QHeaderView.ResizeToContents,  # Categoría
         }
         
         for col, expected_mode in expected_modes.items():

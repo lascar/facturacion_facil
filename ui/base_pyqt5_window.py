@@ -438,12 +438,15 @@ class BasePyQt5Window(ScrollableMixin, QDialog):
         """Configurer un QTableWidget avec les en-têtes"""
         table.setColumnCount(len(headers))
         table.setHorizontalHeaderLabels(headers)
-        
+
         # Configuration de l'en-tête
         header = table.horizontalHeader()
         header.setStretchLastSection(True)
-        
+
         # Permettre la sélection de lignes entières
         table.setSelectionBehavior(QTableWidget.SelectRows)
-        
+
+        # Activer le tri par clic sur les en-têtes
+        table.setSortingEnabled(True)
+
         return table

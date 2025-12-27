@@ -19,6 +19,7 @@ from utils.exceptions import DatabaseError
 from utils.logger import get_logger
 from utils.informe_pdf_generator import informe_pdf_generator
 from utils.informe_charts import informe_chart_generator
+from utils.excel_generator import ExcelGenerator
 
 
 class InformeStockDialog(QDialog):
@@ -152,6 +153,13 @@ class InformeStockDialog(QDialog):
         self.export_btn = export_btn
         buttons_layout.addWidget(export_btn)
 
+        # Botón exportar Excel
+        export_excel_btn = QPushButton("Exportar Excel")
+        export_excel_btn.clicked.connect(self.export_excel)
+        export_excel_btn.setEnabled(False)
+        self.export_excel_btn = export_excel_btn
+        buttons_layout.addWidget(export_excel_btn)
+
         close_btn = QPushButton("Cerrar")
         close_btn.clicked.connect(self.accept)
         buttons_layout.addWidget(close_btn)
@@ -225,6 +233,7 @@ class InformeStockDialog(QDialog):
 
             # Habilitar botones
             self.export_btn.setEnabled(True)
+            self.export_excel_btn.setEnabled(True)
             self.save_html_btn.setEnabled(True)
             self.print_btn.setEnabled(True)
 
@@ -544,4 +553,75 @@ class InformeStockDialog(QDialog):
                 "Error",
                 f"Error al imprimir:\n{str(e)}"
             )
+
+    def export_excel(self):
+        """Exportar el informe a Excel"""
+        try:
+            if not self.informe_data:
+                QMessageBox.warning(
+                    self,
+                    "Advertencia",
+                    "Genere el informe antes de exportar"
+                )
+                return
+
+            # Obtener directorio de informes de la configuración
+            organizacion = db.get_organization_info()
+            directorio_informes = organizacion.get('directorio_informes', 'informes/') if organizacion else 'informes/'
+
+            # Crear directorio si no existe
+            if not os.path.exists(directorio_informes):
+                os.makedirs(directorio_informes)
+
+            # Generar nombre de archivo
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"informe_stock_{timestamp}.xlsx"
+            file_path = os.path.join(directorio_informes, filename)
+
+            # Generar Excel
+            excel_generator = ExcelGenerator()
+            success = excel_generator.generate_stock_excel(self.informe_data, file_path)
+
+            if success:
+                QMessageBox.information(
+                    self,
+                    "Éxito",
+                    f"Informe Excel guardado exitosamente:\n{file_path}"
+                )
+                self.logger.info(f"Informe Excel guardado: {file_path}")
+
+                # Abrir el archivo Excel
+                self.abrir_excel(file_path)
+            else:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    "Error al generar el archivo Excel.\nVerifique que openpyxl esté instalado."
+                )
+
+        except Exception as e:
+            self.logger.error(f"Error exportando Excel: {e}")
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Error al exportar Excel:\n{str(e)}"
+            )
+
+    def abrir_excel(self, file_path):
+        """Abrir el archivo Excel generado"""
+        try:
+            import subprocess
+            import platform
+
+            sistema = platform.system()
+            if sistema == 'Windows':
+                os.startfile(file_path)
+            elif sistema == 'Darwin':  # macOS
+                subprocess.run(['open', file_path])
+            else:  # Linux
+                subprocess.run(['xdg-open', file_path])
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo Excel: {e}")
+            # No mostrar error al usuario, el archivo ya está guardado
 

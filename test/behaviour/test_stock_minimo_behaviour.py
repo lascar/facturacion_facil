@@ -53,27 +53,21 @@ class TestStockMinimoBehaviour:
         WHEN je crée un stock pour ce produit sans spécifier stock_minimo
         THEN le stock_minimo doit être 0 par défaut
         """
-        # Créer un produit
+        # Créer un produit (le stock est créé automatiquement)
         producto_id = self.db.add_product({
             'nombre': 'Producto Test',
             'referencia': 'TEST-001',
             'precio': 10.0,
             'categoria': 'Test'
         })
-        
-        # Créer un stock
+
+        # Vérifier le stock_minimo par défaut
         conn = self.db.get_connection()
         cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO stock (producto_id, cantidad_disponible)
-            VALUES (?, ?)
-        """, (producto_id, 5))
-        conn.commit()
-        
-        # Vérifier le stock_minimo
         cursor.execute("SELECT stock_minimo FROM stock WHERE producto_id = ?", (producto_id,))
         stock_minimo = cursor.fetchone()[0]
-        
+        conn.close()
+
         assert stock_minimo == 0, "Le stock_minimo par défaut doit être 0"
     
     def test_informe_stock_includes_stock_minimo(self):
@@ -82,30 +76,31 @@ class TestStockMinimoBehaviour:
         WHEN je génère un informe de stock
         THEN l'informe doit inclure le stock_minimo pour chaque produit
         """
-        # Créer un produit
+        # Créer un produit (le stock est créé automatiquement)
         producto_id = self.db.add_product({
             'nombre': 'Producto Test',
             'referencia': 'TEST-001',
             'precio': 10.0,
             'categoria': 'Test'
         })
-        
-        # Créer un stock avec stock_minimo
+
+        # Mettre à jour le stock avec stock_minimo
         conn = self.db.get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO stock (producto_id, cantidad_disponible, stock_minimo)
-            VALUES (?, ?, ?)
-        """, (producto_id, 5, 10))
+            UPDATE stock SET cantidad_disponible = ?, stock_minimo = ?
+            WHERE producto_id = ?
+        """, (5, 10, producto_id))
         conn.commit()
-        
+        conn.close()
+
         # Générer l'informe
         informe = self.informes_service.get_informe_stock()
-        
+
         # Vérifier que le stock_minimo est inclus
         assert 'productos' in informe
         assert len(informe['productos']) > 0
-        
+
         producto = informe['productos'][0]
         assert 'stock_minimo' in producto, "Le stock_minimo doit être inclus dans l'informe"
         assert producto['stock_minimo'] == 10, "Le stock_minimo doit être 10"
@@ -122,10 +117,7 @@ class TestStockMinimoBehaviour:
             {'nombre': 'Producto 2', 'referencia': 'P2', 'precio': 20.0, 'stock': 15, 'minimo': 5},
             {'nombre': 'Producto 3', 'referencia': 'P3', 'precio': 30.0, 'stock': 0, 'minimo': 20},
         ]
-        
-        conn = self.db.get_connection()
-        cursor = conn.cursor()
-        
+
         for data in productos_data:
             producto_id = self.db.add_product({
                 'nombre': data['nombre'],
@@ -133,14 +125,17 @@ class TestStockMinimoBehaviour:
                 'precio': data['precio'],
                 'categoria': 'Test'
             })
-            
+
+            # Mettre à jour le stock avec une connexion séparée
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO stock (producto_id, cantidad_disponible, stock_minimo)
-                VALUES (?, ?, ?)
-            """, (producto_id, data['stock'], data['minimo']))
-        
-        conn.commit()
-        
+                UPDATE stock SET cantidad_disponible = ?, stock_minimo = ?
+                WHERE producto_id = ?
+            """, (data['stock'], data['minimo'], producto_id))
+            conn.commit()
+            conn.close()
+
         # Générer l'informe
         informe = self.informes_service.get_informe_stock()
 

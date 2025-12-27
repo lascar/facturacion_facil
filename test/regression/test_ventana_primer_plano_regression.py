@@ -123,87 +123,91 @@ class TestVentanaPrimerPlanoRegression(unittest.TestCase):
         # et le problème original ne peut plus se reproduire
 
 
-def test_regression_integration():
-    """Test d'intégration reproduisant le scénario problématique original"""
+def check_regression_integration():
+    """Check d'intégration reproduisant le scénario problématique original (usado por main)"""
     print("\n🧪 TEST DE RÉGRESSION: Problema ventana segundo plano")
     print("=" * 60)
     print("Reproduction: 'la ventana de editar o nueva factura se abre en segundo plano'")
-    
+
     app = QApplication.instance() or QApplication([])
-    
+
     try:
         print("\n1. Test CrearFacturaDialog...")
-        
+
         # Créer le dialog comme dans l'usage réel
         crear_dialog = CrearFacturaDialog(None)
-        
+
         # Vérifier qu'il hérite du mixin (solution en place)
-        if isinstance(crear_dialog, DialogForegroundMixin):
-            print("   ✅ CrearFacturaDialog hérite de DialogForegroundMixin")
+        if isinstance(crear_dialog, SimpleDialogForegroundMixin):
+            print("   ✅ CrearFacturaDialog hérite de SimpleDialogForegroundMixin")
         else:
-            print("   ❌ CrearFacturaDialog n'hérite pas de DialogForegroundMixin")
+            print("   ❌ CrearFacturaDialog n'hérite pas de SimpleDialogForegroundMixin")
             return False
-        
+
         # Vérifier qu'il a la méthode de forçage
-        if hasattr(crear_dialog, 'setup_foreground_display'):
-            print("   ✅ Méthode setup_foreground_display disponible")
+        if hasattr(crear_dialog, 'setup_simple_foreground_display'):
+            print("   ✅ Méthode setup_simple_foreground_display disponible")
         else:
-            print("   ❌ Méthode setup_foreground_display manquante")
+            print("   ❌ Méthode setup_simple_foreground_display manquante")
             return False
-        
+
         crear_dialog.close()
-        
+
         print("\n2. Test EditarFacturaDialog...")
-        
+
         # Données de test
         factura_data = {
             'id': 1, 'numero': 'TEST-001', 'cliente_id': 1,
             'cliente_nombre': 'Test', 'fecha': '2025-12-07',
             'total': 100.0, 'estado': 'Pendiente', 'lineas': []
         }
-        
+
         # Créer le dialog comme dans l'usage réel
         editar_dialog = EditarFacturaDialog(factura_data, None)
-        
+
         # Vérifier qu'il hérite du mixin (solution en place)
-        if isinstance(editar_dialog, DialogForegroundMixin):
-            print("   ✅ EditarFacturaDialog hérite de DialogForegroundMixin")
+        if isinstance(editar_dialog, SimpleDialogForegroundMixin):
+            print("   ✅ EditarFacturaDialog hérite de SimpleDialogForegroundMixin")
         else:
-            print("   ❌ EditarFacturaDialog n'hérite pas de DialogForegroundMixin")
+            print("   ❌ EditarFacturaDialog n'hérite pas de SimpleDialogForegroundMixin")
             return False
-        
+
         # Vérifier qu'il a la méthode de forçage
-        if hasattr(editar_dialog, 'setup_foreground_display'):
-            print("   ✅ Méthode setup_foreground_display disponible")
+        if hasattr(editar_dialog, 'setup_simple_foreground_display'):
+            print("   ✅ Méthode setup_simple_foreground_display disponible")
         else:
-            print("   ❌ Méthode setup_foreground_display manquante")
+            print("   ❌ Méthode setup_simple_foreground_display manquante")
             return False
-        
+
         editar_dialog.close()
-        
+
         print("\n   ✅ SUCCÈS: Solution anti-segundo plano en place")
         print("   ✅ Les dialogs ne peuvent plus s'ouvrir en arrière-plan")
         return True
-        
+
     except Exception as e:
         print(f"   ❌ ÉCHEC: {e}")
         return False
+
+def test_regression_integration():
+    """Test pytest wrapper"""
+    assert check_regression_integration(), "Regression integration check failed"
 
 
 def main():
     """Fonction principale pour exécuter les tests"""
     print("🚀 Tests de Régression: Ventana Primer Plano")
     print("=" * 50)
-    
+
     # Test d'intégration du problème original
-    success_integration = test_regression_integration()
-    
+    success_integration = check_regression_integration()
+
     # Tests unitaires
     print("\n🧪 TESTS UNITAIRES:")
     print("=" * 30)
-    
+
     unittest.main(argv=[''], exit=False, verbosity=2)
-    
+
     if success_integration:
         print("\n🎉 TOUS LES TESTS RÉUSSIS!")
         print("✅ La solution anti-segundo plano est correctement implémentée")
