@@ -21,7 +21,7 @@ set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
 :: Crear el script VBS temporal
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%TEMP%\CreateShortcut.vbs"
-echo sLinkFile = "%SCRIPT_DIR%\🔄 Restaurar Backups.lnk" >> "%TEMP%\CreateShortcut.vbs"
+echo sLinkFile = "%SCRIPT_DIR%\Restaurar Backups.lnk" >> "%TEMP%\CreateShortcut.vbs"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.TargetPath = "%SCRIPT_DIR%\restablecer.bat" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%TEMP%\CreateShortcut.vbs"
@@ -35,11 +35,11 @@ cscript //nologo "%TEMP%\CreateShortcut.vbs"
 :: Limpiar
 del "%TEMP%\CreateShortcut.vbs"
 
-if exist "%SCRIPT_DIR%\🔄 Restaurar Backups.lnk" (
+if exist "%SCRIPT_DIR%\Restaurar Backups.lnk" (
     echo ✅ Acceso directo creado exitosamente:
     echo.
     echo    📁 Ubicación: %SCRIPT_DIR%
-    echo    📄 Nombre: 🔄 Restaurar Backups.lnk
+    echo    📄 Nombre: Restaurar Backups.lnk
     echo.
     echo 💡 Puedes copiar este acceso directo a:
     echo    • Escritorio

@@ -31,10 +31,10 @@ set "VBS_FILE=%TEMP%\CreateShortcuts.vbs"
 :: ============================================================================
 :: 1. Acceso directo para INICIAR la aplicación
 :: ============================================================================
-echo [1/4] 🚀 Iniciar Aplicación...
+echo [1/5] 🚀 Iniciar Aplicación...
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_FILE%"
-echo sLinkFile = "%SCRIPT_DIR%\🚀 Iniciar Facturación.lnk" >> "%VBS_FILE%"
+echo sLinkFile = "%SCRIPT_DIR%\Iniciar Facturacion.lnk" >> "%VBS_FILE%"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_FILE%"
 echo oLink.TargetPath = "%SCRIPT_DIR%\start.bat" >> "%VBS_FILE%"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%VBS_FILE%"
@@ -44,8 +44,8 @@ echo oLink.Save >> "%VBS_FILE%"
 
 cscript //nologo "%VBS_FILE%"
 
-if exist "%SCRIPT_DIR%\🚀 Iniciar Facturación.lnk" (
-    echo    ✅ Creado: 🚀 Iniciar Facturación.lnk
+if exist "%SCRIPT_DIR%\Iniciar Facturacion.lnk" (
+    echo    ✅ Creado: Iniciar Facturacion.lnk
 ) else (
     echo    ❌ Error al crear el acceso directo
 )
@@ -53,10 +53,10 @@ if exist "%SCRIPT_DIR%\🚀 Iniciar Facturación.lnk" (
 :: ============================================================================
 :: 2. Acceso directo para CREAR BACKUP
 :: ============================================================================
-echo [2/4] 💾 Crear Backup...
+echo [2/5] 💾 Crear Backup...
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_FILE%"
-echo sLinkFile = "%SCRIPT_DIR%\💾 Crear Backup.lnk" >> "%VBS_FILE%"
+echo sLinkFile = "%SCRIPT_DIR%\Crear Backup.lnk" >> "%VBS_FILE%"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_FILE%"
 echo oLink.TargetPath = "%SCRIPT_DIR%\crear_backup.bat" >> "%VBS_FILE%"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%VBS_FILE%"
@@ -66,8 +66,8 @@ echo oLink.Save >> "%VBS_FILE%"
 
 cscript //nologo "%VBS_FILE%"
 
-if exist "%SCRIPT_DIR%\💾 Crear Backup.lnk" (
-    echo    ✅ Creado: 💾 Crear Backup.lnk
+if exist "%SCRIPT_DIR%\Crear Backup.lnk" (
+    echo    ✅ Creado: Crear Backup.lnk
 ) else (
     echo    ❌ Error al crear el acceso directo
 )
@@ -75,10 +75,10 @@ if exist "%SCRIPT_DIR%\💾 Crear Backup.lnk" (
 :: ============================================================================
 :: 3. Acceso directo para RESTAURAR BACKUP
 :: ============================================================================
-echo [3/4] 🔄 Restaurar Backup...
+echo [3/5] 🔄 Restaurar Backup...
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_FILE%"
-echo sLinkFile = "%SCRIPT_DIR%\🔄 Restaurar Backup.lnk" >> "%VBS_FILE%"
+echo sLinkFile = "%SCRIPT_DIR%\Restaurar Backup.lnk" >> "%VBS_FILE%"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_FILE%"
 echo oLink.TargetPath = "%SCRIPT_DIR%\restablecer.bat" >> "%VBS_FILE%"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%VBS_FILE%"
@@ -88,8 +88,8 @@ echo oLink.Save >> "%VBS_FILE%"
 
 cscript //nologo "%VBS_FILE%"
 
-if exist "%SCRIPT_DIR%\🔄 Restaurar Backup.lnk" (
-    echo    ✅ Creado: 🔄 Restaurar Backup.lnk
+if exist "%SCRIPT_DIR%\Restaurar Backup.lnk" (
+    echo    ✅ Creado: Restaurar Backup.lnk
 ) else (
     echo    ❌ Error al crear el acceso directo
 )
@@ -97,13 +97,13 @@ if exist "%SCRIPT_DIR%\🔄 Restaurar Backup.lnk" (
 :: ============================================================================
 :: 4. Acceso directo para CARPETA DE BACKUPS
 :: ============================================================================
-echo [4/4] 📁 Carpeta de Backups...
+echo [4/5] 📁 Carpeta de Backups...
 
 :: Crear carpeta de backups si no existe
 if not exist "%SCRIPT_DIR%\base_de_datos\backups" mkdir "%SCRIPT_DIR%\base_de_datos\backups"
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_FILE%"
-echo sLinkFile = "%SCRIPT_DIR%\📁 Ver Backups.lnk" >> "%VBS_FILE%"
+echo sLinkFile = "%SCRIPT_DIR%\Ver Backups.lnk" >> "%VBS_FILE%"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_FILE%"
 echo oLink.TargetPath = "%SCRIPT_DIR%\base_de_datos\backups" >> "%VBS_FILE%"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%\base_de_datos\backups" >> "%VBS_FILE%"
@@ -113,8 +113,30 @@ echo oLink.Save >> "%VBS_FILE%"
 
 cscript //nologo "%VBS_FILE%"
 
-if exist "%SCRIPT_DIR%\📁 Ver Backups.lnk" (
-    echo    ✅ Creado: 📁 Ver Backups.lnk
+if exist "%SCRIPT_DIR%\Ver Backups.lnk" (
+    echo    ✅ Creado: Ver Backups.lnk
+) else (
+    echo    ❌ Error al crear el acceso directo
+)
+
+:: ============================================================================
+:: 5. Acceso directo para LIMPIAR BACKUPS
+:: ============================================================================
+echo [5/5] 🧹 Limpiar Backups...
+
+echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_FILE%"
+echo sLinkFile = "%SCRIPT_DIR%\Limpiar Backups.lnk" >> "%VBS_FILE%"
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_FILE%"
+echo oLink.TargetPath = "%SCRIPT_DIR%\limpiar_backups.bat" >> "%VBS_FILE%"
+echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%VBS_FILE%"
+echo oLink.Description = "Limpiar backups antiguos" >> "%VBS_FILE%"
+echo oLink.IconLocation = "%%SystemRoot%%\System32\imageres.dll,54" >> "%VBS_FILE%"
+echo oLink.Save >> "%VBS_FILE%"
+
+cscript //nologo "%VBS_FILE%"
+
+if exist "%SCRIPT_DIR%\Limpiar Backups.lnk" (
+    echo    ✅ Creado: Limpiar Backups.lnk
 ) else (
     echo    ❌ Error al crear el acceso directo
 )
@@ -129,10 +151,11 @@ echo ╚════════════════════════
 echo.
 echo 📂 Los siguientes accesos directos están disponibles:
 echo.
-echo    🚀 Iniciar Facturación.lnk    - Iniciar la aplicación
-echo    💾 Crear Backup.lnk            - Crear backup manual
-echo    🔄 Restaurar Backup.lnk        - Restaurar desde backup
-echo    📁 Ver Backups.lnk             - Abrir carpeta de backups
+echo    • Iniciar Facturacion.lnk    - Iniciar la aplicación
+echo    • Crear Backup.lnk            - Crear backup manual
+echo    • Restaurar Backup.lnk        - Restaurar desde backup
+echo    • Ver Backups.lnk             - Abrir carpeta de backups
+echo    • Limpiar Backups.lnk         - Limpiar backups antiguos
 echo.
 echo 💡 Puedes copiar estos accesos directos a:
 echo    • Escritorio
