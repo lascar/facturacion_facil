@@ -177,25 +177,71 @@ class TestClientesBehaviour(BaseBehaviourTest):
     def test_client_form_validation(self):
         """Test de validation du formulaire client"""
         self.logger.info("🧪 Test: Validation formulaire client")
-        
+
         # Cliquer sur Nouveau
         new_btn = self.automation.find_button_by_text(self.clientes_window, "Nuevo")
         self.automation.click_button_safe(new_btn)
-        
+
         # Essayer de sauvegarder sans remplir les champs obligatoires
         save_btn = self.automation.find_button_by_text(self.clientes_window, "Guardar")
-        
+
         # Remplir seulement le nom (minimum requis)
         self.automation.set_text_safe(self.clientes_window.nombre_edit, "Client Minimal")
-        
+
         success = self.automation.click_button_safe(save_btn, wait_after=1.0)
-        
+
         # Le client devrait être créé même avec seulement le nom
         table = self.clientes_window.clients_table
         assert table.rowCount() > 0, "Client minimal non créé"
-        
+
         self.take_screenshot("client_minimal_created")
         self.logger.info("✅ Test validation formulaire réussi")
+
+    @pytest.mark.behaviour
+    @pytest.mark.clientes
+    def test_client_without_nif(self):
+        """Test création d'un client sans NIF (NIF est optionnel)"""
+        self.logger.info("🧪 Test: Client sans NIF")
+
+        # Cliquer sur Nouveau
+        new_btn = self.automation.find_button_by_text(self.clientes_window, "Nuevo")
+        self.automation.click_button_safe(new_btn)
+
+        # Remplir les champs SANS NIF
+        self.automation.set_text_safe(self.clientes_window.nombre_edit, "Cliente Sin NIF")
+        self.automation.set_text_safe(self.clientes_window.email_edit, "sinnif@example.com")
+        self.automation.set_text_safe(self.clientes_window.telefono_edit, "666777888")
+        self.automation.set_text_safe(self.clientes_window.direccion_edit, "Calle Test 123")
+        # NIF laissé vide intentionnellement
+
+        self.take_screenshot("client_without_nif_form")
+
+        # Sauvegarder
+        save_btn = self.automation.find_button_by_text(self.clientes_window, "Guardar")
+        success = self.automation.click_button_safe(save_btn, wait_after=1.0)
+
+        assert success, "Échec de la sauvegarde du client sans NIF"
+
+        # Vérifier que le client a été créé
+        table = self.clientes_window.clients_table
+        row_count = table.rowCount()
+        assert row_count > 0, "Client sans NIF non créé"
+
+        # Vérifier que le client apparaît dans la table
+        found = False
+        for row in range(row_count):
+            nombre_item = table.item(row, 1)  # Colonne Nombre
+            if nombre_item and nombre_item.text() == "Cliente Sin NIF":
+                found = True
+                # Vérifier que le NIF est vide
+                nif_item = table.item(row, 2)  # Colonne NIF
+                assert nif_item is None or nif_item.text() == "", "NIF devrait être vide"
+                break
+
+        assert found, "Client 'Cliente Sin NIF' non trouvé dans la table"
+
+        self.take_screenshot("client_without_nif_created")
+        self.logger.info("✅ Test client sans NIF réussi")
 
     @pytest.mark.behaviour
     @pytest.mark.gui

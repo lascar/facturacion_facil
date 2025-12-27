@@ -1478,7 +1478,8 @@ class Database:
             cursor.execute("""
                 SELECT fi.id, fi.producto_id, fi.cantidad, fi.precio_unitario,
                        fi.iva_aplicado, fi.descuento, fi.subtotal, fi.iva_amount, fi.total,
-                       p.nombre as producto_nombre, p.referencia as producto_referencia
+                       p.nombre as producto_nombre, p.referencia as producto_referencia,
+                       p.talla as producto_talla
                 FROM factura_items fi
                 LEFT JOIN productos p ON fi.producto_id = p.id
                 WHERE fi.factura_id = ?
@@ -1487,6 +1488,12 @@ class Database:
 
             items = []
             for row in cursor.fetchall():
+                # Construir nombre del producto con talla si existe
+                producto_nombre = row[9] or 'Producto eliminado'
+                producto_talla = row[11]
+                if producto_talla and producto_talla.strip():
+                    producto_nombre = f"{producto_nombre} - {producto_talla}"
+
                 item = {
                     'id': row[0],
                     'producto_id': row[1],
@@ -1497,7 +1504,7 @@ class Database:
                     'subtotal': row[6],
                     'iva_amount': row[7],
                     'total': row[8],
-                    'producto_nombre': row[9] or 'Producto eliminado',
+                    'producto_nombre': producto_nombre,
                     'producto_referencia': row[10] or 'N/A'
                 }
                 items.append(item)

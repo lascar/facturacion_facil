@@ -118,19 +118,19 @@ class ClientesPyQt5Window(BasePyQt5Window):
         self.direccion_edit.setMaximumHeight(100)
         
         # Ajouter les champs au layout
-        form_group_layout.addWidget(QLabel("Nombre:"), 0, 0)
+        form_group_layout.addWidget(QLabel("Nombre: *"), 0, 0)
         form_group_layout.addWidget(self.nombre_edit, 0, 1)
-        
-        form_group_layout.addWidget(QLabel("NIF/DNI:"), 1, 0)
+
+        form_group_layout.addWidget(QLabel("NIF/DNI (opcional):"), 1, 0)
         form_group_layout.addWidget(self.nif_edit, 1, 1)
-        
-        form_group_layout.addWidget(QLabel("Email:"), 2, 0)
+
+        form_group_layout.addWidget(QLabel("Email (opcional):"), 2, 0)
         form_group_layout.addWidget(self.email_edit, 2, 1)
-        
-        form_group_layout.addWidget(QLabel("Teléfono:"), 3, 0)
+
+        form_group_layout.addWidget(QLabel("Teléfono (opcional):"), 3, 0)
         form_group_layout.addWidget(self.telefono_edit, 3, 1)
-        
-        form_group_layout.addWidget(QLabel("Dirección:"), 4, 0)
+
+        form_group_layout.addWidget(QLabel("Dirección (opcional):"), 4, 0)
         form_group_layout.addWidget(self.direccion_edit, 4, 1)
         
         form_layout.addWidget(form_group)

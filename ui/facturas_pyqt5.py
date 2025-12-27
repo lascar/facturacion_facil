@@ -759,8 +759,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
             precio_unit = producto.get('precio_venta', 0.0)  # Corregido: usar precio_venta
             total_linea = cantidad * precio_unit
 
+            # Construir nombre del producto con talla si existe
+            producto_nombre = producto['nombre']
+            talla = producto.get('talla', '')
+            if talla and talla.strip():
+                producto_nombre = f"{producto_nombre} - {talla}"
+
             # Nombre del producto
-            nombre_item = QTableWidgetItem(producto['nombre'])
+            nombre_item = QTableWidgetItem(producto_nombre)
             nombre_item.setData(Qt.UserRole, producto_id)
             self.productos_table.setItem(row, 0, nombre_item)
 
@@ -1643,10 +1649,16 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         iva_amount = subtotal * iva_rate
         total = subtotal + iva_amount
 
+        # Construir nombre del producto con talla si existe
+        producto_nombre = producto_data['nombre']
+        talla = producto_data.get('talla', '')
+        if talla and talla.strip():
+            producto_nombre = f"{producto_nombre} - {talla}"
+
         # Agregar a la lista
         linea = {
             'producto_id': producto_data['id'],
-            'producto_nombre': producto_data['nombre'],
+            'producto_nombre': producto_nombre,
             'cantidad': cantidad,
             'precio_unitario': precio_unitario,
             'iva_aplicado': producto_data.get('iva_recomendado', 21.0),
@@ -2236,10 +2248,16 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         iva_amount = subtotal * iva_rate
         total = subtotal + iva_amount
 
+        # Construir nombre del producto con talla si existe
+        producto_nombre = producto_data['nombre']
+        talla = producto_data.get('talla', '')
+        if talla and talla.strip():
+            producto_nombre = f"{producto_nombre} - {talla}"
+
         # Agregar a la lista
         linea = {
             'producto_id': producto_data['id'],
-            'producto_nombre': producto_data['nombre'],
+            'producto_nombre': producto_nombre,
             'cantidad': cantidad,
             'precio_unitario': precio_unitario,
             'iva_aplicado': producto_data.get('iva_recomendado', 21.0),

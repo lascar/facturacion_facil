@@ -420,7 +420,7 @@ class ClientDetailsWidget(QWidget):
         self.direccion_edit.setMaximumHeight(80)
 
         # Ajouter au layout
-        details_layout.addWidget(QLabel("NIF/CIF:"), 0, 0)
+        details_layout.addWidget(QLabel("NIF/CIF (opcional):"), 0, 0)
         details_layout.addWidget(self.nif_edit, 0, 1)
 
         details_layout.addWidget(QLabel("Teléfono:"), 0, 2)

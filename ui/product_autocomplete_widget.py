@@ -105,12 +105,19 @@ class ProductAutoCompleteWidget(QLineEdit):
                     and p.get('stock_actual', 0) > 0
                 ]
             
-            # Créer les suggestions avec format: "Nom - Prix€ (Stock: X)"
+            # Créer les suggestions avec format: "Nom - Talla - Prix€ (Stock: X)"
             suggestions = []
             for product in self.filtered_products:
                 stock = product.get('stock_actual', 0)
                 precio = product.get('precio_venta', 0.0)
-                suggestion = f"{product['nombre']} - {precio:.2f}€ (Stock: {stock})"
+                nombre = product['nombre']
+                talla = product.get('talla', '')
+
+                # Ajouter la taille si elle existe
+                if talla and talla.strip():
+                    nombre = f"{nombre} - {talla}"
+
+                suggestion = f"{nombre} - {precio:.2f}€ (Stock: {stock})"
                 suggestions.append(suggestion)
             
             self.model.setStringList(suggestions)
@@ -178,10 +185,17 @@ class ProductAutoCompleteWidget(QLineEdit):
         """Formate l'affichage d'un produit"""
         if not product:
             return ""
-        
+
         stock = product.get('stock_actual', 0)
         precio = product.get('precio_venta', 0.0)
-        return f"{product['nombre']} - {precio:.2f}€ (Stock: {stock})"
+        nombre = product['nombre']
+        talla = product.get('talla', '')
+
+        # Ajouter la taille si elle existe
+        if talla and talla.strip():
+            nombre = f"{nombre} - {talla}"
+
+        return f"{nombre} - {precio:.2f}€ (Stock: {stock})"
     
     def set_product(self, product):
         """Définit le produit actuel"""

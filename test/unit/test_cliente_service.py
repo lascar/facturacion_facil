@@ -165,6 +165,24 @@ class TestClienteService(unittest.TestCase):
         cliente_id = self.service.create_cliente(cliente_data)
         self.assertIsNotNone(cliente_id)
 
+    def test_create_cliente_without_nif(self):
+        """Test création d'un client sans NIF (NIF est optionnel)"""
+        cliente_data = {
+            'nombre': 'Cliente Sin NIF',
+            'email': 'sinnif@example.com',
+            'telefono': '666777888',
+            'direccion': 'Calle Test 123'
+            # NIF omis intentionnellement
+        }
+
+        cliente_id = self.service.create_cliente(cliente_data)
+        self.assertIsNotNone(cliente_id)
+
+        # Vérifier que le client a été créé sans NIF
+        cliente = self.service.get_cliente_by_id(cliente_id)
+        self.assertEqual(cliente['nombre'], 'Cliente Sin NIF')
+        self.assertEqual(cliente.get('nif', ''), '')  # NIF devrait être vide
+
 
 if __name__ == '__main__':
     unittest.main()
