@@ -367,6 +367,7 @@ class FacturaService(BaseService):
     def _validate_stock_availability(self, lineas: List[Dict[str, Any]]) -> None:
         """
         Vérifier la disponibilité du stock pour les lignes de facture
+        Salta la verificación para productos marcados como "sin stock"
 
         Args:
             lineas: Liste des lignes de la facture
@@ -388,14 +389,16 @@ class FacturaService(BaseService):
                         details={'producto_id': producto_id}
                     )
 
-                # Vérifier le stock
-                stock_actual = producto.get('stock_actual', 0)
-                if stock_actual < cantidad:
-                    raise InsufficientStockError(
-                        producto.get('nombre', 'producto'),
-                        cantidad,
-                        stock_actual
-                    )
+                # Vérifier le stock (solo si el producto gestiona stock)
+                sin_stock = producto.get('sin_stock', 0)
+                if not sin_stock:
+                    stock_actual = producto.get('stock_actual', 0)
+                    if stock_actual < cantidad:
+                        raise InsufficientStockError(
+                            producto.get('nombre', 'producto'),
+                            cantidad,
+                            stock_actual
+                        )
         except (InsufficientStockError, InvoiceValidationError):
             raise
         except Exception as e:

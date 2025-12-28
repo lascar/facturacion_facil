@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QComboBox, QDoubleSpinBox, QSpinBox, QTextEdit, QGroupBox, QSplitter,
-    QFrame, QScrollArea, QWidget
+    QFrame, QScrollArea, QWidget, QCheckBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
@@ -180,6 +180,11 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.stock_edit.setMaximum(999999)
         self.stock_edit.setMinimum(0)
 
+        # Checkbox "Sin stock"
+        self.sin_stock_checkbox = QCheckBox("Sin stock")
+        self.sin_stock_checkbox.setToolTip("Si está marcado, este producto no gestiona stock")
+        self.sin_stock_checkbox.stateChanged.connect(self.on_sin_stock_changed)
+
         self.categoria_combo = QComboBox()
         self.categoria_combo.setEditable(True)  # Permet d'ajouter de nouvelles catégories
         self.categoria_combo.lineEdit().setPlaceholderText("Escribir categoría o dejar vacío")
@@ -217,9 +222,13 @@ class ProductosPyQt5Window(BasePyQt5Window):
         form_group_layout.addWidget(self.iva_edit, row, 3)
         row += 1
 
-        # Ligne 3: Stock (seul)
-        form_group_layout.addWidget(QLabel("Stock:"), row, 0)
-        form_group_layout.addWidget(self.stock_edit, row, 1)
+        # Ligne 3: Stock et checkbox "Sin stock"
+        stock_layout = QHBoxLayout()
+        stock_layout.addWidget(QLabel("Stock:"))
+        stock_layout.addWidget(self.stock_edit, 1)
+        stock_layout.addWidget(self.sin_stock_checkbox)
+        stock_layout.addStretch()
+        form_group_layout.addLayout(stock_layout, row, 0, 1, 4)
         row += 1
 
         # Ligne 4: Descripción (sur toute la largeur)
@@ -290,6 +299,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.stock_edit.blockSignals(True)
         self.categoria_combo.blockSignals(True)
         self.talla_edit.blockSignals(True)
+        self.sin_stock_checkbox.blockSignals(True)
 
         try:
             self.nombre_edit.setText(str(producto.get('nombre', '')))
@@ -301,6 +311,11 @@ class ProductosPyQt5Window(BasePyQt5Window):
             self.precio_edit.setValue(float(producto.get('precio_venta', 0)))
             self.iva_edit.setValue(float(producto.get('iva_recomendado', 21.0)))
             self.stock_edit.setValue(int(producto.get('stock_actual', 0)))
+
+            # Gérer sin_stock
+            sin_stock = producto.get('sin_stock', 0)
+            self.sin_stock_checkbox.setChecked(bool(sin_stock))
+            self.stock_edit.setEnabled(not bool(sin_stock))
 
             # Gérer la catégorie NULL/None
             categoria = producto.get('categoria')
@@ -348,6 +363,7 @@ class ProductosPyQt5Window(BasePyQt5Window):
             self.stock_edit.blockSignals(False)
             self.categoria_combo.blockSignals(False)
             self.talla_edit.blockSignals(False)
+            self.sin_stock_checkbox.blockSignals(False)
 
     def new_producto(self):
         """Créer un nouveau produit"""
@@ -364,7 +380,18 @@ class ProductosPyQt5Window(BasePyQt5Window):
         self.categoria_combo.setCurrentText("")  # Commencer vide
         self.talla_edit.clear()
         self.descripcion_edit.clear()
+        self.sin_stock_checkbox.setChecked(False)
+        self.stock_edit.setEnabled(True)
         self.set_data_modified(False)
+
+    def on_sin_stock_changed(self, state):
+        """Gérer le changement du checkbox 'Sin stock'"""
+        is_checked = bool(state)
+        self.stock_edit.setEnabled(not is_checked)
+        if is_checked:
+            # Si "sin stock" est coché, mettre le stock à 0
+            self.stock_edit.setValue(0)
+        self.set_data_modified(True)
         
     def save_producto(self):
         """Sauvegarder le produit"""
@@ -393,9 +420,10 @@ class ProductosPyQt5Window(BasePyQt5Window):
                 'referencia': referencia,
                 'precio_venta': self.precio_edit.value(),
                 'iva_recomendado': self.iva_edit.value(),
-                'stock': self.stock_edit.value(),
+                'stock': self.stock_edit.value() if not self.sin_stock_checkbox.isChecked() else 0,
                 'categoria': categoria,
                 'talla': talla,
+                'sin_stock': self.sin_stock_checkbox.isChecked(),
                 'descripcion': self.descripcion_edit.toPlainText().strip()
             }
             

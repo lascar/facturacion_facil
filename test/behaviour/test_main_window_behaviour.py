@@ -81,7 +81,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert productos_btn is not None, "Bouton Productos non trouvé"
         
         # Cliquer sur le bouton
-        success = self.automation.click_button_safe(productos_btn, wait_after=0.5)
+        success = self.automation.click_button_safe(productos_btn, wait_after=0.2)
         assert success, "Échec du clic sur le bouton Productos"
         
         # Vérifier que la fenêtre Productos s'ouvre
@@ -89,7 +89,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert productos_window is not None, "Fenêtre Productos non créée"
         
         # Attendre que la fenêtre soit visible
-        assert self.wait_for_window(productos_window, timeout=3), "Fenêtre Productos non visible"
+        assert self.wait_for_window(productos_window, timeout=1), "Fenêtre Productos non visible"
         
         self.take_screenshot("productos_window_opened")
         self.logger.info("✅ Test ouverture Productos réussi")
@@ -103,7 +103,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert clientes_btn is not None, "Bouton Clientes non trouvé"
         
         # Cliquer sur le bouton
-        success = self.automation.click_button_safe(clientes_btn, wait_after=0.5)
+        success = self.automation.click_button_safe(clientes_btn, wait_after=0.2)
         assert success, "Échec du clic sur le bouton Clientes"
         
         # Vérifier que la fenêtre Clientes s'ouvre
@@ -111,7 +111,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert clientes_window is not None, "Fenêtre Clientes non créée"
         
         # Attendre que la fenêtre soit visible
-        assert self.wait_for_window(clientes_window, timeout=3), "Fenêtre Clientes non visible"
+        assert self.wait_for_window(clientes_window, timeout=1), "Fenêtre Clientes non visible"
         
         self.take_screenshot("clientes_window_opened")
         self.logger.info("✅ Test ouverture Clientes réussi")
@@ -125,7 +125,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert facturas_btn is not None, "Bouton Facturas non trouvé"
         
         # Cliquer sur le bouton
-        success = self.automation.click_button_safe(facturas_btn, wait_after=0.5)
+        success = self.automation.click_button_safe(facturas_btn, wait_after=0.2)
         assert success, "Échec du clic sur le bouton Facturas"
         
         # Vérifier que la fenêtre Facturas s'ouvre
@@ -133,7 +133,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert facturas_window is not None, "Fenêtre Facturas non créée"
         
         # Attendre que la fenêtre soit visible
-        assert self.wait_for_window(facturas_window, timeout=3), "Fenêtre Facturas non visible"
+        assert self.wait_for_window(facturas_window, timeout=1), "Fenêtre Facturas non visible"
         
         self.take_screenshot("facturas_window_opened")
         self.logger.info("✅ Test ouverture Facturas réussi")
@@ -147,7 +147,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert organizacion_btn is not None, "Bouton Organización non trouvé"
         
         # Cliquer sur le bouton
-        success = self.automation.click_button_safe(organizacion_btn, wait_after=0.5)
+        success = self.automation.click_button_safe(organizacion_btn, wait_after=0.2)
         assert success, "Échec du clic sur le bouton Organización"
         
         # Vérifier que la fenêtre Organización s'ouvre
@@ -155,7 +155,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert organizacion_window is not None, "Fenêtre Organización non créée"
         
         # Attendre que la fenêtre soit visible
-        assert self.wait_for_window(organizacion_window, timeout=3), "Fenêtre Organización non visible"
+        assert self.wait_for_window(organizacion_window, timeout=1), "Fenêtre Organización non visible"
         
         self.take_screenshot("organizacion_window_opened")
         self.logger.info("✅ Test ouverture Organización réussi")
@@ -169,7 +169,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert stock_btn is not None, "Bouton Stock non trouvé"
         
         # Cliquer sur le bouton
-        success = self.automation.click_button_safe(stock_btn, wait_after=0.5)
+        success = self.automation.click_button_safe(stock_btn, wait_after=0.2)
         assert success, "Échec du clic sur le bouton Stock"
         
         # Vérifier que la fenêtre Stock s'ouvre
@@ -177,7 +177,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
         assert stock_window is not None, "Fenêtre Stock non créée"
         
         # Attendre que la fenêtre soit visible
-        assert self.wait_for_window(stock_window, timeout=3), "Fenêtre Stock non visible"
+        assert self.wait_for_window(stock_window, timeout=1), "Fenêtre Stock non visible"
         
         self.take_screenshot("stock_window_opened")
         self.logger.info("✅ Test ouverture Stock réussi")

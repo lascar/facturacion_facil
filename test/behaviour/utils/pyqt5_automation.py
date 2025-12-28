@@ -68,7 +68,7 @@ class PyQt5Automation:
             self.logger.error(f"Erreur recherche widget '{object_name}': {e}")
             return None
 
-    def click_button_safe(self, button, wait_after=0.2):
+    def click_button_safe(self, button, wait_after=0.1):
         """Cliquer sur un bouton de manière sécurisée"""
         try:
             if button and button.isEnabled() and button.isVisible():
@@ -82,8 +82,8 @@ class PyQt5Automation:
         except Exception as e:
             self.logger.error(f"Erreur clic bouton: {e}")
             return False
-    
-    def set_text_safe(self, field, text, wait_after=0.1):
+
+    def set_text_safe(self, field, text, wait_after=0.05):
         """Définir le texte d'un champ de manière sécurisée"""
         try:
             if field and field.isEnabled() and field.isVisible():
@@ -98,13 +98,13 @@ class PyQt5Automation:
         except Exception as e:
             self.logger.error(f"Erreur saisie texte: {e}")
             return False
-    
-    def select_combobox_item(self, combobox, text_or_index, wait_after=0.1):
+
+    def select_combobox_item(self, combobox, text_or_index, wait_after=0.05):
         """Sélectionner un élément dans une combobox"""
         try:
             if not combobox or not combobox.isEnabled():
                 return False
-                
+
             if isinstance(text_or_index, int):
                 # Sélection par index
                 if 0 <= text_or_index < combobox.count():
@@ -118,31 +118,31 @@ class PyQt5Automation:
                     combobox.setCurrentIndex(index)
                 else:
                     return False
-            
+
             self.app.processEvents()
             time.sleep(wait_after)
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Erreur sélection combobox: {e}")
             return False
-    
-    def select_table_row(self, table, row_index, wait_after=0.1):
+
+    def select_table_row(self, table, row_index, wait_after=0.05):
         """Sélectionner une ligne dans un tableau"""
         try:
             if not table or row_index < 0 or row_index >= table.rowCount():
                 return False
-                
+
             table.selectRow(row_index)
             self.app.processEvents()
             time.sleep(wait_after)
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Erreur sélection ligne tableau: {e}")
             return False
-    
-    def wait_for_widget_visible(self, widget, timeout=5):
+
+    def wait_for_widget_visible(self, widget, timeout=2):
         """Attendre qu'un widget soit visible"""
         start_time = time.time()
         while time.time() - start_time < timeout:
@@ -150,10 +150,10 @@ class PyQt5Automation:
                 self.app.processEvents()
                 return True
             self.app.processEvents()
-            time.sleep(0.1)
+            time.sleep(0.05)  # Réduit de 0.1 à 0.05
         return False
-    
-    def simulate_key_sequence(self, widget, key_sequence, wait_after=0.1):
+
+    def simulate_key_sequence(self, widget, key_sequence, wait_after=0.05):
         """Simuler une séquence de touches"""
         try:
             if widget and widget.isVisible():

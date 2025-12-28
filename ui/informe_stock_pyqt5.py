@@ -171,7 +171,8 @@ class InformeStockDialog(QDialog):
     def load_productos(self):
         """Cargar la lista de productos con checkboxes"""
         try:
-            self.all_productos = db.get_all_products()
+            all_productos = db.get_all_products()
+            self.all_productos = all_productos
 
             # Cargar todos los productos con checkboxes
             self.productos_list.clear()

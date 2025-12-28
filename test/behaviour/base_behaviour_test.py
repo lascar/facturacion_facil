@@ -50,7 +50,7 @@ class BaseBehaviourTest:
         # Attendre que l'interface soit prête
         if hasattr(self, 'app') and self.app:
             self.app.processEvents()
-            time.sleep(0.1)
+            time.sleep(0.05)  # Réduit de 0.1 à 0.05
     
     def teardown_method(self, method):
         """Nettoyage après chaque test"""
@@ -85,7 +85,7 @@ class BaseBehaviourTest:
 
                 # 3. Traiter les événements pour finaliser les fermetures
                 self.app.processEvents()
-                time.sleep(0.1)
+                time.sleep(0.05)  # Réduit de 0.1 à 0.05
 
                 # 4. Forcer la fermeture des fenêtres restantes
                 remaining_windows = [w for w in self.app.allWidgets() if w and w.isWindow() and w.isVisible()]
@@ -99,7 +99,7 @@ class BaseBehaviourTest:
 
                 # 5. Traitement final des événements
                 self.app.processEvents()
-                time.sleep(0.1)
+                time.sleep(0.05)  # Réduit de 0.1 à 0.05
 
             # 6. Fermer les fenêtres spécifiques du main_window si disponible
             if self.main_window:
@@ -156,16 +156,16 @@ class BaseBehaviourTest:
         except Exception as e:
             self.logger.warning(f"Erreur fermeture forcée widget: {e}")
     
-    def wait_for_window(self, window, timeout=5):
+    def wait_for_window(self, window, timeout=2):
         """Attendre qu'une fenêtre soit visible et prête"""
         start_time = time.time()
         while time.time() - start_time < timeout:
             if window and window.isVisible():
                 self.app.processEvents()
-                time.sleep(0.1)  # Petit délai pour s'assurer que la fenêtre est prête
+                time.sleep(0.05)  # Délai réduit de 0.1 à 0.05
                 return True
             self.app.processEvents()
-            time.sleep(0.1)
+            time.sleep(0.05)  # Délai réduit de 0.1 à 0.05
         return False
 
     def open_window_with_auto_close(self, window_opener_func, test_duration=2.0, *args, **kwargs):
@@ -207,7 +207,7 @@ class BaseBehaviourTest:
             start_time = time.time()
             while time.time() - start_time < test_duration and window.isVisible():
                 self.app.processEvents()
-                time.sleep(0.1)
+                time.sleep(0.05)  # Réduit de 0.1 à 0.05
 
             # S'assurer que la fenêtre est fermée
             if window.isVisible():
@@ -216,7 +216,7 @@ class BaseBehaviourTest:
 
         return window
     
-    def click_button(self, button, wait_after=0.2):
+    def click_button(self, button, wait_after=0.1):
         """Cliquer sur un bouton avec gestion d'erreur"""
         try:
             if button and button.isEnabled():
@@ -232,7 +232,7 @@ class BaseBehaviourTest:
             self.logger.error(f"Erreur lors du clic sur le bouton: {e}")
             return False
     
-    def set_text_field(self, field, text, wait_after=0.1):
+    def set_text_field(self, field, text, wait_after=0.05):
         """Définir le texte d'un champ avec gestion d'erreur"""
         try:
             if field and hasattr(field, 'setText'):
@@ -270,9 +270,9 @@ class BaseBehaviourTest:
     def slow_mode_wait(self):
         """Attendre en mode lent pour le débogage"""
         if self.config and self.config.get('slow', False):
-            time.sleep(1.0)
+            time.sleep(0.5)  # Réduit de 1.0 à 0.5
         else:
-            time.sleep(0.1)
+            time.sleep(0.05)  # Réduit de 0.1 à 0.05
 
     def wait_and_process_events(self, milliseconds):
         """Attendre un certain temps en millisecondes tout en traitant les événements"""

@@ -109,9 +109,9 @@ def test_aplicacion_completa():
         from utils.factura_numbering import factura_numbering_service
         print("   ✅ Módulos de base de datos importados")
         
-        # Verificar base de datos
+        # Verificar base de datos (usar temp_db del fixture)
         print("2️⃣ Verificando base de datos...")
-        db = Database()
+        from database.database import db  # Utiliser l'instance globale qui sera patchée
         print("   ✅ Base de datos inicializada")
         
         # Verificar sistema de numeración

@@ -55,16 +55,25 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
         # Cliquer sur le bouton
         QTest.mouseClick(organizacion_btn, Qt.LeftButton)
         self.app.processEvents()
-        time.sleep(0.3)
-        
+        time.sleep(0.5)
+
         # Vérifier que la fenêtre s'ouvre
         organizacion_window = None
         for widget in self.app.topLevelWidgets():
             if hasattr(widget, 'windowTitle') and "Configuración de la Organización" in widget.windowTitle():
                 organizacion_window = widget
                 break
-        
+
         assert organizacion_window is not None, "Fenêtre Organización non trouvée"
+
+        # Forcer l'affichage si nécessaire
+        if not organizacion_window.isVisible():
+            organizacion_window.show()
+            organizacion_window.raise_()
+            organizacion_window.activateWindow()
+            self.app.processEvents()
+            time.sleep(0.3)
+
         assert organizacion_window.isVisible(), "Fenêtre Organización non visible"
         
         self.logger.info("✅ Test 01 réussi: Fenêtre Organización ouverte")

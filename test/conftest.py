@@ -144,9 +144,18 @@ def pytest_sessionfinish(session, exitstatus):
     # Nettoyer toutes les ressources restantes
     test_db_manager.cleanup_all_test_resources()
 
+    # Nettoyer la base de données de test par défaut
+    if hasattr(session.config, '_pytest_default_db_path'):
+        try:
+            if os.path.exists(session.config._pytest_default_db_path):
+                os.unlink(session.config._pytest_default_db_path)
+        except Exception:
+            pass
+
     # Nettoyer les variables d'environnement
     os.environ.pop('PYTEST_RUNNING', None)
     os.environ.pop('DISABLE_PDF_OPEN', None)
+    os.environ.pop('TEST_DATABASE_PATH', None)
 
     # Afficher les statistiques finales
     stats = test_db_manager.get_test_stats()
@@ -164,6 +173,19 @@ def pytest_configure(config):
     # Définir les variables d'environnement pour désactiver l'ouverture des PDFs
     os.environ['PYTEST_RUNNING'] = '1'
     os.environ['DISABLE_PDF_OPEN'] = '1'
+
+    # PROTECTION CRITIQUE: Empêcher l'accès à la base de données de production
+    # Créer une base de données de test par défaut AVANT tout import
+    import tempfile
+    test_db_fd, test_db_path = tempfile.mkstemp(suffix='.db', prefix='pytest_default_')
+    os.close(test_db_fd)
+
+    # Stocker le chemin pour nettoyage ultérieur
+    config._pytest_default_db_path = test_db_path
+
+    # Remplacer le chemin de la base de données de production par le chemin de test
+    # AVANT que database.database soit importé
+    os.environ['TEST_DATABASE_PATH'] = test_db_path
 
     # Ajouter des marqueurs personnalisés
     config.addinivalue_line(

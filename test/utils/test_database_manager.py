@@ -138,7 +138,11 @@ class DatabaseManager:
                             self.logger.warning(f"Erreur suppression répertoire {temp_dir}: {e}")
                     del self._test_directories[thread_id]
 
-            self.logger.info("Toutes les ressources de test nettoyées")
+            try:
+                self.logger.info("Toutes les ressources de test nettoyées")
+            except (ValueError, OSError):
+                # Le logger peut être fermé à ce stade, ignorer l'erreur
+                pass
     
     @contextmanager
     def isolated_database(self, test_name=None):

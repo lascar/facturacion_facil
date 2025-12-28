@@ -111,21 +111,45 @@ class TestFixtures:
         """Crée toutes les fixtures dans la base de données"""
         print("📦 Création des fixtures de test...")
 
-        # 1. Créer les produits
+        # 1. Créer les produits (vérifier si existent déjà)
         print("   Création des produits...")
         product_ids = []
         for product_data in self.get_products_fixtures():
-            product_id = self.db_improved.add_product(product_data)
-            product_ids.append(product_id)
-            print(f"   ✅ Produit créé: {product_data['nombre']} (ID: {product_id})")
+            # Vérifier si le produit existe déjà par référence
+            existing_products = self.db_improved.get_all_products()
+            existing_product = next(
+                (p for p in existing_products if p.get('referencia') == product_data['referencia']),
+                None
+            )
 
-        # 2. Créer les clients
+            if existing_product:
+                product_id = existing_product['id']
+                print(f"   ♻️  Produit existant réutilisé: {product_data['nombre']} (ID: {product_id})")
+            else:
+                product_id = self.db_improved.add_product(product_data)
+                print(f"   ✅ Produit créé: {product_data['nombre']} (ID: {product_id})")
+
+            product_ids.append(product_id)
+
+        # 2. Créer les clients (vérifier si existent déjà)
         print("   Création des clients...")
         client_ids = []
         for client_data in self.get_clients_fixtures():
-            client_id = self.db_improved.add_client(client_data)
+            # Vérifier si le client existe déjà par email
+            existing_clients = self.db_improved.get_all_clients()
+            existing_client = next(
+                (c for c in existing_clients if c.get('email') == client_data['email']),
+                None
+            )
+
+            if existing_client:
+                client_id = existing_client['id']
+                print(f"   ♻️  Client existant réutilisé: {client_data['nombre']} (ID: {client_id})")
+            else:
+                client_id = self.db_improved.add_client(client_data)
+                print(f"   ✅ Client créé: {client_data['nombre']} (ID: {client_id})")
+
             client_ids.append(client_id)
-            print(f"   ✅ Client créé: {client_data['nombre']} (ID: {client_id})")
 
         # 3. Créer les factures (version simplifiée avec SQL direct)
         print("   Création des factures...")

@@ -419,18 +419,20 @@ class ClientDetailsWidget(QWidget):
         self.direccion_edit.setPlaceholderText("Dirección")
         self.direccion_edit.setMaximumHeight(80)
 
-        # Ajouter au layout
+        # Ajouter au layout (2 lignes compactes)
+        # Ligne 0: NIF + Teléfono + Email
         details_layout.addWidget(QLabel("NIF/CIF (opcional):"), 0, 0)
         details_layout.addWidget(self.nif_edit, 0, 1)
 
-        details_layout.addWidget(QLabel("Teléfono:"), 0, 2)
+        details_layout.addWidget(QLabel("Teléfono (opcional):"), 0, 2)
         details_layout.addWidget(self.telefono_edit, 0, 3)
 
-        details_layout.addWidget(QLabel("Email:"), 1, 0)
-        details_layout.addWidget(self.email_edit, 1, 1, 1, 3)
+        details_layout.addWidget(QLabel("Email (opcional):"), 0, 4)
+        details_layout.addWidget(self.email_edit, 0, 5)
 
-        details_layout.addWidget(QLabel("Dirección:"), 2, 0)
-        details_layout.addWidget(self.direccion_edit, 2, 1, 1, 3)
+        # Ligne 1: Dirección (toute la largeur)
+        details_layout.addWidget(QLabel("Dirección (opcional):"), 1, 0)
+        details_layout.addWidget(self.direccion_edit, 1, 1, 1, 5)
 
         layout.addWidget(self.details_group)
 
@@ -526,7 +528,8 @@ class ClientDetailsWidget(QWidget):
             self.direccion_edit.setPlainText(client.get('direccion', ''))
 
             # Réinitialiser l'état des changements
-            self.has_changes = False
+            # Pour un nouveau client, activer le bouton Guardar immédiatement
+            self.has_changes = client.get('is_new', False)
             self.update_buttons_state()
 
             # Fin du chargement
@@ -587,13 +590,18 @@ class ClientDetailsWidget(QWidget):
                 'direccion': self.direccion_edit.toPlainText().strip()
             }
 
-            # Comparer avec les données originales
-            has_changes = (
-                current_data['nif'] != self.original_client_data['nif'] or
-                current_data['telefono'] != self.original_client_data['telefono'] or
-                current_data['email'] != self.original_client_data['email'] or
-                current_data['direccion'] != self.original_client_data['direccion']
-            )
+            # Pour un nouveau client, toujours considérer qu'il y a des changements
+            # pour garder le bouton Guardar activé
+            if self.current_client.get('is_new', False):
+                has_changes = True
+            else:
+                # Comparer avec les données originales pour un client existant
+                has_changes = (
+                    current_data['nif'] != self.original_client_data['nif'] or
+                    current_data['telefono'] != self.original_client_data['telefono'] or
+                    current_data['email'] != self.original_client_data['email'] or
+                    current_data['direccion'] != self.original_client_data['direccion']
+                )
 
             if has_changes != self.has_changes:
                 self.has_changes = has_changes

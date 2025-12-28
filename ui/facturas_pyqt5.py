@@ -138,28 +138,19 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.form_title_label.setAlignment(Qt.AlignCenter)
         form_layout.addWidget(self.form_title_label)
 
-        # Scroll area pour le formulaire
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        # Section 1: Información de factura (sur une ligne)
+        info_group = self.create_basic_info_section()
+        form_layout.addWidget(info_group)
 
-        # Widget de contenu du formulaire
-        form_content = QWidget()
-        content_layout = QVBoxLayout(form_content)
+        # Section 2: Cliente (sans scroll individuel)
+        client_group = self.create_client_section()
+        form_layout.addWidget(client_group)
 
-        # Section informations facture et client sur 2 colonnes
-        self.setup_factura_client_section(content_layout)
+        # Section 3: Productos (sans scroll individuel)
+        self.setup_products_section(form_layout)
 
-        # Section produits/lignes
-        self.setup_products_section(content_layout)
-
-        # Section totaux
-        self.setup_totals_section(content_layout)
-
-        # Ajouter le contenu au scroll area
-        scroll_area.setWidget(form_content)
-        form_layout.addWidget(scroll_area)
+        # Section 4: Totaux (sans scroll individuel)
+        self.setup_totals_section(form_layout)
 
         parent.addWidget(form_widget)
 
@@ -184,22 +175,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         list_layout.addWidget(self.facturas_table)
         parent.addWidget(list_widget)
 
-    def setup_factura_client_section(self, parent_layout):
-        """Configurer les sections factura et client sur 2 colonnes"""
-        # Container horizontal pour les 2 colonnes
-        columns_widget = QWidget()
-        columns_layout = QHBoxLayout(columns_widget)
-        columns_layout.setSpacing(15)  # Espacement entre les colonnes
 
-        # Créer les sections et stocker les références
-        info_group = self.create_basic_info_section()
-        client_group = self.create_client_section()
-
-        # Ajouter les sections au layout avec des proportions équilibrées
-        columns_layout.addWidget(info_group, 3)  # 60% pour la factura
-        columns_layout.addWidget(client_group, 2)  # 40% pour le client
-
-        parent_layout.addWidget(columns_widget)
 
     def apply_combo_style(self, combo_box):
         """Appliquer un style cohérent aux combo boxes pour éviter le texte blanc"""
@@ -283,12 +259,12 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.fecha_edit.setCalendarPopup(True)
         info_layout.addWidget(self.fecha_edit, 0, 3)
 
-        # Estado
-        info_layout.addWidget(QLabel("Estado:"), 1, 0)
+        # Estado (sur la même ligne)
+        info_layout.addWidget(QLabel("Estado:"), 0, 4)
         self.estado_combo = QComboBox()
         # Les états seront chargés depuis la configuration d'organisation
         self.apply_combo_style(self.estado_combo)
-        info_layout.addWidget(self.estado_combo, 1, 1)
+        info_layout.addWidget(self.estado_combo, 0, 5)
 
         return info_group
 
@@ -319,35 +295,6 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.client_details.client_changes_discarded.connect(self.on_client_changes_discarded)
 
         return client_group
-
-    def setup_basic_info_section(self, parent_layout):
-        """Configurer la section d'informations de base"""
-        info_group = QGroupBox("Información de la Factura")
-        info_layout = QGridLayout(info_group)
-
-        # Número de factura
-        info_layout.addWidget(QLabel("Número:"), 0, 0)
-        self.numero_edit = QLineEdit()
-        self.numero_edit.setReadOnly(True)
-        info_layout.addWidget(self.numero_edit, 0, 1)
-
-        # Fecha
-        info_layout.addWidget(QLabel("Fecha:"), 0, 2)
-        self.fecha_edit = QDateEdit()
-        self.fecha_edit.setDate(QDate.currentDate())
-        self.fecha_edit.setCalendarPopup(True)
-        info_layout.addWidget(self.fecha_edit, 0, 3)
-
-        # Estado
-        info_layout.addWidget(QLabel("Estado:"), 1, 0)
-        self.estado_combo = QComboBox()
-        # Les états seront chargés depuis la configuration d'organisation
-        self.apply_combo_style(self.estado_combo)
-        info_layout.addWidget(self.estado_combo, 1, 1)
-
-        parent_layout.addWidget(info_group)
-
-
 
     def setup_products_section(self, parent_layout):
         """Configurer la section produits"""
@@ -381,7 +328,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         # Tabla de productos
         self.productos_table = QTableWidget()
-        productos_headers = ["Producto", "Cantidad", "Precio Unit.", "Total", "Acciones"]
+        productos_headers = ["Producto", "Cantidad", "Precio Unit.", "IVA %", "Total", "Acciones"]
         self.productos_table.setColumnCount(len(productos_headers))
         self.productos_table.setHorizontalHeaderLabels(productos_headers)
         self.productos_table.horizontalHeader().setStretchLastSection(False)
@@ -390,7 +337,11 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.productos_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.productos_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.productos_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.productos_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
         self.productos_table.setMaximumHeight(200)
+
+        # Connecter le signal de changement pour recalculer les totaux
+        self.productos_table.itemChanged.connect(self.on_product_table_item_changed)
 
         products_layout.addWidget(self.productos_table)
         parent_layout.addWidget(products_group)
@@ -477,23 +428,103 @@ class FacturasPyQt5Window(BasePyQt5Window):
     def update_totals(self):
         """Actualizar los totales de la factura"""
         subtotal = 0.0
+        total_iva = 0.0
 
         for row in range(self.productos_table.rowCount()):
-            total_item = self.productos_table.item(row, 3)
-            if total_item:
-                try:
-                    total_value = float(total_item.text().replace('€', '').strip())
-                    subtotal += total_value
-                except ValueError:
+            try:
+                # Obtener cantidad, precio unitario e IVA
+                cantidad_item = self.productos_table.item(row, 1)
+                precio_item = self.productos_table.item(row, 2)
+                iva_item = self.productos_table.item(row, 3)
+
+                if not cantidad_item or not precio_item or not iva_item:
                     continue
 
-        iva = subtotal * 0.21  # 21% IVA
-        total = subtotal + iva
+                cantidad = float(cantidad_item.text())
+                precio_unit = float(precio_item.text().replace('€', '').strip())
+                iva_percent = float(iva_item.text().replace('%', '').strip())
+
+                # Calcular subtotal de esta línea
+                linea_subtotal = cantidad * precio_unit
+                subtotal += linea_subtotal
+
+                # Calcular IVA de esta línea
+                linea_iva = linea_subtotal * (iva_percent / 100)
+                total_iva += linea_iva
+
+                # Actualizar el total de la línea (columna 4)
+                linea_total = linea_subtotal + linea_iva
+                total_item = self.productos_table.item(row, 4)
+                if total_item:
+                    # Desconectar temporairement le signal pour éviter la récursion
+                    self.productos_table.blockSignals(True)
+                    total_item.setText(f"{linea_total:.2f}€")
+                    self.productos_table.blockSignals(False)
+
+            except (ValueError, AttributeError):
+                continue
+
+        total = subtotal + total_iva
 
         self.subtotal_label.setText(f"{subtotal:.2f} €")
-        self.iva_label.setText(f"{iva:.2f} €")
+        self.iva_label.setText(f"{total_iva:.2f} €")
         self.total_label.setText(f"{total:.2f} €")
-        
+
+    def on_product_table_item_changed(self, item):
+        """Gérer les changements dans la table de produits"""
+        if not item:
+            return
+
+        row = item.row()
+        col = item.column()
+
+        # Si on modifie la quantité (col 1), le prix (col 2) ou l'IVA (col 3)
+        if col in [1, 2, 3]:
+            try:
+                # Valider et recalculer
+                if col == 1:  # Cantidad
+                    cantidad = int(item.text())
+                    if cantidad <= 0:
+                        self.productos_table.blockSignals(True)
+                        item.setText("1")
+                        self.productos_table.blockSignals(False)
+                elif col == 2:  # Precio
+                    precio = float(item.text().replace('€', '').strip())
+                    if precio < 0:
+                        self.productos_table.blockSignals(True)
+                        item.setText("0.00€")
+                        self.productos_table.blockSignals(False)
+                    else:
+                        # Reformater avec le symbole €
+                        self.productos_table.blockSignals(True)
+                        item.setText(f"{precio:.2f}€")
+                        self.productos_table.blockSignals(False)
+                elif col == 3:  # IVA
+                    iva = float(item.text().replace('%', '').strip())
+                    if iva < 0:
+                        self.productos_table.blockSignals(True)
+                        item.setText("0%")
+                        self.productos_table.blockSignals(False)
+                    else:
+                        # Reformater avec le symbole %
+                        self.productos_table.blockSignals(True)
+                        item.setText(f"{iva:.1f}%")
+                        self.productos_table.blockSignals(False)
+
+                # Recalculer les totaux
+                self.update_totals()
+
+            except ValueError:
+                # Restaurer la valeur précédente si invalide
+                self.productos_table.blockSignals(True)
+                if col == 1:
+                    item.setText("1")
+                elif col == 2:
+                    item.setText("0.00€")
+                elif col == 3:
+                    item.setText("0%")
+                self.productos_table.blockSignals(False)
+
     def setup_connections(self):
         """Configurer les connexions de signaux"""
         # Boutons principaux
@@ -727,9 +758,11 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 self.show_error("Error", "Producto no válido")
                 return
 
-            # Verificar stock
+            # Verificar stock (solo si el producto gestiona stock)
+            sin_stock = producto.get('sin_stock', 0)
             stock_actual = producto.get('stock_actual', 0)
-            if cantidad > stock_actual:
+
+            if not sin_stock and cantidad > stock_actual:
                 self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
                 return
 
@@ -741,14 +774,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
                     cantidad_actual = int(self.productos_table.item(row, 1).text())
                     nueva_cantidad = cantidad_actual + cantidad
 
-                    if nueva_cantidad > stock_actual:
+                    if not sin_stock and nueva_cantidad > stock_actual:
                         self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
                         return
 
+                    # Producto ya existe, actualizar cantidad
+                    self.productos_table.blockSignals(True)
                     self.productos_table.item(row, 1).setText(str(nueva_cantidad))
-                    precio_unit = float(self.productos_table.item(row, 2).text().replace('€', ''))
-                    nuevo_total = nueva_cantidad * precio_unit
-                    self.productos_table.item(row, 3).setText(f"{nuevo_total:.2f}€")
+                    self.productos_table.blockSignals(False)
                     self.update_totals()
                     return
 
@@ -756,8 +789,8 @@ class FacturasPyQt5Window(BasePyQt5Window):
             row = self.productos_table.rowCount()
             self.productos_table.insertRow(row)
 
-            precio_unit = producto.get('precio_venta', 0.0)  # Corregido: usar precio_venta
-            total_linea = cantidad * precio_unit
+            precio_unit = producto.get('precio_venta', 0.0)
+            iva_recomendado = producto.get('iva_recomendado', 21.0)  # IVA par défaut du produit
 
             # Construir nombre del producto con talla si existe
             producto_nombre = producto['nombre']
@@ -765,24 +798,39 @@ class FacturasPyQt5Window(BasePyQt5Window):
             if talla and talla.strip():
                 producto_nombre = f"{producto_nombre} - {talla}"
 
-            # Nombre del producto
+            # Bloquer les signaux pendant l'ajout
+            self.productos_table.blockSignals(True)
+
+            # Colonne 0: Nombre del producto (non éditable)
             nombre_item = QTableWidgetItem(producto_nombre)
             nombre_item.setData(Qt.UserRole, producto_id)
+            nombre_item.setFlags(nombre_item.flags() & ~Qt.ItemIsEditable)
             self.productos_table.setItem(row, 0, nombre_item)
 
-            # Cantidad
-            self.productos_table.setItem(row, 1, QTableWidgetItem(str(cantidad)))
+            # Colonne 1: Cantidad (éditable)
+            cantidad_item = QTableWidgetItem(str(cantidad))
+            self.productos_table.setItem(row, 1, cantidad_item)
 
-            # Precio unitario
-            self.productos_table.setItem(row, 2, QTableWidgetItem(f"{precio_unit:.2f}€"))
+            # Colonne 2: Precio unitario (éditable)
+            precio_item = QTableWidgetItem(f"{precio_unit:.2f}€")
+            self.productos_table.setItem(row, 2, precio_item)
 
-            # Total
-            self.productos_table.setItem(row, 3, QTableWidgetItem(f"{total_linea:.2f}€"))
+            # Colonne 3: IVA % (éditable, valeur par défaut du produit)
+            iva_item = QTableWidgetItem(f"{iva_recomendado:.1f}%")
+            self.productos_table.setItem(row, 3, iva_item)
 
-            # Botón eliminar
+            # Colonne 4: Total (non éditable, sera calculé)
+            total_item = QTableWidgetItem("0.00€")
+            total_item.setFlags(total_item.flags() & ~Qt.ItemIsEditable)
+            self.productos_table.setItem(row, 4, total_item)
+
+            # Colonne 5: Botón eliminar
             delete_btn = QPushButton("🗑️")
             delete_btn.clicked.connect(lambda: self.remove_product_from_invoice(row))
-            self.productos_table.setCellWidget(row, 4, delete_btn)
+            self.productos_table.setCellWidget(row, 5, delete_btn)
+
+            # Réactiver les signaux
+            self.productos_table.blockSignals(False)
 
             # Actualizar totales
             self.update_totals()
@@ -955,32 +1003,47 @@ class FacturasPyQt5Window(BasePyQt5Window):
             factura = self.factura_service.get_factura_by_id(factura_id)
             lineas = factura.get('lineas', [])
 
+            # Bloquer les signaux pendant le chargement
+            self.productos_table.blockSignals(True)
+
             for linea in lineas:
                 row = self.productos_table.rowCount()
                 self.productos_table.insertRow(row)
 
-                # Nom du produit
+                # Nom du produit (non éditable)
                 producto_nombre = linea.get('producto_nombre', 'Producto desconocido')
                 nombre_item = QTableWidgetItem(producto_nombre)
                 nombre_item.setData(Qt.UserRole, linea.get('producto_id'))
+                nombre_item.setFlags(nombre_item.flags() & ~Qt.ItemIsEditable)
                 self.productos_table.setItem(row, 0, nombre_item)
 
-                # Quantité
+                # Quantité (éditable)
                 cantidad = linea.get('cantidad', 0)
-                self.productos_table.setItem(row, 1, QTableWidgetItem(str(cantidad)))
+                cantidad_item = QTableWidgetItem(str(cantidad))
+                self.productos_table.setItem(row, 1, cantidad_item)
 
-                # Prix unitaire
+                # Prix unitaire (éditable)
                 precio_unit = linea.get('precio_unitario', 0.0)
-                self.productos_table.setItem(row, 2, QTableWidgetItem(f"{precio_unit:.2f}€"))
+                precio_item = QTableWidgetItem(f"{precio_unit:.2f}€")
+                self.productos_table.setItem(row, 2, precio_item)
 
-                # Total
-                total_linea = cantidad * precio_unit
-                self.productos_table.setItem(row, 3, QTableWidgetItem(f"{total_linea:.2f}€"))
+                # IVA % (éditable)
+                iva_aplicado = linea.get('iva_aplicado', 21.0)
+                iva_item = QTableWidgetItem(f"{iva_aplicado:.1f}%")
+                self.productos_table.setItem(row, 3, iva_item)
+
+                # Total (non éditable, sera calculé)
+                total_item = QTableWidgetItem("0.00€")
+                total_item.setFlags(total_item.flags() & ~Qt.ItemIsEditable)
+                self.productos_table.setItem(row, 4, total_item)
 
                 # Bouton supprimer
                 delete_btn = QPushButton("🗑️")
                 delete_btn.clicked.connect(lambda checked, r=row: self.remove_product_from_invoice(r))
-                self.productos_table.setCellWidget(row, 4, delete_btn)
+                self.productos_table.setCellWidget(row, 5, delete_btn)
+
+            # Réactiver les signaux
+            self.productos_table.blockSignals(False)
 
             # Mettre à jour les totaux
             self.update_totals()
@@ -1052,12 +1115,24 @@ class FacturasPyQt5Window(BasePyQt5Window):
             for row in range(self.productos_table.rowCount()):
                 producto_id = self.productos_table.item(row, 0).data(Qt.UserRole)
                 cantidad = int(self.productos_table.item(row, 1).text())
-                precio_unit = float(self.productos_table.item(row, 2).text().replace('€', ''))
+                precio_unit = float(self.productos_table.item(row, 2).text().replace('€', '').strip())
+                iva_percent = float(self.productos_table.item(row, 3).text().replace('%', '').strip())
+
+                # Calculer les montants
+                subtotal = cantidad * precio_unit
+                iva_amount = subtotal * (iva_percent / 100)
+                total = subtotal + iva_amount
 
                 lineas.append({
                     'producto_id': producto_id,
                     'cantidad': cantidad,
-                    'precio_unitario': precio_unit
+                    'precio_unitario': precio_unit,
+                    'iva_aplicado': iva_percent,
+                    'subtotal': subtotal,
+                    'iva_amount': iva_amount,
+                    'total': total,
+                    'descuento': 0.0,
+                    'descuento_amount': 0.0
                 })
 
             # Sauvegarder
@@ -1633,10 +1708,11 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             return
 
         cantidad = self.cantidad_spin.value()
+        sin_stock = producto_data.get('sin_stock', 0)
         stock_actual = producto_data.get('stock_actual', 0)
 
-        # Verificar stock
-        if cantidad > stock_actual:
+        # Verificar stock (solo si el producto gestiona stock)
+        if not sin_stock and cantidad > stock_actual:
             from PyQt5.QtWidgets import QMessageBox
             QMessageBox.warning(self, "Stock insuficiente",
                               f"Stock disponible: {stock_actual}\nCantidad solicitada: {cantidad}")
@@ -1703,20 +1779,23 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
                         break
 
                 if producto_data:
-                    stock_actual = producto_data.get('stock_actual', 0)
-                    if nueva_cantidad > stock_actual:
-                        from PyQt5.QtWidgets import QMessageBox
-                        stock_resultante = stock_actual - nueva_cantidad
-                        reply = QMessageBox.question(self, "Stock insuficiente",
-                                                   f"Stock disponible: {stock_actual}\n"
-                                                   f"Cantidad solicitada: {nueva_cantidad}\n"
-                                                   f"Stock resultante: {stock_resultante}\n\n"
-                                                   f"¿Desea continuar con stock negativo?",
-                                                   QMessageBox.Yes | QMessageBox.No,
-                                                   QMessageBox.No)
-                        if reply != QMessageBox.Yes:
-                            item.setText(str(self.lineas_factura[row]['cantidad']))
-                            return
+                    # Verificar si el producto gestiona stock
+                    sin_stock = producto_data.get('sin_stock', 0)
+                    if not sin_stock:
+                        stock_actual = producto_data.get('stock_actual', 0)
+                        if nueva_cantidad > stock_actual:
+                            from PyQt5.QtWidgets import QMessageBox
+                            stock_resultante = stock_actual - nueva_cantidad
+                            reply = QMessageBox.question(self, "Stock insuficiente",
+                                                       f"Stock disponible: {stock_actual}\n"
+                                                       f"Cantidad solicitada: {nueva_cantidad}\n"
+                                                       f"Stock resultante: {stock_resultante}\n\n"
+                                                       f"¿Desea continuar con stock negativo?",
+                                                       QMessageBox.Yes | QMessageBox.No,
+                                                       QMessageBox.No)
+                            if reply != QMessageBox.Yes:
+                                item.setText(str(self.lineas_factura[row]['cantidad']))
+                                return
 
                 self.lineas_factura[row]['cantidad'] = nueva_cantidad
                 self.recalcular_linea(row)
@@ -2224,22 +2303,26 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         cantidad = self.cantidad_spin.value()
         producto_id = producto_data.get('id')
 
-        # Calcular stock disponible considerando la factura actual
-        stock_disponible = self.get_available_stock_for_product(producto_id)
+        # Verificar si el producto gestiona stock
+        sin_stock = producto_data.get('sin_stock', 0)
 
-        # Verificar stock disponible - permitir stocks negativos con confirmación
-        if cantidad > stock_disponible:
-            from PyQt5.QtWidgets import QMessageBox
-            stock_resultante = stock_disponible - cantidad
-            reply = QMessageBox.question(self, "Stock insuficiente",
-                                       f"Stock disponible para edición: {stock_disponible}\n"
-                                       f"Cantidad solicitada: {cantidad}\n"
-                                       f"Stock resultante: {stock_resultante}\n\n"
-                                       f"¿Desea continuar con stock negativo?",
-                                       QMessageBox.Yes | QMessageBox.No,
-                                       QMessageBox.No)
-            if reply != QMessageBox.Yes:
-                return
+        if not sin_stock:
+            # Calcular stock disponible considerando la factura actual
+            stock_disponible = self.get_available_stock_for_product(producto_id)
+
+            # Verificar stock disponible - permitir stocks negativos con confirmación
+            if cantidad > stock_disponible:
+                from PyQt5.QtWidgets import QMessageBox
+                stock_resultante = stock_disponible - cantidad
+                reply = QMessageBox.question(self, "Stock insuficiente",
+                                           f"Stock disponible para edición: {stock_disponible}\n"
+                                           f"Cantidad solicitada: {cantidad}\n"
+                                           f"Stock resultante: {stock_resultante}\n\n"
+                                           f"¿Desea continuar con stock negativo?",
+                                           QMessageBox.Yes | QMessageBox.No,
+                                           QMessageBox.No)
+                if reply != QMessageBox.Yes:
+                    return
 
         # Calcular precios
         precio_unitario = producto_data['precio_venta']

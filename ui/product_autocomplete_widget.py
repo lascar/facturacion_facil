@@ -94,21 +94,25 @@ class ProductAutoCompleteWidget(QLineEdit):
         """Met à jour le modèle du completer avec filtrage"""
         try:
             if not filter_text:
-                # Afficher tous les produits avec stock > 0
-                self.filtered_products = [p for p in self.products_data if p.get('stock_actual', 0) > 0]
+                # Afficher tous les produits avec stock > 0 OU sin_stock=1
+                self.filtered_products = [
+                    p for p in self.products_data
+                    if p.get('stock_actual', 0) > 0 or p.get('sin_stock', 0) == 1
+                ]
             else:
-                # Filtrer par nom et stock > 0
+                # Filtrer par nom et (stock > 0 OU sin_stock=1)
                 filter_lower = filter_text.lower()
                 self.filtered_products = [
-                    p for p in self.products_data 
-                    if filter_lower in p.get('nombre', '').lower() 
-                    and p.get('stock_actual', 0) > 0
+                    p for p in self.products_data
+                    if filter_lower in p.get('nombre', '').lower()
+                    and (p.get('stock_actual', 0) > 0 or p.get('sin_stock', 0) == 1)
                 ]
-            
-            # Créer les suggestions avec format: "Nom - Talla - Prix€ (Stock: X)"
+
+            # Créer les suggestions avec format: "Nom - Talla - Prix€ (Stock: X)" ou "Nom - Talla - Prix€ (Sin stock)"
             suggestions = []
             for product in self.filtered_products:
                 stock = product.get('stock_actual', 0)
+                sin_stock = product.get('sin_stock', 0)
                 precio = product.get('precio_venta', 0.0)
                 nombre = product['nombre']
                 talla = product.get('talla', '')
@@ -117,9 +121,13 @@ class ProductAutoCompleteWidget(QLineEdit):
                 if talla and talla.strip():
                     nombre = f"{nombre} - {talla}"
 
-                suggestion = f"{nombre} - {precio:.2f}€ (Stock: {stock})"
+                # Afficher "Sin stock" au lieu du stock si le produit est marqué sin_stock
+                if sin_stock:
+                    suggestion = f"{nombre} - {precio:.2f}€ (Sin stock)"
+                else:
+                    suggestion = f"{nombre} - {precio:.2f}€ (Stock: {stock})"
                 suggestions.append(suggestion)
-            
+
             self.model.setStringList(suggestions)
             
         except Exception as e:
@@ -162,19 +170,20 @@ class ProductAutoCompleteWidget(QLineEdit):
     def on_editing_finished(self):
         """Gestiona la fin d'édition"""
         text = self.text().strip()
-        
+
         if not text:
             self.clear_product()
             return
-        
+
         # Vérifier si le texte correspond exactement à un produit
         matching_product = None
         for product in self.products_data:
             if text.lower() == product.get('nombre', '').lower():
-                if product.get('stock_actual', 0) > 0:
+                # Accepter les produits avec stock > 0 OU sin_stock=1
+                if product.get('stock_actual', 0) > 0 or product.get('sin_stock', 0) == 1:
                     matching_product = product
                     break
-        
+
         if matching_product:
             self.set_product(matching_product)
         elif self.current_product is None:
@@ -187,6 +196,7 @@ class ProductAutoCompleteWidget(QLineEdit):
             return ""
 
         stock = product.get('stock_actual', 0)
+        sin_stock = product.get('sin_stock', 0)
         precio = product.get('precio_venta', 0.0)
         nombre = product['nombre']
         talla = product.get('talla', '')
@@ -195,7 +205,11 @@ class ProductAutoCompleteWidget(QLineEdit):
         if talla and talla.strip():
             nombre = f"{nombre} - {talla}"
 
-        return f"{nombre} - {precio:.2f}€ (Stock: {stock})"
+        # Afficher "Sin stock" au lieu du stock si le produit est marqué sin_stock
+        if sin_stock:
+            return f"{nombre} - {precio:.2f}€ (Sin stock)"
+        else:
+            return f"{nombre} - {precio:.2f}€ (Stock: {stock})"
     
     def set_product(self, product):
         """Définit le produit actuel"""

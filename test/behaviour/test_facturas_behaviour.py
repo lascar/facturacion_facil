@@ -38,7 +38,7 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         # Ouvrir la fenêtre Facturas
         facturas_btn = self.automation.find_button_by_text(self.main_window, "Facturas")
         if facturas_btn:
-            self.automation.click_button_safe(facturas_btn, wait_after=0.5)
+            self.automation.click_button_safe(facturas_btn, wait_after=0.2)
             self.facturas_window = self.main_window.facturas_window
             self.wait_for_window(self.facturas_window)
         
@@ -74,69 +74,91 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         self.take_screenshot("facturas_window_startup")
         self.logger.info("✅ Test démarrage Facturas réussi")
     
-    def test_create_new_factura_basic(self):
+    @pytest.mark.timeout(20)  # Timeout de 20 secondes pour éviter le blocage
+    def test_create_new_factura_basic(self, mock_messagebox):
         """Test de création d'une nouvelle facture basique"""
         self.logger.info("🧪 Test: Création nouvelle facture basique")
-        
-        # Cliquer sur le bouton Nueva Factura
-        new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
-        assert new_btn is not None, "Bouton Nueva Factura non trouvé"
-        
-        success = self.automation.click_button_safe(new_btn, wait_after=1.0)
-        assert success, "Échec du clic sur Nueva Factura"
-        
-        self.slow_mode_wait()
-        
-        # Vérifier que le formulaire est en mode création
-        # Le numéro de facture devrait être généré automatiquement
-        if hasattr(self.facturas_window, 'numero_edit'):
-            numero_text = self.facturas_window.numero_edit.text()
-            assert numero_text, "Numéro de facture non généré"
-            self.logger.info(f"Numéro de facture généré: {numero_text}")
-        
-        self.take_screenshot("nueva_factura_form")
-        self.logger.info("✅ Test création facture basique réussi")
+
+        # Mock des dialogues pour éviter les blocages - tous les types
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
+        try:
+            # Cliquer sur le bouton Nueva Factura
+            new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+            assert new_btn is not None, "Bouton Nueva Factura non trouvé"
+
+            success = self.automation.click_button_safe(new_btn, wait_after=0.3)
+            assert success, "Échec du clic sur Nueva Factura"
+
+            self.slow_mode_wait()
+
+            # Vérifier que le formulaire est en mode création
+            # Le numéro de facture devrait être généré automatiquement
+            if hasattr(self.facturas_window, 'numero_edit'):
+                numero_text = self.facturas_window.numero_edit.text()
+                assert numero_text, "Numéro de facture non généré"
+                self.logger.info(f"Numéro de facture généré: {numero_text}")
+
+            self.take_screenshot("nueva_factura_form")
+            self.logger.info("✅ Test création facture basique réussi")
+        except Exception as e:
+            self.logger.error(f"❌ Erreur dans test_create_new_factura_basic: {e}")
+            self.take_screenshot("nueva_factura_error")
+            raise
     
-    def test_select_client_in_factura(self):
+    @pytest.mark.timeout(15)
+    def test_select_client_in_factura(self, mock_messagebox):
         """Test de sélection d'un client dans une facture"""
         self.logger.info("🧪 Test: Sélection client dans facture")
-        
+
+        # Mock des dialogues
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+
         # Créer une nouvelle facture
-        self.test_create_new_factura_basic()
-        
+        self.test_create_new_factura_basic(mock_messagebox)
+
         # Chercher le widget d'autocomplétion client
         client_widget = None
         if hasattr(self.facturas_window, 'client_autocomplete'):
             client_widget = self.facturas_window.client_autocomplete
         elif hasattr(self.facturas_window, 'cliente_edit'):
             client_widget = self.facturas_window.cliente_edit
-        
+
         if client_widget:
             # Saisir le nom d'un client de test
             self.automation.set_text_safe(client_widget, "Cliente Test 1")
             self.slow_mode_wait()
-            
+
             self.take_screenshot("client_selected")
             self.logger.info("✅ Test sélection client réussi")
         else:
             self.logger.warning("Widget de sélection client non trouvé")
     
-    def test_add_product_to_factura(self):
+    @pytest.mark.timeout(15)
+    def test_add_product_to_factura(self, mock_messagebox):
         """Test d'ajout d'un produit à une facture"""
         self.logger.info("🧪 Test: Ajout produit à facture")
-        
+
+        # Mock des dialogues
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+
         # Créer une nouvelle facture et sélectionner un client
-        self.test_select_client_in_factura()
-        
+        self.test_select_client_in_factura(mock_messagebox)
+
         # Chercher le bouton d'ajout de produit
         add_product_btn = self.automation.find_button_by_text(self.facturas_window, "Agregar")
         if not add_product_btn:
             add_product_btn = self.automation.find_button_by_text(self.facturas_window, "➕")
-        
+
         if add_product_btn:
-            success = self.automation.click_button_safe(add_product_btn, wait_after=1.0)
+            success = self.automation.click_button_safe(add_product_btn, wait_after=0.3)
             assert success, "Échec du clic sur Agregar Producto"
-            
+
             self.take_screenshot("add_product_dialog")
             self.logger.info("✅ Test ajout produit réussi")
         else:
@@ -197,57 +219,78 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         self.take_screenshot("factura_saved")
         self.logger.info("✅ Test sauvegarde facture réussi")
     
-    def test_factura_totals_calculation(self):
+    @pytest.mark.timeout(20)  # Augmenter le timeout à 20 secondes
+    def test_factura_totals_calculation(self, mock_messagebox):
         """Test du calcul des totaux de facture"""
         self.logger.info("🧪 Test: Calcul totaux facture")
-        
-        # Créer une facture basique
-        self.test_create_new_factura_basic()
-        
-        # Vérifier la présence des champs de totaux
-        total_fields = ['subtotal', 'total_iva', 'total']
-        
-        for field_name in total_fields:
-            if hasattr(self.facturas_window, f'{field_name}_label'):
-                field = getattr(self.facturas_window, f'{field_name}_label')
-                assert field is not None, f"Champ {field_name} non trouvé"
-                self.logger.info(f"✅ Champ {field_name} présent")
-        
-        self.take_screenshot("factura_totals")
-        self.logger.info("✅ Test calcul totaux réussi")
+
+        # Mock des dialogues - tous les types possibles
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
+        try:
+            # Créer une facture basique
+            self.test_create_new_factura_basic(mock_messagebox)
+
+            # Vérifier la présence des champs de totaux
+            total_fields = ['subtotal', 'total_iva', 'total']
+
+            for field_name in total_fields:
+                if hasattr(self.facturas_window, f'{field_name}_label'):
+                    field = getattr(self.facturas_window, f'{field_name}_label')
+                    assert field is not None, f"Champ {field_name} non trouvé"
+                    self.logger.info(f"✅ Champ {field_name} présent")
+
+            self.take_screenshot("factura_totals")
+            self.logger.info("✅ Test calcul totaux réussi")
+        except Exception as e:
+            self.logger.error(f"❌ Erreur dans test_factura_totals_calculation: {e}")
+            self.take_screenshot("factura_totals_error")
+            raise
     
-    def test_factura_pdf_generation(self):
+    @pytest.mark.timeout(10)  # Timeout de 10 secondes pour éviter le blocage
+    def test_factura_pdf_generation(self, mock_filedialog):
         """Test de génération PDF d'une facture"""
         self.logger.info("🧪 Test: Génération PDF facture")
-        
+
+        # Mock du dialogue de sauvegarde de fichier pour éviter le blocage
+        mock_filedialog.getSaveFileName.return_value = ('/tmp/test_factura.pdf', 'PDF Files (*.pdf)')
+
         # Créer et sauvegarder une facture
         self.test_save_factura()
-        
+
         # Chercher le bouton de génération PDF
         pdf_btn = self.automation.find_button_by_text(self.facturas_window, "PDF")
         if not pdf_btn:
             pdf_btn = self.automation.find_button_by_text(self.facturas_window, "Generar")
-        
+
         if pdf_btn:
-            success = self.automation.click_button_safe(pdf_btn, wait_after=2.0)
+            success = self.automation.click_button_safe(pdf_btn, wait_after=0.2)
             assert success, "Échec du clic sur Generar PDF"
-            
+
             self.take_screenshot("pdf_generated")
             self.logger.info("✅ Test génération PDF réussi")
         else:
-            self.logger.warning("Bouton génération PDF non trouvé")
+            self.logger.warning("Bouton génération PDF non trouvé - Test passé")
     
-    def test_factura_status_change(self):
+    @pytest.mark.timeout(15)
+    def test_factura_status_change(self, mock_messagebox):
         """Test de changement d'état d'une facture"""
         self.logger.info("🧪 Test: Changement état facture")
-        
+
+        # Mock des dialogues
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+
         # Créer une facture
-        self.test_create_new_factura_basic()
-        
+        self.test_create_new_factura_basic(mock_messagebox)
+
         # Chercher le combobox d'état
         if hasattr(self.facturas_window, 'estado_combo'):
             estado_combo = self.facturas_window.estado_combo
-            
+
             # Changer l'état
             success = self.automation.select_combobox_item(estado_combo, "Enviada")
             if success:
@@ -257,11 +300,11 @@ class TestFacturasBehaviour(BaseBehaviourTest):
                 success = self.automation.select_combobox_item(estado_combo, 1)
                 if success:
                     self.logger.info("✅ État changé par index")
-            
+
             self.take_screenshot("factura_status_changed")
         else:
             self.logger.warning("Combobox d'état non trouvé")
-        
+
         self.logger.info("✅ Test changement état réussi")
 
     @pytest.mark.behaviour

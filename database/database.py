@@ -8,9 +8,17 @@ from utils.logger import get_logger, log_database_operation, log_exception
 
 class Database:
     def __init__(self, db_path="base_de_datos/facturacion.db"):
-        self.db_path = db_path
-        self.logger = get_logger("database")
-        self.migration_manager = MigrationManager(db_path)
+        # PROTECTION: Si pytest est en cours d'exécution, utiliser la base de données de test
+        if os.environ.get('PYTEST_RUNNING') == '1' and os.environ.get('TEST_DATABASE_PATH'):
+            # Utiliser la base de données de test au lieu de la production
+            self.db_path = os.environ.get('TEST_DATABASE_PATH')
+            self.logger = get_logger("database_test")
+            self.logger.info(f"🧪 Mode TEST activé - Utilisation de: {os.path.basename(self.db_path)}")
+        else:
+            self.db_path = db_path
+            self.logger = get_logger("database")
+
+        self.migration_manager = MigrationManager(self.db_path)
         self.init_database()
     
     def get_connection(self):
@@ -51,6 +59,7 @@ class Database:
                 talla TEXT,
                 stock_actual INTEGER DEFAULT 0,
                 stock_minimo INTEGER DEFAULT 5,
+                sin_stock INTEGER DEFAULT 0,
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -58,6 +67,12 @@ class Database:
         # Ajouter la colonne talla si elle n'existe pas (pour compatibilité avec bases existantes)
         try:
             cursor.execute('ALTER TABLE productos ADD COLUMN talla TEXT')
+        except sqlite3.OperationalError:
+            pass  # La colonne existe déjà
+
+        # Ajouter la colonne sin_stock si elle n'existe pas
+        try:
+            cursor.execute('ALTER TABLE productos ADD COLUMN sin_stock INTEGER DEFAULT 0')
         except sqlite3.OperationalError:
             pass  # La colonne existe déjà
         
@@ -499,7 +514,8 @@ class Database:
             cursor.execute("""
                 SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
                        p.iva_recomendado, p.talla, p.fecha_creacion,
-                       COALESCE(s.cantidad_disponible, 0) as stock_actual
+                       COALESCE(s.cantidad_disponible, 0) as stock_actual,
+                       COALESCE(p.sin_stock, 0) as sin_stock
                 FROM productos p
                 LEFT JOIN stock s ON p.id = s.producto_id
                 ORDER BY p.nombre
@@ -519,7 +535,8 @@ class Database:
                     'talla': row[7],
                     'fecha_creacion': row[8],
                     'stock_actual': row[9],  # Depuis stock table uniquement
-                    'stock_minimo': 5  # Valeur par défaut
+                    'stock_minimo': 5,  # Valeur par défaut
+                    'sin_stock': row[10]
                 })
 
             conn.close()
@@ -713,9 +730,9 @@ class Database:
                 if not producto_id or cantidad <= 0:
                     continue
 
-                # Obtener el stock actual desde la tabla stock
+                # Obtener el stock actual y verificar si el producto gestiona stock
                 cursor.execute("""
-                    SELECT COALESCE(s.cantidad_disponible, 0), p.nombre
+                    SELECT COALESCE(s.cantidad_disponible, 0), p.nombre, COALESCE(p.sin_stock, 0)
                     FROM productos p
                     LEFT JOIN stock s ON p.id = s.producto_id
                     WHERE p.id = ?
@@ -726,7 +743,12 @@ class Database:
                     self.logger.warning(f"Producto {producto_id} no encontrado para movimiento de stock")
                     continue
 
-                stock_actual, nombre_producto = result
+                stock_actual, nombre_producto, sin_stock = result
+
+                # Si el producto no gestiona stock, saltar la actualización
+                if sin_stock:
+                    self.logger.info(f"Producto '{nombre_producto}' marcado como 'sin stock', no se actualiza inventario")
+                    continue
 
                 # Calcular el nuevo stock
                 if operation == 'subtract':
@@ -787,7 +809,8 @@ class Database:
             cursor.execute("""
                 SELECT p.id, p.nombre, p.referencia, p.precio, p.categoria, p.descripcion,
                        p.iva_recomendado, p.talla, p.fecha_creacion,
-                       COALESCE(s.cantidad_disponible, 0) as stock_actual
+                       COALESCE(s.cantidad_disponible, 0) as stock_actual,
+                       COALESCE(p.sin_stock, 0) as sin_stock
                 FROM productos p
                 LEFT JOIN stock s ON p.id = s.producto_id
                 WHERE p.id = ?
@@ -808,7 +831,8 @@ class Database:
                     'iva_recomendado': row[6],
                     'talla': row[7],
                     'fecha_creacion': row[8],
-                    'stock_actual': row[9]
+                    'stock_actual': row[9],
+                    'sin_stock': row[10]
                 }
             return None
 
@@ -828,9 +852,12 @@ class Database:
             # Obtenir la talla si elle existe
             talla = product_data.get('talla', None)
 
+            # Obtenir sin_stock (0 = con stock, 1 = sin stock)
+            sin_stock = 1 if product_data.get('sin_stock', False) else 0
+
             cursor.execute("""
-                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, iva_recomendado, talla)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, iva_recomendado, talla, sin_stock)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 product_data['nombre'],
                 product_data.get('referencia', None),
@@ -838,21 +865,25 @@ class Database:
                 product_data.get('categoria', ''),
                 product_data.get('descripcion', ''),
                 product_data.get('iva_recomendado', 21.0),
-                talla
+                talla,
+                sin_stock
             ))
 
             product_id = cursor.lastrowid
 
-            # Créer l'entrée dans la table stock
-            cursor.execute("""
-                INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
-                VALUES (?, ?, CURRENT_TIMESTAMP)
-            """, (product_id, stock_actual))
+            # Créer l'entrée dans la table stock SEULEMENT si le produit gère le stock
+            if not sin_stock:
+                cursor.execute("""
+                    INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                """, (product_id, stock_actual))
+                self.logger.info(f"Producto añadido con ID: {product_id}, stock: {stock_actual}")
+            else:
+                self.logger.info(f"Producto añadido con ID: {product_id}, sin gestión de stock")
 
             conn.commit()
             conn.close()
 
-            self.logger.info(f"Producto añadido con ID: {product_id}, stock: {stock_actual}")
             return product_id
 
         except Exception as e:
@@ -871,9 +902,12 @@ class Database:
             # Obtenir la talla si elle existe
             talla = product_data.get('talla', None)
 
+            # Obtenir sin_stock (0 = con stock, 1 = sin stock)
+            sin_stock = 1 if product_data.get('sin_stock', False) else 0
+
             cursor.execute("""
                 UPDATE productos
-                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, iva_recomendado = ?, talla = ?
+                SET nombre = ?, referencia = ?, precio = ?, categoria = ?, descripcion = ?, iva_recomendado = ?, talla = ?, sin_stock = ?
                 WHERE id = ?
             """, (
                 product_data['nombre'],
@@ -883,10 +917,12 @@ class Database:
                 product_data['descripcion'],
                 product_data.get('iva_recomendado', 21.0),
                 talla,
+                sin_stock,
                 product_data['id']
             ))
 
-            # Mettre à jour le stock dans la table stock
+            # Mettre à jour le stock dans la table stock (toujours, même pour sin_stock)
+            # Les produits sin_stock seront filtrés dans l'affichage de la fenêtre Stock
             cursor.execute("""
                 INSERT INTO stock (producto_id, cantidad_disponible, fecha_actualizacion)
                 VALUES (?, ?, CURRENT_TIMESTAMP)
@@ -895,10 +931,14 @@ class Database:
                     fecha_actualizacion = CURRENT_TIMESTAMP
             """, (product_data['id'], stock_actual))
 
+            if sin_stock:
+                self.logger.info(f"Producto {product_data['id']} actualizado, sin gestión de stock (no se mostrará en ventana Stock)")
+            else:
+                self.logger.info(f"Producto {product_data['id']} actualizado, stock: {stock_actual}")
+
             conn.commit()
             conn.close()
 
-            self.logger.info(f"Producto {product_data['id']} actualizado, stock: {stock_actual}")
             return True
 
         except Exception as e:

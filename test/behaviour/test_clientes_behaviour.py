@@ -35,7 +35,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         # Ouvrir la fenêtre Clientes
         clientes_btn = self.automation.find_button_by_text(self.main_window, "Clientes")
         if clientes_btn:
-            self.automation.click_button_safe(clientes_btn, wait_after=0.5)
+            self.automation.click_button_safe(clientes_btn, wait_after=0.2)
             self.clientes_window = self.main_window.clientes_window
             self.wait_for_window(self.clientes_window)
         
@@ -88,7 +88,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         save_btn = self.automation.find_button_by_text(self.clientes_window, "Guardar")
         assert save_btn is not None, "Bouton Guardar non trouvé"
 
-        success = self.automation.click_button_safe(save_btn, wait_after=1.0)
+        success = self.automation.click_button_safe(save_btn, wait_after=0.3)
         assert success, "Échec du clic sur Guardar"
 
         # Attendre que la table soit rafraîchie
@@ -125,7 +125,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         
         # Sauvegarder
         save_btn = self.automation.find_button_by_text(self.clientes_window, "Guardar")
-        success = self.automation.click_button_safe(save_btn, wait_after=1.0)
+        success = self.automation.click_button_safe(save_btn, wait_after=0.3)
         assert success, "Échec de la sauvegarde"
         
         # Vérifier que le nom a été modifié dans la table
@@ -188,7 +188,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         # Remplir seulement le nom (minimum requis)
         self.automation.set_text_safe(self.clientes_window.nombre_edit, "Client Minimal")
 
-        success = self.automation.click_button_safe(save_btn, wait_after=1.0)
+        success = self.automation.click_button_safe(save_btn, wait_after=0.3)
 
         # Le client devrait être créé même avec seulement le nom
         table = self.clientes_window.clients_table
@@ -218,7 +218,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
 
         # Sauvegarder
         save_btn = self.automation.find_button_by_text(self.clientes_window, "Guardar")
-        success = self.automation.click_button_safe(save_btn, wait_after=1.0)
+        success = self.automation.click_button_safe(save_btn, wait_after=0.3)
 
         assert success, "Échec de la sauvegarde du client sans NIF"
 
@@ -262,24 +262,24 @@ class TestClientesBehaviour(BaseBehaviourTest):
             assert new_btn is not None, "Bouton Nuevo non trouvé"
 
             QTest.mouseClick(new_btn, Qt.LeftButton)
-            QTest.qWait(200)  # Attendre 200ms
+            QTest.qWait(50)  # Attendre 200ms
             self.app.processEvents()
 
             # Remplir les champs avec QTest.keyClicks
             if hasattr(self.clientes_window, 'nombre_edit'):
                 self.clientes_window.nombre_edit.clear()
                 QTest.keyClicks(self.clientes_window.nombre_edit, client_data['nombre'])
-                QTest.qWait(100)
+                QTest.qWait(50)
 
             if hasattr(self.clientes_window, 'nif_edit'):
                 self.clientes_window.nif_edit.clear()
                 QTest.keyClicks(self.clientes_window.nif_edit, client_data['nif'])
-                QTest.qWait(100)
+                QTest.qWait(50)
 
             if hasattr(self.clientes_window, 'email_edit'):
                 self.clientes_window.email_edit.clear()
                 QTest.keyClicks(self.clientes_window.email_edit, client_data['email'])
-                QTest.qWait(100)
+                QTest.qWait(50)
 
             self.take_screenshot("client_form_qtest_filled")
 
@@ -288,7 +288,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
             assert save_btn is not None, "Bouton Guardar non trouvé"
 
             QTest.mouseClick(save_btn, Qt.LeftButton)
-            QTest.qWait(500)  # Attendre la sauvegarde
+            QTest.qWait(50)  # Attendre la sauvegarde
             self.app.processEvents()
 
             # 2. Vérifier la création en base de données
@@ -308,7 +308,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
                     found = True
                     # Sélectionner cette ligne avec QTest
                     table.selectRow(row)
-                    QTest.qWait(100)
+                    QTest.qWait(50)
                     break
 
             assert found, f"Client {client_data['nombre']} non trouvé dans la table"
@@ -319,11 +319,11 @@ class TestClientesBehaviour(BaseBehaviourTest):
                 new_name = f"{client_data['nombre']} - Modifié"
                 self.clientes_window.nombre_edit.clear()
                 QTest.keyClicks(self.clientes_window.nombre_edit, new_name)
-                QTest.qWait(100)
+                QTest.qWait(50)
 
                 # Sauvegarder la modification
                 QTest.mouseClick(save_btn, Qt.LeftButton)
-                QTest.qWait(500)
+                QTest.qWait(50)
                 self.app.processEvents()
 
                 # Vérifier la modification en base

@@ -22,10 +22,10 @@ class StockService(BaseService):
     def get_all_stock(self) -> List[Dict[str, Any]]:
         """
         Récupérer tous les produits avec leurs informations de stock
-        
+
         Returns:
             Liste de dictionnaires représentant les produits avec stock
-            
+
         Raises:
             DatabaseError: En cas d'erreur de base de données
         """

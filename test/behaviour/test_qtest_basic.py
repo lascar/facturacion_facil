@@ -60,7 +60,7 @@ class TestQTestBasic:
         button.clicked.connect(on_button_clicked)
         
         # Attendre que le widget soit visible
-        QTest.qWait(100)
+        QTest.qWait(50)
         self.app.processEvents()
         
         # Cliquer avec QTest
@@ -87,7 +87,7 @@ class TestQTestBasic:
         self.widget.show()
         
         # Attendre que le widget soit visible
-        QTest.qWait(100)
+        QTest.qWait(50)
         self.app.processEvents()
         
         # Donner le focus au champ
@@ -119,7 +119,7 @@ class TestQTestBasic:
         self.widget.show()
         
         # Attendre que le widget soit visible
-        QTest.qWait(100)
+        QTest.qWait(50)
         self.app.processEvents()
         
         # Donner le focus au champ
@@ -157,7 +157,7 @@ class TestQTestBasic:
         self.widget.show()
         
         # Attendre que le widget soit visible
-        QTest.qWait(100)
+        QTest.qWait(50)
         self.app.processEvents()
         
         # Vérifier les propriétés
@@ -190,7 +190,7 @@ class TestQTestBasic:
         button.clicked.connect(on_clicked)
         
         # Attendre que le widget soit prêt
-        QTest.qWait(100)
+        QTest.qWait(50)
         self.app.processEvents()
         
         # Effectuer plusieurs clics avec timing

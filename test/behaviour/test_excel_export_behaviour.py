@@ -5,6 +5,7 @@ Tests de comportamiento para la exportación de informes a Excel
 
 import os
 import pytest
+import uuid
 from datetime import datetime, timedelta
 from database.database import Database
 from services.informes_service import InformesService
@@ -25,9 +26,12 @@ class TestExcelExportBehaviour:
         self.excel_generator = ExcelGenerator()
         self.output_dir = str(tmp_path / "output")
         os.makedirs(self.output_dir, exist_ok=True)
-        
+
+        # Générer un identifiant unique pour ce test
+        self.test_id = str(uuid.uuid4())[:8]
+
         yield
-        
+
         # Nettoyage
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
@@ -38,10 +42,10 @@ class TestExcelExportBehaviour:
         WHEN on exporte l'informe en Excel
         THEN un fichier Excel est créé
         """
-        # GIVEN - Créer un produit
+        # GIVEN - Créer un produit avec référence unique
         producto_id = self.db.add_product({
             'nombre': 'Producto Test',
-            'referencia': 'REF001',
+            'referencia': f'REF-{self.test_id}',
             'precio': 10.0,
             'categoria': 'Test'
         })
@@ -74,11 +78,11 @@ class TestExcelExportBehaviour:
         WHEN on exporte l'informe en Excel
         THEN le fichier Excel contient les données des produits
         """
-        # GIVEN - Créer plusieurs produits
+        # GIVEN - Créer plusieurs produits avec références uniques
         productos_data = [
-            {'nombre': 'Producto A', 'referencia': 'REF-A', 'precio': 10.0, 'categoria': 'Cat1', 'stock': 5, 'minimo': 10},
-            {'nombre': 'Producto B', 'referencia': 'REF-B', 'precio': 20.0, 'categoria': 'Cat2', 'stock': 15, 'minimo': 5},
-            {'nombre': 'Producto C', 'referencia': 'REF-C', 'precio': 30.0, 'categoria': 'Cat1', 'stock': 0, 'minimo': 3},
+            {'nombre': 'Producto A', 'referencia': f'REF-A-{self.test_id}', 'precio': 10.0, 'categoria': 'Cat1', 'stock': 5, 'minimo': 10},
+            {'nombre': 'Producto B', 'referencia': f'REF-B-{self.test_id}', 'precio': 20.0, 'categoria': 'Cat2', 'stock': 15, 'minimo': 5},
+            {'nombre': 'Producto C', 'referencia': f'REF-C-{self.test_id}', 'precio': 30.0, 'categoria': 'Cat1', 'stock': 0, 'minimo': 3},
         ]
 
         for data in productos_data:
@@ -134,23 +138,23 @@ class TestExcelExportBehaviour:
         WHEN on exporte l'informe en Excel
         THEN un fichier Excel est créé
         """
-        # GIVEN - Créer un client
+        # GIVEN - Créer un client avec email unique
         cliente_id = self.db.add_client({
             'nombre': 'Cliente Test',
             'dni': '12345678A',
-            'email': 'test@test.com'
+            'email': f'test-{self.test_id}@test.com'
         })
 
-        # Créer un produit
+        # Créer un produit avec référence unique
         producto_id = self.db.add_product({
             'nombre': 'Producto Test',
-            'referencia': 'REF001',
+            'referencia': f'REF-{self.test_id}',
             'precio': 100.0
         })
 
-        # Créer une facture
+        # Créer une facture avec numéro unique
         factura_data = {
-            'numero': 'FACT-001',
+            'numero': f'FACT-{self.test_id}-001',
             'fecha': datetime.now().strftime('%Y-%m-%d'),
             'cliente': {
                 'id': cliente_id,
@@ -194,21 +198,21 @@ class TestExcelExportBehaviour:
         WHEN on exporte l'informe en Excel
         THEN le fichier Excel contient les données des factures et le résumé
         """
-        # GIVEN - Créer un client
+        # GIVEN - Créer un client avec email unique
         cliente_id = self.db.add_client({
             'nombre': 'Cliente Test',
             'dni': '12345678A',
-            'email': 'test@test.com'
+            'email': f'test-multi-{self.test_id}@test.com'
         })
 
-        # Créer un produit
+        # Créer un produit avec référence unique
         producto_id = self.db.add_product({
             'nombre': 'Producto Test',
-            'referencia': 'REF001',
+            'referencia': f'REF-MULTI-{self.test_id}',
             'precio': 100.0
         })
 
-        # Créer plusieurs factures
+        # Créer plusieurs factures avec numéros uniques
         for i in range(3):
             cantidad = i + 1
             subtotal = cantidad * 100.0
@@ -216,7 +220,7 @@ class TestExcelExportBehaviour:
             total = subtotal + iva_total
 
             factura_data = {
-                'numero': f'FACT-00{i+1}',
+                'numero': f'FACT-{self.test_id}-{i+1:03d}',
                 'fecha': datetime.now().strftime('%Y-%m-%d'),
                 'cliente': {
                     'id': cliente_id,
