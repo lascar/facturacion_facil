@@ -80,6 +80,7 @@ echo Test de l'installation...
 python -c "import PyQt5; print('PyQt5 OK')"
 python -c "import reportlab; print('ReportLab OK')"
 python -c "import PIL; print('Pillow OK')"
+python -c "import matplotlib; print('Matplotlib OK')"
 echo.
 echo Toutes les dependances sont installees!
 echo.
