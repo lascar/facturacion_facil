@@ -43,17 +43,29 @@ Tous les tests qui créent une nouvelle facture ont été modifiés pour utilise
 
 **Modification**:
 ```python
-@pytest.mark.timeout(15)
+@pytest.mark.timeout(20)  # Timeout augmenté à 20 secondes
 def test_create_new_factura_basic(self, mock_messagebox):
-    # Mock des dialogues pour éviter les blocages
+    # Mock des dialogues pour éviter les blocages - tous les types
     mock_messagebox.question.return_value = mock_messagebox.No
     mock_messagebox.information.return_value = mock_messagebox.Ok
+    mock_messagebox.warning.return_value = mock_messagebox.Ok
+    mock_messagebox.critical.return_value = mock_messagebox.Ok
+
+    try:
+        # ... code du test
+    except Exception as e:
+        self.logger.error(f"❌ Erreur: {e}")
+        self.take_screenshot("error")
+        raise
 ```
 
 **Effet**:
 - `QMessageBox.question()` retourne automatiquement "No" (pas de confirmation)
 - `QMessageBox.information()` retourne automatiquement "Ok"
+- `QMessageBox.warning()` retourne automatiquement "Ok"
+- `QMessageBox.critical()` retourne automatiquement "Ok"
 - Aucune boîte de dialogue ne s'affiche
+- Gestion d'erreur améliorée avec try/except et screenshots
 
 ### Propagation du Mock
 
@@ -76,10 +88,10 @@ def test_select_client_in_factura(self, mock_messagebox):
 | Test | Timeout | Mock | Statut |
 |------|---------|------|--------|
 | `test_factura_pdf_generation` | ✅ 10s | ✅ mock_filedialog | ✅ Corrigé |
-| `test_create_new_factura_basic` | ✅ 15s | ✅ mock_messagebox | ✅ Corrigé |
+| `test_create_new_factura_basic` | ✅ 20s | ✅ mock_messagebox (4 types) | ✅ Corrigé |
 | `test_select_client_in_factura` | ✅ 15s | ✅ mock_messagebox | ✅ Corrigé |
 | `test_add_product_to_factura` | ✅ 15s | ✅ mock_messagebox | ✅ Corrigé |
-| `test_factura_totals_calculation` | ✅ 15s | ✅ mock_messagebox | ✅ Corrigé |
+| `test_factura_totals_calculation` | ✅ 20s | ✅ mock_messagebox (4 types) | ✅ Corrigé |
 | `test_factura_status_change` | ✅ 15s | ✅ mock_messagebox | ✅ Corrigé |
 
 ---
@@ -116,10 +128,10 @@ pytest test/behaviour/ -v --headless
 
 1. ✅ **test/behaviour/test_facturas_behaviour.py**
    - `test_factura_pdf_generation` : Ajout mock_filedialog + timeout 10s
-   - `test_create_new_factura_basic` : Ajout mock_messagebox + timeout 15s
+   - `test_create_new_factura_basic` : Ajout mock_messagebox (4 types) + timeout 20s + try/except
    - `test_select_client_in_factura` : Ajout mock_messagebox + timeout 15s
    - `test_add_product_to_factura` : Ajout mock_messagebox + timeout 15s
-   - `test_factura_totals_calculation` : Ajout mock_messagebox + timeout 15s
+   - `test_factura_totals_calculation` : Ajout mock_messagebox (4 types) + timeout 20s + try/except
    - `test_factura_status_change` : Ajout mock_messagebox + timeout 15s
 
 ---

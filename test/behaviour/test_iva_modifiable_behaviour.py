@@ -16,7 +16,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
     """Tests de comportement pour l'IVA modifiable dans les factures"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
         """Configuration automatique pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()
@@ -27,24 +27,30 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
         self.config = test_config
         self.screenshots_dir = screenshots_dir
 
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
         # Initialiser l'automation
         if self.app:
             self.automation = PyQt5Automation(self.app)
-        
+
         # Afficher la fenêtre principale
         self.main_window.show()
         self.wait_for_window(self.main_window)
-        
+
         # Créer des données de test
         self.setup_test_data()
-        
+
         # Ouvrir la fenêtre Facturas
         facturas_btn = self.automation.find_button_by_text(self.main_window, "Facturas")
         if facturas_btn:
             self.automation.click_button_safe(facturas_btn, wait_after=0.2)
             self.facturas_window = self.main_window.facturas_window
             self.wait_for_window(self.facturas_window)
-        
+
         self.slow_mode_wait()
     
     def setup_test_data(self):
@@ -81,6 +87,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
         )
         self.product3_id = self.database.add_product(product3)
     
+    @pytest.mark.timeout(20)
     def test_iva_column_exists(self):
         """Test que la colonne IVA % existe dans la table"""
         self.logger.info("🧪 Test: Vérification colonne IVA %")
@@ -113,6 +120,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
         self.take_screenshot("iva_column_exists")
         self.logger.info("✅ Test colonne IVA % réussi")
     
+    @pytest.mark.timeout(20)
     def test_iva_recomendado_applied_by_default(self):
         """Test que l'IVA recommandé est appliqué par défaut lors de l'ajout d'un produit"""
         self.logger.info("🧪 Test: IVA recommandé appliqué par défaut")
@@ -172,6 +180,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
                     self.take_screenshot("iva_recomendado_applied")
                     self.logger.info("✅ Test IVA recommandé appliqué réussi")
 
+    @pytest.mark.timeout(20)
     def test_iva_modifiable_in_table(self):
         """Test que l'IVA peut être modifié dans la table"""
         self.logger.info("🧪 Test: IVA modifiable dans la table")
@@ -232,6 +241,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
                     self.take_screenshot("iva_modified")
                     self.logger.info("✅ Test IVA modifiable réussi")
 
+    @pytest.mark.timeout(25)
     def test_totals_calculated_with_individual_iva(self):
         """Test que les totaux sont calculés avec l'IVA individuel de chaque produit"""
         self.logger.info("🧪 Test: Calcul totaux avec IVA individuel")
@@ -313,6 +323,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
                 self.take_screenshot("totals_with_individual_iva")
                 self.logger.info("✅ Test calcul totaux avec IVA individuel réussi")
 
+    @pytest.mark.timeout(25)
     def test_save_and_load_factura_with_iva(self):
         """Test que l'IVA est sauvegardé et rechargé correctement"""
         self.logger.info("🧪 Test: Sauvegarde et chargement factura avec IVA")
@@ -387,6 +398,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
                             self.take_screenshot("factura_reloaded_with_iva")
                             self.logger.info("✅ Test sauvegarde/chargement avec IVA réussi")
 
+    @pytest.mark.timeout(25)
     def test_different_iva_rates_in_same_factura(self):
         """Test qu'on peut avoir différents taux d'IVA dans la même facture"""
         self.logger.info("🧪 Test: Différents taux IVA dans même facture")

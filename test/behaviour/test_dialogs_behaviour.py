@@ -24,22 +24,29 @@ class TestDialogsBehaviour(BaseBehaviourTest):
     """Tests de comportement pour les dialogues selon spécifications"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
-        
+
         self.app = app_instance['app']
         self.main_window = app_instance['main_window']
         self.database = app_instance['database']
         self.config = test_config
         self.screenshots_dir = screenshots_dir
         self.logger = get_logger(self.__class__.__name__)
-        
+
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
         # Initialiser l'automation et les données de test
         if self.app:
             self.automation = PyQt5Automation(self.app)
         self.test_data = TestDataFactory()
     
+    @pytest.mark.timeout(20)
     def test_invoice_status_dialog_specification(self):
         """Test: Dialogue "Configurar Estado de Factura" selon spécifications"""
         self.logger.info("🧪 Test: InvoiceStatusDialog selon spécifications")
@@ -127,6 +134,7 @@ class TestDialogsBehaviour(BaseBehaviourTest):
         
         self.logger.info("✅ Test InvoiceStatusDialog terminé")
     
+    @pytest.mark.timeout(20)
     def test_data_cleanup_dialog_specification(self):
         """Test: Dialogue "Limpiar Datos" selon spécifications"""
         self.logger.info("🧪 Test: DataCleanupDialog selon spécifications")

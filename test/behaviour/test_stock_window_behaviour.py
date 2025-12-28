@@ -24,22 +24,28 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
     """Tests de comportement pour la fenêtre de gestion du stock selon spécifications"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
-        
+
         self.app = app_instance['app']
         self.main_window = app_instance['main_window']
         self.database = app_instance['database']
         self.config = test_config
         self.screenshots_dir = screenshots_dir
         self.logger = get_logger(self.__class__.__name__)
-        
+
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
         # Initialiser l'automation et les données de test
         if self.app:
             self.automation = PyQt5Automation(self.app)
         self.test_data = TestDataFactory()
-        
+
         # Préparer des données de test pour le stock
         self.setup_stock_test_data()
     
@@ -74,6 +80,7 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
         for product in test_products:
             self.database.add_product(product)
     
+    @pytest.mark.timeout(20)
     def test_stock_window_layout_specification(self):
         """Test: Vérifier le layout de la fenêtre Stock selon spécifications"""
         self.logger.info("🧪 Test: Layout StockWindow selon spécifications")
@@ -138,6 +145,7 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
         
         self.logger.info("✅ Test layout StockWindow terminé")
     
+    @pytest.mark.timeout(25)
     def test_stock_adjustment_workflow_specification(self):
         """Test: Workflow d'ajustement du stock selon spécifications"""
         self.logger.info("🧪 Test: Workflow ajustement stock selon spécifications")
@@ -222,6 +230,7 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test workflow ajustement stock terminé")
     
+    @pytest.mark.timeout(20)
     def test_stock_status_indicators_specification(self):
         """Test: Indicateurs d'état du stock selon spécifications"""
         self.logger.info("🧪 Test: Indicateurs état stock selon spécifications")
@@ -268,6 +277,7 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test indicateurs état stock terminé")
 
+    @pytest.mark.timeout(25)
     def test_guardar_button_behavior(self):
         """Test: Comportement du bouton Guardar Cambios"""
         self.logger.info("🧪 Test: Comportement bouton Guardar Cambios")
@@ -341,6 +351,7 @@ class TestStockWindowBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test comportement bouton Guardar terminé")
 
+    @pytest.mark.timeout(25)
     def test_stock_persistence_after_guardar(self):
         """Test: Vérifier que les changements sont persistés en base de données après Guardar"""
         self.logger.info("🧪 Test: Persistance des changements après Guardar")

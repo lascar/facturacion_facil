@@ -20,7 +20,7 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
     """Tests de comportement pour le champ Directorio de Informe"""
 
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance):
+    def setup_test(self, app_instance, mock_messagebox, mock_filedialog):
         """Configuration du test avec l'application"""
         self.app = app_instance['app']
         self.main_window = app_instance['main_window']
@@ -29,6 +29,14 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
 
         # Initialiser les attributs de base
         self.init_base_attributes()
+
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+        mock_filedialog.getSaveFileName.return_value = ('/tmp/test_export.pdf', 'PDF Files (*.pdf)')
+        mock_filedialog.getExistingDirectory.return_value = '/tmp'
 
         # Initialiser l'automation
         from test.behaviour.utils.pyqt5_automation import PyQt5Automation
@@ -182,6 +190,7 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test 04 réussi: Bouton informes_dir_browse_btn existe")
 
+    @pytest.mark.timeout(25)
     def test_05_directorio_informe_position_after_pdf(self):
         """
         COMPORTEMENT: Le champ Directorio de Informes doit être positionné après Directorio de PDFs
@@ -383,6 +392,7 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test 10 réussi: Méthode browse_informes_directory existe")
 
+    @pytest.mark.timeout(25)
     def test_11_directorio_informe_saves_to_database(self):
         """
         COMPORTEMENT: La valeur doit être sauvegardée dans la base de données

@@ -13,7 +13,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
     """Tests de comportement pour la fenêtre Clientes"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
         """Configuration automatique pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()
@@ -24,23 +24,30 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.config = test_config
         self.screenshots_dir = screenshots_dir
 
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+
         # Initialiser l'automation
         if self.app:
             self.automation = PyQt5Automation(self.app)
-        
+
         # Afficher la fenêtre principale et ouvrir Clientes
         self.main_window.show()
         self.wait_for_window(self.main_window)
-        
+
         # Ouvrir la fenêtre Clientes
         clientes_btn = self.automation.find_button_by_text(self.main_window, "Clientes")
         if clientes_btn:
             self.automation.click_button_safe(clientes_btn, wait_after=0.2)
             self.clientes_window = self.main_window.clientes_window
             self.wait_for_window(self.clientes_window)
-        
+
         self.slow_mode_wait()
     
+    @pytest.mark.timeout(15)
     def test_clientes_window_startup(self):
         """Test du démarrage de la fenêtre Clientes"""
         self.logger.info("🧪 Test: Démarrage fenêtre Clientes")
@@ -59,6 +66,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.take_screenshot("clientes_window_startup")
         self.logger.info("✅ Test démarrage Clientes réussi")
     
+    @pytest.mark.timeout(20)
     def test_create_new_client(self):
         """Test de création d'un nouveau client"""
         self.logger.info("🧪 Test: Création nouveau client")
@@ -105,6 +113,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.take_screenshot("client_created")
         self.logger.info("✅ Test création client réussi")
     
+    @pytest.mark.timeout(20)
     def test_edit_existing_client(self):
         """Test de modification d'un client existant"""
         self.logger.info("🧪 Test: Modification client existant")
@@ -135,6 +144,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.take_screenshot("client_edited")
         self.logger.info("✅ Test modification client réussi")
     
+    @pytest.mark.timeout(20)
     def test_delete_client(self):
         """Test de suppression d'un client"""
         self.logger.info("🧪 Test: Suppression client")
@@ -174,6 +184,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
         self.take_screenshot("client_deleted")
         self.logger.info("✅ Test suppression client réussi")
     
+    @pytest.mark.timeout(20)
     def test_client_form_validation(self):
         """Test de validation du formulaire client"""
         self.logger.info("🧪 Test: Validation formulaire client")
@@ -199,6 +210,7 @@ class TestClientesBehaviour(BaseBehaviourTest):
 
     @pytest.mark.behaviour
     @pytest.mark.clientes
+    @pytest.mark.timeout(20)
     def test_client_without_nif(self):
         """Test création d'un client sans NIF (NIF est optionnel)"""
         self.logger.info("🧪 Test: Client sans NIF")

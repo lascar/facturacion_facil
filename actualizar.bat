@@ -96,7 +96,44 @@ echo.
 :: Detectar rama actual y configuración del repositorio
 echo 🔍 Detectando configuración del repositorio...
 
+:: Verificar si hay cambios locales no guardados
+echo 🔍 Verificando cambios locales...
+git diff --quiet 2>nul
+if errorlevel 1 (
+    echo ⚠️  ADVERTENCIA: Hay cambios locales no guardados
+    echo.
+    echo 💡 Opciones:
+    echo    1. Guardar cambios locales (stash)
+    echo    2. Descartar cambios locales
+    echo    3. Cancelar actualización
+    echo.
+    set /p "OPCION=Seleccione opción (1/2/3): "
+
+    if "%OPCION%"=="1" (
+        echo 💾 Guardando cambios locales...
+        git stash save "Cambios guardados antes de actualización %FECHA%" >nul 2>&1
+        if not errorlevel 1 (
+            echo ✅ Cambios guardados (usar 'git stash pop' para recuperarlos)
+        ) else (
+            echo ❌ Error guardando cambios
+            pause
+            exit /b 1
+        )
+    ) else if "%OPCION%"=="2" (
+        echo ⚠️  Descartando cambios locales...
+        git reset --hard HEAD >nul 2>&1
+        echo ✅ Cambios descartados
+    ) else (
+        echo ❌ Actualización cancelada
+        pause
+        exit /b 0
+    )
+) else (
+    echo ✅ No hay cambios locales pendientes
+)
+
 :: Obtener información del repositorio
+echo 🔍 Conectando al repositorio remoto...
 git fetch origin >nul 2>&1
 if errorlevel 1 (
     echo ❌ ERROR: No se pudo conectar al repositorio remoto
@@ -144,12 +181,30 @@ if not "%RAMA_ACTUAL%"=="auto" (
 :: Método 2: Probar master (rama principal detectada)
 if "%ACTUALIZADO%"=="NO" (
     echo 🔄 Probando rama master...
-    git pull origin master >nul 2>&1
+
+    :: Verificar si la rama master existe en el remoto
+    git ls-remote --heads origin master >nul 2>&1
     if not errorlevel 1 (
-        echo ✅ Actualizado exitosamente desde rama: master
-        set "ACTUALIZADO=SI"
+        echo    ✓ Rama master encontrada en remoto
+
+        :: Intentar pull con estrategia de merge
+        git pull origin master 2>&1 | findstr /C:"Already up to date" /C:"Updating" /C:"Fast-forward" >nul
+        if not errorlevel 1 (
+            echo ✅ Actualizado exitosamente desde rama: master
+            set "ACTUALIZADO=SI"
+        ) else (
+            :: Intentar con rebase si hay conflictos
+            echo    ⚠️  Intentando con estrategia alternativa...
+            git pull --rebase origin master >nul 2>&1
+            if not errorlevel 1 (
+                echo ✅ Actualizado exitosamente desde rama: master (rebase)
+                set "ACTUALIZADO=SI"
+            ) else (
+                echo ⚠️  No se pudo actualizar desde master (posibles cambios locales)
+            )
+        )
     ) else (
-        echo ⚠️  Rama master no disponible
+        echo ⚠️  Rama master no encontrada en remoto
     )
 )
 
@@ -179,13 +234,13 @@ if "%ACTUALIZADO%"=="NO" (
         echo 💡 Información de debug:
         echo.
         echo 📋 Ramas remotas disponibles:
-        git branch -r 2>nul || echo "No se pueden listar ramas remotas"
+        git branch -r 2>&1 || echo No se pueden listar ramas remotas
         echo.
         echo 📋 Estado del repositorio:
-        git status --porcelain 2>nul || echo "No se puede obtener estado"
+        git status --porcelain 2>&1 || echo No se puede obtener estado
         echo.
         echo 📋 Configuración remota:
-        git remote -v 2>nul || echo "No se puede obtener configuración remota"
+        git remote -v 2>&1 || echo No se puede obtener configuración remota
         echo.
         echo Presione cualquier tecla para continuar...
         pause >nul

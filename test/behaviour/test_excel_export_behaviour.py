@@ -36,6 +36,7 @@ class TestExcelExportBehaviour:
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
     
+    @pytest.mark.timeout(15)
     def test_excel_stock_file_is_created(self):
         """
         GIVEN un informe de stock généré
@@ -72,6 +73,7 @@ class TestExcelExportBehaviour:
         assert os.path.exists(output_path)
         assert os.path.getsize(output_path) > 0
     
+    @pytest.mark.timeout(15)
     def test_excel_stock_contains_product_data(self):
         """
         GIVEN un informe de stock avec plusieurs produits
@@ -132,6 +134,7 @@ class TestExcelExportBehaviour:
         assert ws.cell(row=6, column=1).value is not None
         assert ws.cell(row=7, column=1).value is not None
 
+    @pytest.mark.timeout(15)
     def test_excel_facturacion_file_is_created(self):
         """
         GIVEN un informe de facturación généré
@@ -192,6 +195,7 @@ class TestExcelExportBehaviour:
         assert os.path.exists(output_path)
         assert os.path.getsize(output_path) > 0
 
+    @pytest.mark.timeout(15)
     def test_excel_facturacion_contains_invoice_data(self):
         """
         GIVEN un informe de facturación avec plusieurs factures

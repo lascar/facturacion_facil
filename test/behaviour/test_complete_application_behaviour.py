@@ -24,22 +24,30 @@ class TestCompleteApplicationBehaviour(BaseBehaviourTest):
     """Tests de comportement complets de l'application selon facturacion_facil.txt"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
-        
+
         self.app = app_instance['app']
         self.main_window = app_instance['main_window']
         self.database = app_instance['database']
         self.config = test_config
         self.screenshots_dir = screenshots_dir
         self.logger = get_logger(self.__class__.__name__)
-        
+
+        # Configuration des mocks pour éviter les blocages
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+        mock_messagebox.critical.return_value = mock_messagebox.Ok
+        mock_filedialog.getSaveFileName.return_value = ('/tmp/test_export.pdf', 'PDF Files (*.pdf)')
+        mock_filedialog.getExistingDirectory.return_value = '/tmp'
+
         # Initialiser l'automation et les données de test
         if self.app:
             self.automation = PyQt5Automation(self.app)
         self.test_data = TestDataFactory()
-        
+
         # Afficher la fenêtre principale
         self.main_window.show()
         self.wait_for_window(self.main_window)
@@ -70,6 +78,7 @@ class TestCompleteApplicationBehaviour(BaseBehaviourTest):
         
         self.logger.info("✅ Layout fenêtre principale conforme aux spécifications")
     
+    @pytest.mark.timeout(30)
     def test_productos_window_complete_workflow(self):
         """Test: Workflow complet de gestion des produits selon spécifications"""
         self.logger.info("🧪 Test: Workflow complet fenêtre Productos")
@@ -156,6 +165,7 @@ class TestCompleteApplicationBehaviour(BaseBehaviourTest):
         
         self.logger.info("✅ Workflow Productos terminé avec succès")
     
+    @pytest.mark.timeout(30)
     def test_clientes_window_complete_workflow(self):
         """Test: Workflow complet de gestion des clients selon spécifications"""
         self.logger.info("🧪 Test: Workflow complet fenêtre Clientes")
@@ -227,6 +237,7 @@ class TestCompleteApplicationBehaviour(BaseBehaviourTest):
         
         self.logger.info("✅ Workflow Clientes terminé avec succès")
 
+    @pytest.mark.timeout(30)
     def test_facturas_window_complete_workflow(self):
         """Test: Workflow complet de gestion des factures selon spécifications"""
         self.logger.info("🧪 Test: Workflow complet fenêtre Facturas")
@@ -323,6 +334,7 @@ class TestCompleteApplicationBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Workflow Facturas terminé avec succès")
 
+    @pytest.mark.timeout(30)
     def test_organizacion_window_configuration_workflow(self):
         """Test: Workflow de configuration de l'organisation selon spécifications"""
         self.logger.info("🧪 Test: Workflow configuration Organización")
