@@ -170,8 +170,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.setup_table_widget(self.facturas_table, headers)
 
         # Définir hauteur minimale pour afficher au moins 6 lignes
-        # Hauteur = header (39px) + 6 lignes * hauteur_ligne (31px) + marges (10px) = 235px
-        self.facturas_table.setMinimumHeight(235)
+        # Hauteur = header (~40-50px) + 6 lignes * hauteur_ligne (~35-40px) + marges (~20px)
+        # Windows nécessite plus d'espace que Linux
+        self.facturas_table.setMinimumHeight(300)
 
         # Connecter la sélection
         self.facturas_table.itemSelectionChanged.connect(self.on_factura_selected)

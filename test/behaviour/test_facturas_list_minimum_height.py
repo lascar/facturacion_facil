@@ -42,22 +42,23 @@ class TestFacturasListMinimumHeight(BaseBehaviourTest):
         COMPORTEMENT: La table des factures doit avoir une hauteur minimale pour afficher 6 lignes
         GIVEN: La fenêtre Facturas est ouverte
         WHEN: On vérifie la hauteur minimale de la table
-        THEN: La hauteur minimale doit être d'au moins 220px
+        THEN: La hauteur minimale doit être d'au moins 300px
         """
         self.logger.info("🧪 Test: Hauteur minimale de la table des factures")
-        
+
         # Vérifier que la table existe
         assert hasattr(self.facturas_window, 'facturas_table'), "La table des factures doit exister"
         assert isinstance(self.facturas_window.facturas_table, QTableWidget), "facturas_table doit être un QTableWidget"
-        
+
         # Vérifier la hauteur minimale
         min_height = self.facturas_window.facturas_table.minimumHeight()
         self.logger.info(f"📏 Hauteur minimale de la table: {min_height}px")
 
-        # La hauteur minimale doit être d'au moins 235px
-        # (header 39px + 6 lignes × 31px + marges 10px = 235px)
-        assert min_height >= 235, f"La hauteur minimale doit être d'au moins 235px, trouvé: {min_height}px"
-        
+        # La hauteur minimale doit être d'au moins 300px
+        # (header ~40-50px + 6 lignes × ~35-40px + marges ~20px = 300px)
+        # Windows nécessite plus d'espace que Linux
+        assert min_height >= 300, f"La hauteur minimale doit être d'au moins 300px, trouvé: {min_height}px"
+
         self.logger.info("✅ La table a une hauteur minimale correcte pour afficher 6 lignes")
     
     @pytest.mark.timeout(10)
