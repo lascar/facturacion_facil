@@ -343,7 +343,11 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.productos_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.productos_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.productos_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
-        self.productos_table.setMaximumHeight(200)
+
+        # Définir hauteur minimale pour afficher au moins 4 lignes
+        # Hauteur = header (~40-50px) + 4 lignes * hauteur_ligne (~35-40px) + marges (~20px)
+        # Windows nécessite plus d'espace que Linux
+        self.productos_table.setMinimumHeight(220)
 
         # Connecter le signal de changement pour recalculer les totaux
         self.productos_table.itemChanged.connect(self.on_product_table_item_changed)
