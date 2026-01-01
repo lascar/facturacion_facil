@@ -97,10 +97,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Définir les proportions (formulaire plus grand que liste)
         main_splitter.setSizes([400, 300])  # 400px pour formulaire, 300px pour liste
 
-        # Boutons d'action
+        # Boutons d'action (sans le bouton Nueva Factura qui est maintenant en haut)
         buttons_layout = QHBoxLayout()
 
-        self.new_btn = QPushButton("➕ Nueva Factura")
         self.save_btn = QPushButton("💾 Guardar")
         self.cancel_btn = QPushButton("❌ Cancelar")
         self.view_btn = QPushButton("👁️ Ver Detalles")
@@ -108,7 +107,6 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.eliminar_btn = QPushButton("🗑️ Eliminar")
         self.refresh_btn = QPushButton("🔄 Actualizar")
 
-        buttons_layout.addWidget(self.new_btn)
         buttons_layout.addWidget(self.save_btn)
         buttons_layout.addWidget(self.cancel_btn)
         buttons_layout.addWidget(self.view_btn)
@@ -131,6 +129,15 @@ class FacturasPyQt5Window(BasePyQt5Window):
         """Configurer le formulaire d'édition/création de facture"""
         form_widget = QWidget()
         form_layout = QVBoxLayout(form_widget)
+
+        # Bouton Nueva Factura en haut à gauche
+        top_button_layout = QHBoxLayout()
+        self.new_btn = QPushButton("➕ Nueva Factura")
+        self.new_btn.setMinimumHeight(40)
+        self.new_btn.setStyleSheet("font-size: 14px; font-weight: bold;")
+        top_button_layout.addWidget(self.new_btn)
+        top_button_layout.addStretch()
+        form_layout.addLayout(top_button_layout)
 
         # Titre du formulaire
         self.form_title_label = QLabel("Seleccionar factura para editar o crear nueva")
@@ -251,10 +258,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
         info_group = QGroupBox("Información de la Factura")
         info_layout = QGridLayout(info_group)
 
-        # Número de factura
+        # Número de factura (éditable)
         info_layout.addWidget(QLabel("Número:"), 0, 0)
         self.numero_edit = QLineEdit()
-        self.numero_edit.setReadOnly(True)
+        self.numero_edit.setPlaceholderText("Haga clic en 'Nueva Factura' para generar")
         info_layout.addWidget(self.numero_edit, 0, 1)
 
         # Fecha
@@ -381,8 +388,12 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         parent_layout.addWidget(totals_group)
 
-    def clear_form(self):
-        """Vider le formulaire"""
+    def clear_form(self, reset_title=False):
+        """Vider le formulaire
+
+        Args:
+            reset_title: Si True, met le titre à "Seleccionar factura...", sinon ne touche pas au titre
+        """
         self.current_factura_id = None
         self.is_editing = False
         self.lineas_factura = []
@@ -401,8 +412,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Réinitialiser les totaux
         self.update_totals()
 
-        # Mettre à jour le titre
-        self.form_title_label.setText("Nueva Factura")
+        # Mettre à jour le titre seulement si demandé
+        if reset_title:
+            self.form_title_label.setText("Seleccionar factura para editar o crear nueva")
 
         # Activer/désactiver les boutons
         self.save_btn.setEnabled(False)
@@ -551,42 +563,37 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Charger les données du formulaire
         self.load_form_data()
 
-        # Initialiser le formulaire en mode vide
-        self.clear_form()
+        # Initialiser le formulaire en mode vide avec titre par défaut
+        self.clear_form(reset_title=True)
 
     def new_factura_inline(self):
-        """Créer une nouvelle facture dans le formulaire intégré"""
+        """Créer une nouvelle facture dans le formulaire intégré
+
+        Comportement:
+        - Si un numéro de facture existe déjà: efface tout le formulaire
+        - Si pas de numéro de facture: génère juste un nouveau numéro sans effacer les autres champs
+        """
         try:
             self.logger.info("Iniciando creación de nueva factura")
 
-            # Nettoyer le formulaire
-            self.clear_form()
+            # Vérifier s'il y a déjà un numéro de facture
+            current_numero = self.numero_edit.text().strip()
 
-            # Générer un nouveau numéro de factura
-            try:
-                last_number = self.factura_service.generate_factura_number()
-                if last_number:
-                    # Extraire le numéro et l'incrémenter
-                    import re
-                    match = re.search(r'(\d+)$', last_number)
-                    if match:
-                        next_num = int(match.group(1)) + 1
-                        numero = f"FAC-{next_num:04d}"
-                    else:
-                        numero = "FAC-0001"
-                else:
-                    numero = "FAC-0001"
-            except Exception as e:
-                self.logger.error(f"Error generando número de factura: {e}")
-                # Fallback: usar timestamp
-                from datetime import datetime
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                numero = f"FAC-{timestamp}"
+            if current_numero:
+                # Si un numéro existe, effacer tout le formulaire
+                self.logger.info(f"Número existente '{current_numero}' - limpiando formulario completo")
+                self.clear_form()
+                # Après clear_form, remettre la date actuelle
+                self.fecha_edit.setDate(QDate.currentDate())
+            else:
+                # Si pas de numéro, on garde les champs existants
+                self.logger.info("Sin número existente - solo generando nuevo número")
 
+            # Générer un nouveau numéro de factura en utilisant le service de numeración
+            # qui respecte la configuration de organizacion (número inicial, prefijo, etc.)
+            numero = self.generate_invoice_number()
             self.numero_edit.setText(numero)
-
-            # Définir la date actuelle
-            self.fecha_edit.setDate(QDate.currentDate())
+            self.logger.info(f"Nuevo número de factura generado: {numero}")
 
             # Activer le mode édition/création
             self.is_editing = True
@@ -603,21 +610,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.logger.error(f"Error creando nueva factura: {e}")
             self.show_error("Error", f"Error al crear nueva factura: {str(e)}")
 
-        # Générer un nouveau numéro de facture
-        self.numero_edit.setText(self.generate_invoice_number())
-
-        # Activer les boutons
-        self.save_btn.setEnabled(True)
-        self.cancel_btn.setEnabled(True)
-
-        self.form_title_label.setText("Nueva Factura")
-        self.logger.info("Iniciando creación de nueva factura")
-
     def cancel_edit(self):
         """Annuler l'édition/création"""
         if self.ask_confirmation("Cancelar", "¿Está seguro de cancelar? Se perderán los cambios no guardados."):
-            self.clear_form()
-            self.form_title_label.setText("Seleccionar factura para editar o crear nueva")
+            self.clear_form(reset_title=True)
 
     def on_client_selected(self, client):
         """Gérer la sélection d'un client existant"""
@@ -1176,7 +1172,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
             # Recharger la liste et nettoyer le formulaire
             self.load_facturas()
-            self.clear_form()
+            self.clear_form(reset_title=False)
             self.form_title_label.setText("Factura guardada - Seleccionar otra o crear nueva")
 
         except Exception as e:
