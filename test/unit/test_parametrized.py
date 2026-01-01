@@ -10,6 +10,12 @@ from utils.translations import get_text
 
 class TestParametrizedAdvanced:
     """Tests paramétrés avancés"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.mark.parametrize("precio,iva,expected_total", [
         (100.0, 21.0, 121.0),
@@ -103,6 +109,12 @@ class TestParametrizedAdvanced:
 
 class TestDataCombinations:
     """Tests avec combinaisons de données"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.mark.parametrize("nombre,referencia", [
         ("Laptop Dell", "DELL-001"),
@@ -141,6 +153,12 @@ class TestDataCombinations:
 
 class TestEdgeCases:
     """Tests des cas limites"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.mark.parametrize("edge_value", [
         0.01,      # Valeur minimale
@@ -197,10 +215,16 @@ class TestEdgeCases:
 
 class TestPerformanceParametrized:
     """Tests de performance paramétrés"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.mark.slow
     @pytest.mark.parametrize("num_products", [10, 100, 500])
-    def test_bulk_product_creation(self, num_products, temp_db):
+    def test_bulk_product_creation(self, num_products):
         """Test la création en masse de produits"""
         import time
         
@@ -230,7 +254,7 @@ class TestPerformanceParametrized:
         ("001", 0),       # Suffixe numérique
         ("NonExistent", 0), # Terme inexistant
     ])
-    def test_search_performance(self, search_term, expected_min_results, temp_db):
+    def test_search_performance(self, search_term, expected_min_results):
         """Test la performance de recherche"""
         # Créer quelques produits de test
         for i in range(10):

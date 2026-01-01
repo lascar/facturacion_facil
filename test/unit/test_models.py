@@ -9,7 +9,13 @@ from database.models import Producto, Organizacion, Stock
 
 class TestProducto:
     """Tests pour le modèle Producto"""
-    
+
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     def test_producto_creation(self, sample_producto_data):
         """Test la création d'un produit"""
         producto = Producto(**sample_producto_data)
@@ -35,7 +41,7 @@ class TestProducto:
         assert producto.iva_recomendado == 21.0
         assert producto.id is None
     
-    def test_producto_save_new(self, sample_producto, temp_db):
+    def test_producto_save_new(self, sample_producto):
         """Test la sauvegarde d'un nouveau produit"""
         # Vérifier qu'il n'a pas d'ID initialement
         assert sample_producto.id is None
@@ -48,14 +54,14 @@ class TestProducto:
         assert sample_producto.id > 0
         
         # Vérifier qu'une entrée stock a été créée
-        stock_results = temp_db.execute_query(
+        stock_results = self.db.execute_query(
             "SELECT cantidad_disponible FROM stock WHERE producto_id = ?",
             (sample_producto.id,)
         )
         assert len(stock_results) == 1
         assert stock_results[0][0] == 0  # Stock initial à 0
     
-    def test_producto_save_existing(self, sample_producto, temp_db):
+    def test_producto_save_existing(self, sample_producto):
         """Test la mise à jour d'un produit existant"""
         # Sauvegarder d'abord
         sample_producto.save()
@@ -70,21 +76,21 @@ class TestProducto:
         assert sample_producto.id == original_id
         
         # Vérifier que les modifications ont été sauvegardées
-        results = temp_db.execute_query(
+        results = self.db.execute_query(
             "SELECT nombre, precio FROM productos WHERE id = ?",
             (original_id,)
         )
         assert results[0][0] == "Nom Modifié"
         assert results[0][1] == 999.99
     
-    def test_producto_delete(self, sample_producto, temp_db):
+    def test_producto_delete(self, sample_producto):
         """Test la suppression d'un produit"""
         # Sauvegarder d'abord
         sample_producto.save()
         producto_id = sample_producto.id
         
         # Vérifier qu'il existe
-        results = temp_db.execute_query(
+        results = self.db.execute_query(
             "SELECT COUNT(*) FROM productos WHERE id = ?",
             (producto_id,)
         )
@@ -94,14 +100,14 @@ class TestProducto:
         sample_producto.delete()
         
         # Vérifier qu'il n'existe plus
-        results = temp_db.execute_query(
+        results = self.db.execute_query(
             "SELECT COUNT(*) FROM productos WHERE id = ?",
             (producto_id,)
         )
         assert results[0][0] == 0
         
         # Vérifier que le stock associé a aussi été supprimé
-        stock_results = temp_db.execute_query(
+        stock_results = self.db.execute_query(
             "SELECT COUNT(*) FROM stock WHERE producto_id = ?",
             (producto_id,)
         )
@@ -123,7 +129,7 @@ class TestProducto:
             assert isinstance(producto, Producto)
             assert producto.id is not None
     
-    def test_producto_get_by_id(self, sample_producto, temp_db):
+    def test_producto_get_by_id(self, sample_producto):
         """Test la récupération d'un produit par ID"""
         # Sauvegarder
         sample_producto.save()
@@ -138,7 +144,7 @@ class TestProducto:
         assert retrieved_producto.referencia == sample_producto.referencia
         assert retrieved_producto.precio == sample_producto.precio
     
-    def test_producto_get_by_id_not_found(self, temp_db):
+    def test_producto_get_by_id_not_found(self):
         """Test la récupération d'un produit inexistant"""
         retrieved_producto = Producto.get_by_id(99999)
         assert retrieved_producto is None
@@ -159,7 +165,13 @@ class TestProducto:
 
 class TestOrganizacion:
     """Tests pour le modèle Organizacion"""
-    
+
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     def test_organizacion_creation(self, sample_organizacion_data):
         """Test la création d'une organisation"""
         org = Organizacion(**sample_organizacion_data)
@@ -187,7 +199,7 @@ class TestOrganizacion:
         sample_organizacion.save()
         
         # Vérifier qu'elle a été sauvegardée
-        results = temp_db.execute_query("SELECT * FROM organizacion WHERE id = 1")
+        results = self.db.execute_query("SELECT * FROM organizacion WHERE id = 1")
         assert len(results) == 1
         
         row = results[0]
@@ -208,11 +220,11 @@ class TestOrganizacion:
         sample_organizacion.save()
         
         # Vérifier qu'il n'y a toujours qu'une seule organisation
-        results = temp_db.execute_query("SELECT COUNT(*) FROM organizacion")
+        results = self.db.execute_query("SELECT COUNT(*) FROM organizacion")
         assert results[0][0] == 1
         
         # Vérifier les modifications
-        results = temp_db.execute_query("SELECT nombre, email FROM organizacion WHERE id = 1")
+        results = self.db.execute_query("SELECT nombre, email FROM organizacion WHERE id = 1")
         assert results[0][0] == "Nouveau Nom"
         assert results[0][1] == "nouveau@email.com"
     
@@ -231,7 +243,7 @@ class TestOrganizacion:
         assert retrieved_org.email == sample_organizacion.email
         assert retrieved_org.cif == sample_organizacion.cif
     
-    def test_organizacion_get_empty(self, temp_db):
+    def test_organizacion_get_empty(self):
         """Test la récupération quand aucune organisation n'existe"""
         retrieved_org = Organizacion.get()
         
@@ -244,7 +256,13 @@ class TestOrganizacion:
 
 class TestStock:
     """Tests pour le modèle Stock"""
-    
+
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     def test_stock_creation(self):
         """Test la création d'un stock"""
         stock = Stock(producto_id=1, cantidad_disponible=50)
@@ -259,18 +277,18 @@ class TestStock:
         assert stock.producto_id == 1
         assert stock.cantidad_disponible == 0
     
-    def test_stock_create_for_product(self, temp_db):
+    def test_stock_create_for_product(self):
         """Test la création de stock pour un produit"""
         Stock.create_for_product(1)
         
-        results = temp_db.execute_query("SELECT * FROM stock WHERE producto_id = 1")
+        results = self.db.execute_query("SELECT * FROM stock WHERE producto_id = 1")
         assert len(results) == 1
         assert results[0][1] == 0  # cantidad_disponible
     
-    def test_stock_get_by_product(self, temp_db):
+    def test_stock_get_by_product(self):
         """Test la récupération du stock d'un produit"""
         # Créer un stock
-        temp_db.execute_query(
+        self.db.execute_query(
             "INSERT INTO stock (producto_id, cantidad_disponible) VALUES (?, ?)",
             (1, 25)
         )
@@ -278,15 +296,15 @@ class TestStock:
         cantidad = Stock.get_by_product(1)
         assert cantidad == 25
     
-    def test_stock_get_by_product_not_found(self, temp_db):
+    def test_stock_get_by_product_not_found(self):
         """Test la récupération du stock d'un produit inexistant"""
         cantidad = Stock.get_by_product(99999)
         assert cantidad == 0
     
-    def test_stock_update_stock(self, temp_db):
+    def test_stock_update_stock(self):
         """Test la mise à jour du stock après vente"""
         # Créer un stock initial
-        temp_db.execute_query(
+        self.db.execute_query(
             "INSERT INTO stock (producto_id, cantidad_disponible) VALUES (?, ?)",
             (1, 100)
         )
@@ -298,10 +316,10 @@ class TestStock:
         cantidad = Stock.get_by_product(1)
         assert cantidad == 70
     
-    def test_stock_update_stock_negative_allowed(self, temp_db):
+    def test_stock_update_stock_negative_allowed(self):
         """Test que les stocks négatifs sont maintenant autorisés"""
         # Créer un stock initial
-        temp_db.execute_query(
+        self.db.execute_query(
             "INSERT INTO stock (producto_id, cantidad_disponible) VALUES (?, ?)",
             (1, 10)
         )

@@ -21,78 +21,7 @@ def run_test_file(test_file):
     except Exception as e:
         return False, "", str(e)
 
-@pytest.mark.skip(reason="Referenced test files do not exist")
-def test_global_todas_correcciones():
-    """Test global que ejecuta todos los tests de correcciones"""
-    print("🧪 EJECUTANDO TESTS GLOBALES DE TODAS LAS CORRECCIONES")
-    print("=" * 70)
-    
-    # Lista de todos los tests creados
-    tests = [
-        ("test_nueva_numeracion.py", "Sistema de Numeración de Facturas"),
-        ("test_producto_selection_fix.py", "Selección Automática Primer Producto"),
-        ("test_edicion_automatica_facturas.py", "Edición Automática de Facturas"),
-        ("test_organizacion_completo.py", "Módulo Organización Completo"),
-        ("test_dialogo_logo_fix.py", "Corrección Diálogos en Segundo Plano"),
-        ("test_messageboxes_fix.py", "Corrección MessageBoxes en Segundo Plano"),
-        ("test_logo_image_fix.py", "Corrección Error TclError del Logo"),
-        ("test_validacion_facturas_opcional.py", "Validación Opcional NIF/Email/Teléfono"),
-        ("test_facturas_validacion_integracion.py", "Integración Validación Opcional"),
-        ("test_ejemplos_validacion_facturas.py", "Ejemplos Prácticos Validación")
-    ]
-    
-    results = {}
-    total_tests = len(tests)
-    passed_tests = 0
-    
-    print(f"📋 Ejecutando {total_tests} suites de tests...\n")
-    
-    for i, (test_file, description) in enumerate(tests, 1):
-        print(f"{i}️⃣ Test: {description}")
-        print(f"   📁 Archivo: {test_file}")
-        
-        if not os.path.exists(test_file):
-            print(f"   ❌ ARCHIVO NO ENCONTRADO")
-            results[test_file] = False
-            continue
-        
-        success, stdout, stderr = run_test_file(test_file)
-        
-        if success:
-            print(f"   ✅ PASADO")
-            passed_tests += 1
-            results[test_file] = True
-        else:
-            print(f"   ❌ FALLIDO")
-            if stderr:
-                print(f"   📝 Error: {stderr[:200]}...")
-            results[test_file] = False
-        
-        print()
-    
-    # Resumen final
-    print("=" * 70)
-    print("📊 RESUMEN DE RESULTADOS")
-    print("=" * 70)
-    
-    for test_file, description in tests:
-        status = "✅ PASADO" if results.get(test_file, False) else "❌ FALLIDO"
-        print(f"{status} - {description}")
-    
-    print(f"\n📈 ESTADÍSTICAS:")
-    print(f"   Tests ejecutados: {total_tests}")
-    print(f"   Tests pasados: {passed_tests}")
-    print(f"   Tests fallidos: {total_tests - passed_tests}")
-    print(f"   Porcentaje éxito: {(passed_tests/total_tests)*100:.1f}%")
-    
-    if passed_tests == total_tests:
-        print("\n🎉 ¡TODOS LOS TESTS PASARON!")
-        print("✨ Todas las correcciones están funcionando correctamente")
-        assert True
-    else:
-        print(f"\n⚠️  {total_tests - passed_tests} tests fallaron")
-        print("🔧 Revisar las correcciones que no pasaron")
-        assert False, f"{total_tests - passed_tests} tests fallaron"
+
 
 def test_aplicacion_completa():
     """Test adicional: verificar que la aplicación se inicia sin errores"""

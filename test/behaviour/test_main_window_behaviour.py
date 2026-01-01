@@ -12,7 +12,7 @@ class TestMainWindowBehaviour(BaseBehaviourTest):
     """Tests de comportement pour MainWindowPyQt5"""
 
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()

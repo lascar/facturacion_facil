@@ -23,7 +23,7 @@ class TestAutoCloseExample(BaseBehaviourTest):
     """Exemple de test avec fermeture automatique des fenêtres"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
         

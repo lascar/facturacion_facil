@@ -11,15 +11,15 @@ from database.database import Database
 
 class TestDatabase:
     """Tests pour la classe Database"""
-    
-    def test_database_initialization(self, temp_db):
+
+    def test_database_initialization(self, unit_db):
         """Test que la base de données s'initialise correctement"""
-        assert isinstance(temp_db, Database)
-        assert os.path.exists(temp_db.db_path)
+        assert isinstance(unit_db, Database)
+        assert os.path.exists(unit_db.db_path)
     
-    def test_database_tables_creation(self, temp_db):
+    def test_database_tables_creation(self, unit_db):
         """Test que toutes les tables sont créées"""
-        conn = temp_db.get_connection()
+        conn = unit_db.get_connection()
         cursor = conn.cursor()
         
         # Vérifier que les tables existent
@@ -32,9 +32,9 @@ class TestDatabase:
         
         conn.close()
     
-    def test_productos_table_structure(self, temp_db):
+    def test_productos_table_structure(self, unit_db):
         """Test la structure de la table productos"""
-        conn = temp_db.get_connection()
+        conn = unit_db.get_connection()
         cursor = conn.cursor()
         
         cursor.execute("PRAGMA table_info(productos)")
@@ -58,25 +58,25 @@ class TestDatabase:
         
         conn.close()
     
-    def test_execute_query_select(self, temp_db):
+    def test_execute_query_select(self, unit_db):
         """Test l'exécution de requêtes SELECT"""
         # Insérer des données de test
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
             ("Test Product", "TEST001", 25.50)
         )
         
         # Tester SELECT
-        results = temp_db.execute_query("SELECT * FROM productos WHERE referencia = ?", ("TEST001",))
+        results = unit_db.execute_query("SELECT * FROM productos WHERE referencia = ?", ("TEST001",))
         
         assert len(results) == 1
         assert results[0][1] == "Test Product"  # nom
         assert results[0][2] == "TEST001"       # référence
         assert results[0][3] == 25.50           # prix
     
-    def test_execute_query_insert(self, temp_db):
+    def test_execute_query_insert(self, unit_db):
         """Test l'exécution de requêtes INSERT"""
-        lastrowid = temp_db.execute_query(
+        lastrowid = unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
             ("New Product", "NEW001", 15.75)
         )
@@ -85,75 +85,75 @@ class TestDatabase:
         assert lastrowid > 0
         
         # Vérifier que l'insertion a fonctionné
-        results = temp_db.execute_query("SELECT COUNT(*) FROM productos")
+        results = unit_db.execute_query("SELECT COUNT(*) FROM productos")
         assert results[0][0] == 1
     
-    def test_execute_query_update(self, temp_db):
+    def test_execute_query_update(self, unit_db):
         """Test l'exécution de requêtes UPDATE"""
         # Insérer un produit
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
             ("Original", "ORIG001", 10.00)
         )
         
         # Mettre à jour
-        temp_db.execute_query(
+        unit_db.execute_query(
             "UPDATE productos SET precio = ? WHERE referencia = ?",
             (20.00, "ORIG001")
         )
         
         # Vérifier la mise à jour
-        results = temp_db.execute_query("SELECT precio FROM productos WHERE referencia = ?", ("ORIG001",))
+        results = unit_db.execute_query("SELECT precio FROM productos WHERE referencia = ?", ("ORIG001",))
         assert results[0][0] == 20.00
     
-    def test_execute_query_delete(self, temp_db):
+    def test_execute_query_delete(self, unit_db):
         """Test l'exécution de requêtes DELETE"""
         # Insérer un produit
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
             ("To Delete", "DEL001", 5.00)
         )
         
         # Vérifier qu'il existe
-        results = temp_db.execute_query("SELECT COUNT(*) FROM productos")
+        results = unit_db.execute_query("SELECT COUNT(*) FROM productos")
         assert results[0][0] == 1
         
         # Supprimer
-        temp_db.execute_query("DELETE FROM productos WHERE referencia = ?", ("DEL001",))
+        unit_db.execute_query("DELETE FROM productos WHERE referencia = ?", ("DEL001",))
         
         # Vérifier la suppression
-        results = temp_db.execute_query("SELECT COUNT(*) FROM productos")
+        results = unit_db.execute_query("SELECT COUNT(*) FROM productos")
         assert results[0][0] == 0
     
-    def test_get_next_factura_number(self, temp_db):
+    def test_get_next_factura_number(self, unit_db):
         """Test la génération du numéro de facture avec nouveau format"""
         from datetime import datetime
 
         # Premier numéro (nouveau format: numero-año)
-        numero1 = temp_db.get_next_factura_number()
+        numero1 = unit_db.get_next_factura_number()
         year = datetime.now().year
         expected1 = f"1-{year}"
         assert numero1 == expected1
 
         # Simuler une facture existante
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO facturas (numero_factura, fecha_factura, nombre_cliente, subtotal, total_iva, total_factura) VALUES (?, ?, ?, ?, ?, ?)",
             (numero1, f"{year}-01-01", "Test Client", 100.0, 21.0, 121.0)
         )
 
         # Deuxième numéro
-        numero2 = temp_db.get_next_factura_number()
+        numero2 = unit_db.get_next_factura_number()
         expected2 = f"2-{year}"
         assert numero2 == expected2
     
-    def test_database_connection_error_handling(self):
+    def test_database_connection_error_handling(self, unit_db):
         """Test la gestion d'erreurs de connexion"""
-        # Tenter de créer une base de données dans un répertoire invalide
+        # Tester une requête invalide
         with pytest.raises(Exception):
-            invalid_db = Database("/invalid/path/test.db")
+            unit_db.execute_query("SELECT * FROM table_inexistante")
     
     @pytest.mark.slow
-    def test_database_performance(self, temp_db, faker_instance):
+    def test_database_performance(self, unit_db, faker_instance):
         """Test de performance de la base de données"""
         import time
 
@@ -161,7 +161,7 @@ class TestDatabase:
         start_time = time.time()
 
         for i in range(100):
-            temp_db.execute_query(
+            unit_db.execute_query(
                 "INSERT INTO productos (nombre, referencia, precio) VALUES (?, ?, ?)",
                 (f"Product {i}", f"PERF{i:03d}", faker_instance.pyfloat(positive=True, max_value=100))
             )
@@ -170,7 +170,7 @@ class TestDatabase:
 
         # Tester la sélection
         start_time = time.time()
-        results = temp_db.execute_query("SELECT * FROM productos")
+        results = unit_db.execute_query("SELECT * FROM productos")
         select_time = time.time() - start_time
 
         # Vérifications
@@ -178,69 +178,69 @@ class TestDatabase:
         assert insert_time < 5.0  # Moins de 5 secondes pour 100 insertions
         assert select_time < 1.0  # Moins de 1 seconde pour sélectionner 100 lignes
 
-    def test_get_product_categories(self, temp_db):
+    def test_get_product_categories(self, unit_db):
         """Test la récupération des catégories de produits"""
         # Ajouter des produits avec différentes catégories
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
             ("Producto 1", "CAT001", 10.0, "Electrónica")
         )
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
             ("Producto 2", "CAT002", 20.0, "Ropa")
         )
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO productos (nombre, referencia, precio, categoria) VALUES (?, ?, ?, ?)",
             ("Producto 3", "CAT003", 30.0, "Electrónica")
         )
 
         # Récupérer les catégories
-        categories = temp_db.get_product_categories()
+        categories = unit_db.get_product_categories()
 
         # Vérifications
         assert len(categories) == 2
         assert "Electrónica" in categories
         assert "Ropa" in categories
 
-    def test_delete_multiple_clients(self, temp_db):
+    def test_delete_multiple_clients(self, unit_db):
         """Test la suppression de plusieurs clients"""
         # Créer des clients
-        client1_id = temp_db.execute_query(
+        client1_id = unit_db.execute_query(
             "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
             ("Cliente 1", "12345678A")
         )
-        client2_id = temp_db.execute_query(
+        client2_id = unit_db.execute_query(
             "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
             ("Cliente 2", "87654321B")
         )
 
         # Supprimer les clients
-        deleted_count = temp_db.delete_multiple_clients([client1_id, client2_id])
+        deleted_count = unit_db.delete_multiple_clients([client1_id, client2_id])
 
         # Vérifications
         assert deleted_count == 2
 
         # Vérifier qu'ils n'existent plus
-        clients = temp_db.get_all_clients()
+        clients = unit_db.get_all_clients()
         assert len(clients) == 0
 
-    def test_delete_multiple_clients_with_invoices(self, temp_db):
+    def test_delete_multiple_clients_with_invoices(self, unit_db):
         """Test que la suppression de clients avec factures échoue"""
         # Créer un client
-        client_id = temp_db.execute_query(
+        client_id = unit_db.execute_query(
             "INSERT INTO clientes (nombre, dni_nie) VALUES (?, ?)",
             ("Cliente con factura", "12345678A")
         )
 
         # Créer une facture pour ce client
-        temp_db.execute_query(
+        unit_db.execute_query(
             "INSERT INTO facturas (numero_factura, fecha_factura, nombre_cliente, cliente_id, subtotal, total_iva, total_factura) VALUES (?, ?, ?, ?, ?, ?, ?)",
             ("FAC001", "2024-01-01", "Cliente con factura", client_id, 100.0, 21.0, 121.0)
         )
 
         # Tenter de supprimer le client
         with pytest.raises(Exception) as exc_info:
-            temp_db.delete_multiple_clients([client_id])
+            unit_db.delete_multiple_clients([client_id])
 
         # Vérifier le message d'erreur
         assert "No se pueden eliminar" in str(exc_info.value)

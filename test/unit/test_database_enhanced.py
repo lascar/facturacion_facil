@@ -14,18 +14,23 @@ from utils.exceptions import (
 
 class TestDatabaseEnhanced:
     """Tests para la clase DatabaseEnhanced"""
-    
-    def setup_method(self):
+
+    @pytest.fixture(autouse=True)
+    def setup(self, unit_db):
         """Configuración antes de cada test"""
-        # Crear base de datos temporal
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        self.temp_db.close()
-        self.db = DatabaseEnhanced(self.temp_db.name)
-    
-    def teardown_method(self):
-        """Limpieza después de cada test"""
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
+        # Utiliser DatabaseEnhanced avec le chemin de la base de données de test
+        # Désactiver temporairement TEST_DATABASE_PATH
+        old_test_db_path = os.environ.get('TEST_DATABASE_PATH')
+        os.environ.pop('TEST_DATABASE_PATH', None)
+
+        self.db = DatabaseEnhanced(unit_db.db_path)
+
+        # Restaurer TEST_DATABASE_PATH
+        if old_test_db_path:
+            os.environ['TEST_DATABASE_PATH'] = old_test_db_path
+
+        yield
+        # Le nettoyage est géré par la fixture unit_db
     
     def test_get_client_by_id_not_found_raises_exception(self):
         """Test que get_client_by_id lanza excepción si no existe"""

@@ -11,6 +11,12 @@ from database.database import Database
 
 class TestFacturaModel:
     """Tests para el modelo Factura"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.fixture
     def temp_db(self):
@@ -27,7 +33,7 @@ class TestFacturaModel:
         os.unlink(temp_file.name)
     
     @pytest.fixture
-    def sample_producto(self, temp_db):
+    def sample_producto(self, patched_models_db):
         """Crea un producto de ejemplo"""
         producto = Producto(
             nombre="Producto Test",
@@ -38,14 +44,14 @@ class TestFacturaModel:
         )
         # Usar la base de datos temporal
         original_db = Producto.__dict__.get('db')
-        Producto.db = temp_db
+        Producto.db = patched_models_db
         producto.save()
         yield producto
         # Restaurar
         if original_db:
             Producto.db = original_db
     
-    def test_factura_creation(self, temp_db):
+    def test_factura_creation(self, unit_db):
         """Test creación básica de factura"""
         factura = Factura(
             numero_factura="001-2025",
@@ -65,11 +71,11 @@ class TestFacturaModel:
         assert factura.modo_pago == "efectivo"
         assert factura.items == []
     
-    def test_factura_save_and_retrieve(self, temp_db):
+    def test_factura_save_and_retrieve(self, unit_db):
         """Test guardar y recuperar factura"""
         # Usar la base de datos temporal
         original_db = Factura.__dict__.get('db')
-        Factura.db = temp_db
+        Factura.db = self.db
         
         try:
             factura = Factura(
@@ -102,10 +108,10 @@ class TestFacturaModel:
             if original_db:
                 Factura.db = original_db
     
-    def test_factura_get_all(self, temp_db):
+    def test_factura_get_all(self, unit_db):
         """Test obtener todas las facturas"""
         original_db = Factura.__dict__.get('db')
-        Factura.db = temp_db
+        Factura.db = self.db
         
         try:
             # Crear varias facturas
@@ -133,10 +139,10 @@ class TestFacturaModel:
             if original_db:
                 Factura.db = original_db
     
-    def test_factura_delete(self, temp_db):
+    def test_factura_delete(self, unit_db):
         """Test eliminar factura"""
         original_db = Factura.__dict__.get('db')
-        Factura.db = temp_db
+        Factura.db = self.db
         
         try:
             factura = Factura(
@@ -165,12 +171,12 @@ class TestFacturaModel:
             if original_db:
                 Factura.db = original_db
     
-    def test_factura_calculate_totals(self, temp_db, sample_producto):
+    def test_factura_calculate_totals(self, sample_producto):
         """Test cálculo automático de totales"""
         original_db_factura = Factura.__dict__.get('db')
         original_db_item = FacturaItem.__dict__.get('db')
-        Factura.db = temp_db
-        FacturaItem.db = temp_db
+        Factura.db = self.db
+        FacturaItem.db = self.db
         
         try:
             factura = Factura(
@@ -218,10 +224,10 @@ class TestFacturaModel:
             if original_db_item:
                 FacturaItem.db = original_db_item
     
-    def test_get_next_numero(self, temp_db):
+    def test_get_next_numero(self, unit_db):
         """Test generación de siguiente número de factura"""
         original_db = Factura.__dict__.get('db')
-        Factura.db = temp_db
+        Factura.db = self.db
         
         try:
             # Sin facturas existentes
@@ -250,6 +256,12 @@ class TestFacturaModel:
 
 class TestFacturaItemModel:
     """Tests para el modelo FacturaItem"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.fixture
     def temp_db(self):
@@ -326,10 +338,10 @@ class TestFacturaItemModel:
         assert abs(item.iva_amount - 5.0) < 0.01
         assert abs(item.total - 55.0) < 0.01
     
-    def test_factura_item_save_and_retrieve(self, temp_db):
+    def test_factura_item_save_and_retrieve(self, unit_db):
         """Test guardar y recuperar FacturaItem"""
         original_db = FacturaItem.__dict__.get('db')
-        FacturaItem.db = temp_db
+        FacturaItem.db = self.db
         
         try:
             item = FacturaItem(

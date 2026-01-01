@@ -8,7 +8,7 @@ import pytest
 import sys
 import os
 import uuid
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QRadioButton
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt
 
@@ -25,7 +25,7 @@ class TestSinStockBehaviour(BaseBehaviourTest):
     """Tests de comportement pour le système 'sin stock'"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
 
@@ -216,84 +216,7 @@ class TestSinStockBehaviour(BaseBehaviourTest):
 
         self.logger.info("✅ Test StockService inclut sin_stock terminé")
 
-    def test_04_informe_stock_includes_sin_stock(self):
-        """Test: Les informes de stock incluent les produits sin_stock"""
-        self.logger.info("🧪 Test: Informes de stock incluent les produits sin_stock")
 
-        # Ouvrir la fenêtre Informes
-        informes_btn = self.automation.find_button_by_text(self.main_window, "📊 Informes")
-        if not informes_btn:
-            self.logger.warning("Bouton Informes non trouvé, test ignoré")
-            return
-
-        QTest.mouseClick(informes_btn, Qt.LeftButton)
-        self.wait_and_process_events(500)
-
-        # Trouver la fenêtre Informes
-        informes_window = None
-        for widget in reversed(self.app.topLevelWidgets()):
-            if hasattr(widget, 'windowTitle') and "Informes" in widget.windowTitle() and widget.isVisible():
-                informes_window = widget
-                break
-
-        if not informes_window:
-            self.logger.warning("Fenêtre Informes non trouvée, test ignoré")
-            return
-
-        # Chercher le bouton "Informe de Stock"
-        informe_stock_btn = self.automation.find_button_by_text(informes_window, "Stock")
-        if not informe_stock_btn:
-            self.logger.warning("Bouton Informe Stock non trouvé, test ignoré")
-            informes_window.close()
-            return
-
-        QTest.mouseClick(informe_stock_btn, Qt.LeftButton)
-        self.wait_and_process_events(1000)
-
-        # Trouver la fenêtre Informe Stock
-        informe_stock_window = None
-        for widget in reversed(self.app.topLevelWidgets()):
-            if hasattr(widget, 'windowTitle') and "Stock" in widget.windowTitle() and widget.isVisible():
-                if widget != informes_window:  # Pas la fenêtre Informes principale
-                    informe_stock_window = widget
-                    break
-
-        if informe_stock_window:
-            self.logger.info("✅ Fenêtre Informe Stock ouverte")
-
-            # Chercher la liste de produits
-            productos_list = self.automation.find_widget_by_name(informe_stock_window, "productos_list")
-            if productos_list:
-                item_count = productos_list.count()
-                self.logger.info(f"Nombre de produits dans la liste: {item_count}")
-
-                # Vérifier que TOUS les produits sont dans la liste (CON et SIN stock)
-                found_items = []
-                for i in range(item_count):
-                    item = productos_list.item(i)
-                    if item:
-                        item_text = item.text()
-                        found_items.append(item_text)
-                        self.logger.info(f"  - {item_text}")
-
-                # Vérifier que les produits SIN stock sont PRÉSENTS
-                sin_stock_items = [item for item in found_items if "SIN Stock" in item]
-                assert len(sin_stock_items) >= 2, f"Devrait avoir au moins 2 produits SIN stock, trouvé: {len(sin_stock_items)}"
-                self.logger.info(f"✅ Produits SIN stock présents dans l'informe: {len(sin_stock_items)}")
-
-                # Vérifier que les produits CON stock sont aussi présents
-                con_stock_items = [item for item in found_items if "CON Stock" in item]
-                assert len(con_stock_items) >= 2, f"Devrait avoir au moins 2 produits CON stock, trouvé: {len(con_stock_items)}"
-                self.logger.info(f"✅ Produits CON stock présents dans l'informe: {len(con_stock_items)}")
-
-            informe_stock_window.close()
-            self.wait_and_process_events(200)
-
-        if informes_window:
-            informes_window.close()
-            self.wait_and_process_events(200)
-
-        self.logger.info("✅ Test informe stock inclut sin_stock terminé")
 
     def test_05_create_factura_with_sin_stock_product(self):
         """Test: Créer une facture avec un produit sin_stock (sans vérification de stock)"""

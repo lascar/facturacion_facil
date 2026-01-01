@@ -53,10 +53,15 @@ class TestStockMinimoBehaviour:
         WHEN je crée un stock pour ce produit sans spécifier stock_minimo
         THEN le stock_minimo doit être 0 par défaut
         """
+        # Générer un identifiant unique
+        import time
+        import random
+        unique_id = int(time.time() * 1000) % 100000 + random.randint(1, 1000)
+
         # Créer un produit (le stock est créé automatiquement)
         producto_id = self.db.add_product({
-            'nombre': 'Producto Test',
-            'referencia': 'TEST-001',
+            'nombre': f'Producto Test {unique_id}',
+            'referencia': f'TEST-{unique_id}',
             'precio': 10.0,
             'categoria': 'Test'
         })
@@ -76,10 +81,15 @@ class TestStockMinimoBehaviour:
         WHEN je génère un informe de stock
         THEN l'informe doit inclure le stock_minimo pour chaque produit
         """
+        # Générer un identifiant unique
+        import time
+        import random
+        unique_id = int(time.time() * 1000) % 100000 + random.randint(1, 1000)
+
         # Créer un produit (le stock est créé automatiquement)
         producto_id = self.db.add_product({
-            'nombre': 'Producto Test',
-            'referencia': 'TEST-001',
+            'nombre': f'Producto Test {unique_id}',
+            'referencia': f'TEST-{unique_id}',
             'precio': 10.0,
             'categoria': 'Test'
         })
@@ -101,7 +111,9 @@ class TestStockMinimoBehaviour:
         assert 'productos' in informe
         assert len(informe['productos']) > 0
 
-        producto = informe['productos'][0]
+        # Trouver notre produit créé
+        producto = next((p for p in informe['productos'] if p['referencia'] == f'TEST-{unique_id}'), None)
+        assert producto is not None, f"Produit TEST-{unique_id} non trouvé dans l'informe"
         assert 'stock_minimo' in producto, "Le stock_minimo doit être inclus dans l'informe"
         assert producto['stock_minimo'] == 10, "Le stock_minimo doit être 10"
     
@@ -111,11 +123,16 @@ class TestStockMinimoBehaviour:
         WHEN je génère un informe de stock
         THEN chaque produit doit avoir son stock_minimo correct
         """
+        # Générer un identifiant unique
+        import time
+        import random
+        unique_id = int(time.time() * 1000) % 100000 + random.randint(1, 1000)
+
         # Créer plusieurs produits
         productos_data = [
-            {'nombre': 'Producto 1', 'referencia': 'P1', 'precio': 10.0, 'stock': 5, 'minimo': 10},
-            {'nombre': 'Producto 2', 'referencia': 'P2', 'precio': 20.0, 'stock': 15, 'minimo': 5},
-            {'nombre': 'Producto 3', 'referencia': 'P3', 'precio': 30.0, 'stock': 0, 'minimo': 20},
+            {'nombre': f'Producto 1 {unique_id}', 'referencia': f'P1-{unique_id}', 'precio': 10.0, 'stock': 5, 'minimo': 10},
+            {'nombre': f'Producto 2 {unique_id}', 'referencia': f'P2-{unique_id}', 'precio': 20.0, 'stock': 15, 'minimo': 5},
+            {'nombre': f'Producto 3 {unique_id}', 'referencia': f'P3-{unique_id}', 'precio': 30.0, 'stock': 0, 'minimo': 20},
         ]
 
         for data in productos_data:
@@ -140,11 +157,17 @@ class TestStockMinimoBehaviour:
         informe = self.informes_service.get_informe_stock()
 
         # Vérifier que tous les produits ont leur stock_minimo correct
-        assert len(informe['productos']) == 3
+        # Filtrer seulement nos produits créés dans ce test
+        productos_test = [p for p in informe['productos'] if p.get('referencia') and str(unique_id) in p['referencia']]
+        assert len(productos_test) == 3, f"Il doit y avoir 3 produits de test, trouvé {len(productos_test)}"
 
-        for i, producto in enumerate(informe['productos']):
-            expected_minimo = productos_data[i]['minimo']
+        # Trier par référence pour avoir un ordre prévisible
+        productos_test.sort(key=lambda p: p['referencia'])
+        productos_data_sorted = sorted(productos_data, key=lambda d: d['referencia'])
+
+        for i, producto in enumerate(productos_test):
+            expected_minimo = productos_data_sorted[i]['minimo']
             assert producto['stock_minimo'] == expected_minimo, \
                 f"Le stock_minimo de {producto['nombre']} doit être {expected_minimo}"
-            assert producto['stock_actual'] == productos_data[i]['stock'], \
-                f"Le stock_actual de {producto['nombre']} doit être {productos_data[i]['stock']}"
+            assert producto['stock_actual'] == productos_data_sorted[i]['stock'], \
+                f"Le stock_actual de {producto['nombre']} doit être {productos_data_sorted[i]['stock']}"

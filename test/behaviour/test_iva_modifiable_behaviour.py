@@ -16,7 +16,7 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
     """Tests de comportement pour l'IVA modifiable dans les factures"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()
@@ -55,36 +55,40 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
     
     def setup_test_data(self):
         """Créer des données de test avec produits ayant différents IVA"""
+        import time
+        # Utiliser un timestamp pour garantir l'unicité des références
+        timestamp = int(time.time() * 1000) % 100000  # Garder seulement les 5 derniers chiffres
+
         # Créer un client de test
-        client_data = TestDataFactory.create_client_data(
-            nombre="Cliente Test IVA",
-            nif="12345678A"
-        )
+        client_data = TestDataFactory.create_client_data(index=1)
+        # Personnaliser le nom pour ce test
+        client_data['nombre'] = f"Cliente Test IVA {timestamp}"
+        client_data['nif'] = f"IVA{timestamp:05d}"
         self.test_client_id = self.database.add_client(client_data)
-        
+
         # Créer des produits avec différents IVA
         # Produit 1: IVA 4% (livres)
-        product1 = TestDataFactory.create_product_data(
-            nombre="Libro Test",
-            precio=10.0,
-            iva_recomendado=4.0
-        )
+        product1 = TestDataFactory.create_product_data(index=101)
+        product1['nombre'] = f"Libro Test {timestamp}"
+        product1['referencia'] = f"LIB{timestamp:05d}"
+        product1['precio_venta'] = 10.0
+        product1['iva_recomendado'] = 4.0
         self.product1_id = self.database.add_product(product1)
-        
+
         # Produit 2: IVA 10% (aliments)
-        product2 = TestDataFactory.create_product_data(
-            nombre="Alimento Test",
-            precio=20.0,
-            iva_recomendado=10.0
-        )
+        product2 = TestDataFactory.create_product_data(index=102)
+        product2['nombre'] = f"Alimento Test {timestamp}"
+        product2['referencia'] = f"ALI{timestamp:05d}"
+        product2['precio_venta'] = 20.0
+        product2['iva_recomendado'] = 10.0
         self.product2_id = self.database.add_product(product2)
-        
+
         # Produit 3: IVA 21% (standard)
-        product3 = TestDataFactory.create_product_data(
-            nombre="Producto Test",
-            precio=30.0,
-            iva_recomendado=21.0
-        )
+        product3 = TestDataFactory.create_product_data(index=103)
+        product3['nombre'] = f"Producto Test {timestamp}"
+        product3['referencia'] = f"PRO{timestamp:05d}"
+        product3['precio_venta'] = 30.0
+        product3['iva_recomendado'] = 21.0
         self.product3_id = self.database.add_product(product3)
     
     @pytest.mark.timeout(20)
@@ -330,7 +334,14 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
 
         # Cliquer sur Nueva Factura
         new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
-        self.automation.click_button_safe(new_btn, wait_after=0.2)
+        self.automation.click_button_safe(new_btn, wait_after=0.3)
+
+        # Attendre que l'interface se mette à jour et que new_factura_inline() termine
+        self.wait_and_process_events(500)
+
+        # Récupérer le numéro de facture généré automatiquement
+        numero_factura = self.facturas_window.numero_edit.text()
+        self.logger.info(f"Numéro de facture généré automatiquement: {numero_factura}")
 
         # Sélectionner un client
         if hasattr(self.facturas_window, 'cliente_autocomplete'):
@@ -369,34 +380,53 @@ class TestIVAModifiableBehaviour(BaseBehaviourTest):
 
                 self.logger.info(f"Avant sauvegarde - IVA: {iva_before}, Total: {total_before}")
 
+                # Compter les factures avant sauvegarde
+                facturas_before = self.database.get_all_invoices()
+                count_before = len(facturas_before)
+                self.logger.info(f"Nombre de factures avant sauvegarde: {count_before}")
+
                 # Sauvegarder la facture
                 save_btn = self.automation.find_button_by_text(self.facturas_window, "Guardar")
                 if save_btn:
-                    self.automation.click_button_safe(save_btn, wait_after=0.3)
+                    self.logger.info(f"Bouton Guardar trouvé - Enabled: {save_btn.isEnabled()}, Visible: {save_btn.isVisible()}")
+                    self.automation.click_button_safe(save_btn, wait_after=0.5)
+                else:
+                    self.logger.error("Bouton Guardar non trouvé!")
 
-                    # Obtenir l'ID de la facture créée
-                    facturas = self.database.get_all_invoices()
-                    if facturas:
-                        factura_id = facturas[-1]['id']
-                        self.logger.info(f"Factura sauvegardée avec ID: {factura_id}")
+                    # Vérifier que la facture a été créée
+                    facturas_after = self.database.get_all_invoices()
+                    count_after = len(facturas_after)
+                    self.logger.info(f"Nombre de factures après sauvegarde: {count_after}")
 
-                        # Recharger la facture
-                        self.facturas_window.load_factura(factura_id)
-                        self.slow_mode_wait()
+                    assert count_after > count_before, f"La facture n'a pas été sauvegardée. Avant: {count_before}, Après: {count_after}"
 
-                        # Vérifier que l'IVA est correct après rechargement
-                        table_after = self.facturas_window.productos_table
-                        if table_after.rowCount() > 0:
-                            iva_after = table_after.item(0, 3).text()
-                            total_after = table_after.item(0, 4).text()
+                    # Trouver la facture qu'on vient de créer par son numéro
+                    factura_creee = None
+                    for f in facturas_after:
+                        if f.get('numero') == numero_factura:
+                            factura_creee = f
+                            break
 
-                            self.logger.info(f"Après rechargement - IVA: {iva_after}, Total: {total_after}")
+                    assert factura_creee is not None, f"Facture {numero_factura} non trouvée dans la base"
+                    self.logger.info(f"Factura trouvée avec ID: {factura_creee['id']}, Numéro: {factura_creee['numero']}")
 
-                            assert iva_after == iva_before, f"IVA différent après rechargement. Avant: {iva_before}, Après: {iva_after}"
-                            assert total_after == total_before, f"Total différent après rechargement. Avant: {total_before}, Après: {total_after}"
+                    # Recharger la facture
+                    self.facturas_window.load_factura_in_form(factura_creee)
+                    self.slow_mode_wait()
 
-                            self.take_screenshot("factura_reloaded_with_iva")
-                            self.logger.info("✅ Test sauvegarde/chargement avec IVA réussi")
+                    # Vérifier que l'IVA est correct après rechargement
+                    table_after = self.facturas_window.productos_table
+                    if table_after.rowCount() > 0:
+                        iva_after = table_after.item(0, 3).text()
+                        total_after = table_after.item(0, 4).text()
+
+                        self.logger.info(f"Après rechargement - IVA: {iva_after}, Total: {total_after}")
+
+                        assert iva_after == iva_before, f"IVA différent après rechargement. Avant: {iva_before}, Après: {iva_after}"
+                        assert total_after == total_before, f"Total différent après rechargement. Avant: {total_before}, Après: {total_after}"
+
+                        self.take_screenshot("factura_reloaded_with_iva")
+                        self.logger.info("✅ Test sauvegarde/chargement avec IVA réussi")
 
     @pytest.mark.timeout(25)
     def test_different_iva_rates_in_same_factura(self):

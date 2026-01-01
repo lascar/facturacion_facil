@@ -289,3 +289,31 @@ def screenshots_dir():
     screenshots_path = os.path.join("test", "behaviour", "screenshots")
     os.makedirs(screenshots_path, exist_ok=True)
     return screenshots_path
+
+@pytest.fixture
+def mock_messagebox(mocker):
+    """Mock pour PyQt5.QtWidgets.QMessageBox
+
+    Cette fixture permet de mocker les dialogues QMessageBox pour éviter
+    les blocages pendant les tests de comportement.
+
+    Usage:
+        def setup_test(self, app_instance, mock_messagebox):
+            mock_messagebox.question.return_value = mock_messagebox.Yes
+            mock_messagebox.information.return_value = mock_messagebox.Ok
+    """
+    return mocker.patch('PyQt5.QtWidgets.QMessageBox')
+
+@pytest.fixture
+def mock_filedialog(mocker):
+    """Mock pour PyQt5.QtWidgets.QFileDialog
+
+    Cette fixture permet de mocker les dialogues de sélection de fichiers
+    pour éviter les blocages pendant les tests de comportement.
+
+    Usage:
+        def setup_test(self, app_instance, mock_filedialog):
+            mock_filedialog.getSaveFileName.return_value = ('/tmp/test.pdf', 'PDF Files (*.pdf)')
+            mock_filedialog.getExistingDirectory.return_value = '/tmp'
+    """
+    return mocker.patch('PyQt5.QtWidgets.QFileDialog')

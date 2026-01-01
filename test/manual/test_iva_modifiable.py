@@ -1,114 +1,139 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Test pour vérifier que l'IVA est modifiable dans les factures"""
 
+import pytest
 import sys
+import os
+
+# Ajouter le répertoire parent au path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 from PyQt5.QtWidgets import QApplication
 from ui.facturas_pyqt5 import FacturasPyQt5Window
+from test.behaviour.base_behaviour_test import BaseBehaviourTest
 
-def test_iva_modifiable():
-    """Test de l'IVA modifiable dans factura"""
-    print('🧪 Test - IVA Recommandé Appliqué par Défaut\n')
-    print('=' * 70)
 
-    app = QApplication(sys.argv)
-    window = FacturasPyQt5Window()
+class TestIVAModifiable(BaseBehaviourTest):
+    """Tests pour vérifier que l'IVA est modifiable dans les factures"""
 
-    # Obtenir un produit
-    productos = window.producto_service.get_all_productos()
-    if not productos:
-        print('❌ Aucun produit disponible pour le test')
-        return False
+    def setup_test(self, app_instance):
+        """Configuration du test avec l'instance de l'application"""
+        self.app = app_instance['app']
+        self.database = app_instance['database']
+        self.main_window = app_instance['main_window']
+        self.init_base_attributes()
 
-    # Trouver un produit avec un IVA différent de 21%
-    producto_test = None
-    for p in productos:
-        iva = p.get('iva_recomendado', 21.0)
-        if iva != 21.0:
-            producto_test = p
-            break
+    def test_iva_modifiable(self, app_instance):
+        """Test de l'IVA modifiable dans factura"""
+        self.setup_test(app_instance)
 
-    # Si aucun produit avec IVA différent, utiliser le premier
-    if not producto_test:
-        producto_test = productos[0]
-        print('⚠️  Aucun produit avec IVA != 21%, utilisation du premier produit')
+        print('\n🧪 Test - IVA Recommandé Appliqué par Défaut\n')
+        print('=' * 70)
 
-    print(f'📦 Produit de test: {producto_test["nombre"]}')
-    print(f'   IVA recommandé: {producto_test.get("iva_recomendado", 21.0)}%')
-    print(f'   Prix: {producto_test.get("precio_venta", 0.0)}€')
+        # Créer la fenêtre de factures
+        window = FacturasPyQt5Window()
+        window.show()
+        self.app.processEvents()
 
-    # Simuler la sélection du produit
-    window.producto_autocomplete.set_product(producto_test)
-    window.cantidad_spin.setValue(2)
+        try:
+            # Obtenir un produit
+            productos = window.producto_service.get_all_productos()
+            assert productos, '❌ Aucun produit disponible pour le test'
 
-    # Ajouter le produit
-    window.add_product_to_invoice()
+            # Trouver un produit avec un IVA différent de 21%
+            producto_test = None
+            for p in productos:
+                iva = p.get('iva_recomendado', 21.0)
+                if iva != 21.0:
+                    producto_test = p
+                    break
 
-    # Vérifier que le produit a été ajouté
-    if window.productos_table.rowCount() == 0:
-        print('\n❌ ERREUR: Produit non ajouté à la table')
-        return False
+            # Si aucun produit avec IVA différent, utiliser le premier
+            if not producto_test:
+                producto_test = productos[0]
+                print('⚠️  Aucun produit avec IVA != 21%, utilisation du premier produit')
 
-    print(f'\n✅ Produit ajouté à la facture')
+            print(f'📦 Produit de test: {producto_test["nombre"]}')
+            print(f'   IVA recommandé: {producto_test.get("iva_recomendado", 21.0)}%')
+            print(f'   Prix: {producto_test.get("precio_venta", 0.0)}€')
 
-    # Vérifier les valeurs dans la table
-    row = 0
-    nombre = window.productos_table.item(row, 0).text()
-    cantidad = window.productos_table.item(row, 1).text()
-    precio = window.productos_table.item(row, 2).text()
-    iva = window.productos_table.item(row, 3).text()
-    total = window.productos_table.item(row, 4).text()
+            # Simuler la sélection du produit
+            window.producto_autocomplete.set_product(producto_test)
+            window.cantidad_spin.setValue(2)
+            self.app.processEvents()
 
-    print(f'\n📊 Valeurs dans la table:')
-    print(f'   Producto: {nombre}')
-    print(f'   Cantidad: {cantidad}')
-    print(f'   Precio Unit.: {precio}')
-    print(f'   IVA %: {iva}')
-    print(f'   Total: {total}')
+            # Ajouter le produit
+            window.add_product_to_invoice()
+            self.app.processEvents()
 
-    # Vérifier que l'IVA correspond à l'IVA recommandé
-    iva_value = float(iva.replace('%', '').strip())
-    iva_expected = producto_test.get('iva_recomendado', 21.0)
+            # Vérifier que le produit a été ajouté
+            assert window.productos_table.rowCount() > 0, '\n❌ ERREUR: Produit non ajouté à la table'
 
-    if abs(iva_value - iva_expected) < 0.1:
-        print(f'\n✅ IVA recommandé appliqué correctement: {iva_value}%')
-    else:
-        print(f'\n❌ ERREUR: IVA incorrect')
-        print(f'   Attendu: {iva_expected}%')
-        print(f'   Obtenu: {iva_value}%')
-        return False
+            print(f'\n✅ Produit ajouté à la facture')
 
-    # Vérifier que le total est calculé correctement
-    cantidad_val = int(cantidad)
-    precio_val = float(precio.replace('€', '').strip())
-    subtotal_calc = cantidad_val * precio_val
-    iva_calc = subtotal_calc * (iva_value / 100)
-    total_calc = subtotal_calc + iva_calc
-    total_val = float(total.replace('€', '').strip())
+            # Vérifier les valeurs dans la table
+            row = 0
+            nombre = window.productos_table.item(row, 0).text()
+            cantidad = window.productos_table.item(row, 1).text()
+            precio = window.productos_table.item(row, 2).text()
+            iva = window.productos_table.item(row, 3).text()
+            total = window.productos_table.item(row, 4).text()
 
-    if abs(total_val - total_calc) < 0.01:
-        print(f'✅ Total calculé correctement: {total_val:.2f}€')
-        print(f'   Subtotal: {subtotal_calc:.2f}€')
-        print(f'   IVA: {iva_calc:.2f}€')
-        print(f'   Total: {total_calc:.2f}€')
-    else:
-        print(f'❌ ERREUR: Total incorrect')
-        print(f'   Attendu: {total_calc:.2f}€')
-        print(f'   Obtenu: {total_val:.2f}€')
-        return False
+            print(f'\n📊 Valeurs dans la table:')
+            print(f'   Producto: {nombre}')
+            print(f'   Cantidad: {cantidad}')
+            print(f'   Precio Unit.: {precio}')
+            print(f'   IVA %: {iva}')
+            print(f'   Total: {total}')
 
-    print('\n' + '=' * 70)
-    print('🎉 TOUS LES TESTS RÉUSSIS')
-    print('=' * 70)
-    print('\n📋 Fonctionnalités validées:')
-    print('  1. ✅ IVA recommandé du produit appliqué par défaut')
-    print('  2. ✅ Colonne IVA % visible et remplie')
-    print('  3. ✅ Total calculé avec IVA individuel')
-    print('  4. ✅ Calculs corrects (quantité × prix + IVA)')
-    print('=' * 70)
-    
-    return True
+            # Vérifier que l'IVA correspond à l'IVA recommandé
+            iva_value = float(iva.replace('%', '').strip())
+            iva_expected = producto_test.get('iva_recomendado', 21.0)
+
+            assert abs(iva_value - iva_expected) < 0.1, (
+                f'\n❌ ERREUR: IVA incorrect\n'
+                f'   Attendu: {iva_expected}%\n'
+                f'   Obtenu: {iva_value}%'
+            )
+            print(f'\n✅ IVA recommandé appliqué correctement: {iva_value}%')
+
+            # Vérifier que le total est calculé correctement
+            cantidad_val = int(cantidad)
+            precio_val = float(precio.replace('€', '').strip())
+            subtotal_calc = cantidad_val * precio_val
+            iva_calc = subtotal_calc * (iva_value / 100)
+            total_calc = subtotal_calc + iva_calc
+            total_val = float(total.replace('€', '').strip())
+
+            assert abs(total_val - total_calc) < 0.01, (
+                f'❌ ERREUR: Total incorrect\n'
+                f'   Attendu: {total_calc:.2f}€\n'
+                f'   Obtenu: {total_val:.2f}€'
+            )
+
+            print(f'✅ Total calculé correctement: {total_val:.2f}€')
+            print(f'   Subtotal: {subtotal_calc:.2f}€')
+            print(f'   IVA: {iva_calc:.2f}€')
+            print(f'   Total: {total_calc:.2f}€')
+
+            print('\n' + '=' * 70)
+            print('🎉 TOUS LES TESTS RÉUSSIS')
+            print('=' * 70)
+            print('\n📋 Fonctionnalités validées:')
+            print('  1. ✅ IVA recommandé du produit appliqué par défaut')
+            print('  2. ✅ Colonne IVA % visible et remplie')
+            print('  3. ✅ Total calculé avec IVA individuel')
+            print('  4. ✅ Calculs corrects (quantité × prix + IVA)')
+            print('=' * 70)
+
+        finally:
+            # Fermer la fenêtre proprement
+            window.close()
+            self.app.processEvents()
+
 
 if __name__ == '__main__':
-    success = test_iva_modifiable()
-    sys.exit(0 if success else 1)
+    # Exécuter avec pytest
+    pytest.main([__file__, '-v', '-s'])
 

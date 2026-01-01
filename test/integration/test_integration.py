@@ -14,7 +14,7 @@ from database.database import Database
 class TestIntegrationWorkflows:
     """Tests d'intégration de workflows complets"""
     
-    def test_complete_product_lifecycle(self, temp_db):
+    def test_complete_product_lifecycle(self, integration_db):
         """Test du cycle de vie complet d'un produit"""
         # 1. Créer un produit
         producto = Producto(
@@ -35,7 +35,7 @@ class TestIntegrationWorkflows:
         assert stock_inicial == 0
         
         # 4. Ajouter du stock
-        temp_db.execute_query(
+        integration_db.execute_query(
             "UPDATE stock SET cantidad_disponible = ? WHERE producto_id = ?",
             (100, producto.id)
         )
@@ -68,7 +68,7 @@ class TestIntegrationWorkflows:
         stock_eliminado = Stock.get_by_product(producto.id)
         assert stock_eliminado == 0
     
-    def test_organization_setup_workflow(self, temp_db):
+    def test_organization_setup_workflow(self, integration_db):
         """Test du workflow de configuration d'organisation"""
         # 1. Vérifier qu'aucune organisation n'existe initialement
         org_inicial = Organizacion.get()
@@ -106,7 +106,7 @@ class TestIntegrationWorkflows:
         assert org_modificada.email == "contacto@miempresa.es"
         assert org_modificada.nombre == "Mi Empresa S.L."  # Inchangé
     
-    def test_inventory_management_workflow(self, temp_db):
+    def test_inventory_management_workflow(self, integration_db):
         """Test du workflow de gestion d'inventaire"""
         # 1. Créer plusieurs produits
         productos = []
@@ -123,7 +123,7 @@ class TestIntegrationWorkflows:
         # 2. Ajouter du stock initial à tous les produits
         for i, producto in enumerate(productos):
             stock_inicial = (i + 1) * 50  # 50, 100, 150, 200, 250
-            temp_db.execute_query(
+            integration_db.execute_query(
                 "UPDATE stock SET cantidad_disponible = ? WHERE producto_id = ?",
                 (stock_inicial, producto.id)
             )
@@ -157,7 +157,7 @@ class TestIntegrationWorkflows:
         stock_final = Stock.get_by_product(productos[0].id)
         assert stock_final == stock_avant - 100  # Les stocks négatifs sont autorisés
     
-    def test_database_transaction_workflow(self, temp_db):
+    def test_database_transaction_workflow(self, integration_db):
         """Test du workflow de transactions de base de données"""
         # 1. Créer un produit
         producto = Producto(
@@ -187,7 +187,7 @@ class TestIntegrationWorkflows:
                 iva_amount = subtotal_con_descuento * (iva_aplicado / 100)
                 total = subtotal_con_descuento + iva_amount
 
-                temp_db.execute_query(
+                integration_db.execute_query(
                     "INSERT INTO factura_items (factura_id, producto_id, cantidad, precio_unitario, iva_aplicado, descuento, subtotal, descuento_amount, iva_amount, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     (1, producto.id, cantidad, precio_unitario, iva_aplicado, descuento, subtotal_con_descuento, descuento_amount, iva_amount, total)
                 )
@@ -196,7 +196,7 @@ class TestIntegrationWorkflows:
             Stock.update_stock(producto.id, 6)  # Total vendu: 1+2+3 = 6
             
             # Créer la facture principale
-            temp_db.execute_query(
+            integration_db.execute_query(
                 "INSERT INTO facturas (numero_factura, fecha_factura, nombre_cliente, subtotal, total_iva, total_factura) VALUES (?, ?, ?, ?, ?, ?)",
                 ("2024-0001", "2024-01-01", "Cliente Test", 94.50, 19.85, 114.35)
             )
@@ -205,13 +205,13 @@ class TestIntegrationWorkflows:
             pytest.fail(f"Transaction failed: {e}")
         
         # 4. Vérifier que tout a été créé correctement
-        facturas = temp_db.execute_query("SELECT COUNT(*) FROM facturas")[0][0]
+        facturas = integration_db.execute_query("SELECT COUNT(*) FROM facturas")[0][0]
         assert facturas == 1
         
-        items = temp_db.execute_query("SELECT COUNT(*) FROM factura_items")[0][0]
+        items = integration_db.execute_query("SELECT COUNT(*) FROM factura_items")[0][0]
         assert items == 3
     
-    def test_error_handling_workflow(self, temp_db):
+    def test_error_handling_workflow(self, integration_db):
         """Test du workflow de gestion d'erreurs"""
         # 1. Essayer de créer un produit avec référence dupliquée
         producto1 = Producto(
@@ -257,7 +257,7 @@ class TestIntegrationWorkflows:
 class TestSystemIntegration:
     """Tests d'intégration système"""
     
-    def test_database_backup_restore_simulation(self, temp_db):
+    def test_database_backup_restore_simulation(self, integration_db):
         """Simulation de sauvegarde et restauration de base de données"""
         # 1. Créer des données de test
         org = Organizacion(
@@ -316,7 +316,7 @@ class TestSystemIntegration:
             assert original.precio == restaurado.precio
     
     @pytest.mark.slow
-    def test_stress_test_simulation(self, temp_db):
+    def test_stress_test_simulation(self, integration_db):
         """Simulation de test de stress"""
         import time
         

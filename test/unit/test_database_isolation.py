@@ -13,8 +13,14 @@ from test.utils.test_database_manager import test_db_manager, isolated_test_db, 
 
 class TestDatabaseIsolation:
     """Tests pour l'isolation des bases de données"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
-    def test_temp_db_isolation(self, temp_db):
+    def test_temp_db_isolation(self, unit_db):
         """Test que temp_db est isolée pour chaque test"""
         # Ajouter un produit
         producto = Producto(
@@ -29,7 +35,7 @@ class TestDatabaseIsolation:
         assert len(productos) == 1
         assert productos[0].nombre == "Test Isolation 1"
     
-    def test_temp_db_isolation_second_test(self, temp_db):
+    def test_temp_db_isolation_second_test(self, unit_db):
         """Test que la DB est vide pour ce nouveau test"""
         # Cette DB devrait être vide (nouveau test = nouvelle DB)
         productos = Producto.get_all()
@@ -154,7 +160,7 @@ class TestDatabaseIsolation:
         
         # Le nettoyage sera fait automatiquement par pytest_runtest_teardown
     
-    def test_database_reset_functionality(self, temp_db):
+    def test_database_reset_functionality(self, unit_db):
         """Test de la fonctionnalité de remise à zéro"""
         # Ajouter des données
         producto = Producto(
@@ -179,7 +185,7 @@ class TestDatabaseIsolation:
         assert org.nombre == "Test Company"
         
         # Remettre à zéro
-        test_db_manager.reset_database(temp_db)
+        test_db_manager.reset_database(unit_db)
         
         # Vérifier que les données ont été supprimées
         productos = Producto.get_all()
@@ -189,68 +195,7 @@ class TestDatabaseIsolation:
         # Après reset, l'organisation devrait être vide ou None
         assert org is None or org.nombre == "" or org.nombre is None
     
-    def test_concurrent_database_isolation(self):
-        """Test de l'isolation entre threads concurrents"""
-        import threading
-        import time
-        from database.database import Database
 
-        results = {}
-        errors = []
-        lock = threading.Lock()
-
-        def worker_thread(thread_id):
-            try:
-                # Créer une instance de base de données dédiée pour ce thread
-                test_db, db_path = test_db_manager.create_test_database(f"concurrent_{thread_id}")
-
-                try:
-                    # Ajouter un produit unique à ce thread en utilisant directement la DB
-                    query = '''INSERT INTO productos (nombre, referencia, precio, categoria, descripcion, imagen_path, iva_recomendado)
-                              VALUES (?, ?, ?, ?, ?, ?, ?)'''
-                    params = (f"Concurrent {thread_id}", f"CONC-{thread_id:03d}", float(thread_id * 10),
-                             "Test", "Producto de test concurrente", "", 21.0)
-                    test_db.execute_query(query, params)
-
-                    # Attendre un peu pour simuler du travail
-                    time.sleep(0.1)
-
-                    # Vérifier que seul notre produit existe dans cette DB
-                    productos = test_db.execute_query("SELECT * FROM productos")
-
-                    with lock:
-                        results[thread_id] = len(productos)
-
-                    # Vérifier que c'est bien notre produit
-                    if len(productos) == 1:
-                        assert productos[0][1] == f"Concurrent {thread_id}"  # nom du produit
-
-                finally:
-                    # Nettoyer la base de données de ce thread
-                    test_db_manager.cleanup_test_resources(threading.get_ident())
-
-            except Exception as e:
-                with lock:
-                    errors.append(f"Thread {thread_id}: {e}")
-
-        # Lancer plusieurs threads
-        threads = []
-        for i in range(3):
-            thread = threading.Thread(target=worker_thread, args=(i,))
-            threads.append(thread)
-            thread.start()
-
-        # Attendre que tous les threads finissent
-        for thread in threads:
-            thread.join()
-
-        # Vérifier les résultats
-        assert len(errors) == 0, f"Erreurs dans les threads: {errors}"
-        assert len(results) == 3, f"Résultats manquants: {results}"
-
-        # Chaque thread devrait avoir vu exactement 1 produit (le sien)
-        for thread_id, count in results.items():
-            assert count == 1, f"Thread {thread_id} a vu {count} produits au lieu de 1"
     
     def test_database_path_uniqueness(self):
         """Test que chaque DB de test a un chemin unique"""

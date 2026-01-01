@@ -3,7 +3,7 @@
 Tests unitaires pour ClienteService
 """
 
-import unittest
+import pytest
 import tempfile
 import os
 from services.cliente_service import ClienteService
@@ -13,19 +13,24 @@ from utils.exceptions import (
 )
 
 
-class TestClienteService(unittest.TestCase):
+class TestClienteService:
     """Tests pour ClienteService"""
-    
-    def setUp(self):
+
+    @pytest.fixture(autouse=True)
+    def setup(self, unit_db):
         """Préparer les tests"""
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        self.temp_db.close()
-        self.service = ClienteService(self.temp_db.name)
-    
-    def tearDown(self):
-        """Nettoyer après les tests"""
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
+        # Désactiver temporairement TEST_DATABASE_PATH
+        old_test_db_path = os.environ.get('TEST_DATABASE_PATH')
+        os.environ.pop('TEST_DATABASE_PATH', None)
+
+        self.service = ClienteService(unit_db.db_path)
+
+        # Restaurer TEST_DATABASE_PATH
+        if old_test_db_path:
+            os.environ['TEST_DATABASE_PATH'] = old_test_db_path
+
+        yield
+        # Le nettoyage est géré par la fixture unit_db
     
     def test_create_cliente_success(self):
         """Test création d'un client avec succès"""
@@ -38,8 +43,8 @@ class TestClienteService(unittest.TestCase):
         }
         
         cliente_id = self.service.create_cliente(cliente_data)
-        self.assertIsNotNone(cliente_id)
-        self.assertGreater(cliente_id, 0)
+        assert cliente_id is not None
+        assert cliente_id > 0
     
     def test_create_cliente_missing_nombre(self):
         """Test création d'un client sans nom"""
@@ -47,7 +52,7 @@ class TestClienteService(unittest.TestCase):
             'email': 'test@example.com'
         }
         
-        with self.assertRaises(ClientValidationError):
+        with pytest.raises(ClientValidationError):
             self.service.create_cliente(cliente_data)
     
     def test_create_cliente_invalid_email(self):
@@ -57,7 +62,7 @@ class TestClienteService(unittest.TestCase):
             'email': 'invalid-email'  # Sans @
         }
         
-        with self.assertRaises(ClientValidationError):
+        with pytest.raises(ClientValidationError):
             self.service.create_cliente(cliente_data)
     
     def test_get_all_clientes(self):
@@ -70,8 +75,8 @@ class TestClienteService(unittest.TestCase):
             })
         
         clientes = self.service.get_all_clientes()
-        self.assertIsInstance(clientes, list)
-        self.assertGreaterEqual(len(clientes), 3)
+        assert isinstance(clientes, list)
+        assert len(clientes) >= 3
     
     def test_get_cliente_by_id_success(self):
         """Test récupération d'un client par ID"""
@@ -83,17 +88,17 @@ class TestClienteService(unittest.TestCase):
         
         # Récupérer le client
         cliente = self.service.get_cliente_by_id(cliente_id)
-        self.assertIsNotNone(cliente)
-        self.assertEqual(cliente['nombre'], 'Cliente Test')
+        assert cliente is not None
+        assert cliente['nombre'] == 'Cliente Test'
     
     def test_get_cliente_by_id_not_found(self):
         """Test récupération d'un client inexistant"""
-        with self.assertRaises(ClientNotFoundError):
+        with pytest.raises(ClientNotFoundError):
             self.service.get_cliente_by_id(99999)
     
     def test_get_cliente_by_id_invalid_id(self):
         """Test récupération avec ID invalide"""
-        with self.assertRaises(ClientValidationError):
+        with pytest.raises(ClientValidationError):
             self.service.get_cliente_by_id(-1)
     
     def test_update_cliente_success(self):
@@ -111,15 +116,15 @@ class TestClienteService(unittest.TestCase):
             'email': 'actualizado@example.com'
         })
         
-        self.assertTrue(success)
+        assert success
         
         # Vérifier la mise à jour
         cliente = self.service.get_cliente_by_id(cliente_id)
-        self.assertEqual(cliente['nombre'], 'Cliente Actualizado')
+        assert cliente['nombre'] == 'Cliente Actualizado'
     
     def test_update_cliente_missing_id(self):
         """Test mise à jour sans ID"""
-        with self.assertRaises(ClientValidationError):
+        with pytest.raises(ClientValidationError):
             self.service.update_cliente({
                 'nombre': 'Cliente Test'
             })
@@ -134,15 +139,15 @@ class TestClienteService(unittest.TestCase):
         
         # Supprimer
         success = self.service.delete_cliente(cliente_id)
-        self.assertTrue(success)
+        assert success
         
         # Vérifier la suppression
-        with self.assertRaises(ClientNotFoundError):
+        with pytest.raises(ClientNotFoundError):
             self.service.get_cliente_by_id(cliente_id)
 
     def test_update_cliente_not_found(self):
         """Test mise à jour d'un client inexistant"""
-        with self.assertRaises(ClientNotFoundError):
+        with pytest.raises(ClientNotFoundError):
             self.service.update_cliente({
                 'id': 99999,
                 'nombre': 'Cliente Test',
@@ -153,7 +158,7 @@ class TestClienteService(unittest.TestCase):
         """Test suppression d'un client inexistant - devrait retourner False"""
         # delete_client retourne False si le client n'existe pas
         success = self.service.delete_cliente(99999)
-        self.assertFalse(success)
+        assert not success
 
     def test_create_cliente_empty_email(self):
         """Test création d'un client avec email vide (devrait passer)"""
@@ -163,7 +168,7 @@ class TestClienteService(unittest.TestCase):
         }
 
         cliente_id = self.service.create_cliente(cliente_data)
-        self.assertIsNotNone(cliente_id)
+        assert cliente_id is not None
 
     def test_create_cliente_without_nif(self):
         """Test création d'un client sans NIF (NIF est optionnel)"""
@@ -176,12 +181,12 @@ class TestClienteService(unittest.TestCase):
         }
 
         cliente_id = self.service.create_cliente(cliente_data)
-        self.assertIsNotNone(cliente_id)
+        assert cliente_id is not None
 
         # Vérifier que le client a été créé sans NIF
         cliente = self.service.get_cliente_by_id(cliente_id)
-        self.assertEqual(cliente['nombre'], 'Cliente Sin NIF')
-        self.assertEqual(cliente.get('nif', ''), '')  # NIF devrait être vide
+        assert cliente['nombre'] == 'Cliente Sin NIF'
+        assert cliente.get('nif', '') == ''  # NIF devrait être vide
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
 Tests unitaires pour ProductoService
 """
 
-import unittest
+import pytest
 import tempfile
 import os
 from services.producto_service import ProductoService
@@ -13,20 +13,26 @@ from utils.exceptions import (
 )
 
 
-class TestProductoService(unittest.TestCase):
+class TestProductoService:
     """Tests pour ProductoService"""
     
-    def setUp(self):
+    @pytest.fixture(autouse=True)
+    def setup(self, unit_db):
         """Préparer les tests"""
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        self.temp_db.close()
-        self.service = ProductoService(self.temp_db.name)
-    
-    def tearDown(self):
-        """Nettoyer après les tests"""
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
-    
+        # Désactiver temporairement TEST_DATABASE_PATH
+        old_test_db_path = os.environ.get('TEST_DATABASE_PATH')
+        os.environ.pop('TEST_DATABASE_PATH', None)
+        
+        self.service = ProductoService(unit_db.db_path)
+        
+        # Restaurer TEST_DATABASE_PATH
+        if old_test_db_path:
+            os.environ['TEST_DATABASE_PATH'] = old_test_db_path
+        
+        yield
+        # Le nettoyage est géré par la fixture unit_db
+
+
     def test_create_producto_success(self):
         """Test création d'un produit avec succès"""
         producto_data = {
@@ -40,8 +46,8 @@ class TestProductoService(unittest.TestCase):
         }
         
         producto_id = self.service.create_producto(producto_data)
-        self.assertIsNotNone(producto_id)
-        self.assertGreater(producto_id, 0)
+        assert producto_id is not None
+        assert producto_id > 0
     
     def test_create_producto_missing_nombre(self):
         """Test création d'un produit sans nom"""
@@ -49,7 +55,7 @@ class TestProductoService(unittest.TestCase):
             'precio_venta': 10.50
         }
         
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.create_producto(producto_data)
     
     def test_create_producto_negative_price(self):
@@ -59,7 +65,7 @@ class TestProductoService(unittest.TestCase):
             'precio_venta': -10.50
         }
         
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.create_producto(producto_data)
     
     def test_create_producto_invalid_iva(self):
@@ -70,7 +76,7 @@ class TestProductoService(unittest.TestCase):
             'iva_recomendado': 150.0  # > 100
         }
         
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.create_producto(producto_data)
     
     def test_create_producto_negative_stock(self):
@@ -81,7 +87,7 @@ class TestProductoService(unittest.TestCase):
             'stock': -5
         }
         
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.create_producto(producto_data)
     
     def test_get_all_productos(self):
@@ -94,8 +100,8 @@ class TestProductoService(unittest.TestCase):
             })
         
         productos = self.service.get_all_productos()
-        self.assertIsInstance(productos, list)
-        self.assertGreaterEqual(len(productos), 3)
+        assert isinstance(productos, list)
+        assert len(productos) >= 3
     
     def test_get_producto_by_id_success(self):
         """Test récupération d'un produit par ID"""
@@ -107,17 +113,17 @@ class TestProductoService(unittest.TestCase):
         
         # Récupérer le produit
         producto = self.service.get_producto_by_id(producto_id)
-        self.assertIsNotNone(producto)
-        self.assertEqual(producto['nombre'], 'Producto Test')
+        assert producto is not None
+        assert producto['nombre'] == 'Producto Test'
     
     def test_get_producto_by_id_not_found(self):
         """Test récupération d'un produit inexistant"""
-        with self.assertRaises(ProductNotFoundError):
+        with pytest.raises(ProductNotFoundError):
             self.service.get_producto_by_id(99999)
     
     def test_get_producto_by_id_invalid_id(self):
         """Test récupération avec ID invalide"""
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.get_producto_by_id(-1)
     
     def test_update_producto_success(self):
@@ -135,15 +141,15 @@ class TestProductoService(unittest.TestCase):
             'precio_venta': 15.75
         })
         
-        self.assertTrue(success)
+        assert success
         
         # Vérifier la mise à jour
         producto = self.service.get_producto_by_id(producto_id)
-        self.assertEqual(producto['nombre'], 'Producto Actualizado')
+        assert producto['nombre'] == 'Producto Actualizado'
     
     def test_update_producto_missing_id(self):
         """Test mise à jour sans ID"""
-        with self.assertRaises(ProductValidationError):
+        with pytest.raises(ProductValidationError):
             self.service.update_producto({
                 'nombre': 'Producto Test'
             })
@@ -158,10 +164,10 @@ class TestProductoService(unittest.TestCase):
         
         # Supprimer
         success = self.service.delete_producto(producto_id)
-        self.assertTrue(success)
+        assert success
         
         # Vérifier la suppression
-        with self.assertRaises(ProductNotFoundError):
+        with pytest.raises(ProductNotFoundError):
             self.service.get_producto_by_id(producto_id)
 
     def test_update_producto_not_found(self):
@@ -172,13 +178,13 @@ class TestProductoService(unittest.TestCase):
             'nombre': 'Producto Test',
             'precio_venta': 10.50
         })
-        self.assertTrue(success)
+        assert success
 
     def test_delete_producto_not_found(self):
         """Test suppression d'un produit inexistant - devrait réussir sans erreur"""
         # delete_product ne lève pas d'exception si le produit n'existe pas
         success = self.service.delete_producto(99999)
-        self.assertTrue(success)
+        assert success
 
     def test_create_producto_zero_price(self):
         """Test création d'un produit avec prix zéro (devrait passer)"""
@@ -188,7 +194,7 @@ class TestProductoService(unittest.TestCase):
         }
 
         producto_id = self.service.create_producto(producto_data)
-        self.assertIsNotNone(producto_id)
+        assert producto_id is not None
 
 
 if __name__ == '__main__':

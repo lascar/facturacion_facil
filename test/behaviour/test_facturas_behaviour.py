@@ -13,7 +13,7 @@ class TestFacturasBehaviour(BaseBehaviourTest):
     """Tests de comportement pour la fenêtre Facturas"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()
@@ -46,16 +46,56 @@ class TestFacturasBehaviour(BaseBehaviourTest):
     
     def setup_test_data(self):
         """Créer des données de test nécessaires"""
-        # Créer des clients de test
-        clients_data = TestDataFactory.create_multiple_clients(2)
-        for client_data in clients_data:
-            self.database.add_client(client_data)
-        
-        # Créer des produits de test
-        products_data = TestDataFactory.create_multiple_products(3)
-        for product_data in products_data:
-            # add_product attend un dictionnaire et gère le stock automatiquement
-            self.database.add_product(product_data)
+        # Les fixtures de conftest.py créent déjà des produits et clients
+        # On vérifie juste qu'ils existent, sinon on les crée
+
+        existing_products = self.database.get_all_products()
+        existing_clients = self.database.get_all_clients()
+
+        # Log pour debug
+        self.logger.info(f"Produits existants: {len(existing_products) if existing_products else 0}")
+        self.logger.info(f"Clients existants: {len(existing_clients) if existing_clients else 0}")
+
+        # Les fixtures devraient avoir créé au moins 3 produits et 3 clients
+        # Si ce n'est pas le cas, on ne fait rien car c'est un problème de fixtures
+
+    def create_unique_test_data(self):
+        """Créer des données de test uniques pour éviter les conflits"""
+        import time
+        import random
+
+        # Générer un timestamp unique avec un random pour éviter les collisions
+        unique_id = int(time.time() * 1000) % 100000 + random.randint(1, 1000)
+
+        # Créer un client unique
+        client_data = {
+            'nombre': f'Cliente Test {unique_id}',
+            'nif': f'{unique_id:08d}X',
+            'direccion': f'Calle Test {unique_id}',
+            'telefono': f'600{unique_id:06d}',
+            'email': f'test{unique_id}@example.com'
+        }
+        client_id = self.database.add_client(client_data)
+
+        # Créer un produit unique
+        product_data = {
+            'nombre': f'Producto Test {unique_id}',
+            'referencia': f'REF-{unique_id}',
+            'precio_venta': 100.0,
+            'categoria': 'Test',
+            'descripcion': f'Producto de test {unique_id}',
+            'iva_recomendado': 21.0,
+            'sin_stock': 0
+        }
+        product_id = self.database.add_product(product_data)
+
+        return {
+            'client_id': client_id,
+            'client_data': client_data,
+            'product_id': product_id,
+            'product_data': product_data,
+            'unique_id': unique_id
+        }
     
     def test_facturas_window_startup(self):
         """Test du démarrage de la fenêtre Facturas"""
@@ -171,18 +211,17 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         # Créer une facture directement dans la base de données
         from database.database import db
 
-        # Préparer les données de test
-        # Utiliser index 10 pour éviter conflit avec setup_test_data() qui utilise 1, 2, 3
-        client_data = TestDataFactory.create_test_client(10)
-        product_data = TestDataFactory.create_test_product(10)
+        # Créer des données de test uniques
+        test_data = self.create_unique_test_data()
+        client_id = test_data['client_id']
+        product_id = test_data['product_id']
+        client_data = test_data['client_data']
+        unique_id = test_data['unique_id']
 
-        # Ajouter client et produit en base
-        client_id = self.database.add_client(client_data)
-        product_id = self.database.add_product(product_data)
-
-        # Créer une facture
+        # Créer une facture avec un numéro unique
+        factura_numero = f'TEST-{unique_id}'
         factura_data = {
-            'numero': 'TEST-001',
+            'numero': factura_numero,
             'fecha': '2025-01-01',
             'cliente': {
                 'id': client_id,
@@ -210,9 +249,9 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         assert factura_id is not None, "Échec de la sauvegarde de la facture"
 
         # Vérifier que la facture a été sauvegardée
-        factura_saved = db.get_invoice_by_number('TEST-001')
+        factura_saved = db.get_invoice_by_number(factura_numero)
         assert factura_saved is not None, "Facture non trouvée après sauvegarde"
-        assert factura_saved['numero'] == 'TEST-001', "Numéro de facture incorrect"
+        assert factura_saved['numero'] == factura_numero, "Numéro de facture incorrect"
 
         self.slow_mode_wait()
 
@@ -258,8 +297,43 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         # Mock du dialogue de sauvegarde de fichier pour éviter le blocage
         mock_filedialog.getSaveFileName.return_value = ('/tmp/test_factura.pdf', 'PDF Files (*.pdf)')
 
-        # Créer et sauvegarder une facture
-        self.test_save_factura()
+        # Créer des données de test uniques
+        from database.database import db
+        test_data = self.create_unique_test_data()
+        client_id = test_data['client_id']
+        product_id = test_data['product_id']
+        client_data = test_data['client_data']
+        unique_id = test_data['unique_id']
+
+        # Créer une facture avec un numéro unique
+        factura_numero = f'TEST-PDF-{unique_id}'
+        factura_data = {
+            'numero': factura_numero,
+            'fecha': '2025-01-01',
+            'cliente': {
+                'id': client_id,
+                'nombre': client_data['nombre'],
+                'nif': client_data.get('nif', ''),
+                'direccion': client_data.get('direccion', '')
+            },
+            'subtotal': 100.0,
+            'iva_total': 21.0,
+            'total': 121.0,
+            'estado': 'Borrador',
+            'lineas': [
+                {
+                    'producto_id': product_id,
+                    'cantidad': 1,
+                    'precio_unitario': 100.0,
+                    'iva_aplicado': 21.0,
+                    'descuento': 0.0
+                }
+            ]
+        }
+
+        # Sauvegarder la facture
+        factura_id = db.add_invoice(factura_data)
+        assert factura_id is not None, "Échec de la sauvegarde de la facture"
 
         # Chercher le bouton de génération PDF
         pdf_btn = self.automation.find_button_by_text(self.facturas_window, "PDF")

@@ -14,24 +14,14 @@ from common.validators import FormValidator, CalculationHelper
 class TestFacturasIntegration:
     """Tests de integración para facturas"""
     
-    @pytest.fixture
-    def temp_db(self):
-        """Crea una base de datos temporal para tests"""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        temp_file.close()
-        
-        temp_db = Database(temp_file.name)
-        
-        yield temp_db
-        
-        os.unlink(temp_file.name)
+    # Utiliser integration_db du conftest.py au lieu de temp_db local
     
     @pytest.fixture
-    def sample_productos(self, temp_db):
+    def sample_productos(self, integration_db):
         """Crea productos de ejemplo"""
         # Usar la base de datos temporal
         original_db = Producto.__dict__.get('db')
-        Producto.db = temp_db
+        Producto.db = integration_db
         
         productos = []
         for i in range(3):
@@ -52,10 +42,10 @@ class TestFacturasIntegration:
             Producto.db = original_db
     
     @pytest.fixture
-    def sample_stock(self, temp_db, sample_productos):
+    def sample_stock(self, integration_db, sample_productos):
         """Crea stock de ejemplo"""
         original_db = Stock.__dict__.get('db')
-        Stock.db = temp_db
+        Stock.db = integration_db
         
         stocks = []
         for producto in sample_productos:
@@ -71,13 +61,13 @@ class TestFacturasIntegration:
         if original_db:
             Stock.db = original_db
     
-    def test_complete_factura_workflow(self, temp_db, sample_productos, sample_stock):
+    def test_complete_factura_workflow(self, integration_db, sample_productos, sample_stock):
         """Test flujo completo de creación de factura"""
         # Configurar base de datos temporal
         original_db_factura = Factura.__dict__.get('db')
         original_db_item = FacturaItem.__dict__.get('db')
-        Factura.db = temp_db
-        FacturaItem.db = temp_db
+        Factura.db = integration_db
+        FacturaItem.db = integration_db
         
         try:
             # 1. Crear nueva factura
@@ -234,15 +224,15 @@ class TestFacturasIntegration:
         
         assert len(errors) == 6, f"Debería haber 6 errores, encontrados: {len(errors)}"
     
-    def test_stock_update_after_factura(self, temp_db, sample_productos, sample_stock):
+    def test_stock_update_after_factura(self, integration_db, sample_productos, sample_stock):
         """Test actualización de stock después de crear factura"""
         original_db_stock = Stock.__dict__.get('db')
         original_db_factura = Factura.__dict__.get('db')
         original_db_item = FacturaItem.__dict__.get('db')
 
-        Stock.db = temp_db
-        Factura.db = temp_db
-        FacturaItem.db = temp_db
+        Stock.db = integration_db
+        Factura.db = integration_db
+        FacturaItem.db = integration_db
 
         try:
             # Verificar stock inicial (get_by_product devuelve solo la cantidad)
@@ -288,10 +278,10 @@ class TestFacturasIntegration:
             if original_db_item:
                 FacturaItem.db = original_db_item
     
-    def test_factura_number_generation(self, temp_db):
+    def test_factura_number_generation(self, integration_db):
         """Test generación automática de números de factura"""
         original_db = Factura.__dict__.get('db')
-        Factura.db = temp_db
+        Factura.db = integration_db
         
         try:
             # Primera factura
@@ -350,12 +340,12 @@ class TestFacturasIntegration:
                 f"Error en cálculo: {precio}x{cantidad} con {iva}% IVA y {descuento}% desc. " \
                 f"Esperado: {expected}, Obtenido: {result['total']}"
     
-    def test_factura_crud_operations(self, temp_db, sample_productos):
+    def test_factura_crud_operations(self, integration_db, sample_productos):
         """Test operaciones CRUD completas en facturas"""
         original_db_factura = Factura.__dict__.get('db')
         original_db_item = FacturaItem.__dict__.get('db')
-        Factura.db = temp_db
-        FacturaItem.db = temp_db
+        Factura.db = integration_db
+        FacturaItem.db = integration_db
         
         try:
             # CREATE

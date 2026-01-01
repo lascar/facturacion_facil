@@ -24,15 +24,15 @@ class DatabaseManager:
     def create_test_database(self, test_name=None):
         """
         Créer une base de données de test isolée
-        
+
         Args:
             test_name (str): Nom du test (optionnel, pour debugging)
-            
+
         Returns:
             tuple: (Database instance, db_path)
         """
         from database.database import Database
-        
+
         with self._lock:
             # Créer un fichier temporaire unique
             db_fd, db_path = tempfile.mkstemp(
@@ -40,18 +40,43 @@ class DatabaseManager:
                 prefix=f'test_{test_name}_' if test_name else 'test_'
             )
             os.close(db_fd)
-            
+
             # Créer l'instance de base de données
             test_db = Database(db_path)
-            
+
+            # Réinitialiser les séquences SQLite pour garantir que les IDs commencent à 1
+            self._reset_sqlite_sequences(test_db)
+
             # Enregistrer pour nettoyage
             thread_id = threading.get_ident()
             if thread_id not in self._test_databases:
                 self._test_databases[thread_id] = []
             self._test_databases[thread_id].append(db_path)
-            
+
             self.logger.debug(f"Base de données de test créée: {os.path.basename(db_path)}")
             return test_db, db_path
+
+    def _reset_sqlite_sequences(self, test_db):
+        """
+        Réinitialiser les séquences SQLite pour que les IDs auto-incrémentés commencent à 1
+
+        Args:
+            test_db (Database): Instance de base de données
+        """
+        try:
+            conn = test_db.get_connection()
+            cursor = conn.cursor()
+
+            # Supprimer toutes les entrées de la table sqlite_sequence
+            # Cette table stocke les valeurs actuelles des auto-incréments
+            cursor.execute("DELETE FROM sqlite_sequence")
+
+            conn.commit()
+            conn.close()
+
+            self.logger.debug("Séquences SQLite réinitialisées")
+        except Exception as e:
+            self.logger.warning(f"Erreur lors de la réinitialisation des séquences: {e}")
     
     def create_test_directory(self, test_name=None):
         """

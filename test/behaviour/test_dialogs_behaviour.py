@@ -24,7 +24,7 @@ class TestDialogsBehaviour(BaseBehaviourTest):
     """Tests de comportement pour les dialogues selon spécifications"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Configuration automatique pour chaque test"""
         self.init_base_attributes()
 

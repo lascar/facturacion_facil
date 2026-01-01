@@ -32,8 +32,27 @@ def temp_db(request):
 
     yield test_db
 
-    # Nettoyage automatique géré par le manager
-    # (le manager nettoie automatiquement à la fin du thread)
+    # Nettoyage explicite après chaque test
+    try:
+        # Fermer toutes les connexions
+        if hasattr(test_db, 'close'):
+            test_db.close()
+    except:
+        pass
+
+    try:
+        # Supprimer le fichier de base de données et les fichiers WAL
+        if os.path.exists(db_path):
+            os.unlink(db_path)
+        # Supprimer les fichiers WAL et SHM de SQLite
+        wal_path = db_path + '-wal'
+        shm_path = db_path + '-shm'
+        if os.path.exists(wal_path):
+            os.unlink(wal_path)
+        if os.path.exists(shm_path):
+            os.unlink(shm_path)
+    except Exception as e:
+        pass
 
 @pytest.fixture
 def sample_producto_data(faker_instance):
@@ -87,9 +106,9 @@ def productos_list(faker_instance):
         productos.append(Producto(**producto_data))
     return productos
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def setup_test_environment(monkeypatch, temp_db, request):
-    """Configurar entorno de test automáticamente"""
+    """Configurar entorno de test - Utiliser explicitement avec @pytest.mark.usefixtures"""
     # Obtenir le nom du test
     test_name = request.node.name if hasattr(request, 'node') else 'unknown'
 
@@ -104,6 +123,20 @@ def setup_test_environment(monkeypatch, temp_db, request):
     yield
 
     # Le nettoyage est géré automatiquement par le manager
+
+
+@pytest.fixture
+def patched_models_db(monkeypatch, unit_db):
+    """Fixture pour patcher l'instance globale db dans les modèles"""
+    # Importer les modèles
+    try:
+        from database import models
+        # Patcher l'instance globale db
+        monkeypatch.setattr(models, 'db', unit_db)
+    except:
+        pass
+
+    yield unit_db
 
 @pytest.fixture
 def isolated_db(request):

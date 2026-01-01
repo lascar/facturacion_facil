@@ -3,7 +3,7 @@
 Tests unitaires pour FacturaService
 """
 
-import unittest
+import pytest
 import tempfile
 import os
 from datetime import datetime
@@ -16,17 +16,24 @@ from utils.exceptions import (
 )
 
 
-class TestFacturaService(unittest.TestCase):
+class TestFacturaService:
     """Tests pour FacturaService"""
-    
-    def setUp(self):
+
+    @pytest.fixture(autouse=True)
+    def setup(self, unit_db):
         """Préparer les tests"""
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        self.temp_db.close()
-        self.service = FacturaService(self.temp_db.name)
-        self.producto_service = ProductoService(self.temp_db.name)
-        self.cliente_service = ClienteService(self.temp_db.name)
-        
+        # Désactiver temporairement TEST_DATABASE_PATH
+        old_test_db_path = os.environ.get('TEST_DATABASE_PATH')
+        os.environ.pop('TEST_DATABASE_PATH', None)
+
+        self.service = FacturaService(unit_db.db_path)
+        self.producto_service = ProductoService(unit_db.db_path)
+        self.cliente_service = ClienteService(unit_db.db_path)
+
+        # Restaurer TEST_DATABASE_PATH
+        if old_test_db_path:
+            os.environ['TEST_DATABASE_PATH'] = old_test_db_path
+
         # Créer un client de test
         self.cliente_id = self.cliente_service.create_cliente({
             'nombre': 'Cliente Test',
@@ -34,7 +41,7 @@ class TestFacturaService(unittest.TestCase):
             'email': 'test@example.com',
             'direccion': 'Calle Test 123'
         })
-        
+
         # Créer un produit de test
         self.producto_id = self.producto_service.create_producto({
             'nombre': 'Producto Test',
@@ -42,11 +49,9 @@ class TestFacturaService(unittest.TestCase):
             'iva_recomendado': 21.0,
             'stock': 100
         })
-    
-    def tearDown(self):
-        """Nettoyer après les tests"""
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
+
+        yield
+        # Le nettoyage est géré par la fixture unit_db
     
     def test_create_factura_success(self):
         """Test création d'une facture avec succès"""
@@ -74,8 +79,8 @@ class TestFacturaService(unittest.TestCase):
         }
         
         factura_id = self.service.create_factura(factura_data)
-        self.assertIsNotNone(factura_id)
-        self.assertGreater(factura_id, 0)
+        assert factura_id is not None
+        assert factura_id > 0
     
     def test_create_factura_missing_numero(self):
         """Test création d'une facture sans numéro"""
@@ -84,7 +89,7 @@ class TestFacturaService(unittest.TestCase):
             'cliente': {'nombre': 'Cliente Test'}
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_create_factura_missing_fecha(self):
@@ -94,7 +99,7 @@ class TestFacturaService(unittest.TestCase):
             'cliente': {'nombre': 'Cliente Test'}
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_create_factura_invalid_cliente(self):
@@ -105,7 +110,7 @@ class TestFacturaService(unittest.TestCase):
             'cliente': {}  # Sans nom
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_create_factura_negative_total(self):
@@ -117,7 +122,7 @@ class TestFacturaService(unittest.TestCase):
             'total': -10.50
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_create_factura_invalid_linea_missing_producto(self):
@@ -134,7 +139,7 @@ class TestFacturaService(unittest.TestCase):
             ]
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_create_factura_invalid_linea_zero_cantidad(self):
@@ -152,15 +157,15 @@ class TestFacturaService(unittest.TestCase):
             ]
         }
         
-        with self.assertRaises(InvoiceValidationError):
+        with pytest.raises(InvoiceValidationError):
             self.service.create_factura(factura_data)
     
     def test_calculate_totals_empty(self):
         """Test calcul des totaux avec liste vide"""
         totals = self.service.calculate_totals([])
-        self.assertEqual(totals['subtotal'], 0.0)
-        self.assertEqual(totals['iva_total'], 0.0)
-        self.assertEqual(totals['total'], 0.0)
+        assert totals['subtotal'] == 0.0
+        assert totals['iva_total'] == 0.0
+        assert totals['total'] == 0.0
     
     def test_calculate_totals_success(self):
         """Test calcul des totaux avec succès"""
@@ -178,14 +183,14 @@ class TestFacturaService(unittest.TestCase):
         ]
         
         totals = self.service.calculate_totals(lineas)
-        self.assertEqual(totals['subtotal'], 25.0)  # 20 + 5
-        self.assertEqual(totals['iva_total'], 4.7)  # 4.2 + 0.5
-        self.assertEqual(totals['total'], 29.7)  # 25 + 4.7
+        assert totals['subtotal'] == 25.0  # 20 + 5
+        assert totals['iva_total'] == 4.7  # 4.2 + 0.5
+        assert totals['total'] == 29.7  # 25 + 4.7
 
     def test_generate_factura_number_first(self):
         """Test génération du premier numéro de facture"""
         numero = self.service.generate_factura_number()
-        self.assertEqual(numero, 'FAC-0001')
+        assert numero == 'FAC-0001'
 
     def test_generate_factura_number_increment(self):
         """Test incrémentation du numéro de facture"""
@@ -207,7 +212,7 @@ class TestFacturaService(unittest.TestCase):
 
         # Générer le prochain numéro
         numero = self.service.generate_factura_number()
-        self.assertEqual(numero, 'FAC-0002')
+        assert numero == 'FAC-0002'
 
     def test_get_all_facturas(self):
         """Test récupération de toutes les factures"""
@@ -229,8 +234,8 @@ class TestFacturaService(unittest.TestCase):
             })
 
         facturas = self.service.get_all_facturas()
-        self.assertIsInstance(facturas, list)
-        self.assertGreaterEqual(len(facturas), 3)
+        assert isinstance(facturas, list)
+        assert len(facturas) >= 3
 
     def test_get_factura_by_id_success(self):
         """Test récupération d'une facture par ID"""
@@ -252,12 +257,12 @@ class TestFacturaService(unittest.TestCase):
 
         # Récupérer la facture
         factura = self.service.get_factura_by_id(factura_id)
-        self.assertIsNotNone(factura)
-        self.assertEqual(factura['numero'], 'FAC-0001')
+        assert factura is not None
+        assert factura['numero'] == 'FAC-0001'
 
     def test_get_factura_by_id_not_found(self):
         """Test récupération d'une facture inexistante"""
-        with self.assertRaises(InvoiceNotFoundError):
+        with pytest.raises(InvoiceNotFoundError):
             self.service.get_factura_by_id(99999)
 
     def test_delete_factura_success(self):
@@ -280,10 +285,10 @@ class TestFacturaService(unittest.TestCase):
 
         # Supprimer
         success = self.service.delete_factura(factura_id)
-        self.assertTrue(success)
+        assert success
 
         # Vérifier la suppression
-        with self.assertRaises(InvoiceNotFoundError):
+        with pytest.raises(InvoiceNotFoundError):
             self.service.get_factura_by_id(factura_id)
 
     def test_update_factura_without_id(self):
@@ -300,10 +305,10 @@ class TestFacturaService(unittest.TestCase):
             'lineas': []
         }
 
-        with self.assertRaises(InvoiceValidationError) as context:
+        with pytest.raises(InvoiceValidationError) as context:
             self.service.update_factura(factura_data)
 
-        self.assertIn("ID de factura requerido", str(context.exception))
+        assert "ID de factura requerido" in str(context.value)
 
     def test_update_factura_not_found(self):
         """Test update_factura avec ID inexistant - doit lever InvoiceNotFoundError"""
@@ -323,16 +328,16 @@ class TestFacturaService(unittest.TestCase):
             'lineas': []
         }
 
-        with self.assertRaises(InvoiceNotFoundError):
+        with pytest.raises(InvoiceNotFoundError):
             self.service.update_factura(factura_data)
 
     def test_calculate_totals_empty_lineas(self):
         """Test calculate_totals avec liste vide"""
         result = self.service.calculate_totals([])
 
-        self.assertEqual(result['subtotal'], 0.0)
-        self.assertEqual(result['iva_total'], 0.0)
-        self.assertEqual(result['total'], 0.0)
+        assert result['subtotal'] == 0.0
+        assert result['iva_total'] == 0.0
+        assert result['total'] == 0.0
 
     def test_calculate_totals_invalid_data(self):
         """Test calculate_totals avec données invalides"""
@@ -340,10 +345,10 @@ class TestFacturaService(unittest.TestCase):
             {'cantidad': 'invalid', 'precio_unitario': 10.0, 'iva': 21.0}
         ]
 
-        with self.assertRaises(InvoiceValidationError) as context:
+        with pytest.raises(InvoiceValidationError) as context:
             self.service.calculate_totals(lineas)
 
-        self.assertIn("Error calculando totales", str(context.exception))
+        assert "Error calculando totales" in str(context.value)
 
     def test_generate_factura_number_with_existing(self):
         """Test generate_factura_number avec factures existantes"""
@@ -371,7 +376,7 @@ class TestFacturaService(unittest.TestCase):
 
         # Générer le prochain numéro
         next_number = self.service.generate_factura_number()
-        self.assertEqual(next_number, 'FAC-0006')
+        assert next_number == 'FAC-0006'
 
     def test_generate_factura_number_no_existing(self):
         """Test generate_factura_number sans factures existantes"""
@@ -379,11 +384,20 @@ class TestFacturaService(unittest.TestCase):
         temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
         temp_db.close()
 
+        # Désactiver temporairement TEST_DATABASE_PATH
+        old_test_db_path = os.environ.get('TEST_DATABASE_PATH')
+        os.environ.pop('TEST_DATABASE_PATH', None)
+
         try:
+            from database.database import Database
+            Database(temp_db.name)  # Initialiser la DB
             service = FacturaService(temp_db.name)
             number = service.generate_factura_number()
-            self.assertEqual(number, 'FAC-0001')
+            assert number == 'FAC-0001'
         finally:
+            # Restaurer TEST_DATABASE_PATH
+            if old_test_db_path:
+                os.environ['TEST_DATABASE_PATH'] = old_test_db_path
             if os.path.exists(temp_db.name):
                 os.unlink(temp_db.name)
 
@@ -396,10 +410,10 @@ class TestFacturaService(unittest.TestCase):
             'iva': 21.0
         }
 
-        with self.assertRaises(InvoiceValidationError) as context:
+        with pytest.raises(InvoiceValidationError) as context:
             self.service._validate_linea(linea, 0)
 
-        self.assertIn("precio_unitario no puede ser negativo", str(context.exception))
+        assert "precio_unitario no puede ser negativo" in str(context.value)
 
     def test_validate_linea_precio_invalido(self):
         """Test validation d'une ligne avec prix invalide"""
@@ -410,10 +424,10 @@ class TestFacturaService(unittest.TestCase):
             'iva': 21.0
         }
 
-        with self.assertRaises(InvoiceValidationError) as context:
+        with pytest.raises(InvoiceValidationError) as context:
             self.service._validate_linea(linea, 0)
 
-        self.assertIn("precio_unitario inválido", str(context.exception))
+        assert "precio_unitario inválido" in str(context.value)
 
     def test_validate_stock_producto_not_found(self):
         """Test validation stock avec produit inexistant"""
@@ -424,10 +438,10 @@ class TestFacturaService(unittest.TestCase):
             'iva': 21.0
         }]
 
-        with self.assertRaises(InvoiceValidationError) as context:
+        with pytest.raises(InvoiceValidationError) as context:
             self.service._validate_stock_availability(lineas)
 
-        self.assertIn("Producto 99999 no encontrado", str(context.exception))
+        assert "Producto 99999 no encontrado" in str(context.value)
 
     def test_validate_stock_insufficient(self):
         """Test validation stock insuffisant"""
@@ -439,7 +453,7 @@ class TestFacturaService(unittest.TestCase):
             'iva': 21.0
         }]
 
-        with self.assertRaises(InsufficientStockError):
+        with pytest.raises(InsufficientStockError):
             self.service._validate_stock_availability(lineas)
 
 

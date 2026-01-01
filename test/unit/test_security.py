@@ -12,8 +12,14 @@ from database.database import Database
 
 class TestSQLInjectionPrevention:
     """Tests de prévention d'injection SQL"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
-    def test_producto_name_sql_injection_attempt(self, temp_db):
+    def test_producto_name_sql_injection_attempt(self):
         """Test tentative d'injection SQL dans le nom du produit"""
         malicious_name = "'; DROP TABLE productos; --"
         
@@ -27,7 +33,7 @@ class TestSQLInjectionPrevention:
         producto.save()
         
         # Vérifier que la table existe toujours
-        tables = temp_db.execute_query("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = self.db.execute_query("SELECT name FROM sqlite_master WHERE type='table'")
         table_names = [row[0] for row in tables]
         assert 'productos' in table_names
         
@@ -35,7 +41,7 @@ class TestSQLInjectionPrevention:
         saved_product = Producto.get_by_id(producto.id)
         assert saved_product.nombre == malicious_name
     
-    def test_referencia_sql_injection_attempt(self, temp_db):
+    def test_referencia_sql_injection_attempt(self):
         """Test tentative d'injection SQL dans la référence"""
         malicious_ref = "REF001'; UPDATE productos SET precio = 0; --"
         
@@ -52,7 +58,7 @@ class TestSQLInjectionPrevention:
         assert saved_product.precio == 25.50
         assert saved_product.referencia == malicious_ref
     
-    def test_organization_data_sql_injection(self, temp_db):
+    def test_organization_data_sql_injection(self):
         """Test tentative d'injection SQL dans les données d'organisation"""
         malicious_email = "test@test.com'; DELETE FROM organizacion; --"
         
@@ -69,7 +75,7 @@ class TestSQLInjectionPrevention:
         assert saved_org.nombre == "Test Company"
         assert saved_org.email == malicious_email
     
-    def test_search_sql_injection_simulation(self, temp_db):
+    def test_search_sql_injection_simulation(self):
         """Simulation de tentative d'injection SQL dans une recherche"""
         # Créer quelques produits de test
         for i in range(3):
@@ -84,7 +90,7 @@ class TestSQLInjectionPrevention:
         malicious_search = "'; DROP TABLE productos; SELECT * FROM productos WHERE '1'='1"
         
         # Simuler une recherche sécurisée avec paramètres
-        safe_results = temp_db.execute_query(
+        safe_results = self.db.execute_query(
             "SELECT * FROM productos WHERE nombre LIKE ?",
             (f"%{malicious_search}%",)
         )
@@ -98,6 +104,12 @@ class TestSQLInjectionPrevention:
 
 class TestInputValidation:
     """Tests de validation des entrées"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
     @pytest.mark.parametrize("invalid_precio", [
         -1.0,      # Négatif
@@ -105,7 +117,7 @@ class TestInputValidation:
         float('inf'),  # Infini
         float('-inf'), # Infini négatif
     ])
-    def test_invalid_precio_handling(self, invalid_precio, temp_db):
+    def test_invalid_precio_handling(self, invalid_precio):
         """Test la gestion des prix invalides"""
         if invalid_precio < 0:
             # Les prix négatifs devraient être rejetés au niveau logique
@@ -125,7 +137,7 @@ class TestInputValidation:
         150.0,     # Supérieur à 100%
         float('nan'),  # NaN
     ])
-    def test_invalid_iva_handling(self, invalid_iva, temp_db):
+    def test_invalid_iva_handling(self, invalid_iva):
         """Test la gestion des taux d'IVA invalides"""
         import math
         
@@ -142,7 +154,7 @@ class TestInputValidation:
         else:
             assert producto.iva_recomendado == invalid_iva
     
-    def test_empty_required_fields(self, temp_db):
+    def test_empty_required_fields(self):
         """Test des champs requis vides"""
         # Nom vide
         producto_nom_vide = Producto(
@@ -163,7 +175,7 @@ class TestInputValidation:
         assert producto_nom_vide.nombre == ""
         assert producto_ref_vide.referencia == ""
     
-    def test_extremely_long_inputs(self, temp_db):
+    def test_extremely_long_inputs(self):
         """Test avec des entrées extrêmement longues"""
         very_long_name = "A" * 10000
         very_long_description = "B" * 50000
@@ -182,7 +194,7 @@ class TestInputValidation:
         assert len(saved_product.nombre) == 10000
         assert len(saved_product.descripcion) == 50000
     
-    def test_unicode_and_special_characters(self, temp_db):
+    def test_unicode_and_special_characters(self):
         """Test avec caractères Unicode et spéciaux"""
         unicode_name = "Producto 测试 🛒 émojis ñáéíóú"
         special_chars_ref = "REF-2024-ñ-€-©-®"
@@ -203,8 +215,14 @@ class TestInputValidation:
 
 class TestDataIntegrity:
     """Tests d'intégrité des données"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
-    def test_referencia_uniqueness_constraint(self, temp_db):
+    def test_referencia_uniqueness_constraint(self):
         """Test de la contrainte d'unicité des références"""
         # Créer le premier produit
         producto1 = Producto(
@@ -225,7 +243,7 @@ class TestDataIntegrity:
         with pytest.raises(sqlite3.IntegrityError):
             producto2.save()
     
-    def test_foreign_key_integrity(self, temp_db):
+    def test_foreign_key_integrity(self):
         """Test de l'intégrité des clés étrangères"""
         # Créer un produit
         producto = Producto(
@@ -236,7 +254,7 @@ class TestDataIntegrity:
         producto.save()
         
         # Vérifier que le stock a été créé automatiquement
-        stock_count = temp_db.execute_query(
+        stock_count = self.db.execute_query(
             "SELECT COUNT(*) FROM stock WHERE producto_id = ?",
             (producto.id,)
         )[0][0]
@@ -245,13 +263,13 @@ class TestDataIntegrity:
         # Supprimer le produit devrait aussi supprimer le stock
         producto.delete()
         
-        stock_count_after = temp_db.execute_query(
+        stock_count_after = self.db.execute_query(
             "SELECT COUNT(*) FROM stock WHERE producto_id = ?",
             (producto.id,)
         )[0][0]
         assert stock_count_after == 0
     
-    def test_data_consistency_after_operations(self, temp_db):
+    def test_data_consistency_after_operations(self):
         """Test de cohérence des données après opérations"""
         # Créer plusieurs produits
         productos = []
@@ -266,7 +284,7 @@ class TestDataIntegrity:
         
         # Vérifier la cohérence initiale
         total_productos = len(Producto.get_all())
-        total_stock_entries = temp_db.execute_query("SELECT COUNT(*) FROM stock")[0][0]
+        total_stock_entries = self.db.execute_query("SELECT COUNT(*) FROM stock")[0][0]
         assert total_productos == total_stock_entries == 5
         
         # Supprimer quelques produits
@@ -275,10 +293,10 @@ class TestDataIntegrity:
         
         # Vérifier la cohérence après suppression
         total_productos_after = len(Producto.get_all())
-        total_stock_entries_after = temp_db.execute_query("SELECT COUNT(*) FROM stock")[0][0]
+        total_stock_entries_after = self.db.execute_query("SELECT COUNT(*) FROM stock")[0][0]
         assert total_productos_after == total_stock_entries_after == 3
     
-    def test_transaction_rollback_simulation(self, temp_db):
+    def test_transaction_rollback_simulation(self):
         """Simulation de rollback de transaction"""
         initial_count = len(Producto.get_all())
         
@@ -324,8 +342,14 @@ class TestDataIntegrity:
 
 class TestAccessControl:
     """Tests de contrôle d'accès (simulation)"""
+    @pytest.fixture(autouse=True)
+    def setup(self, patched_models_db):
+        """Setup avec patched_models_db"""
+        self.db = patched_models_db
+        yield
+
     
-    def test_read_only_operations_safety(self, temp_db):
+    def test_read_only_operations_safety(self):
         """Test que les opérations de lecture sont sûres"""
         # Créer des données de test
         producto = Producto(
@@ -352,7 +376,7 @@ class TestAccessControl:
         assert final_product.nombre == "Read Only Test"
         assert final_product.precio == 25.0
     
-    def test_data_modification_tracking(self, temp_db):
+    def test_data_modification_tracking(self):
         """Test de suivi des modifications de données"""
         # Créer un produit
         producto = Producto(

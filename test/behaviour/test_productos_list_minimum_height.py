@@ -11,7 +11,7 @@ class TestProductosListMinimumHeight(BaseBehaviourTest):
     """Tests de comportement pour la hauteur minimale de la liste des produits"""
     
     @pytest.fixture(autouse=True)
-    def setup_test(self, app_instance, test_config, screenshots_dir):
+    def setup_test(self, app_instance, test_config, screenshots_dir, mock_messagebox, mock_filedialog):
         """Setup pour chaque test"""
         # Initialiser les attributs de la classe de base
         self.init_base_attributes()
