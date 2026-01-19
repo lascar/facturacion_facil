@@ -1,3 +1,0 @@
-- clientes
-- preparar para cado trimeste facturas pdf + resumen 
-- historico de facturas pdf trimestre a trimetre

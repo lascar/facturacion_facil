@@ -1,6 +1,6 @@
 # Facturación Fácil
 
-Aplicación de facturación completa desarrollada en Python con **PyQt6** (migrada desde CustomTkinter para mejor rendimiento y compatibilidad). Sistema robusto de gestión comercial con todas las funcionalidades esenciales implementadas y probadas.
+Aplicación de facturación completa desarrollada en Python con **PyQt5**. Sistema robusto de gestión comercial con todas las funcionalidades esenciales implementadas y probadas.
 
 ## 🎯 Estado Actual - **COMPLETAMENTE FUNCIONAL** ✅
 
@@ -27,8 +27,8 @@ Aplicación de facturación completa desarrollada en Python con **PyQt6** (migra
 - 📄 **Exportación PDF**: Facturas profesionales con logo empresarial
 
 ### **Características Técnicas**
-- ⚡ **Alto Rendimiento**: PyQt6 con optimizaciones de base de datos
-- 🛡️ **Sistema Robusto**: Múltiples fallbacks y manejo de errores
+- ⚡ **Alto Rendimiento**: PyQt5 con optimizaciones de base de datos
+- 🛡️ **Sistema Robusto**: Manejo robusto de errores
 - 🌍 **Multiidioma**: Interfaz en español (extensible a otros idiomas)
 - 🖥️ **Multiplataforma**: Compatible con Linux y Windows
 - 🔧 **Arquitectura Modular**: Fácil mantenimiento y extensión
@@ -36,28 +36,28 @@ Aplicación de facturación completa desarrollada en Python con **PyQt6** (migra
 ## 📋 Requisitos del Sistema
 
 ### **Requisitos Mínimos**
-- **Python 3.13+** (recomendado usar pyenv para gestión de versiones)
-- **PyQt6 6.6.1+** (framework GUI principal)
+- **Python 3.10+** (recomendado usar pyenv para gestión de versiones)
+- **PyQt5** (framework GUI principal)
 - **SQLite 3.x** (incluido con Python)
 - **4 GB RAM** mínimo
 - **100 MB** espacio en disco
 
 ### **Dependencias Python**
 ```bash
-PyQt6>=6.6.1          # Framework GUI principal
-customtkinter>=5.2.2   # Compatibilidad legacy
+PyQt5                  # Framework GUI principal
 Pillow>=10.4.0         # Procesamiento de imágenes
 reportlab>=4.2.2       # Generación de PDFs
+matplotlib>=3.7.0      # Generación de gráficos
 pytest>=7.4.3          # Framework de testing
 ```
 
-### **Frameworks GUI Soportados**
+### **Framework GUI**
 
-La aplicación utiliza una **arquitectura de abstracción GUI** que permite cambiar entre frameworks:
+La aplicación utiliza **PyQt5** como framework GUI principal, ofreciendo:
 
-- **PyQt6** (por defecto) - ⭐ Recomendado para producción
-- **CustomTkinter** - 🔄 Compatibilidad legacy
-- **Tkinter** - 🛡️ Fallback básico
+- 🖥️ **Interfaz nativa** del sistema operativo
+- ⚡ **Alto rendimiento** y estabilidad
+- 🎨 **Widgets modernos** y personalizables
 
 ## 🚀 Instalación y Configuración
 
@@ -99,9 +99,6 @@ python test/demo/demo_complete_solution_test.py
 
 # Validación de funcionalidades principales
 python validation_complete_2024.py
-
-# Tests específicos de PyQt6
-python test_all_pyqt6_windows.py
 
 # Suite completa de tests
 ./run_organized_tests.sh all
@@ -166,20 +163,19 @@ facturacion_facil/
 │   ├── models.py                # Modelos: Producto, Cliente, Factura, Stock
 │   └── optimized_models.py      # Modelos optimizados para rendimiento
 │
-├── 🖥️ gui/                      # Capa de abstracción GUI
+├── 🖥️ gui/                      # Gestión de GUI
 │   ├── abstract_gui.py          # Interfaces abstractas
 │   ├── gui_manager.py           # Gestor de frameworks
-│   ├── pyqt6_impl.py           # Implementación PyQt6 (principal)
 │   └── abstract_components.py   # Componentes reutilizables
 │
 ├── 🎨 ui/                       # Interfaces de usuario
-│   ├── main_window.py           # Ventana principal (PyQt6)
-│   ├── productos.py             # Gestión completa de productos
-│   ├── organizacion.py          # Configuración empresarial
-│   ├── stock.py                 # Control de inventario
-│   ├── facturas.py              # Sistema de facturación
-│   ├── clientes.py              # Gestión de clientes
-│   └── *_pyqt6.py              # Versiones PyQt6 optimizadas
+│   ├── main_window_pyqt5.py     # Ventana principal (PyQt5)
+│   ├── productos_pyqt5.py       # Gestión completa de productos
+│   ├── organizacion_pyqt5.py    # Configuración empresarial
+│   ├── stock_pyqt5.py           # Control de inventario
+│   ├── facturas_pyqt5.py        # Sistema de facturación
+│   ├── clientes_pyqt5.py        # Gestión de clientes
+│   └── widgets/                 # Widgets personalizados
 │
 ├── 🛠️ utils/                    # Utilidades del sistema
 │   ├── translations.py          # Sistema de traducciones
@@ -214,60 +210,35 @@ facturacion_facil/
 
 ---
 
-## 🚀 **PyQt6: Nueva Interfaz de Alto Rendimiento**
+## 🚀 **PyQt5: Interfaz Moderna y Estable**
 
-### **¿Por qué PyQt6?**
+### **¿Por qué PyQt5?**
 
-La aplicación ha sido **migrada de CustomTkinter a PyQt6** para ofrecer:
+La aplicación utiliza **PyQt5** como framework GUI principal:
 
-- ⚡ **25% mejor rendimiento** que CustomTkinter
-- 🖥️ **Interfaz nativa Windows** con look and feel del sistema
-- 🎨 **Widgets más ricos** y modernos
-- 🔧 **Mejor compatibilidad** con diferentes versiones de Windows
-- 🎯 **Soporte de temas** del sistema operativo
+- ⚡ **Alto rendimiento** y estabilidad probada
+- 🖥️ **Interfaz nativa** con look and feel del sistema operativo
+- 🎨 **Widgets modernos** y personalizables
+- 🔧 **Excelente compatibilidad** con Linux y Windows
+- 🎯 **Soporte completo** de funcionalidades avanzadas
 
-### **Arquitectura GUI Modular**
+### **Arquitectura GUI**
 
 ```python
-# Cambiar de framework es tan simple como:
+# La aplicación utiliza PyQt5 como framework principal
 from gui import set_gui_framework
 
-set_gui_framework('pyqt6')      # PyQt6 (por defecto)
-set_gui_framework('customtkinter') # CustomTkinter (legacy)
-set_gui_framework('tkinter')    # Tkinter (fallback)
+set_gui_framework('pyqt5')  # Framework principal
 ```
 
-### **Comparación de Rendimiento**
+### **Ventajas de PyQt5**
 
-| Framework | Tiempo de carga | Widgets/seg | Memoria |
-|-----------|----------------|-------------|---------|
-| **PyQt6** | **0.079s** ⚡ | **380/s** | Optimizada |
-| CustomTkinter | 0.105s | 285/s | Estándar |
-| Tkinter | 0.131s | 230/s | Mínima |
-
-### **Tests y Validación**
-
-```bash
-# Validar migración PyQt6
-python validate_pyqt6_migration.py
-
-# Tests específicos PyQt6
-python test/scripts/run_pyqt6_tests.py
-
-# Comparar rendimiento
-python compare_frameworks.py
-```
-
-### **Rollback (si necesario)**
-
-```bash
-# Opción 1: Cambiar framework en código
-# En main.py, cambiar:
-set_gui_framework('customtkinter')
-
-# Opción 2: Restaurar archivos originales
-# Los archivos .backup_* contienen las versiones originales
-```
+| Característica | Beneficio |
+|----------------|-----------|
+| **Rendimiento** | Interfaz rápida y fluida |
+| **Estabilidad** | Framework maduro y probado |
+| **Widgets** | Componentes ricos y nativos |
+| **Comunidad** | Amplio soporte y documentación |
 
 ---
 
@@ -312,7 +283,7 @@ La aplicación utiliza SQLite con las siguientes tablas:
 - ✅ **Gestión de Clientes**: Base de datos completa con validaciones
 - ✅ **Exportación PDF**: Generación profesional de facturas
 - ✅ **Base de Datos**: SQLite con modelos optimizados y migraciones
-- ✅ **Interfaz PyQt6**: Moderna, nativa y de alto rendimiento
+- ✅ **Interfaz PyQt5**: Moderna, nativa y de alto rendimiento
 - ✅ **Sistema de Tests**: 243+ tests automatizados con cobertura completa
 - ✅ **Documentación**: Guías completas de usuario y desarrollador
 
@@ -420,7 +391,7 @@ tests/
 ### Couverture de tests
 - **Base de données**: Tests complets avec SQLite temporaire
 - **Modèles**: CRUD, validations, relations
-- **Interface**: Mocking des widgets CustomTkinter
+- **Interface**: Tests de widgets PyQt5
 - **Traductions**: Vérification complétude et cohérence
 - **Données fake**: Génération avec Faker en espagnol
 

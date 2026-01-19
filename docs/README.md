@@ -1,28 +1,49 @@
 # 📚 Documentation - Facturación Fácil
 
-## 🗂️ **Organisation de la Documentation**
+> **Note** : Le README principal du projet se trouve à la racine : [`../README.md`](../README.md)
+
+## 🗂️ Organisation de la Documentation
 
 Cette documentation est organisée par catégories pour faciliter la navigation et la maintenance.
+**212 fichiers** de documentation organisés en **16 répertoires** thématiques.
 
-### **📁 Structure des Répertoires**
+### 📁 Structure des Répertoires
 
 ```
-docs/
+docs/ (212 fichiers)
 ├── README.md                    # Ce fichier - Index de la documentation
-├── architecture/                # Architecture et factorisation du code
-├── features/                    # Nouvelles fonctionnalités implémentées
-├── fixes/                       # Corrections et résolutions de bugs
-├── implementation/              # Détails d'implémentation
-├── DOC_ORGANIZATION_SUMMARY.md  # Organisation de la documentation
-├── TESTS_ORGANIZATION_SUMMARY.md # Organisation des tests
-├── TESTS_SEPARATION_SUMMARY.md  # Séparation des tests
-├── ORGANISATION_PROJET.md       # Organisation générale du projet
-├── MEJORAS_IMPLEMENTADAS.md     # Améliorations implémentées
-├── SOLUCION_COMPLETA.md         # Solution complète
-└── PDF_MESSAGE_FLOW_EXPLANATION.md # Explication du flux PDF
+│
+├── 🏗️ architecture/             # Architecture du projet (2 fichiers)
+├── 💾 database/                 # Base de données et migrations (6 fichiers)
+├── ✨ features/                 # Nouvelles fonctionnalités (21 fichiers)
+├── 🔧 fixes/                    # Corrections de bugs (29 fichiers)
+├── 📖 guides/                   # Guides généraux et techniques (21 fichiers)
+├── 🛠️ implementation/           # Détails d'implémentation (8 fichiers)
+├── 💿 installation/             # Installation et configuration (17 fichiers)
+├── 🔄 refactoring/              # Plans de refactoring (11 fichiers)
+├── 📊 reports/                  # Rapports et bilans (11 fichiers)
+├── 🌐 services/                 # Services et API (2 fichiers)
+├── 💡 solutions/                # Solutions et corrections (31 fichiers)
+├── 🔬 technical/                # Documentation technique (3 fichiers)
+├── 🧪 testing/                  # Guides de tests (12 fichiers)
+├── 🎨 ui/                       # Interface utilisateur (1 fichier)
+├── 👤 user/                     # Guides utilisateur (5 fichiers)
+└── 📄 (racine)                  # Fichiers généraux (32 fichiers)
 ```
+
+## 🚀 Démarrage Rapide
+
+### Documents Essentiels
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - 🏗️ Architecture complète du projet (PyQt5)
+- **[SOLUCION_ACTUALIZAR_WINDOWS.md](SOLUCION_ACTUALIZAR_WINDOWS.md)** - 🔄 Guide de mise à jour Windows
+- **[INSTALLATION.md](INSTALLATION.md)** - 💿 Guide d'installation complet
+- **[ADMIN_GUIDE.md](ADMIN_GUIDE.md)** - 👨‍💼 Guide administrateur
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - 🧪 Guide de tests
 
 ## 🏗️ **Architecture**
+
+### **Vue d'Ensemble**
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture complète du projet (PyQt5, structure, flux de données)
 
 ### **Factorisation du Code**
 - **[ARCHITECTURE_FACTORIZATION_SUMMARY.md](architecture/ARCHITECTURE_FACTORIZATION_SUMMARY.md)** - Architecture factorée détaillée
