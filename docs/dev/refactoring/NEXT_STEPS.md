@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Prochaines Étapes de la Refactorisation
 
 ## 📋 Vue d'ensemble
@@ -204,3 +208,7 @@ pytest test/unit/test_*_service.py --cov=services --cov-report=html
 **Dernière mise à jour** : 2025-12-25  
 **Statut global** : 🚀 En cours
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

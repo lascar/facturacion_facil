@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN: MessageBoxes en Segundo Plano - Solución Completa
 
 ## 📋 **Problema Identificado**
@@ -198,3 +202,7 @@ self._show_message("question", "Confirmar", "¿Está seguro?")
 - El foco vuelve a la ventana principal después del mensaje
 
 **¡La comunicación con el usuario nunca ha sido tan clara!** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

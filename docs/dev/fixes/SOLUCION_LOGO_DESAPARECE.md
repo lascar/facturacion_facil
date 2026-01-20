@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 SOLUCIÓN: Logo de la Organización se Desaparece Ocasionalmente
 
 ## 📋 **Problema Identificado**
@@ -203,3 +207,7 @@ python3 test/test_logo_resilience.py
 
 **Fecha de implementación:** 2025-10-05  
 **Estado:** ✅ Completado y probado
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

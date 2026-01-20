@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🚨 RÈGLES CRITIQUES : Tests et Base de Données
 
 ## ⚠️ AVERTISSEMENT CRITIQUE
@@ -148,3 +152,7 @@ Chaque test doit inclure un commentaire expliquant :
 **Raison** : Violation des règles de sécurité base de données  
 **Statut** : **RÈGLES ACTIVES ET OBLIGATOIRES**  
 **Révision** : Annuelle ou après incident
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

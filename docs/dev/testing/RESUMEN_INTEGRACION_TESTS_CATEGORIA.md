@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🧪 Résumé : Intégration des Tests pour les Catégories de Produits
 
 ## 📋 Contexte
@@ -138,3 +142,7 @@ La suite de tests garantit la **stabilité à long terme** des corrections appli
 **Statut** : ✅ TERMINÉ  
 **Tests** : 14/14 réussis  
 **Couverture** : Interface + Base de données + Cas limites
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🪟 Installation sur Windows 11 - Facturación Fácil
 
 ## 📋 Prérequis
@@ -248,3 +252,7 @@ pip install -r requirements.txt
 - [ ] Tous les boutons fonctionnent
 - [ ] Base de données se crée automatiquement
 - [ ] Logs générés dans `logs/`
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

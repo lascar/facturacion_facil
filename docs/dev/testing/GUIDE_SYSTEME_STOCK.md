@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📦 Guide Complet du Système de Stock
 
 ## 🎯 Vue d'Ensemble
@@ -155,3 +159,7 @@ print(f'Entrées stock: {len(stock_entries)}')"
 - 📝 **Utiliser les descriptions** pour les ajustements manuels
 - 🔄 **Vérifier périodiquement** la cohérence des données
 - 💾 **Exporter régulièrement** pour sauvegarde
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

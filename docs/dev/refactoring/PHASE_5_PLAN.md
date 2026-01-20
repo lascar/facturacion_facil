@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Phase 5 : Refactorisation UI - Plan détaillé
 
 ## 📋 Objectifs
@@ -221,3 +225,7 @@ class FacturaService(BaseService):
 - Tous les tests passent (aucune régression)
 - Couverture de code > 80% pour les services
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

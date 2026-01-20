@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 Résumé Final - Fonctionnalités PDF Complètes
 
 ## ✅ **Mission Accomplie**
@@ -197,3 +201,7 @@ La fonctionnalité est **complètement implémentée, testée et documentée**. 
 5. **Retrouver** tous ses PDFs dans son répertoire organisé
 
 **Mission accomplie avec succès ! 🎯**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

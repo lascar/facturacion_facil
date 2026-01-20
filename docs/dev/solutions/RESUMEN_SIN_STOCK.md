@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ Sistema "Sin Stock" para Productos - Implementado
 
 ## 📋 Resumen
@@ -216,3 +220,7 @@ python3 test/unit/run_sin_stock_test.py
 
 Los productos ahora pueden configurarse como "sin stock" para evitar la gestión de inventario en servicios y productos digitales, mientras que los productos físicos siguen teniendo control de stock completo.
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Intégration Tests Nueva Factura - Solution Forçage Maximal
 
 ## 🎯 Résumé
@@ -147,3 +151,7 @@ Les tests sont maintenant **partie intégrante** de la suite de tests :
 4. **Documentation** - Référence technique complète
 
 **Le problème Nueva Factura est définitivement résolu et les tests sont intégrés !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

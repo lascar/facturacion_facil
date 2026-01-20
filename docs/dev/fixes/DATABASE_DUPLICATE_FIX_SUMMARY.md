@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗄️ CORRECCIÓN DEFINITIVA - Error de Base de Datos Duplicada
 
 ## 📋 **Error Identificado y Resuelto**
@@ -225,3 +229,7 @@ La corrección incluyó:
 - ❌ `facturacion.db` (eliminado - estructura antigua)
 - ✅ `database/facturacion.db` (corregido - estructura completa)
 - 💾 `database/facturacion_backup_*.db` (backups de seguridad)
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

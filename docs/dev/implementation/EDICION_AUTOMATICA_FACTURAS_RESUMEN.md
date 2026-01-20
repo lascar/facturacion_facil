@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 EDICIÓN AUTOMÁTICA DE FACTURAS - Implementación Completa
 
 ## 📋 **Modificación Implementada**
@@ -204,3 +208,7 @@ def on_factura_select(self, event):
 - **Normal:** Estado inicial
 
 **¡La edición de facturas nunca ha sido tan fácil!** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

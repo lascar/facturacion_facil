@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ RÉSUMÉ : Configuration Répertoire PDF Résolu
 
 ## 🎯 Problème Identifié et Résolu
@@ -133,3 +137,7 @@ organizacion.save()
 **Statut** : ✅ RÉSOLU ET VALIDÉ  
 **Tests** : 3/3 réussis  
 **Impact** : PDF sauvegardés dans le bon répertoire
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

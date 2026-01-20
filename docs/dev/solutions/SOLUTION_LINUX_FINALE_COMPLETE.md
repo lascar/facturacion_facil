@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🐧 SOLUTION LINUX FINALE COMPLÈTE: Ventana Primer Plano
 
 ## 🎯 Problème Persistant Résolu
@@ -244,3 +248,7 @@ OK
 **Techniques** : 8 niveaux de forçage Linux  
 **Tests** : 7/7 + Applications manuelles  
 **Garantie** : Premier plan automatique sur Linux
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

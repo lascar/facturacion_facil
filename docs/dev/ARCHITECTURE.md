@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 🏗️ Architecture de Facturación Fácil
 
 ## 📋 Vue d'ensemble
@@ -175,6 +179,10 @@ pytest test/ -v
 
 ---
 
-**Dernière mise à jour** : 2025-01-19  
+**Dernière mise à jour** : 2025-01-19
 **Version** : PyQt5 (stable)
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
 

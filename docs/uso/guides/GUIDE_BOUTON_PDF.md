@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Guide d'utilisation du bouton PDF
 
 ## 🎯 Fonctionnalité
@@ -129,3 +133,7 @@ En cas de problème :
 2. Vérifier les permissions du dossier `pdfs/`
 3. Consulter les logs pour plus de détails
 4. Exécuter les tests pour diagnostiquer
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

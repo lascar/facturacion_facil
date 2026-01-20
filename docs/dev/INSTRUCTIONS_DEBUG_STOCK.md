@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 🔍 Instructions de Debug - Problème de Stock
 
 ## 🎯 Objectif
@@ -43,7 +47,7 @@ Recherchez dans les logs (ou dans la console) :
 [HH:MM:SS.mmm] CrearFacturaDialog - Producto: NOM_PRODUIT, Stock: 2, ID: Y
 
 [HH:MM:SS.mmm] EditarFacturaDialog - Llamando db.get_all_products()
-[HH:MM:SS.mmm] EditarFacturaDialog - Recibidos X productos  
+[HH:MM:SS.mmm] EditarFacturaDialog - Recibidos X productos
 [HH:MM:SS.mmm] EditarFacturaDialog - Producto: NOM_PRODUIT, Stock: 3, ID: Y
 ```
 
@@ -149,3 +153,7 @@ Si le produit est dans la facture en cours d'édition :
 **Lancez l'application et suivez les étapes 1-3 pour obtenir les logs détaillés !**
 
 Les logs avec timestamp vous diront exactement ce qui se passe. 🔍
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**

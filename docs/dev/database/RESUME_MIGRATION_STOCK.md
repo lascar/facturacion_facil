@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Résumé - Migration Stock Terminée ✅
 
 ## Objectif Atteint
@@ -91,3 +95,7 @@ pytest test/unit/test_stock_migration.py test/unit/test_complete_stock_system.py
 - ✅ Tests complets et validation
 - ✅ Documentation complète
 - ✅ Script prêt pour production
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

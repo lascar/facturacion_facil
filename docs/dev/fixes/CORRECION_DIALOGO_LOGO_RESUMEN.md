@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN: Diálogo de Selección de Logo en Segundo Plano
 
 ## 📋 **Problema Identificado**
@@ -210,3 +214,7 @@ except Exception as e:
 3. El diálogo siempre aparecerá relacionado con la ventana principal
 
 **¡La selección de archivos nunca ha sido tan fluida!** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

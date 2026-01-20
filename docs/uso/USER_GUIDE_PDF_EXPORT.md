@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 📄 GUÍA DE USUARIO - Exportación de Facturas a PDF
 
 ## 🎯 **¿Qué es la Exportación a PDF?**
@@ -276,6 +280,10 @@ Para soporte técnico adicional:
 
 ---
 
-**Última Actualización**: 27 de septiembre de 2024  
-**Versión**: Con corrección de selección de facturas  
+**Última Actualización**: 27 de septiembre de 2024
+**Versión**: Con corrección de selección de facturas
 **Estado**: ✅ **FUNCIONANDO CORRECTAMENTE**
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**

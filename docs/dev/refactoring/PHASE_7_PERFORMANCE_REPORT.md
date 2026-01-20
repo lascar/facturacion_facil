@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Phase 7 - Rapport de Performance
 
 ## Résumé
@@ -127,3 +131,7 @@ Les optimisations futures listées sont optionnelles et peuvent être implément
 **Auteur**: Augment Agent  
 **Version**: 1.0
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

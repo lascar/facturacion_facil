@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ⚡ Démarrage Rapide - Windows 11
 
 ## 🎯 En 3 clics après `git clone`
@@ -100,3 +104,7 @@ test_windows.bat  # Diagnostique les problèmes
 ---
 
 **🚀 Temps total d'installation : 2-5 minutes selon la connexion internet**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

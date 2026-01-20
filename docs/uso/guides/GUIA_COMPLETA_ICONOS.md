@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖥️ GUÍA COMPLETA - ICONOS ESCRITORIO ONEDRIVE
 ## Facturación Fácil - Solución Windows
 
@@ -224,3 +228,7 @@ Si tienes problemas:
 2. Seguir las soluciones sugeridas
 3. Probar scripts alternativos
 4. Verificar requisitos del sistema
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

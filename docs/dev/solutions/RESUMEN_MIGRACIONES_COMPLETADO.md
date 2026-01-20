@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ MISSION ACCOMPLIE : Système de Migration Robuste
 
 ## 🎯 **Problème Initial**
@@ -146,3 +150,7 @@ python3 restore_and_migrate.py
 - `backups/backup_before_restore_*.db` - Sauvegarde avant restauration
 
 **Tout est maintenant sécurisé et fonctionnel !** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

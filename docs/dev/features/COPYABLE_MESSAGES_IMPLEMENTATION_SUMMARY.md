@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Implémentation des Messages Copiables
 
 ## 🎯 Objectif
@@ -242,3 +246,7 @@ L'implémentation des messages copiables est **entièrement fonctionnelle** :
 - ✅ **Expérience utilisateur** améliorée
 
 Les utilisateurs peuvent maintenant **copier facilement tous les détails** des messages d'erreur, d'avertissement et de confirmation pour faciliter le support technique et la résolution de problèmes.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

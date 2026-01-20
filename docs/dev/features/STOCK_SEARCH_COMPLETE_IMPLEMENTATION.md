@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔍 Implémentation Complète - Recherche Stock avec Enter
 
 ## 🎯 **Objectif Accompli**
@@ -391,3 +395,7 @@ def on_search_next(self, event):
 - 🛡️ **Robustesse complète** : Gestion d'erreurs et récupération
 
 **L'interface de recherche stock est maintenant complète et professionnelle ! 🔍✨**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

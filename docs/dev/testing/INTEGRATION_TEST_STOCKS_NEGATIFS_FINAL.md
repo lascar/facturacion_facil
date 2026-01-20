@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ INTÉGRATION : Test Stocks Négatifs dans la Suite de Tests
 
 ## 🎯 Conformité aux Règles
@@ -141,3 +145,7 @@ python3 tests/test_regression/test_stocks_negatifs_simple.py
 **Emplacement** : `tests/test_regression/test_stocks_negatifs_simple.py`  
 **Tests** : 2/2 réussis + 1 test d'intégration réussi  
 **Conformité** : 100% conforme aux règles de la suite de tests
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

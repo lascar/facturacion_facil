@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔄 Guide Utilisateur - Tri par Colonnes
 
 ## 📋 Description
@@ -177,3 +181,7 @@ Si vous rencontrez des problèmes avec le système de tri :
 ---
 
 **Le tri par colonnes rend la navigation dans vos données plus rapide et plus intuitive !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -434,7 +434,9 @@ La documentación completa del proyecto está organizada en el directorio `docs/
 
 La documentación está separada en **2 secciones** según la audiencia:
 
-### **👥 [Documentación de Usuario](docs/uso/README.md)** (24 archivos)
+> **🔗 Acceso Rápido**: **[📑 Índice Usuario](docs/uso/INDEX.md)** | **[📑 Índice Desarrollo](docs/dev/INDEX.md)**
+
+### **👥 [Documentación de Usuario](docs/uso/README.md)** (25 archivos) | **[📑 Índice Completo](docs/uso/INDEX.md)**
 
 **Para usuarios finales y administradores**
 
@@ -448,7 +450,7 @@ La documentación está separada en **2 secciones** según la audiencia:
 - **[Instalación Windows](docs/uso/installation/INSTALLATION_WINDOWS11.md)** - Instalación en Windows
 - **[Exportación PDF](docs/uso/USER_GUIDE_PDF_EXPORT.md)** - Guía de exportación PDF
 
-### **🛠️ [Documentación de Desarrollo](docs/dev/README.md)** (121 archivos)
+### **🛠️ [Documentación de Desarrollo](docs/dev/README.md)** (122 archivos) | **[📑 Índice Completo](docs/dev/INDEX.md)**
 
 **Para desarrolladores y mantenedores**
 

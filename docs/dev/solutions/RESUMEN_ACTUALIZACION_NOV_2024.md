@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📋 Resumen de Actualización - Noviembre 2024
 
 ## 🎯 **Objetivo de la Sesión**
@@ -138,3 +142,7 @@ Actualizar la documentación del proyecto y corregir tests fallidos para refleja
 **Fecha de actualización**: 23 de Noviembre de 2024  
 **Versión**: 2.0.0  
 **Estado**: ✅ COMPLETAMENTE FUNCIONAL
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

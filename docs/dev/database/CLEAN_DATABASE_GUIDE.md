@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗑️ Guide d'Utilisation du Script de Nettoyage
 
 ## Script Disponible
@@ -87,3 +91,7 @@
 - 📋 **Affichage préalable** du contenu
 - 🔄 **État final** affiché après chaque action
 - 💾 **Backup automatique** non supprimé par défaut
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

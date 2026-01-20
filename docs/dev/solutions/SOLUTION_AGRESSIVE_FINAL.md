@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔥 SOLUTION AGRESSIVE FINALE: Ventana Primer Plano
 
 ## 🎯 Problème Persistant
@@ -187,3 +191,7 @@ test_regression_problema_original ... ok
 **Techniques** : 6 niveaux de forçage  
 **Tests** : 7/7 + Applications manuelles  
 **Garantie** : Premier plan automatique à chaque `show()`
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

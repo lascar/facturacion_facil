@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🏗️ Résumé de la Factorisation - Architecture Réutilisable
 
 ## 🎯 **Objectif de la Factorisation**
@@ -326,3 +330,7 @@ class TemplateManager:
 **Compatibilité** : Préservée, migration transparente
 
 **L'architecture est maintenant factorée, simple et réutilisable ! 🏗️**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

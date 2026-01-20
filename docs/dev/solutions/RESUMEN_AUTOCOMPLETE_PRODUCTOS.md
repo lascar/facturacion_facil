@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 RÉSUMÉ COMPLET: Autocomplétion des Produits
 
 ## ✅ **OBJECTIF ATTEINT**
@@ -148,3 +152,7 @@ producto = self.producto_autocomplete.get_current_product()
 ✅ **Prêt pour utilisation immédiate**
 
 **La sélection de produits dans les factures est maintenant aussi simple et efficace que la sélection de clients !** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

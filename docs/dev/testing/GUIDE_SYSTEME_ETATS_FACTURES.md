@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📋 Guide du Système d'États de Factures PyQt5
 
 ## 🎯 Vue d'ensemble
@@ -178,3 +182,7 @@ Pour toute question ou problème avec le système d'états :
 3. Testez avec les **scripts de validation** fournis
 
 **Le système d'états de factures est maintenant entièrement opérationnel ! 🚀**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

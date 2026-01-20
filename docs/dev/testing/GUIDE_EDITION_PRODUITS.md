@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📝 Guide d'Édition des Produits
 
 ## 🎯 Fonctionnalités d'Édition Disponibles
@@ -116,3 +120,7 @@
 1. Sélectionner le produit
 2. Cliquer "Eliminar"
 3. Confirmer la suppression
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

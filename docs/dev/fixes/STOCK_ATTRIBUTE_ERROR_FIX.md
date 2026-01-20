@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN - Error de Atributo Stock
 
 ## 📋 **Problema Identificado**
@@ -241,3 +245,7 @@ La corrección del error de Stock está funcionando correctamente.
 **Archivo Principal Modificado**: `ui/facturas_methods.py`  
 **Tipo de Error**: TypeError - Acceso a atributo inexistente  
 **Estado**: ✅ **COMPLETAMENTE CORREGIDO**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

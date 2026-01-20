@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 BOUTON PDF - RÉSUMÉ FINAL
 
 ## ✅ **MISSION ACCOMPLIE**
@@ -139,3 +143,7 @@ def exportar_pdf(self):
 L'utilisateur peut facilement convertir ses factures en PDF et les sauvegarder dans un dossier organisé. La fonctionnalité est robuste, testée, et intégrée parfaitement dans l'application existante.
 
 **Mission accomplie avec succès !** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

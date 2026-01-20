@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 GIT DIFF - Implementación Botón de Limpieza de Datos
 
 ## 📋 Resumen de Cambios
@@ -383,3 +387,7 @@ Se ha implementado un **botón rojo de limpieza de datos** en la interfaz de org
 - ✅ Optimización de base de datos post-limpieza
 
 **🎉 IMPLEMENTACIÓN COMPLETA Y FUNCIONAL**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

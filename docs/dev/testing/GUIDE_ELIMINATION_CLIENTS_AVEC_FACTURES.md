@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗑️ Guide d'Élimination des Clients avec Factures
 
 ## 🎯 Problème résolu
@@ -133,3 +137,7 @@ Cette amélioration rend l'application plus professionnelle et user-friendly en 
 - Guidant l'utilisateur dans ses choix
 
 **Plus de frustration avec les erreurs de contraintes de base de données !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

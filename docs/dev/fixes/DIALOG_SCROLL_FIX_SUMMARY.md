@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖱️ CORRECCIÓN DE SCROLL EN DIÁLOGOS - ProductoFacturaDialog
 
 ## 📋 **Problema Identificado**
@@ -236,3 +240,7 @@ La corrección implementada:
 - ✅ **Establece un patrón** reutilizable para futuros diálogos
 
 **El sistema ahora ofrece una experiencia de scroll consistente y natural en todas las ventanas modales.** 🖱️✨🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

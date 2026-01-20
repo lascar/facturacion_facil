@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 Corrections des Tests - Guide Complet
 
 ## 🎯 Problèmes Résolus
@@ -102,3 +106,7 @@ Ferme toutes les fenêtres tkinter ouvertes par les tests.
 ---
 
 **🎯 Maintenant pytest fonctionne parfaitement sans blocage ni fenêtres ouvertes !**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

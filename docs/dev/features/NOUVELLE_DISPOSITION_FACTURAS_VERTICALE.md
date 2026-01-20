@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📐 NOUVELLE DISPOSITION VERTICALE - INTERFACE FACTURES
 
 ## 📋 **Vue d'ensemble**
@@ -172,3 +176,7 @@ pytest test/regression/test_facturas_vertical_layout.py -v
 - ✅ **Tests complets** : Couverture de régression
 
 **État :** ✅ **IMPLÉMENTÉ ET TESTÉ**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

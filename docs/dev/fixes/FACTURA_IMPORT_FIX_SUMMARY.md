@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN DE ERROR DE IMPORTACIÓN - Clase Factura
 
 ## 📋 **Error Identificado y Resuelto**
@@ -185,3 +189,7 @@ La corrección fue:
 **Solución:** Añadir `Factura` a la importación existente  
 **Resultado:** Error eliminado, funcionalidad restaurada  
 **Estado:** Completamente resuelto y verificado
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

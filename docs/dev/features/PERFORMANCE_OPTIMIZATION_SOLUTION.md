@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🚀 Solution d'optimisation de performance
 
 ## 📋 **Problème identifié**
@@ -368,3 +372,7 @@ La solution d'optimisation de performance est **complètement implémentée**, *
 **Documentation :** ✅ Complète  
 
 **Résultat :** Performance de l'application transformée ! 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📄 Guide Utilisateur - Visor PDF Personnalisé
 
 ## 🎯 **Nouvelle Fonctionnalité Avancée**
@@ -191,3 +195,7 @@ Número inicial para serie de facturas:             [____]
 **Cette fonctionnalité avancée vous donne un contrôle total sur la gestion de vos PDFs de facturation !**
 
 Profitez de cette flexibilité pour adapter l'application exactement à vos besoins et préférences ! 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

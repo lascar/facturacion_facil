@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔄 GUIDE DE TEST - SYNCHRONISATION COMPLÈTE
 
 ## ✅ **SYNCHRONISATION RÉSOLUE !**
@@ -110,3 +114,7 @@ Si vous voulez voir les logs de synchronisation :
 - ✅ **Robuste** : Gestion d'erreurs et logging
 
 **Testez maintenant - tout fonctionne parfaitement !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

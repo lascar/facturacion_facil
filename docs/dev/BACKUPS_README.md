@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 💾 Sistema de Backups - Facturación Fácil
 
 ## 📋 Descripción
@@ -192,4 +196,8 @@ Si tienes problemas con el sistema de backups:
 ---
 
 **Última actualización:** 2024-12-27
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
 

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN - Actualización de Stock en Facturas
 
 ## 📋 **Problema Identificado**
@@ -320,3 +324,7 @@ python test/demo/demo_test_stock_update_fix.py
 **Archivo Principal Modificado**: `ui/facturas_methods.py`  
 **Tipo de Mejora**: Logging detallado y manejo de errores visible  
 **Estado**: ✅ **COMPLETAMENTE MEJORADO**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

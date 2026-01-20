@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📊 **SCHÉMA COMPLET DE LA BASE DE DONNÉES**
 
 ## 🏢 **1. TABLE `organizacion`** (Configuration entreprise)
@@ -159,3 +163,7 @@ CREATE TABLE stock_movements (
 - **Gestion stock** : Table dédiée + historique des mouvements
 - **États configurables** : Système flexible d'états de factures
 - **Audit trail** : Timestamps sur toutes les tables principales
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

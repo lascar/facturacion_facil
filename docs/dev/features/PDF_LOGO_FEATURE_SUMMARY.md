@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖼️ Fonctionnalité Logo dans les PDFs - Résumé Complet
 
 ## 📋 **Vue d'ensemble**
@@ -241,3 +245,7 @@ La fonctionnalité du logo dans les PDFs est **complètement implémentée**, **
 **Tests** : 8/8 passés ✅  
 **Documentation** : Complète ✅  
 **Compatibilité** : Rétrocompatible ✅
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Nouvelle Fonctionnalité : Génération de PDF
 
 ## 🎯 Fonctionnalité Implémentée
@@ -147,3 +151,7 @@ reportlab==4.0.9    # Génération PDF
 - ✅ **Performance** : Optimisé pour usage réel
 
 L'application **Facturación Fácil** dispose maintenant de fonctionnalités PDF de niveau professionnel ! 🎉📄
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

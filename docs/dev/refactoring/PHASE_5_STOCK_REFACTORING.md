@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Phase 5 - Refactorisation Stock (Extension)
 
 ## 📋 Objectif
@@ -153,3 +157,7 @@ Ce pattern garantit que le service utilise la même instance de base de données
 
 **Phase 5 - Extension Stock : COMPLÈTE** 🎊
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

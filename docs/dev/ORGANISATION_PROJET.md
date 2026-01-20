@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 📁 Organisation du Projet - Facturación Fácil
 
 ## 🎯 **Structure Organisée**
@@ -230,3 +234,7 @@ La nouvelle organisation améliore :
 1. **Tests** : `./run_organized_tests.sh --help`
 2. **Documentation** : `cat doc/README.md`
 3. **Guide complet** : `cat test/README.md`
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**

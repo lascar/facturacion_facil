@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔍 INVESTIGACIÓN - Problema Persistente de Actualización de Stock
 
 ## 📋 **Problema Reportado**
@@ -287,3 +291,7 @@ sqlite3 database/facturacion.db ".tables"
 **Fecha de Investigación**: 27 de septiembre de 2024  
 **Estado**: 🔍 **EN INVESTIGACIÓN ACTIVA**  
 **Prioridad**: 🔴 **ALTA** - Funcionalidad crítica afectada
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

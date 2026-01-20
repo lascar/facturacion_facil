@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 RÉORGANISATION BASE DE DATOS - TERMINÉE AVEC SUCCÈS
 
 ## 📅 Date : 10 décembre 2025
@@ -114,3 +118,7 @@ utils/
 🎯 **OBJECTIF 100% ATTEINT** : La base de données est maintenant parfaitement organisée dans un seul répertoire `base_de_datos/` avec tous les systèmes fonctionnels !
 
 **Système opérationnel et prêt à l'utilisation** ✅
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

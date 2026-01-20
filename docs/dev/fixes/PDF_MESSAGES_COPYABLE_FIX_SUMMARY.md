@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Correction des Messages PDF - Maintenant Copiables
 
 ## 🎯 Problème identifié
@@ -249,3 +253,7 @@ La correction est **entièrement implémentée et testée** :
 - ✅ **Instructions claires** pour utilisation future
 
 Les messages "Funcionalidad de PDF en desarrollo" sont maintenant **entièrement copiables** avec des informations détaillées et utiles pour l'utilisateur ! 📋✨
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

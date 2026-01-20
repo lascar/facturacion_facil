@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🐍 Plan de Refactorisation Pythonic - facturacion_facil
 
 Basé sur la vidéo d'Arjan Codes : "Refactoring Python Code to be More Pythonic"
@@ -329,3 +333,7 @@ Finaliser les optimisations Pythonic et intégrer les modules refactorisés
 **Dernière mise à jour** : 2024-12-25
 **Statut** : Phase 1 ✅ Terminée | Phase 2 ✅ Terminée | Phase 3 ⏳ Planifiée
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Guide des Migrations de Base de Données
 
 ## 🎯 **Principe Fondamental**
@@ -220,3 +224,7 @@ Le système de migration est maintenant en place et fonctionnel :
 4. ✅ **Des sauvegardes automatiques sont créées**
 
 **Plus jamais de perte de données lors des modifications de structure !**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

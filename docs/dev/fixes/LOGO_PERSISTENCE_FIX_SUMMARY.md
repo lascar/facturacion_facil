@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖼️ Résumé de la Correction - Persistance du Logo
 
 ## 🎯 **Problème Identifié**
@@ -267,3 +271,7 @@ python3 test/demo/demo_logo_persistence_fix.py
 **Déploiement** : Prêt pour production, migration automatique
 
 **Le problème de persistance du logo est définitivement résolu ! 🎯**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

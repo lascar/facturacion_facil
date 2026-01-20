@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Guide de Migration - Suppression des Colonnes Stock de Productos
 
 ## Vue d'ensemble
@@ -122,3 +126,7 @@ LIMIT 10;
 
 ### Logs
 Consulter les logs dans `logs/` pour plus de détails sur les erreurs.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

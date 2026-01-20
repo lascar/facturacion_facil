@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Guide Utilisateur - Export PDF Corrigé
 
 ## 🎯 Nouvelles fonctionnalités
@@ -164,5 +168,9 @@ Les fichiers de test sont disponibles :
 
 ---
 
-**Version :** Décembre 2024  
+**Version :** Décembre 2024
 **Statut :** ✅ Corrections appliquées et testées
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

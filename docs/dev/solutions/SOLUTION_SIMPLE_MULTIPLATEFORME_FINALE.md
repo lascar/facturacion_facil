@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🌍 SOLUTION SIMPLE MULTIPLATEFORME FINALE: Ventana Primer Plano
 
 ## 🎯 Problème Résolu Définitivement
@@ -231,3 +235,7 @@ OK
 **Approche** : Simple et universelle  
 **Tests** : 7/7 + Application manuelle  
 **Garantie** : Premier plan automatique multiplateforme
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

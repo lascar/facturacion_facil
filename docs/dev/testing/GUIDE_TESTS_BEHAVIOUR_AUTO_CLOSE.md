@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔄 Guide des Tests de Comportement avec Fermeture Automatique
 
 ## 🎯 Problème Résolu
@@ -189,3 +193,7 @@ self.open_window_with_auto_close(open_func, test_duration=1.0)  # 1 seconde max
 **Maintenant** : Tests fluides, fermeture automatique garantie
 
 Les tests de comportement peuvent maintenant s'exécuter en série sans intervention manuelle ! 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

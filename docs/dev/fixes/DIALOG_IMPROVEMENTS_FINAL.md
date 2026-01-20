@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ MEJORAS FINALES - Diálogo de Confirmación de Stock
 
 ## 🎯 **Problema Original**
@@ -210,3 +214,7 @@ python3 test/demo/demo_test_improved_dialog.py
 **Solicitado por**: Usuario (botones más claros)  
 **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**  
 **Impacto**: 🎯 **INTERFAZ MUCHO MÁS CLARA Y PROFESIONAL**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

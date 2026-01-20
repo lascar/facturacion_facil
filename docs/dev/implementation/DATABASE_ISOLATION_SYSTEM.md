@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗄️ Système de Base de Données Isolée pour les Tests
 
 ## 🎯 **Objectif**
@@ -324,3 +328,7 @@ find /tmp -name "test_*.db" -mtime +1 -delete
 **Performance** : Pas d'impact notable sur la vitesse des tests
 
 **Le système de base de données isolée est prêt pour la production ! 🗄️✨**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

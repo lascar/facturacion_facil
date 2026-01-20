@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 Résumé : Amélioration de l'Élimination des Clients avec Factures
 
 ## 🎯 Problème résolu
@@ -137,3 +141,7 @@ Cette amélioration transforme une **source de frustration** en une **expérienc
 L'application gère maintenant intelligemment les contraintes de données tout en gardant l'utilisateur informé et en contrôle de ses actions.
 
 **Résultat** : Plus d'erreurs cryptiques, plus de confusion - juste un workflow clair et sécurisé ! 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

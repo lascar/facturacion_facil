@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗄️ CORRECCIÓN DE ESQUEMA DE BASE DE DATOS - Tabla factura_items
 
 ## 📋 **Error Identificado y Resuelto**
@@ -261,3 +265,7 @@ La corrección incluyó:
 - `descuento REAL DEFAULT 0`
 - `descuento_amount REAL DEFAULT 0`
 - Todas las columnas requeridas para cálculos financieros
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

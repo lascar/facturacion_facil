@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📋 Résumé des Corrections - Catégories par Défaut
 
 ## 🎯 Problème Identifié
@@ -91,3 +95,7 @@ self.categoria_combo.addItem("")  # Option vide seulement
 ---
 
 *Correction appliquée le 2025-12-07*
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

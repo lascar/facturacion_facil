@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔴 PROBLEMA CONFIRMADO - Stock No Se Actualiza en Facturas
 
 ## 📋 **Estado Actual**
@@ -266,3 +270,7 @@ LIMIT 10;
 **Fecha**: 27 de septiembre de 2024  
 **Estado**: 🔴 **PROBLEMA CONFIRMADO** - En diagnóstico activo  
 **Prioridad**: 🔴 **CRÍTICA** - Funcionalidad esencial afectada
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

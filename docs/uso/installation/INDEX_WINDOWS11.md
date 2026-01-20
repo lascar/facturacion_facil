@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📁 Index complet - Installation Windows 11
 
 ## 🚀 Fichiers d'installation créés
@@ -155,3 +159,7 @@ Partager ces fichiers avec les instructions :
 ---
 
 **🚀 Installation Windows 11 complète et optimisée avec scroll fonctionnel !**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Résumé de l'intégration Stock-Facturation
 
 ## 🎯 Fonctionnalités implémentées
@@ -170,3 +174,7 @@ L'intégration entre la gestion des stocks et la facturation est **entièrement 
 - ✅ Interface utilisateur intuitive
 
 Le système offre maintenant une gestion complète et intégrée des stocks et de la facturation, avec une traçabilité parfaite et une prévention efficace des erreurs.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

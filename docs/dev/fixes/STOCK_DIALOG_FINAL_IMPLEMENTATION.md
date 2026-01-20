@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ IMPLEMENTACIÓN FINAL - Diálogo de Stock con Botones CONFIRMAR/CANCELAR
 
 ## 🎯 **Problema Reportado**
@@ -249,3 +253,7 @@ python3 test/demo/demo_test_stock_dialog_final.py
 **Solicitado por**: Usuario (botones confirmar/cancelar)  
 **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**  
 **Impacto**: 🎯 **INTERFAZ PERFECTAMENTE CLARA**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

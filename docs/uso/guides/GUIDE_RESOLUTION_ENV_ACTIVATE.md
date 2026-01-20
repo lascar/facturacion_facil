@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 Guide de Résolution : `env\Scripts\activate` ne fonctionne pas
 
 ## 🎯 Problème identifié
@@ -184,3 +188,7 @@ Si les problèmes persistent :
 4. **Réinstaller Python** complètement si nécessaire
 
 **L'environnement virtuel devrait maintenant fonctionner parfaitement sur Windows 11 !** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ TESTS INTÉGRÉS - NOUVELLE INTERFACE DE STOCK
 
 ## 📋 **Vue d'ensemble**
@@ -126,3 +130,7 @@ pytest test/integration/ -v
 - **Temps d'exécution** : < 3 secondes par test
 
 **État :** ✅ **INTÉGRÉ ET VALIDÉ**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

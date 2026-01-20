@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 Résumé: Correction de l'affichage des catégories dans l'interface produits
 
 ## 📋 Problème identifié
@@ -88,3 +92,7 @@ L'utilisateur peut maintenant :
 - ✅ TODO.md mis à jour avec la solution appliquée
 - ✅ Résumé détaillé créé dans ce fichier
 - ✅ Tests de validation documentés
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

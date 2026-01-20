@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📖 Guide d'utilisation - Outils de refactorisation
 
 ## 🎯 Vue d'ensemble
@@ -324,3 +328,7 @@ db = DatabaseEnhanced()
 - [ ] Vérifier les logs
 - [ ] Documenter les changements
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

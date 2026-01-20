@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🧹 Solution: Empêcher l'ouverture des PDFs pendant les tests
 
 ## 📋 **Problème identifié**
@@ -226,3 +230,7 @@ La solution est **complètement implémentée**, **entièrement testée** et **p
 **Performance :** Tests 20% plus rapides ✅
 
 **Résultat :** Plus aucun PDF ne s'ouvre pendant les tests ! 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎛️ NOUVELLE INTERFACE DE MODIFICATION DE STOCK
 
 ## 📋 **Vue d'ensemble**
@@ -141,3 +145,7 @@ self._show_stock_modification_dialog(item, current_stock)
 - **Satisfaction utilisateur** : Interface plus intuitive et moderne
 
 **État :** ✅ **IMPLÉMENTÉ ET TESTÉ**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

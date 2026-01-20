@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🗑️ BOUTON ELIMINAR POUR FACTURAS - IMPLÉMENTÉ !
 
 ## ✅ **PROBLÈME RÉSOLU !**
@@ -108,3 +112,7 @@ Dans la fenêtre Facturas, vous devriez voir **4 boutons** :
 - ✅ **Expérience utilisateur** : Messages informatifs et mise à jour automatique
 
 **Testez maintenant - le bouton Eliminar fonctionne parfaitement !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

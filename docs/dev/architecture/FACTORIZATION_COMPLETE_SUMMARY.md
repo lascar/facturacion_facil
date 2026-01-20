@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 Résumé Complet - Factorisation et Simplification du Code
 
 ## 🏆 **Mission Accomplie**
@@ -309,3 +313,7 @@ class BackupManager:
 - 📈 **Performance** : Optimisations et cache intelligents
 
 **La factorisation est complète et opérationnelle ! 🏗️✨**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

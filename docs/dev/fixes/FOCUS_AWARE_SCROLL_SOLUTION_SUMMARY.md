@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 SOLUCIÓN BASADA EN FOCO - Scroll Inteligente
 
 ## 📋 **Problema Real Identificado y Resuelto**
@@ -232,3 +236,7 @@ Esta implementación:
 **Método:** Interceptor global + detección de foco + redirección inteligente  
 **Resultado:** Comportamiento natural y predecible  
 **Estado:** Completamente funcional y testado
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

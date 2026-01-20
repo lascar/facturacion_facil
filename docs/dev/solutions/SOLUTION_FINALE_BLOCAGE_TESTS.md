@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 SOLUTION FINALE - BLOCAGE DES TESTS RÉSOLU !
 
 ## 🏆 **PROBLÈME COMPLÈTEMENT RÉSOLU**
@@ -156,3 +160,7 @@ pytest test/behaviour/ -v -s
 ```
 
 **Plus jamais de "Êtes-vous sûr de vouloir fermer l'application?" qui bloque !** ✨
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

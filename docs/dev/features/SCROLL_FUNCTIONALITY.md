@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖱️ Fonctionnalité de Scroll avec la Molette de Souris
 
 ## 📋 Vue d'ensemble
@@ -135,3 +139,7 @@ class FenetreSimple(BasePyQt5Window):
 - Configuration de la vitesse de scroll par utilisateur
 - Animations de scroll plus avancées
 - Support du scroll tactile sur tablettes
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

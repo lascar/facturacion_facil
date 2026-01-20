@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 SOLUTION - Problème de Persistance des Données
 
 ## 📋 Résumé du Problème
@@ -136,3 +140,7 @@ Le système détecte automatiquement les incohérences et propose des solutions 
 ---
 
 **✅ PROBLÈME RÉSOLU** : La base de données garde maintenant correctement les factures, stocks et produits avec des mesures de protection renforcées.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

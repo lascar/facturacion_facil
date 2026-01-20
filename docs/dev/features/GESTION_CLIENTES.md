@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 👥 GESTIÓN DE CLIENTES
 
 ## 📋 **Vue d'ensemble**
@@ -184,3 +188,7 @@ pytest test/integration/test_clientes_integration.py -v
 - ✅ **Interface** : Rétrocompatible avec les workflows existants
 
 **État :** ✅ **IMPLÉMENTÉ ET TESTÉ**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

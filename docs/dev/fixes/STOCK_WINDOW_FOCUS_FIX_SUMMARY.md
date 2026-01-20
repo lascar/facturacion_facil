@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Correction du problème de focus de la fenêtre de stock
 
 ## 🎯 Problème identifié
@@ -189,3 +193,7 @@ Le problème de focus de la fenêtre de stock est **entièrement résolu**. La f
 - **Expérience utilisateur optimale**
 
 Toutes les interactions (modification de stock, historique, messages) fonctionnent maintenant avec un affichage correct au premier plan.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

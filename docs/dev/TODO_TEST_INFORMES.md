@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # TODO: Correction de test_informes_service.py
 
 **Fichier**: `test/unit/test_informes_service.py`  
@@ -179,4 +183,8 @@ Si le temps manque, on peut :
 1. Marquer ces tests comme `@pytest.mark.skip(reason="Nécessite refactorisation")`
 2. Les corriger plus tard quand on a plus de temps
 3. Se concentrer sur les tests d'intégration qui sont plus critiques
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
 

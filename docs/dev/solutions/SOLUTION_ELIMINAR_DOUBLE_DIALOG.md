@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🛡️ SOLUTION - PROBLÈME DOUBLE DIALOG ELIMINAR
 
 ## ❌ **PROBLÈME IDENTIFIÉ**
@@ -140,3 +144,7 @@ finally:
 - 📝 **Gestion d'erreurs** complète
 
 **Le problème du double dialog est maintenant COMPLÈTEMENT RÉSOLU !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ⚡ Démarrage Rapide - Mise à Jour Windows
 
 ## 🎯 Mise à jour en 3 clics
@@ -160,3 +164,7 @@ L'application peut afficher :
 - ✅ Actions de récupération
 
 **Mise à jour Windows = Simple et sécurisé !** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 **CRÉATION AUTOMATIQUE DU CONFIG.JSON - IMPLÉMENTÉE AVEC SUCCÈS !**
 
 ## 📋 **Résumé de la fonctionnalité**
@@ -117,3 +121,7 @@ L'application peut désormais :
 - ✅ Créer automatiquement la structure de répertoires nécessaire
 
 **Mission accomplie avec succès !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

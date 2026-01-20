@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎉 BOUTON PDF - IMPLÉMENTATION FINALE COMPLÈTE
 
 ## ✅ **MISSION TOTALEMENT ACCOMPLIE**
@@ -161,3 +165,7 @@ L'utilisateur peut désormais :
 python3 main.py
 ```
 Puis va dans "Facturas" → Sélectionne une facture → Clique sur "📄 Exportar PDF" → **Magie !** ✨
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

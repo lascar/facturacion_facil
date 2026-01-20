@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN: Selección Automática del Primer Producto
 
 ## 📋 **Problema Identificado**
@@ -162,3 +166,7 @@ def initialize_first_product_if_needed(self):
 - Código más robusto y mantenible
 
 **El diálogo de agregar productos ahora funciona de manera intuitiva desde el primer uso!** 🚀✨
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

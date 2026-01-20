@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 GUIDE COMPLET : RELATION STOCKS-FACTURES
 
 ## ✅ **LA RELATION FONCTIONNE PARFAITEMENT !**
@@ -169,3 +173,7 @@ Stock: produit 001 = 15 unités ✅
 
 **🎉 LA RELATION STOCKS-FACTURES EST PARFAITEMENT OPÉRATIONNELLE !**
 **🔄 LE BOUTON ACTUALIZAR FONCTIONNE MAINTENANT CORRECTEMENT !**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

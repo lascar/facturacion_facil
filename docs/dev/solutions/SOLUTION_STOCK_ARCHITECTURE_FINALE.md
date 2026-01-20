@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🎯 SOLUTION ARCHITECTURALE FINALE - STOCK UNIFIÉ
 
 ## 📋 PROBLÈME RÉSOLU
@@ -155,3 +159,7 @@ python main.py
 ```
 
 **La solution est robuste, sécurisée et prête pour la production !** 🎊
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

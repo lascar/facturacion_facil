@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # TODO - Facturación Fácil
 
 <!-- ==================== SECTION NON EDITABLE ==================== -->
@@ -108,4 +112,8 @@
 # ✅ PROBLEMAS
 le fichier 'Productos Tienda.xlsx' a 6 colonnes, je voudrais que tu fasses un migracion.bat (pour windows) et un migracion.sh (pour linux) qui mette dans la table 'products_shop' avec les 6 colonnes du fichier 'Productos Tienda.xlsx' dans la base de données 'database.db'
 tu dois adapter les données de 'Productos Tienda.xlsx' à la table, le nom c'est la categorie et la reférencia c'est le nom du produit, la 2eme colonne c'est la talla
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
 

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📦 Guide du Système de Fixtures
 
 ## 🎯 Vue d'ensemble
@@ -190,3 +194,7 @@ def get_products_fixtures(self):
 ```
 
 Modifier ces données pour adapter les fixtures à tes besoins spécifiques.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

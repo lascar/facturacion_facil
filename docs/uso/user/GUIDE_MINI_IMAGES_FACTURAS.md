@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖼️ Guide Utilisateur - Mini Images dans les Factures
 
 ## 🎯 **Nouvelle Fonctionnalité**
@@ -189,3 +193,7 @@ Pour toute question :
 3. Les images sont automatiquement optimisées pour l'affichage
 
 **Profitez de cette interface modernisée pour une facturation plus efficace et professionnelle !** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

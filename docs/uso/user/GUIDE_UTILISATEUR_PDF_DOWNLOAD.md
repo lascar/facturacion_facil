@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📄 Guide Utilisateur - Téléchargement PDF Configurable
 
 ## 🎯 **Nouvelle Fonctionnalité**
@@ -152,3 +156,7 @@ Si vous rencontrez des difficultés :
 3. Redémarrez l'application si nécessaire
 
 **Profitez de cette nouvelle fonctionnalité pour une gestion encore plus efficace de vos factures !** 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

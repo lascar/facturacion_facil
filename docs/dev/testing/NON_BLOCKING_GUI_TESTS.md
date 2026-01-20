@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🧪 TESTS GUI NON-BLOQUANTS
 
 ## 📋 **Problème Résolu**
@@ -308,3 +312,7 @@ def test_complete_client_workflow(self, temp_db):
 - ✅ **Maintenables** : Code de test propre et structuré
 
 **État :** ✅ **IMPLÉMENTÉ ET TESTÉ**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

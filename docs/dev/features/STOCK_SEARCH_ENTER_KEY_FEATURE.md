@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔍 Modification de la Recherche Stock - Attendre Enter
 
 ## 🎯 **Objectif de la Modification**
@@ -318,3 +322,7 @@ python3 test/regression/test_stock_search_enter_key.py
 **Résultat** : Interface plus contrôlée et performante
 
 **La recherche stock attend maintenant Enter avant de lancer la recherche ! 🔍⌨️**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

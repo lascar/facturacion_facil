@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📜 Implémentation des Scrollbars dans la Fenêtre de Produits
 
 ## ❌ **Problema Reportado:**
@@ -282,3 +286,7 @@ self.window.geometry("900x700")
 4. **Pantallas pequeñas** → Todo accesible ✅
 
 **¡La fenêtre s'adapte maintenant parfaitement à toutes les tailles d'écran avec des scrollbars automatiques!** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

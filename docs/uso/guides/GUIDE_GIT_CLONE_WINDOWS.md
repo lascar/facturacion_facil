@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 Guide de Résolution - Erreur Git Clone sur Windows
 
 ## ❌ Problème
@@ -116,3 +120,7 @@ Si vous rencontrez encore des problèmes :
 - ✅ **Fonctionnalités** : Édition de clients avec rafraîchissement automatique
 
 Le repository est maintenant compatible avec tous les systèmes d'exploitation ! 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

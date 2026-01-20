@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 📄 Fonctionnalité PDF Download Configurable + Visor Personnalisé - Résumé Complet
 
 ## 🎯 **Objectifs Réalisés**
@@ -185,3 +189,7 @@ facturacion_facil/
 - 📚 **Documentation** : Complète et détaillée
 
 La fonctionnalité est prête à être utilisée en production ! 🎯
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

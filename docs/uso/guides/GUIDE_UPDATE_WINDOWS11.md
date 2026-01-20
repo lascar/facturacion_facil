@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔄 Guide de Mise à Jour - Windows 11
 
 ## 🎯 Vue d'ensemble
@@ -199,3 +203,7 @@ L'application peut vérifier automatiquement les mises à jour disponibles.
 - `DEMARRAGE_RAPIDE_WINDOWS.md` - Démarrage rapide
 
 **Mise à jour réussie = Application plus stable et sécurisée !** 🚀
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

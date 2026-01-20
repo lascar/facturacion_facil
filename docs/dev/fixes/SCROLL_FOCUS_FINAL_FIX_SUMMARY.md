@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🖱️ CORRECCIÓN DEFINITIVA - Scroll con Elementos en Foco
 
 ## 📋 **Problema Resuelto Definitivamente**
@@ -242,3 +246,7 @@ La solución implementada:
 **El sistema "Facturación Fácil" ahora ofrece una experiencia de scroll perfecta, natural y consistente en todas las ventanas modales, independientemente del estado de foco de los elementos.** 🖱️✨🎉💯
 
 **¡CERTIFICADO COMO COMPLETAMENTE FUNCIONAL Y LISTO PARA PRODUCCIÓN!** 🏆
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

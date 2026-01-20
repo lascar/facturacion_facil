@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ IMPLEMENTACIÓN DIRECTA - Diálogo con Botones CONFIRMAR/CANCELAR
 
 ## 🎯 **Problema**
@@ -216,3 +220,7 @@ python3 test/demo/demo_test_direct_dialog.py
 **Método**: Implementación directa en clase  
 **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**  
 **Garantía**: **Los botones CONFIRMAR/CANCELAR ahora aparecerán**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

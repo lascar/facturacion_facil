@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 CORRECCIÓN - Problema de Selección para Exportación PDF
 
 ## 🎯 **Problema Reportado**
@@ -231,3 +235,7 @@ python3 test/demo/demo_test_pdf_export.py
 **Problema**: Selección de factura para PDF no funcionaba  
 **Solución**: Método robusto de selección por número de factura  
 **Estado**: ✅ **CORREGIDO Y TESTADO**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

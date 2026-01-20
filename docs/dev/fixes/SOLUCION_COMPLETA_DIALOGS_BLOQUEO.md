@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 SOLUCIÓN COMPLETA: Diálogos que se Bloquean y Ventana "Logo Recuperado"
 
 ## 📋 **Problemas Identificados**
@@ -167,3 +171,7 @@ if os.environ.get('HEADLESS_MODE') == '1':
 - ✅ **Mantenimiento fácil** - Gestor centralizado de ventanas
 
 **Estado:** ✅ **COMPLETAMENTE RESUELTO**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔍 Correction du Problème de Recherche Stock
 
 ## 🎯 **Problème Identifié**
@@ -289,3 +293,7 @@ Exemple : "MOUSE" = "mouse" = "Mouse"
 **Résultat** : Recherche stock opérationnelle et fiable
 
 **La recherche dans la section stock fonctionne maintenant parfaitement ! 🔍✨**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

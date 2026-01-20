@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 Guide de Debug - Problèmes Identifiés
 
 ## 🚨 Problèmes Rapportés
@@ -169,3 +173,7 @@ def edit_factura(self):
 - La cause sera évidente dans les logs
 
 **Avec ces outils de debug, vous devriez pouvoir identifier et résoudre rapidement le problème ! 🚀**
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

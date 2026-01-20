@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 🐍 Configuration de l'Environnement Python
 
 ## 🎯 **Problème Identifié**
@@ -209,3 +213,7 @@ source ../bin/activate && ./run_organized_tests.sh all
 ```
 
 Cette commande active l'environnement et lance tous les tests avec le système de base de données isolée !
+
+---
+
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**

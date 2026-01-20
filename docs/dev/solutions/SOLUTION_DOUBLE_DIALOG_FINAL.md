@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # ✅ SOLUTION FINALE - PROBLÈME DOUBLE DIALOG RÉSOLU
 
 ## 🎯 **Problème résolu**
@@ -104,3 +108,7 @@ QTimer.singleShot(1000, lambda: self.eliminar_btn.setEnabled(True))
 4. **Niveau 4** : Délai de réactivation `QTimer.singleShot()`
 
 **Testez maintenant - le bouton Eliminar fonctionne parfaitement sans double dialog !** 🎉
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

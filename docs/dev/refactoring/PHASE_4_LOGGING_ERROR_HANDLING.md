@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Phase 4 : Amélioration du Logging et Error Handling
 
 ## 📋 Résumé
@@ -158,3 +162,7 @@ except ClientNotFoundError as e:
 - ✅ Exemples d'utilisation fournis
 - ✅ Warnings pytest réduits de 28% (35 → 25)
 
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**

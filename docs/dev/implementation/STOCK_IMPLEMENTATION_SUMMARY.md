@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # Résumé de l'implémentation de la gestion des stocks
 
 ## 🎯 Fonctionnalités développées
@@ -137,3 +141,7 @@ CREATE TABLE IF NOT EXISTS stock_movements (
 ## ✅ État actuel
 
 Le système de gestion des stocks est **entièrement fonctionnel** et prêt à être utilisé en production. Toutes les fonctionnalités de base sont implémentées et testées.
+
+---
+
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
