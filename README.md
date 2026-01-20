@@ -191,19 +191,30 @@ facturacion_facil/
 │   ├── performance/             # Tests de rendimiento
 │   └── validate_solution.py     # Validación completa del sistema
 │
-├── 📚 docs/                     # Documentación completa (149 fichiers)
-│   ├── README.md                # Índice de documentación
-│   ├── ARCHITECTURE.md          # Arquitectura del proyecto
-│   ├── TODO.md                  # Tareas y preferencias de desarrollo
-│   ├── architecture/            # Documentación de arquitectura (2)
-│   ├── database/                # Base de datos y migraciones (5)
-│   ├── features/                # Funcionalidades implementadas (21)
-│   ├── fixes/                   # Correcciones de bugs (24)
-│   ├── guides/                  # Guías de usuario y desarrollador (21)
-│   ├── implementation/          # Detalles de implementación (8)
-│   ├── installation/            # Guías de instalación (8)
-│   ├── testing/                 # Guías de tests (8)
-│   └── user/                    # Guías de usuario final (5)
+├── 📚 docs/                     # Documentación completa (146 archivos)
+│   ├── README.md                # Índice principal de documentación
+│   │
+│   ├── 👥 uso/                  # Documentación de Usuario (24 archivos)
+│   │   ├── README.md            # Índice de documentación de usuario
+│   │   ├── guides/              # Guías de usuario (10)
+│   │   ├── installation/        # Instalación y configuración (8)
+│   │   ├── user/                # Funcionalidades específicas (5)
+│   │   └── USER_GUIDE_PDF_EXPORT.md
+│   │
+│   └── 🛠️ dev/                  # Documentación de Desarrollo (121 archivos)
+│       ├── README.md            # Índice de documentación de desarrollo
+│       ├── ARCHITECTURE.md      # Arquitectura del proyecto
+│       ├── TODO.md              # Tareas y preferencias ⭐
+│       ├── architecture/        # Arquitectura (2)
+│       ├── database/            # Base de datos (5)
+│       ├── features/            # Funcionalidades (21)
+│       ├── fixes/               # Correcciones (24)
+│       ├── implementation/      # Implementación (8)
+│       ├── refactoring/         # Refactoring (11)
+│       ├── services/            # Servicios (2)
+│       ├── solutions/           # Soluciones (18)
+│       ├── technical/           # Técnico (3)
+│       └── testing/             # Testing (27)
 │
 ├── 📄 assets/                   # Recursos del proyecto
 │   ├── images/                  # Imágenes de productos
@@ -417,27 +428,43 @@ make info
 
 ## 📚 Documentación
 
-La documentación completa del proyecto está organizada en el directorio `docs/` (**149 archivos**):
+La documentación completa del proyecto está organizada en el directorio `docs/` (**146 archivos**):
 
-- **[docs/README.md](docs/README.md)** - Índice de toda la documentación
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Arquitectura completa del proyecto
-- **[docs/TODO.md](docs/TODO.md)** - Tareas y preferencias de desarrollo
-- **[docs/guides/](docs/guides/)** - Guías de usuario y desarrollador (21 guías)
-- **[docs/features/](docs/features/)** - Funcionalidades implementadas (21 documentos)
-- **[docs/fixes/](docs/fixes/)** - Correcciones de bugs (24 documentos)
-- **[docs/database/](docs/database/)** - Base de datos y migraciones (5 guías)
-- **[docs/testing/](docs/testing/)** - Guías de tests (8 guías)
-- **[docs/user/](docs/user/)** - Guías de usuario final (5 guías)
+### **[📖 Índice Principal](docs/README.md)**
 
-### Documentación Destacada
+La documentación está separada en **2 secciones** según la audiencia:
 
-- **[docs/guides/GUIDE_FIXTURES.md](docs/guides/GUIDE_FIXTURES.md)** - Sistema de fixtures para tests
-- **[docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md](docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md)** - Migraciones de base de datos
-- **[docs/guides/GUIDE_UTILISATEUR_FINAL.md](docs/guides/GUIDE_UTILISATEUR_FINAL.md)** - Guía de usuario final
-- **[docs/ORGANISATION_PROJET.md](docs/ORGANISATION_PROJET.md)** - Organización del proyecto
-- **[docs/MEJORAS_IMPLEMENTADAS.md](docs/MEJORAS_IMPLEMENTADAS.md)** - Mejoras implementadas
+### **👥 [Documentación de Usuario](docs/uso/README.md)** (24 archivos)
 
-> 🧹 **Nettoyage 2025-01-20**: Documentación optimizada - 64 archivos obsoletos eliminados (30% de reducción)
+**Para usuarios finales y administradores**
+
+- **[Guías de Usuario](docs/uso/guides/)** - 10 guías de uso del sistema
+- **[Instalación](docs/uso/installation/)** - 8 guías de instalación y configuración
+- **[Funcionalidades](docs/uso/user/)** - 5 guías de características específicas
+
+**Documentos destacados**:
+- **[Guía de Usuario Final](docs/uso/guides/GUIDE_UTILISATEUR_FINAL.md)** - Guía completa ⭐
+- **[Inicio Rápido](docs/uso/guides/GUIA_INICIO_RAPIDO.md)** - Primeros pasos
+- **[Instalación Windows](docs/uso/installation/INSTALLATION_WINDOWS11.md)** - Instalación en Windows
+- **[Exportación PDF](docs/uso/USER_GUIDE_PDF_EXPORT.md)** - Guía de exportación PDF
+
+### **🛠️ [Documentación de Desarrollo](docs/dev/README.md)** (121 archivos)
+
+**Para desarrolladores y mantenedores**
+
+- **[Arquitectura](docs/dev/architecture/)** - 2 documentos de arquitectura
+- **[Base de Datos](docs/dev/database/)** - 5 guías de BD y migraciones
+- **[Funcionalidades](docs/dev/features/)** - 21 features implementadas
+- **[Correcciones](docs/dev/fixes/)** - 24 bugs resueltos
+- **[Testing](docs/dev/testing/)** - 27 guías de tests y fixtures
+
+**Documentos críticos**:
+- **[TODO.md](docs/dev/TODO.md)** - Preferencias y reglas de desarrollo ⭐
+- **[ARCHITECTURE.md](docs/dev/ARCHITECTURE.md)** - Arquitectura completa
+- **[GUIDE_FIXTURES.md](docs/dev/testing/GUIDE_FIXTURES.md)** - Sistema de fixtures (OBLIGATORIO)
+- **[REGLES_CRITIQUES](docs/dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md)** - Reglas de seguridad
+
+> 🧹 **Reorganización 2025-01-20**: Documentación separada en dev/uso + 64 archivos obsoletos eliminados
 
 ---
 
@@ -483,11 +510,18 @@ python3 validate_system.py
 ```
 
 ### **Documentación de Soporte**
-- **`docs/guides/GUIDE_UTILISATEUR_FINAL.md`** - Guía completa de usuario final
-- **`docs/guides/GUIDE_FIXTURES.md`** - Guía del sistema de fixtures para tests
-- **`docs/guides/GUIDE_SYSTEME_STOCK.md`** - Guía del sistema de stock
-- **`docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md`** - Guía de migraciones de base de datos
-- **`docs/USER_GUIDE_PDF_EXPORT.md`** - Guía de exportación PDF
+
+**Para Usuarios**:
+- **`docs/uso/guides/GUIDE_UTILISATEUR_FINAL.md`** - Guía completa de usuario final ⭐
+- **`docs/uso/guides/GUIA_INICIO_RAPIDO.md`** - Guía de inicio rápido
+- **`docs/uso/USER_GUIDE_PDF_EXPORT.md`** - Guía de exportación PDF
+- **`docs/uso/installation/INSTALLATION_WINDOWS11.md`** - Instalación en Windows
+
+**Para Desarrolladores**:
+- **`docs/dev/TODO.md`** - Preferencias y reglas de desarrollo ⭐
+- **`docs/dev/testing/GUIDE_FIXTURES.md`** - Sistema de fixtures para tests (OBLIGATORIO)
+- **`docs/dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md`** - Reglas de seguridad
+- **`docs/dev/database/SCHEMA_BASE_DE_DONNEES.md`** - Esquema de base de datos
 
 ## Licencia
 
