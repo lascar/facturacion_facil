@@ -5,40 +5,41 @@
 ## 🗂️ Organisation de la Documentation
 
 Cette documentation est organisée par catégories pour faciliter la navigation et la maintenance.
-**212 fichiers** de documentation organisés en **16 répertoires** thématiques.
+**148 fichiers** de documentation organisés en **14 répertoires** thématiques.
+
+> 🧹 **Nettoyage effectué le 2025-01-20** : Suppression de 64 fichiers obsolètes et redondants (doublons, rapports de sessions, résumés de changements déjà implémentés).
 
 ### 📁 Structure des Répertoires
 
 ```
-docs/ (212 fichiers)
+docs/ (148 fichiers)
 ├── README.md                    # Ce fichier - Index de la documentation
 │
 ├── 🏗️ architecture/             # Architecture du projet (2 fichiers)
-├── 💾 database/                 # Base de données et migrations (6 fichiers)
+├── 💾 database/                 # Base de données et migrations (5 fichiers)
 ├── ✨ features/                 # Nouvelles fonctionnalités (21 fichiers)
-├── 🔧 fixes/                    # Corrections de bugs (29 fichiers)
+├── 🔧 fixes/                    # Corrections de bugs (24 fichiers)
 ├── 📖 guides/                   # Guides généraux et techniques (21 fichiers)
 ├── 🛠️ implementation/           # Détails d'implémentation (8 fichiers)
-├── 💿 installation/             # Installation et configuration (17 fichiers)
+├── 💿 installation/             # Installation et configuration (8 fichiers)
 ├── 🔄 refactoring/              # Plans de refactoring (11 fichiers)
-├── 📊 reports/                  # Rapports et bilans (11 fichiers)
 ├── 🌐 services/                 # Services et API (2 fichiers)
-├── 💡 solutions/                # Solutions et corrections (31 fichiers)
+├── 💡 solutions/                # Solutions et corrections (18 fichiers)
 ├── 🔬 technical/                # Documentation technique (3 fichiers)
-├── 🧪 testing/                  # Guides de tests (12 fichiers)
+├── 🧪 testing/                  # Guides de tests (8 fichiers)
 ├── 🎨 ui/                       # Interface utilisateur (1 fichier)
 ├── 👤 user/                     # Guides utilisateur (5 fichiers)
-└── 📄 (racine)                  # Fichiers généraux (32 fichiers)
+└── 📄 (racine)                  # Fichiers généraux (11 fichiers)
 ```
 
 ## 🚀 Démarrage Rapide
 
 ### Documents Essentiels
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - 🏗️ Architecture complète du projet (PyQt5)
-- **[SOLUCION_ACTUALIZAR_WINDOWS.md](SOLUCION_ACTUALIZAR_WINDOWS.md)** - 🔄 Guide de mise à jour Windows
-- **[INSTALLATION.md](INSTALLATION.md)** - 💿 Guide d'installation complet
-- **[ADMIN_GUIDE.md](ADMIN_GUIDE.md)** - 👨‍💼 Guide administrateur
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - 🧪 Guide de tests
+- **[ORGANISATION_PROJET.md](ORGANISATION_PROJET.md)** - 📁 Organisation du projet
+- **[TODO.md](TODO.md)** - 📝 Liste des tâches et préférences de développement
+- **[guides/GUIDE_UTILISATEUR_FINAL.md](guides/GUIDE_UTILISATEUR_FINAL.md)** - 👤 Guide utilisateur final
+- **[guides/GUIDE_FIXTURES.md](guides/GUIDE_FIXTURES.md)** - 🧪 Guide du système de fixtures pour les tests
 
 ## 🏗️ **Architecture**
 
@@ -158,16 +159,20 @@ La documentation des tests se trouve dans le répertoire `test/` :
 
 ### **Couverture**
 - **Architecture** : 2 documents détaillés
-- **Fonctionnalités** : 4 fonctionnalités documentées
-- **Corrections** : 3 corrections majeures documentées
-- **Implémentation** : 7 modules documentés
-- **Tests** : Documentation complète avec guides
+- **Base de données** : 5 guides (migrations, schéma, nettoyage)
+- **Fonctionnalités** : 21 fonctionnalités documentées
+- **Corrections** : 24 corrections documentées
+- **Guides** : 21 guides utilisateur et développeur
+- **Implémentation** : 8 modules documentés
+- **Installation** : 8 guides d'installation
+- **Tests** : 8 guides de tests avec fixtures
 
 ### **Qualité**
 - **Structure organisée** : Documentation classée par catégories
 - **Exemples pratiques** : Code et commandes d'exemple
 - **Guides d'utilisation** : Instructions étape par étape
-- **Métriques incluses** : Statistiques et résultats de tests
+- **Nettoyage régulier** : Suppression des fichiers obsolètes
+- **Pas de doublons** : Chaque information à un seul endroit
 
 ## 🔗 **Liens Utiles**
 
@@ -193,4 +198,5 @@ Cette documentation est maintenue à jour avec chaque modification du projet. Po
 3. **Suivez** la structure et le format existants
 4. **Testez** que vos liens fonctionnent correctement
 
-**Dernière mise à jour** : 2025-09-25
+**Dernière mise à jour** : 2025-01-20
+**Nettoyage** : 64 fichiers obsolètes supprimés (doublons, rapports de sessions, résumés déjà implémentés)

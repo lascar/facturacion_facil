@@ -11,9 +11,9 @@ Aplicación de facturación completa desarrollada en Python con **PyQt5**. Siste
 - ✅ **Exportación PDF**: Generación profesional de facturas con diseño empresarial
 - ✅ **Gestión de Clientes**: Base de datos completa de clientes
 - ✅ **Relación Stock-Facturas**: Sistema 100% operacional con confirmaciones automáticas
-- ✅ **Interfaz Moderna**: PyQt6 con look nativo del sistema operativo
+- ✅ **Interfaz Moderna**: PyQt5 con look nativo del sistema operativo
 - ✅ **Base de Datos**: SQLite con modelos optimizados y migraciones automáticas
-- ✅ **Sistema de Tests**: 243+ tests automatizados con cobertura completa
+- ✅ **Sistema de Tests**: 550+ tests automatizados con cobertura completa
 - ✅ **Arquitectura Modular**: Código bien estructurado y mantenible
 - ✅ **Documentación Completa**: Guías de usuario y desarrollador
 
@@ -140,7 +140,7 @@ python test/performance/benchmark_solution.py
 - **Datos completos**: Cliente, productos, totales, IVA, descuentos
 
 ### **🧪 Sistema de Testing Robusto**
-- **243+ tests automatizados**: Cobertura completa de funcionalidades
+- **550+ tests automatizados**: Cobertura completa de funcionalidades (74 archivos de test)
 - **Tests de integración**: Verificación de flujos completos
 - **Tests de rendimiento**: Benchmark y stress testing
 - **Validación continua**: Tests ejecutables en cualquier momento
@@ -152,7 +152,7 @@ python test/performance/benchmark_solution.py
 
 ```
 facturacion_facil/
-├── 🚀 main.py                    # Punto de entrada principal (PyQt6)
+├── 🚀 main.py                    # Punto de entrada principal (PyQt5)
 ├── 📋 requirements.txt           # Dependencias del proyecto
 ├── 🔧 activate.sh               # Script de activación del entorno
 ├── 🧹 clean_databases.sh        # Herramienta de limpieza de datos
@@ -191,11 +191,19 @@ facturacion_facil/
 │   ├── performance/             # Tests de rendimiento
 │   └── validate_solution.py     # Validación completa del sistema
 │
-├── 📚 docs/                     # Documentación completa
+├── 📚 docs/                     # Documentación completa (149 fichiers)
 │   ├── README.md                # Índice de documentación
-│   ├── architecture/            # Documentación de arquitectura
-│   ├── features/                # Documentación de funcionalidades
-│   └── implementation/          # Detalles de implementación
+│   ├── ARCHITECTURE.md          # Arquitectura del proyecto
+│   ├── TODO.md                  # Tareas y preferencias de desarrollo
+│   ├── architecture/            # Documentación de arquitectura (2)
+│   ├── database/                # Base de datos y migraciones (5)
+│   ├── features/                # Funcionalidades implementadas (21)
+│   ├── fixes/                   # Correcciones de bugs (24)
+│   ├── guides/                  # Guías de usuario y desarrollador (21)
+│   ├── implementation/          # Detalles de implementación (8)
+│   ├── installation/            # Guías de instalación (8)
+│   ├── testing/                 # Guías de tests (8)
+│   └── user/                    # Guías de usuario final (5)
 │
 ├── 📄 assets/                   # Recursos del proyecto
 │   ├── images/                  # Imágenes de productos
@@ -284,7 +292,7 @@ La aplicación utiliza SQLite con las siguientes tablas:
 - ✅ **Exportación PDF**: Generación profesional de facturas
 - ✅ **Base de Datos**: SQLite con modelos optimizados y migraciones
 - ✅ **Interfaz PyQt5**: Moderna, nativa y de alto rendimiento
-- ✅ **Sistema de Tests**: 243+ tests automatizados con cobertura completa
+- ✅ **Sistema de Tests**: 550+ tests automatizados con cobertura completa
 - ✅ **Documentación**: Guías completas de usuario y desarrollador
 
 ### 🎯 **Funcionalidades Avanzadas Disponibles**
@@ -409,21 +417,27 @@ make info
 
 ## 📚 Documentación
 
-La documentación completa del proyecto está organizada en el directorio `docs/`:
+La documentación completa del proyecto está organizada en el directorio `docs/` (**149 archivos**):
 
 - **[docs/README.md](docs/README.md)** - Índice de toda la documentación
-- **[docs/architecture/](docs/architecture/)** - Arquitectura y factorización del código
-- **[docs/features/](docs/features/)** - Nuevas funcionalidades implementadas
-- **[docs/fixes/](docs/fixes/)** - Correcciones y resoluciones de bugs
-- **[docs/implementation/](docs/implementation/)** - Detalles de implementación
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Arquitectura completa del proyecto
+- **[docs/TODO.md](docs/TODO.md)** - Tareas y preferencias de desarrollo
+- **[docs/guides/](docs/guides/)** - Guías de usuario y desarrollador (21 guías)
+- **[docs/features/](docs/features/)** - Funcionalidades implementadas (21 documentos)
+- **[docs/fixes/](docs/fixes/)** - Correcciones de bugs (24 documentos)
+- **[docs/database/](docs/database/)** - Base de datos y migraciones (5 guías)
+- **[docs/testing/](docs/testing/)** - Guías de tests (8 guías)
+- **[docs/user/](docs/user/)** - Guías de usuario final (5 guías)
 
 ### Documentación Destacada
 
-- **Arquitectura factorizada**: Código simplificado y reutilizable
-- **Gestión de archivos**: FileManager, ImageManager, LogoManager
-- **Tests organizados**: Suite completa de tests automatizados
-- **Funcionalidades**: PDF, stock, numeración
-- **Soluciones robustas**: Stock automático y exportación PDF
+- **[docs/guides/GUIDE_FIXTURES.md](docs/guides/GUIDE_FIXTURES.md)** - Sistema de fixtures para tests
+- **[docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md](docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md)** - Migraciones de base de datos
+- **[docs/guides/GUIDE_UTILISATEUR_FINAL.md](docs/guides/GUIDE_UTILISATEUR_FINAL.md)** - Guía de usuario final
+- **[docs/ORGANISATION_PROJET.md](docs/ORGANISATION_PROJET.md)** - Organización del proyecto
+- **[docs/MEJORAS_IMPLEMENTADAS.md](docs/MEJORAS_IMPLEMENTADAS.md)** - Mejoras implementadas
+
+> 🧹 **Nettoyage 2025-01-20**: Documentación optimizada - 64 archivos obsoletos eliminados (30% de reducción)
 
 ---
 
@@ -469,10 +483,11 @@ python3 validate_system.py
 ```
 
 ### **Documentación de Soporte**
-- **`docs/USER_GUIDE_STOCK_CONFIRMATION.md`** - Guía de confirmación de stock
+- **`docs/guides/GUIDE_UTILISATEUR_FINAL.md`** - Guía completa de usuario final
+- **`docs/guides/GUIDE_FIXTURES.md`** - Guía del sistema de fixtures para tests
+- **`docs/guides/GUIDE_SYSTEME_STOCK.md`** - Guía del sistema de stock
+- **`docs/guides/GUIDE_MIGRATIONS_BASE_DONNEES.md`** - Guía de migraciones de base de datos
 - **`docs/USER_GUIDE_PDF_EXPORT.md`** - Guía de exportación PDF
-- **`docs/ADMIN_GUIDE.md`** - Guía de administración del sistema
-- **`docs/TESTING_GUIDE.md`** - Guía completa de testing
 
 ## Licencia
 
