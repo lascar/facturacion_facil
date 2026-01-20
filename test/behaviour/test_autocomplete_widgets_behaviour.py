@@ -18,6 +18,7 @@ from test.behaviour.base_behaviour_test import BaseBehaviourTest
 from test.behaviour.utils.pyqt5_automation import PyQt5Automation
 from test.behaviour.utils.test_data_factory import TestDataFactory
 from utils.logger import get_logger
+from ui.factura_edit_window import FacturaEditWindow
 
 
 class TestAutoCompleteWidgetsBehaviour(BaseBehaviourTest):
@@ -146,28 +147,47 @@ class TestAutoCompleteWidgetsBehaviour(BaseBehaviourTest):
     def test_product_autocomplete_widget_specification(self):
         """Test: ProductAutoCompleteWidget selon spécifications facturacion_facil.txt"""
         self.logger.info("🧪 Test: ProductAutoCompleteWidget selon spécifications")
-        
+
         # Ouvrir la fenêtre Facturas pour tester l'autocomplétion produit
         facturas_btn = self.automation.find_button_by_text(self.main_window, "🧾 Facturas")
         QTest.mouseClick(facturas_btn, Qt.LeftButton)
         self.wait_and_process_events(500)
-        
-        # Trouver la fenêtre facturas
+
+        # Trouver la fenêtre facturas (liste)
         facturas_window = None
         for widget in self.app.topLevelWidgets():
             if hasattr(widget, 'windowTitle') and "Facturas" in widget.windowTitle():
                 facturas_window = widget
                 break
-        
+
         if not facturas_window:
             self.logger.warning("Fenêtre Facturas non trouvée, test ignoré")
             return
-        
-        # Trouver le widget d'autocomplétion produit
-        producto_widget = self.automation.find_widget_by_name(facturas_window, "producto_autocomplete")
+
+        # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+        new_btn = self.automation.find_button_by_text(facturas_window, "Nueva")
+        if not new_btn:
+            self.logger.warning("Bouton Nueva non trouvé, test ignoré")
+            return
+
+        self.automation.click_button_safe(new_btn, wait_after=0.5)
+
+        # Trouver la fenêtre d'édition
+        edit_window = None
+        for widget in self.app.topLevelWidgets():
+            if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                edit_window = widget
+                break
+
+        if not edit_window:
+            self.logger.warning("Fenêtre d'édition non trouvée, test ignoré")
+            return
+
+        # Trouver le widget d'autocomplétion produit dans la fenêtre d'édition
+        producto_widget = self.automation.find_widget_by_name(edit_window, "producto_autocomplete")
         if not producto_widget:
             # Essayer d'autres noms possibles
-            producto_widget = self.automation.find_widget_by_name(facturas_window, "producto_input")
+            producto_widget = self.automation.find_widget_by_name(edit_window, "producto_input")
         
         if producto_widget:
             # Test 1: Vérifier le placeholder selon spécifications
@@ -207,8 +227,18 @@ class TestAutoCompleteWidgetsBehaviour(BaseBehaviourTest):
             # Vérifier que le produit est sélectionné
             text = producto_widget.text()
             assert "Producto Test 1" in text, f"Produit non sélectionné: {text}"
-        
+
+            # Fermer la fenêtre d'édition
+            edit_window.close()
+            self.app.processEvents()
+        else:
+            self.logger.warning("Widget producto_autocomplete non trouvé, test ignoré")
+            # Fermer la fenêtre d'édition si elle est ouverte
+            if edit_window:
+                edit_window.close()
+                self.app.processEvents()
+
         facturas_window.close()
         self.wait_and_process_events(200)
-        
+
         self.logger.info("✅ Test ProductAutoCompleteWidget terminé")

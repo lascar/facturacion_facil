@@ -8,6 +8,7 @@ import time
 from test.behaviour.base_behaviour_test import BaseBehaviourTest
 from test.behaviour.utils.test_data_factory import TestDataFactory
 from test.behaviour.utils.pyqt5_automation import PyQt5Automation
+from ui.factura_edit_window import FacturaEditWindow
 
 class TestFacturasBehaviour(BaseBehaviourTest):
     """Tests de comportement pour la fenêtre Facturas"""
@@ -100,17 +101,22 @@ class TestFacturasBehaviour(BaseBehaviourTest):
     def test_facturas_window_startup(self):
         """Test du démarrage de la fenêtre Facturas"""
         self.logger.info("🧪 Test: Démarrage fenêtre Facturas")
-        
+
         # Vérifier que la fenêtre est visible
         self.assert_window_visible(self.facturas_window, "Facturas")
-        
+
         # Vérifier le titre
         assert "Facturas" in self.facturas_window.windowTitle()
-        
-        # Vérifier la présence des éléments principaux
-        assert hasattr(self.facturas_window, 'new_btn'), "Bouton nouveau manquant"
-        assert hasattr(self.facturas_window, 'save_btn'), "Bouton sauvegarder manquant"
-        
+
+        # Vérifier la présence des éléments principaux de la fenêtre liste
+        assert hasattr(self.facturas_window, 'new_btn'), "Bouton nuevo manquant"
+        assert hasattr(self.facturas_window, 'editar_btn'), "Bouton editar manquant"
+        assert hasattr(self.facturas_window, 'view_btn'), "Bouton view manquant"
+        assert hasattr(self.facturas_window, 'pdf_btn'), "Bouton PDF manquant"
+        assert hasattr(self.facturas_window, 'eliminar_btn'), "Bouton eliminar manquant"
+        assert hasattr(self.facturas_window, 'refresh_btn'), "Bouton refresh manquant"
+        assert hasattr(self.facturas_window, 'facturas_table'), "Table facturas manquante"
+
         self.take_screenshot("facturas_window_startup")
         self.logger.info("✅ Test démarrage Facturas réussi")
     
@@ -130,20 +136,39 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
             assert new_btn is not None, "Bouton Nueva Factura non trouvé"
 
-            success = self.automation.click_button_safe(new_btn, wait_after=0.3)
+            success = self.automation.click_button_safe(new_btn, wait_after=0.5)
             assert success, "Échec du clic sur Nueva Factura"
 
             self.slow_mode_wait()
 
+            # Attendre l'ouverture de la fenêtre d'édition
+            edit_window = None
+            for widget in self.app.topLevelWidgets():
+                if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                    edit_window = widget
+                    break
+
+            assert edit_window is not None, "Fenêtre d'édition non ouverte"
+            self.logger.info("✅ Fenêtre d'édition ouverte")
+
             # Vérifier que le formulaire est en mode création
             # Le numéro de facture devrait être généré automatiquement
-            if hasattr(self.facturas_window, 'numero_edit'):
-                numero_text = self.facturas_window.numero_edit.text()
-                assert numero_text, "Numéro de facture non généré"
-                self.logger.info(f"Numéro de facture généré: {numero_text}")
+            assert hasattr(edit_window, 'numero_edit'), "Champ numéro manquant"
+            numero_text = edit_window.numero_edit.text()
+            assert numero_text, "Numéro de facture non généré"
+            self.logger.info(f"Numéro de facture généré: {numero_text}")
+
+            # Vérifier les éléments du formulaire
+            assert hasattr(edit_window, 'cliente_autocomplete'), "Widget client manquant"
+            assert hasattr(edit_window, 'productos_table'), "Table produits manquante"
+            assert hasattr(edit_window, 'producto_autocomplete'), "Widget produit manquant"
 
             self.take_screenshot("nueva_factura_form")
             self.logger.info("✅ Test création facture basique réussi")
+
+            # Fermer la fenêtre d'édition
+            edit_window.close()
+            self.app.processEvents()
         except Exception as e:
             self.logger.error(f"❌ Erreur dans test_create_new_factura_basic: {e}")
             self.take_screenshot("nueva_factura_error")
@@ -151,22 +176,32 @@ class TestFacturasBehaviour(BaseBehaviourTest):
     
     @pytest.mark.timeout(15)
     def test_select_client_in_factura(self, mock_messagebox):
-        """Test de sélection d'un client dans une facture"""
+        """Test de sélection d'un client dans une factura"""
         self.logger.info("🧪 Test: Sélection client dans facture")
 
         # Mock des dialogues
         mock_messagebox.question.return_value = mock_messagebox.No
         mock_messagebox.information.return_value = mock_messagebox.Ok
 
-        # Créer une nouvelle facture
-        self.test_create_new_factura_basic(mock_messagebox)
+        # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+        new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+        self.automation.click_button_safe(new_btn, wait_after=0.5)
 
-        # Chercher le widget d'autocomplétion client
+        # Attendre l'ouverture de la fenêtre d'édition
+        edit_window = None
+        for widget in self.app.topLevelWidgets():
+            if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                edit_window = widget
+                break
+
+        assert edit_window is not None, "Fenêtre d'édition non ouverte"
+
+        # Chercher le widget d'autocomplétion client dans la fenêtre d'édition
         client_widget = None
-        if hasattr(self.facturas_window, 'client_autocomplete'):
-            client_widget = self.facturas_window.client_autocomplete
-        elif hasattr(self.facturas_window, 'cliente_edit'):
-            client_widget = self.facturas_window.cliente_edit
+        if hasattr(edit_window, 'cliente_autocomplete'):
+            client_widget = edit_window.cliente_autocomplete
+        elif hasattr(edit_window, 'cliente_edit'):
+            client_widget = edit_window.cliente_edit
 
         if client_widget:
             # Saisir le nom d'un client de test
@@ -177,6 +212,10 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             self.logger.info("✅ Test sélection client réussi")
         else:
             self.logger.warning("Widget de sélection client non trouvé")
+
+        # Fermer la fenêtre d'édition
+        edit_window.close()
+        self.app.processEvents()
     
     @pytest.mark.timeout(15)
     def test_add_product_to_factura(self, mock_messagebox):
@@ -187,13 +226,23 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         mock_messagebox.question.return_value = mock_messagebox.No
         mock_messagebox.information.return_value = mock_messagebox.Ok
 
-        # Créer une nouvelle facture et sélectionner un client
-        self.test_select_client_in_factura(mock_messagebox)
+        # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+        new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+        self.automation.click_button_safe(new_btn, wait_after=0.5)
 
-        # Chercher le bouton d'ajout de produit
-        add_product_btn = self.automation.find_button_by_text(self.facturas_window, "Agregar")
+        # Attendre l'ouverture de la fenêtre d'édition
+        edit_window = None
+        for widget in self.app.topLevelWidgets():
+            if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                edit_window = widget
+                break
+
+        assert edit_window is not None, "Fenêtre d'édition non ouverte"
+
+        # Chercher le bouton d'ajout de produit dans la fenêtre d'édition
+        add_product_btn = self.automation.find_button_by_text(edit_window, "Agregar")
         if not add_product_btn:
-            add_product_btn = self.automation.find_button_by_text(self.facturas_window, "➕")
+            add_product_btn = self.automation.find_button_by_text(edit_window, "➕")
 
         if add_product_btn:
             success = self.automation.click_button_safe(add_product_btn, wait_after=0.3)
@@ -203,6 +252,10 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             self.logger.info("✅ Test ajout produit réussi")
         else:
             self.logger.warning("Bouton d'ajout de produit non trouvé")
+
+        # Fermer la fenêtre d'édition
+        edit_window.close()
+        self.app.processEvents()
     
     def test_save_factura(self):
         """Test de sauvegarde d'une facture"""
@@ -270,20 +323,34 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         mock_messagebox.critical.return_value = mock_messagebox.Ok
 
         try:
-            # Créer une facture basique
-            self.test_create_new_factura_basic(mock_messagebox)
+            # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+            new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+            self.automation.click_button_safe(new_btn, wait_after=0.5)
 
-            # Vérifier la présence des champs de totaux
-            total_fields = ['subtotal', 'total_iva', 'total']
+            # Attendre l'ouverture de la fenêtre d'édition
+            edit_window = None
+            for widget in self.app.topLevelWidgets():
+                if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                    edit_window = widget
+                    break
+
+            assert edit_window is not None, "Fenêtre d'édition non ouverte"
+
+            # Vérifier la présence des champs de totaux dans la fenêtre d'édition
+            total_fields = ['subtotal', 'iva', 'total']
 
             for field_name in total_fields:
-                if hasattr(self.facturas_window, f'{field_name}_label'):
-                    field = getattr(self.facturas_window, f'{field_name}_label')
+                if hasattr(edit_window, f'{field_name}_label'):
+                    field = getattr(edit_window, f'{field_name}_label')
                     assert field is not None, f"Champ {field_name} non trouvé"
                     self.logger.info(f"✅ Champ {field_name} présent")
 
             self.take_screenshot("factura_totals")
             self.logger.info("✅ Test calcul totaux réussi")
+
+            # Fermer la fenêtre d'édition
+            edit_window.close()
+            self.app.processEvents()
         except Exception as e:
             self.logger.error(f"❌ Erreur dans test_factura_totals_calculation: {e}")
             self.take_screenshot("factura_totals_error")
@@ -335,7 +402,12 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         factura_id = db.add_invoice(factura_data)
         assert factura_id is not None, "Échec de la sauvegarde de la facture"
 
-        # Chercher le bouton de génération PDF
+        # Rafraîchir la liste pour voir la facture
+        refresh_btn = self.automation.find_button_by_text(self.facturas_window, "Actualizar")
+        if refresh_btn:
+            self.automation.click_button_safe(refresh_btn, wait_after=0.3)
+
+        # Chercher le bouton de génération PDF dans la fenêtre principale
         pdf_btn = self.automation.find_button_by_text(self.facturas_window, "PDF")
         if not pdf_btn:
             pdf_btn = self.automation.find_button_by_text(self.facturas_window, "Generar")
@@ -358,12 +430,22 @@ class TestFacturasBehaviour(BaseBehaviourTest):
         mock_messagebox.question.return_value = mock_messagebox.No
         mock_messagebox.information.return_value = mock_messagebox.Ok
 
-        # Créer une facture
-        self.test_create_new_factura_basic(mock_messagebox)
+        # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+        new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+        self.automation.click_button_safe(new_btn, wait_after=0.5)
 
-        # Chercher le combobox d'état
-        if hasattr(self.facturas_window, 'estado_combo'):
-            estado_combo = self.facturas_window.estado_combo
+        # Attendre l'ouverture de la fenêtre d'édition
+        edit_window = None
+        for widget in self.app.topLevelWidgets():
+            if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                edit_window = widget
+                break
+
+        assert edit_window is not None, "Fenêtre d'édition non ouverte"
+
+        # Chercher le combobox d'état dans la fenêtre d'édition
+        if hasattr(edit_window, 'estado_combo'):
+            estado_combo = edit_window.estado_combo
 
             # Changer l'état
             success = self.automation.select_combobox_item(estado_combo, "Enviada")
@@ -380,6 +462,10 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             self.logger.warning("Combobox d'état non trouvé")
 
         self.logger.info("✅ Test changement état réussi")
+
+        # Fermer la fenêtre d'édition
+        edit_window.close()
+        self.app.processEvents()
 
     @pytest.mark.behaviour
     @pytest.mark.gui

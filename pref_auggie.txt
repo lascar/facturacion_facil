@@ -57,6 +57,7 @@
 - ✅ VALIDATION OBLIGATOIRE : Lancer `test_no_confirmation_dialogs.py` pour vérifier
 - 📖 GUIDE OBLIGATOIRE : Consulter `INSTRUCTIONS_TESTS_BEHAVIOUR_SANS_BLOCAGE.md`
 - ❌ INTERDICTION : Ne jamais appeler manuellement `window.close()` dans les tests
+- ✅ pour lancer les tests :bash -c "source ../bin/activate && python -m pytest test/behaviour/test_facturas_behaviour.py::TestFacturasBehaviour::test_facturas_window_startup -v 2>&1 | tail -100"
 
 ### Protocole de sécurité des données - CRITIQUE ⚠️
 - ✅ AVANT tout test : Vérifier que `database.db_path` contient "test" ou "temp"

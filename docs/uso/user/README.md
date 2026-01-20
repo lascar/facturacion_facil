@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 👥 Documentation Utilisateur
 
 ## 📋 **Description**
@@ -31,7 +35,7 @@ user/
 
 ## 📖 **Guides Disponibles**
 
-### **📄 Guide Téléchargement PDF** (`GUIDE_UTILISATEUR_PDF_DOWNLOAD.md`)
+### **📄 Guide Téléchargement PDF** ([GUIDE_UTILISATEUR_PDF_DOWNLOAD.md](GUIDE_UTILISATEUR_PDF_DOWNLOAD.md))
 **Description** : Guide pour configurer et utiliser le téléchargement PDF
 **Public** : Utilisateurs finaux
 **Contenu** :
@@ -55,7 +59,7 @@ user/
 cat doc/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 ```
 
-### **🖥️ Guide Visor PDF Complet** (`GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md`)
+### **🖥️ Guide Visor PDF Complet** ([GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md](GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md))
 **Description** : Guide complet pour le visor PDF personnalisé
 **Public** : Utilisateurs finaux et administrateurs
 **Contenu** :
@@ -79,7 +83,7 @@ cat doc/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 ```
 
-### **🖼️ Guide Mini Images Facturas** (`GUIDE_MINI_IMAGES_FACTURAS.md`)
+### **🖼️ Guide Mini Images Facturas** ([GUIDE_MINI_IMAGES_FACTURAS.md](GUIDE_MINI_IMAGES_FACTURAS.md))
 **Description** : Guide pour les mini images dans les lignes de facture
 **Public** : Utilisateurs finaux
 **Contenu** :
@@ -103,7 +107,7 @@ cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 ./run_organized_tests.sh ui -k mini_images
 ```
 
-### **🔄 Guide Tri par Colonnes** (`GUIDE_UTILISATEUR_TRI_COLONNES.md`)
+### **🔄 Guide Tri par Colonnes** ([GUIDE_UTILISATEUR_TRI_COLONNES.md](GUIDE_UTILISATEUR_TRI_COLONNES.md))
 **Description** : Guide d'utilisation du système de tri par colonnes
 **Public** : Utilisateurs finaux
 **Contenu** :
@@ -121,7 +125,7 @@ cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 **Utilisation** :
 ```bash
 # Consulter le guide
-cat doc/user/GUIDE_UTILISATEUR_TRI_COLONNES.md
+cat docs/uso/user/GUIDE_UTILISATEUR_TRI_COLONNES.md
 
 # Démonstration interactive
 python test/demo/demo_treeview_sorting.py
@@ -135,13 +139,13 @@ python -m pytest test/ui/test_treeview_sorting.py -v
 ### **Pour Nouveaux Utilisateurs**
 ```bash
 # 1. Commencer par les fonctionnalités de base
-cat doc/user/GUIDE_MINI_IMAGES_FACTURAS.md
+cat docs/uso/user/GUIDE_MINI_IMAGES_FACTURAS.md
 
 # 2. Configurer les fonctionnalités PDF
-cat doc/user/GUIDE_UTILISATEUR_PDF_DOWNLOAD.md
+cat docs/uso/user/GUIDE_UTILISATEUR_PDF_DOWNLOAD.md
 
 # 3. Personnaliser l'expérience
-cat doc/user/GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md
+cat docs/uso/user/GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md
 
 # 4. Tester avec les démonstrations
 ./run_organized_tests.sh demo
@@ -154,21 +158,21 @@ cat doc/user/GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md
 ./run_organized_tests.sh demo -k mini_images
 
 # Guides étape par étape
-cat doc/user/GUIDE_UTILISATEUR_PDF_DOWNLOAD.md
-cat doc/user/GUIDE_MINI_IMAGES_FACTURAS.md
+cat docs/uso/user/GUIDE_UTILISATEUR_PDF_DOWNLOAD.md
+cat docs/uso/user/GUIDE_MINI_IMAGES_FACTURAS.md
 ```
 
 ### **Pour Support Technique**
 ```bash
 # Guides de dépannage
-grep -A 10 "Dépannage" doc/user/*.md
+grep -A 10 "Dépannage" docs/uso/user/*.md
 
 # Tests de validation
 ./run_organized_tests.sh integration -k pdf
 ./run_organized_tests.sh ui -k mini_images
 
 # Documentation technique associée
-cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
+cat docs/dev/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 ```
 
 ## 📊 **Structure des Guides Utilisateur**
@@ -281,9 +285,9 @@ grep -r "TODO\|FIXME" doc/user/
 ## 🎯 **Ressources Complémentaires**
 
 ### **Liens Internes**
-- **Technique** : `../technical/` - Documentation développeurs
-- **Tests** : `../../test/demo/` - Démonstrations interactives
-- **API** : `../api/` - Documentation API (si disponible)
+- **Technique** : [Documentation développeurs](../../dev/README.md)
+- **Tests** : Démonstrations interactives dans `../../test/demo/`
+- **API** : Documentation API (si disponible)
 
 ### **Démonstrations Pratiques**
 ```bash
@@ -306,4 +310,4 @@ grep -r "TODO\|FIXME" doc/user/
 
 **👥 Cette documentation utilisateur facilite l'adoption et l'utilisation optimale des fonctionnalités !**
 
-**Pour plus d'informations techniques, consultez : `../technical/README.md`**
+**Pour plus d'informations techniques, consultez : [Documentation technique](../../dev/README.md)**

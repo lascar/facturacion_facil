@@ -71,11 +71,8 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
 
     def setup_ui(self):
-        """Configurer l'interface utilisateur"""
-        # Activer le scroll pour cette fenêtre (contenu très long)
-        self.enable_window_scroll(enable_horizontal=False, enable_vertical=True)
-
-        # Obtenir le layout de contenu (scrollable ou normal)
+        """Configurer l'interface utilisateur - Liste uniquement"""
+        # Pas besoin de scroll pour une simple liste
         main_layout = self.get_content_layout()
 
         # Titre
@@ -84,43 +81,44 @@ class FacturasPyQt5Window(BasePyQt5Window):
         title_label.setFont(QFont("Arial", 16, QFont.Bold))
         main_layout.addWidget(title_label)
 
-        # Splitter vertical pour diviser liste (bas) et formulaire (haut)
-        main_splitter = QSplitter(Qt.Vertical)
-        main_layout.addWidget(main_splitter)
+        # Boutons d'action en haut
+        top_buttons_layout = QHBoxLayout()
 
-        # Partie supérieure - Formulaire d'édition/création
-        self.setup_factura_form(main_splitter)
+        self.new_btn = QPushButton("➕ Nueva Factura")
+        self.new_btn.setMinimumHeight(40)
+        self.new_btn.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #4CAF50; color: white;")
 
-        # Partie inférieure - Liste des factures
-        self.setup_facturas_list(main_splitter)
+        self.editar_btn = QPushButton("✏️ Editar")
+        self.editar_btn.setMinimumHeight(40)
+        self.editar_btn.setEnabled(False)
 
-        # Définir les proportions (formulaire plus grand que liste)
-        main_splitter.setSizes([400, 300])  # 400px pour formulaire, 300px pour liste
-
-        # Boutons d'action (sans le bouton Nueva Factura qui est maintenant en haut)
-        buttons_layout = QHBoxLayout()
-
-        self.save_btn = QPushButton("💾 Guardar")
-        self.cancel_btn = QPushButton("❌ Cancelar")
         self.view_btn = QPushButton("👁️ Ver Detalles")
+        self.view_btn.setMinimumHeight(40)
+        self.view_btn.setEnabled(False)
+
         self.pdf_btn = QPushButton("📄 Exportar PDF")
+        self.pdf_btn.setMinimumHeight(40)
+        self.pdf_btn.setEnabled(False)
+
         self.eliminar_btn = QPushButton("🗑️ Eliminar")
+        self.eliminar_btn.setMinimumHeight(40)
+        self.eliminar_btn.setEnabled(False)
+
         self.refresh_btn = QPushButton("🔄 Actualizar")
+        self.refresh_btn.setMinimumHeight(40)
 
-        buttons_layout.addWidget(self.save_btn)
-        buttons_layout.addWidget(self.cancel_btn)
-        buttons_layout.addWidget(self.view_btn)
-        buttons_layout.addWidget(self.pdf_btn)
-        buttons_layout.addWidget(self.eliminar_btn)
-        buttons_layout.addWidget(self.refresh_btn)
-        buttons_layout.addStretch()
+        top_buttons_layout.addWidget(self.new_btn)
+        top_buttons_layout.addWidget(self.editar_btn)
+        top_buttons_layout.addWidget(self.view_btn)
+        top_buttons_layout.addWidget(self.pdf_btn)
+        top_buttons_layout.addWidget(self.eliminar_btn)
+        top_buttons_layout.addWidget(self.refresh_btn)
+        top_buttons_layout.addStretch()
 
-        main_layout.addLayout(buttons_layout)
+        main_layout.addLayout(top_buttons_layout)
 
-        # Variables d'état
-        self.current_factura_id = None
-        self.is_editing = False
-        self.lineas_factura = []
+        # Liste des factures
+        self.setup_facturas_list_simple(main_layout)
 
         # Appliquer le style
         self.apply_style()
@@ -161,31 +159,25 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         parent.addWidget(form_widget)
 
-    def setup_facturas_list(self, parent):
-        """Configurer la liste des factures"""
-        list_widget = QWidget()
-        list_layout = QVBoxLayout(list_widget)
-
+    def setup_facturas_list_simple(self, parent_layout):
+        """Configurer la liste des factures (version simplifiée)"""
         # Label
-        list_label = QLabel("Lista de Facturas")
+        list_label = QLabel("Lista de Facturas (doble clic para editar)")
         list_label.setFont(QFont("Arial", 12, QFont.Bold))
-        list_layout.addWidget(list_label)
+        parent_layout.addWidget(list_label)
 
         # Table des factures
         self.facturas_table = QTableWidget()
         headers = ["Número", "Cliente", "Fecha", "Total", "Estado"]
         self.setup_table_widget(self.facturas_table, headers)
 
-        # Définir hauteur minimale pour afficher au moins 6 lignes
-        # Hauteur = header (~40-50px) + 6 lignes * hauteur_ligne (~35-40px) + marges (~20px)
-        # Windows nécessite plus d'espace que Linux
-        self.facturas_table.setMinimumHeight(300)
-
         # Connecter la sélection
         self.facturas_table.itemSelectionChanged.connect(self.on_factura_selected)
 
-        list_layout.addWidget(self.facturas_table)
-        parent.addWidget(list_widget)
+        # Connecter le double-clic pour éditer
+        self.facturas_table.itemDoubleClicked.connect(self.on_factura_double_clicked)
+
+        parent_layout.addWidget(self.facturas_table)
 
 
 
@@ -549,22 +541,119 @@ class FacturasPyQt5Window(BasePyQt5Window):
     def setup_connections(self):
         """Configurer les connexions de signaux"""
         # Boutons principaux
-        self.new_btn.clicked.connect(self.new_factura_inline)
-        self.save_btn.clicked.connect(self.save_factura)
-        self.cancel_btn.clicked.connect(self.cancel_edit)
+        self.new_btn.clicked.connect(self.open_new_factura_window)
+        self.editar_btn.clicked.connect(self.open_edit_factura_window)
         self.view_btn.clicked.connect(self.view_factura)
         self.pdf_btn.clicked.connect(self.exportar_pdf)
         self.eliminar_btn.clicked.connect(self.eliminar_factura)
         self.refresh_btn.clicked.connect(self.load_facturas)
 
-        # Formulaire
-        self.add_product_btn.clicked.connect(self.add_product_to_invoice)
+    def open_new_factura_window(self):
+        """Ouvrir une fenêtre pour créer une nouvelle facture"""
+        try:
+            self.logger.info("Abriendo ventana para nueva factura")
 
-        # Charger les données du formulaire
-        self.load_form_data()
+            # Créer une fenêtre d'édition sans données (nouvelle facture)
+            from ui.factura_edit_window import FacturaEditWindow
 
-        # Initialiser le formulaire en mode vide avec titre par défaut
-        self.clear_form(reset_title=True)
+            edit_window = FacturaEditWindow(
+                parent=self,
+                database_instance=self.database,
+                factura_data=None  # None = nouvelle facture
+            )
+
+            # Connecter le signal de sauvegarde pour rafraîchir la liste
+            edit_window.factura_saved.connect(self.on_factura_saved_from_window)
+
+            # Garder une référence pour éviter que la fenêtre soit détruite
+            self.current_edit_window = edit_window
+
+            # Forcer la fenêtre au premier plan de manière agressive
+            from PyQt5.QtCore import Qt
+            edit_window.setWindowFlags(edit_window.windowFlags() | Qt.WindowStaysOnTopHint)
+            edit_window.show()
+            edit_window.raise_()
+            edit_window.activateWindow()
+            edit_window.setFocus()
+
+            # Retirer le flag "always on top" après 500ms
+            from PyQt5.QtCore import QTimer
+            QTimer.singleShot(500, lambda: self._remove_always_on_top(edit_window))
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo ventana de nueva factura: {e}")
+            self.show_error("Error", f"Error al abrir ventana: {str(e)}")
+
+    def open_edit_factura_window(self):
+        """Ouvrir une fenêtre pour éditer la facture sélectionnée"""
+        try:
+            if not self.selected_factura_id:
+                self.show_warning("Advertencia", "Por favor, seleccione una factura para editar")
+                return
+
+            self.logger.info(f"Abriendo ventana para editar factura ID: {self.selected_factura_id}")
+
+            # Récupérer les données complètes de la facture
+            factura_data = self.factura_service.get_factura_by_id(self.selected_factura_id)
+
+            if not factura_data:
+                self.show_error("Error", "No se pudo cargar la factura seleccionada")
+                return
+
+            # Créer une fenêtre d'édition avec les données
+            from ui.factura_edit_window import FacturaEditWindow
+
+            edit_window = FacturaEditWindow(
+                parent=self,
+                database_instance=self.database,
+                factura_data=factura_data
+            )
+
+            # Connecter le signal de sauvegarde pour rafraîchir la liste
+            edit_window.factura_saved.connect(self.on_factura_saved_from_window)
+
+            # Garder une référence pour éviter que la fenêtre soit détruite
+            self.current_edit_window = edit_window
+
+            # Forcer la fenêtre au premier plan de manière agressive
+            from PyQt5.QtCore import Qt
+            edit_window.setWindowFlags(edit_window.windowFlags() | Qt.WindowStaysOnTopHint)
+            edit_window.show()
+            edit_window.raise_()
+            edit_window.activateWindow()
+            edit_window.setFocus()
+
+            # Retirer le flag "always on top" après 500ms
+            from PyQt5.QtCore import QTimer
+            QTimer.singleShot(500, lambda: self._remove_always_on_top(edit_window))
+
+        except Exception as e:
+            self.logger.error(f"Error abriendo ventana de edición: {e}")
+            self.show_error("Error", f"Error al abrir ventana: {str(e)}")
+
+    def _remove_always_on_top(self, window):
+        """Retirer le flag WindowStaysOnTopHint d'une fenêtre"""
+        try:
+            if window and window.isVisible():
+                from PyQt5.QtCore import Qt
+                flags = window.windowFlags()
+                flags &= ~Qt.WindowStaysOnTopHint
+                window.setWindowFlags(flags)
+                window.show()
+        except:
+            pass
+
+    def on_factura_double_clicked(self, item):
+        """Gérer le double-clic sur une facture pour l'éditer"""
+        self.open_edit_factura_window()
+
+    def on_factura_saved_from_window(self, factura_id):
+        """Callback appelé quand une facture est sauvegardée depuis la fenêtre d'édition"""
+        self.logger.info(f"Factura guardada desde ventana: ID {factura_id}")
+        # Rafraîchir la liste
+        self.load_facturas()
+        # Émettre le signal
+        self.factura_updated.emit(factura_id)
 
     def new_factura_inline(self):
         """Créer une nouvelle facture dans le formulaire intégré
@@ -909,15 +998,21 @@ class FacturasPyQt5Window(BasePyQt5Window):
             factura = self.facturas[current_row]
             self.selected_factura_id = factura.get('id')
 
-            # Récupérer les données complètes de la facture pour l'édition via FacturaService
-            factura_completa = self.factura_service.get_factura_by_id(self.selected_factura_id)
-            if factura_completa:
-                self.load_factura_in_form(factura_completa)
-                self.factura_selected.emit(factura_completa)
-            else:
-                self.logger.warning(f"Impossible de charger la factura {self.selected_factura_id}")
-                self.load_factura_in_form(factura)  # Fallback avec données limitées
-                self.factura_selected.emit(factura)
+            # Activer les boutons d'action
+            self.editar_btn.setEnabled(True)
+            self.view_btn.setEnabled(True)
+            self.pdf_btn.setEnabled(True)
+            self.eliminar_btn.setEnabled(True)
+
+            # Émettre le signal
+            self.factura_selected.emit(factura)
+        else:
+            # Aucune sélection
+            self.selected_factura_id = None
+            self.editar_btn.setEnabled(False)
+            self.view_btn.setEnabled(False)
+            self.pdf_btn.setEnabled(False)
+            self.eliminar_btn.setEnabled(False)
 
     def load_factura_in_form(self, factura):
         """Charger une facture dans le formulaire pour édition"""

@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from PyQt5.QtWidgets import QApplication
 from ui.facturas_pyqt5 import FacturasPyQt5Window
+from ui.factura_edit_window import FacturaEditWindow
 from test.behaviour.base_behaviour_test import BaseBehaviourTest
 
 
@@ -31,14 +32,41 @@ class TestIVAModifiable(BaseBehaviourTest):
         print('\n🧪 Test - IVA Recommandé Appliqué par Défaut\n')
         print('=' * 70)
 
-        # Créer la fenêtre de factures
-        window = FacturasPyQt5Window()
-        window.show()
+        # Créer la fenêtre de factures (liste)
+        list_window = FacturasPyQt5Window()
+        list_window.show()
         self.app.processEvents()
 
         try:
+            # Cliquer sur Nueva Factura pour ouvrir la fenêtre d'édition
+            from PyQt5.QtWidgets import QPushButton
+            new_btn = None
+            for child in list_window.findChildren(QPushButton):
+                if "Nueva" in child.text() or "Nuevo" in child.text():
+                    new_btn = child
+                    break
+
+            assert new_btn is not None, '❌ Bouton Nueva Factura non trouvé'
+            new_btn.click()
+            self.app.processEvents()
+
+            # Attendre l'ouverture de la fenêtre d'édition
+            import time
+            time.sleep(0.5)
+            self.app.processEvents()
+
+            # Trouver la fenêtre d'édition
+            edit_window = None
+            for widget in self.app.topLevelWidgets():
+                if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                    edit_window = widget
+                    break
+
+            assert edit_window is not None, '❌ Fenêtre d\'édition non ouverte'
+            print('✅ Fenêtre d\'édition ouverte')
+
             # Obtenir un produit
-            productos = window.producto_service.get_all_productos()
+            productos = edit_window.producto_service.get_all_productos()
             assert productos, '❌ Aucun produit disponible pour le test'
 
             # Trouver un produit avec un IVA différent de 21%
@@ -59,26 +87,26 @@ class TestIVAModifiable(BaseBehaviourTest):
             print(f'   Prix: {producto_test.get("precio_venta", 0.0)}€')
 
             # Simuler la sélection du produit
-            window.producto_autocomplete.set_product(producto_test)
-            window.cantidad_spin.setValue(2)
+            edit_window.producto_autocomplete.set_product(producto_test)
+            edit_window.cantidad_spin.setValue(2)
             self.app.processEvents()
 
             # Ajouter le produit
-            window.add_product_to_invoice()
+            edit_window.add_product_to_invoice()
             self.app.processEvents()
 
             # Vérifier que le produit a été ajouté
-            assert window.productos_table.rowCount() > 0, '\n❌ ERREUR: Produit non ajouté à la table'
+            assert edit_window.productos_table.rowCount() > 0, '\n❌ ERREUR: Produit non ajouté à la table'
 
             print(f'\n✅ Produit ajouté à la facture')
 
             # Vérifier les valeurs dans la table
             row = 0
-            nombre = window.productos_table.item(row, 0).text()
-            cantidad = window.productos_table.item(row, 1).text()
-            precio = window.productos_table.item(row, 2).text()
-            iva = window.productos_table.item(row, 3).text()
-            total = window.productos_table.item(row, 4).text()
+            nombre = edit_window.productos_table.item(row, 0).text()
+            cantidad = edit_window.productos_table.item(row, 1).text()
+            precio = edit_window.productos_table.item(row, 2).text()
+            iva = edit_window.productos_table.item(row, 3).text()
+            total = edit_window.productos_table.item(row, 4).text()
 
             print(f'\n📊 Valeurs dans la table:')
             print(f'   Producto: {nombre}')
@@ -128,8 +156,11 @@ class TestIVAModifiable(BaseBehaviourTest):
             print('=' * 70)
 
         finally:
-            # Fermer la fenêtre proprement
-            window.close()
+            # Fermer les fenêtres proprement
+            for widget in self.app.topLevelWidgets():
+                if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                    widget.close()
+            list_window.close()
             self.app.processEvents()
 
 

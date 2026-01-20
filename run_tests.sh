@@ -7,4 +7,4 @@ echo "🔧 Command: ${*:-all tests}"
 echo
 
 # Activate virtual environment directly and run pytest
-source ../bin/activate && python -m pytest "$@"
+source ../bin/activate && python3 -m pytest "$@"

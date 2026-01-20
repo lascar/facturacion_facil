@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🪟 Facturación Fácil - Installation Windows 11
 
 ## 🚀 Installation rapide (3 étapes)
@@ -66,7 +70,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 - **`install.bat`** - Installation automatique complète
 - **`start.bat`** - Lancement rapide de l'application
 - **`start.ps1`** - Version PowerShell (plus d'infos)
-- **`INSTALLATION_WINDOWS11.md`** - Guide détaillé
+- **[INSTALLATION_WINDOWS11.md](INSTALLATION_WINDOWS11.md)** - Guide détaillé
 
 ## 🆘 Support
 

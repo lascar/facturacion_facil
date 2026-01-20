@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](INDEX.md)** | **[📖 README](README.md)** | **[🏠 Inicio](../README.md)**
+
+---
+
 # 👥 Documentación para Usuarios
 
 Esta sección contiene toda la documentación de **Facturación Fácil** destinada a usuarios finales y administradores del sistema.
@@ -18,42 +22,42 @@ Esta sección contiene toda la documentación de **Facturación Fácil** destina
 Guías de uso del sistema para usuarios finales.
 
 #### **Guías de Usuario**
-- **`GUIDE_UTILISATEUR_FINAL.md`** - ⭐ Guía completa de usuario final
-- **`GUIDE_UTILISATEUR_PDF_CORRIGE.md`** - Guía de exportación PDF
-- **`GUIA_INICIO_RAPIDO.md`** - Guía de inicio rápido
-- **`EDICION_FACTURAS_GUIDE.md`** - Edición de facturas
-- **`GUIDE_ELIMINAR_FACTURAS.md`** - Eliminar facturas
-- **`GUIDE_BOUTON_PDF.md`** - Uso del botón PDF
+- **[GUIDE_UTILISATEUR_FINAL.md](guides/GUIDE_UTILISATEUR_FINAL.md)** - ⭐ Guía completa de usuario final
+- **[GUIDE_UTILISATEUR_PDF_CORRIGE.md](guides/GUIDE_UTILISATEUR_PDF_CORRIGE.md)** - Guía de exportación PDF
+- **[GUIA_INICIO_RAPIDO.md](guides/GUIA_INICIO_RAPIDO.md)** - Guía de inicio rápido
+- **[EDICION_FACTURAS_GUIDE.md](guides/EDICION_FACTURAS_GUIDE.md)** - Edición de facturas
+- **[GUIDE_ELIMINAR_FACTURAS.md](guides/GUIDE_ELIMINAR_FACTURAS.md)** - Eliminar facturas
+- **[GUIDE_BOUTON_PDF.md](guides/GUIDE_BOUTON_PDF.md)** - Uso del botón PDF
 
 #### **Guías de Instalación**
-- **`GUIA_COMPLETA_ICONOS.md`** - Instalación de iconos
-- **`GUIDE_GIT_CLONE_WINDOWS.md`** - Clonar repositorio en Windows
-- **`GUIDE_RESOLUTION_ENV_ACTIVATE.md`** - Activación de entorno virtual
-- **`GUIDE_UPDATE_WINDOWS11.md`** - Actualización en Windows 11
+- **[GUIA_COMPLETA_ICONOS.md](guides/GUIA_COMPLETA_ICONOS.md)** - Instalación de iconos
+- **[GUIDE_GIT_CLONE_WINDOWS.md](guides/GUIDE_GIT_CLONE_WINDOWS.md)** - Clonar repositorio en Windows
+- **[GUIDE_RESOLUTION_ENV_ACTIVATE.md](guides/GUIDE_RESOLUTION_ENV_ACTIVATE.md)** - Activación de entorno virtual
+- **[GUIDE_UPDATE_WINDOWS11.md](guides/GUIDE_UPDATE_WINDOWS11.md)** - Actualización en Windows 11
 
 ### 🔧 **installation/** (8 archivos)
 Instalación y configuración del sistema.
 
-- **`INSTALLATION_WINDOWS11.md`** - Instalación en Windows 11
-- **`DEMARRAGE_RAPIDE_WINDOWS.md`** - Inicio rápido en Windows
-- **`DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md`** - Actualización rápida
-- **`README_WINDOWS.md`** - README específico para Windows
-- **`INDEX_WINDOWS11.md`** - Índice Windows 11
-- **`RESUME_UPDATE_WINDOWS11.md`** - Resumen de actualización
-- **`SISTEMA_ENTORNO_VIRTUAL.md`** - Sistema de entorno virtual
-- **`SISTEMA_INSTALACION_COMPLETO.md`** - Sistema de instalación completo
+- **[INSTALLATION_WINDOWS11.md](installation/INSTALLATION_WINDOWS11.md)** - Instalación en Windows 11
+- **[DEMARRAGE_RAPIDE_WINDOWS.md](installation/DEMARRAGE_RAPIDE_WINDOWS.md)** - Inicio rápido en Windows
+- **[DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md](installation/DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md)** - Actualización rápida
+- **[README_WINDOWS.md](installation/README_WINDOWS.md)** - README específico para Windows
+- **[INDEX_WINDOWS11.md](installation/INDEX_WINDOWS11.md)** - Índice Windows 11
+- **[RESUME_UPDATE_WINDOWS11.md](installation/RESUME_UPDATE_WINDOWS11.md)** - Resumen de actualización
+- **[SISTEMA_ENTORNO_VIRTUAL.md](installation/SISTEMA_ENTORNO_VIRTUAL.md)** - Sistema de entorno virtual
+- **[SISTEMA_INSTALACION_COMPLETO.md](installation/SISTEMA_INSTALACION_COMPLETO.md)** - Sistema de instalación completo
 
 ### 👤 **user/** (5 archivos)
 Guías específicas de funcionalidades para usuarios.
 
-- **`GUIDE_MINI_IMAGES_FACTURAS.md`** - Imágenes en facturas
-- **`GUIDE_UTILISATEUR_PDF_DOWNLOAD.md`** - Descarga de PDF
-- **`GUIDE_UTILISATEUR_TRI_COLONNES.md`** - Ordenar columnas
-- **`GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md`** - Visor PDF completo
-- **`README.md`** - Índice de guías de usuario
+- **[GUIDE_MINI_IMAGES_FACTURAS.md](user/GUIDE_MINI_IMAGES_FACTURAS.md)** - Imágenes en facturas
+- **[GUIDE_UTILISATEUR_PDF_DOWNLOAD.md](user/GUIDE_UTILISATEUR_PDF_DOWNLOAD.md)** - Descarga de PDF
+- **[GUIDE_UTILISATEUR_TRI_COLONNES.md](user/GUIDE_UTILISATEUR_TRI_COLONNES.md)** - Ordenar columnas
+- **[GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md](user/GUIDE_UTILISATEUR_VISOR_PDF_COMPLET.md)** - Visor PDF completo
+- **[README.md](user/README.md)** - Índice de guías de usuario
 
 ### 📄 **Raíz** (1 archivo)
-- **`USER_GUIDE_PDF_EXPORT.md`** - Guía de exportación PDF
+- **[USER_GUIDE_PDF_EXPORT.md](USER_GUIDE_PDF_EXPORT.md)** - Guía de exportación PDF
 
 ---
 
@@ -62,8 +66,8 @@ Guías específicas de funcionalidades para usuarios.
 ### **Para Nuevos Usuarios**
 
 1. **Instalación**
-   - Windows: Lee `installation/INSTALLATION_WINDOWS11.md`
-   - Inicio rápido: `guides/GUIA_INICIO_RAPIDO.md`
+   - Windows: Lee [INSTALLATION_WINDOWS11.md](installation/INSTALLATION_WINDOWS11.md)
+   - Inicio rápido: [GUIA_INICIO_RAPIDO.md](guides/GUIA_INICIO_RAPIDO.md)
 
 2. **Primera Configuración**
    - Configura tu organización (empresa)
@@ -71,14 +75,14 @@ Guías específicas de funcionalidades para usuarios.
    - Crea tu primera factura
 
 3. **Guía Completa**
-   - Lee `guides/GUIDE_UTILISATEUR_FINAL.md` para todas las funcionalidades
+   - Lee [GUIDE_UTILISATEUR_FINAL.md](guides/GUIDE_UTILISATEUR_FINAL.md) para todas las funcionalidades
 
 ### **Para Usuarios Existentes**
 
-- **Crear Facturas**: `guides/EDICION_FACTURAS_GUIDE.md`
-- **Exportar PDF**: `USER_GUIDE_PDF_EXPORT.md`
-- **Eliminar Facturas**: `guides/GUIDE_ELIMINAR_FACTURAS.md`
-- **Ordenar Datos**: `user/GUIDE_UTILISATEUR_TRI_COLONNES.md`
+- **Crear Facturas**: [EDICION_FACTURAS_GUIDE.md](guides/EDICION_FACTURAS_GUIDE.md)
+- **Exportar PDF**: [USER_GUIDE_PDF_EXPORT.md](USER_GUIDE_PDF_EXPORT.md)
+- **Eliminar Facturas**: [GUIDE_ELIMINAR_FACTURAS.md](guides/GUIDE_ELIMINAR_FACTURAS.md)
+- **Ordenar Datos**: [GUIDE_UTILISATEUR_TRI_COLONNES.md](user/GUIDE_UTILISATEUR_TRI_COLONNES.md)
 
 ---
 
@@ -87,7 +91,7 @@ Guías específicas de funcionalidades para usuarios.
 ### **🎯 Esenciales**
 
 #### **1. Guía de Usuario Final** ⭐
-**Archivo**: `guides/GUIDE_UTILISATEUR_FINAL.md`
+**Archivo**: [GUIDE_UTILISATEUR_FINAL.md](guides/GUIDE_UTILISATEUR_FINAL.md)
 
 Guía completa que cubre:
 - Configuración inicial
@@ -98,7 +102,7 @@ Guía completa que cubre:
 - Control de stock
 
 #### **2. Guía de Inicio Rápido**
-**Archivo**: `guides/GUIA_INICIO_RAPIDO.md`
+**Archivo**: [GUIA_INICIO_RAPIDO.md](guides/GUIA_INICIO_RAPIDO.md)
 
 Para empezar rápidamente:
 - Instalación básica
@@ -106,7 +110,7 @@ Para empezar rápidamente:
 - Crear primera factura
 
 #### **3. Guía de Exportación PDF**
-**Archivo**: `USER_GUIDE_PDF_EXPORT.md`
+**Archivo**: [USER_GUIDE_PDF_EXPORT.md](USER_GUIDE_PDF_EXPORT.md)
 
 Cómo exportar facturas a PDF:
 - Seleccionar factura
@@ -118,16 +122,16 @@ Cómo exportar facturas a PDF:
 ## 🔧 Instalación
 
 ### **Windows 11**
-1. **Guía completa**: `installation/INSTALLATION_WINDOWS11.md`
-2. **Inicio rápido**: `installation/DEMARRAGE_RAPIDE_WINDOWS.md`
-3. **Actualización**: `installation/DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md`
+1. **Guía completa**: [INSTALLATION_WINDOWS11.md](installation/INSTALLATION_WINDOWS11.md)
+2. **Inicio rápido**: [DEMARRAGE_RAPIDE_WINDOWS.md](installation/DEMARRAGE_RAPIDE_WINDOWS.md)
+3. **Actualización**: [DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md](installation/DEMARRAGE_RAPIDE_UPDATE_WINDOWS.md)
 
 ### **Entorno Virtual**
-- **Sistema completo**: `installation/SISTEMA_ENTORNO_VIRTUAL.md`
-- **Resolución de problemas**: `guides/GUIDE_RESOLUTION_ENV_ACTIVATE.md`
+- **Sistema completo**: [SISTEMA_ENTORNO_VIRTUAL.md](installation/SISTEMA_ENTORNO_VIRTUAL.md)
+- **Resolución de problemas**: [GUIDE_RESOLUTION_ENV_ACTIVATE.md](guides/GUIDE_RESOLUTION_ENV_ACTIVATE.md)
 
 ### **Iconos y Accesos Directos**
-- **Guía completa**: `guides/GUIA_COMPLETA_ICONOS.md`
+- **Guía completa**: [GUIA_COMPLETA_ICONOS.md](guides/GUIA_COMPLETA_ICONOS.md)
 
 ---
 
@@ -169,16 +173,16 @@ Cómo exportar facturas a PDF:
 ## ❓ Preguntas Frecuentes
 
 ### **¿Cómo empiezo?**
-Lee la guía de inicio rápido: `guides/GUIA_INICIO_RAPIDO.md`
+Lee la guía de inicio rápido: [GUIA_INICIO_RAPIDO.md](guides/GUIA_INICIO_RAPIDO.md)
 
 ### **¿Cómo exporto facturas a PDF?**
-Lee: `USER_GUIDE_PDF_EXPORT.md` o `guides/GUIDE_BOUTON_PDF.md`
+Lee: [USER_GUIDE_PDF_EXPORT.md](USER_GUIDE_PDF_EXPORT.md) o [GUIDE_BOUTON_PDF.md](guides/GUIDE_BOUTON_PDF.md)
 
 ### **¿Cómo instalo en Windows?**
-Lee: `installation/INSTALLATION_WINDOWS11.md`
+Lee: [INSTALLATION_WINDOWS11.md](installation/INSTALLATION_WINDOWS11.md)
 
 ### **¿Problemas con el entorno virtual?**
-Lee: `guides/GUIDE_RESOLUTION_ENV_ACTIVATE.md`
+Lee: [GUIDE_RESOLUTION_ENV_ACTIVATE.md](guides/GUIDE_RESOLUTION_ENV_ACTIVATE.md)
 
 ---
 

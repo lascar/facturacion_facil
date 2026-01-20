@@ -1,3 +1,7 @@
+> **[🏠 README Principal](../README.md)** | **[🛠️ Documentación de Desarrollo](dev/INDEX.md)** | **[👥 Documentación de Usuario](uso/INDEX.md)**
+
+---
+
 # 📚 Documentación - Facturación Fácil
 
 > **Nota**: El README principal del proyecto se encuentra en la raíz: [`../README.md`](../README.md)
@@ -26,10 +30,10 @@ La documentación está organizada en **2 secciones principales** según la audi
 - 📄 **Exportación PDF** - Guía de exportación
 
 **Documentos destacados**:
-- `uso/guides/GUIDE_UTILISATEUR_FINAL.md` - ⭐ Guía completa de usuario
-- `uso/guides/GUIA_INICIO_RAPIDO.md` - Inicio rápido
-- `uso/installation/INSTALLATION_WINDOWS11.md` - Instalación Windows
-- `uso/USER_GUIDE_PDF_EXPORT.md` - Exportación PDF
+- [GUIDE_UTILISATEUR_FINAL.md](uso/guides/GUIDE_UTILISATEUR_FINAL.md) - ⭐ Guía completa de usuario
+- [GUIA_INICIO_RAPIDO.md](uso/guides/GUIA_INICIO_RAPIDO.md) - Inicio rápido
+- [INSTALLATION_WINDOWS11.md](uso/installation/INSTALLATION_WINDOWS11.md) - Instalación Windows
+- [USER_GUIDE_PDF_EXPORT.md](uso/USER_GUIDE_PDF_EXPORT.md) - Exportación PDF
 
 ---
 
@@ -49,10 +53,10 @@ La documentación está organizada en **2 secciones principales** según la audi
 - 🧪 **Testing** (27 docs) - Tests, fixtures, guías
 
 **Documentos críticos**:
-- `dev/TODO.md` - ⭐ Preferencias y reglas de desarrollo
-- `dev/ARCHITECTURE.md` - Arquitectura completa
-- `dev/testing/GUIDE_FIXTURES.md` - Sistema de fixtures (OBLIGATORIO)
-- `dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md` - Reglas de seguridad
+- [TODO.md](dev/TODO.md) - ⭐ Preferencias y reglas de desarrollo
+- [ARCHITECTURE.md](dev/ARCHITECTURE.md) - Arquitectura completa
+- [GUIDE_FIXTURES.md](dev/testing/GUIDE_FIXTURES.md) - Sistema de fixtures (OBLIGATORIO)
+- [REGLES_CRITIQUES_TESTS_BASE_DONNEES.md](dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md) - Reglas de seguridad
 
 ---
 

@@ -23,10 +23,24 @@ class TestFacturasListMinimumHeight(BaseBehaviourTest):
         self.config = test_config
         self.screenshots_dir = screenshots_dir
 
-        # Ouvrir la fenêtre Facturas
-        from ui.facturas_pyqt5 import FacturasPyQt5Window
-        self.facturas_window = FacturasPyQt5Window()
-        self.facturas_window.show()
+        # Ouvrir la fenêtre Facturas depuis le menu principal
+        from test.behaviour.utils.pyqt5_automation import PyQt5Automation
+        self.automation = PyQt5Automation(self.app)
+
+        self.main_window.show()
+        self.app.processEvents()
+
+        # Cliquer sur le bouton Facturas
+        facturas_btn = self.automation.find_button_by_text(self.main_window, "Facturas")
+        if facturas_btn:
+            self.automation.click_button_safe(facturas_btn, wait_after=0.2)
+            self.facturas_window = self.main_window.facturas_window
+        else:
+            # Fallback: créer directement la fenêtre
+            from ui.facturas_pyqt5 import FacturasPyQt5Window
+            self.facturas_window = FacturasPyQt5Window()
+            self.facturas_window.show()
+
         self.app.processEvents()
 
         yield

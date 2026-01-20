@@ -10,7 +10,7 @@
 - **[🏗️ Arquitectura](#️-arquitectura)** (2 archivos)
 - **[💾 Base de Datos](#-base-de-datos)** (5 archivos)
 - **[✨ Funcionalidades](#-funcionalidades)** (21 archivos)
-- **[🐛 Correcciones](#-correcciones)** (24 archivos)
+- **[🐛 Correcciones](#-correcciones)** (25 archivos)
 - **[🔧 Implementación](#-implementación)** (8 archivos)
 - **[♻️ Refactoring](#️-refactoring)** (11 archivos)
 - **[🌐 Servicios](#-servicios)** (2 archivos)
@@ -18,7 +18,7 @@
 - **[🔬 Técnico](#-técnico)** (3 archivos)
 - **[🧪 Testing](#-testing)** (27 archivos)
 
-**Total**: 122 documentos
+**Total**: 123 documentos
 
 ---
 
@@ -111,36 +111,37 @@
 4. **[DIALOG_IMPROVEMENTS_FINAL.md](fixes/DIALOG_IMPROVEMENTS_FINAL.md)** - Mejoras de diálogos
 5. **[DIALOG_SCROLL_FIX_SUMMARY.md](fixes/DIALOG_SCROLL_FIX_SUMMARY.md)** - Corrección scroll diálogos
 6. **[DIRECT_DIALOG_IMPLEMENTATION.md](fixes/DIRECT_DIALOG_IMPLEMENTATION.md)** - Implementación directa diálogos
-7. **[SOLUCION_COMPLETA_DIALOGS_BLOQUEO.md](fixes/SOLUCION_COMPLETA_DIALOGS_BLOQUEO.md)** - Solución bloqueo diálogos
+7. **[FACTURA_EDIT_WINDOW_FOREGROUND_FIX.md](fixes/FACTURA_EDIT_WINDOW_FOREGROUND_FIX.md)** - Ventana edición factura en primer plano ⭐
+8. **[SOLUCION_COMPLETA_DIALOGS_BLOQUEO.md](fixes/SOLUCION_COMPLETA_DIALOGS_BLOQUEO.md)** - Solución bloqueo diálogos
 
 ### **Base de Datos**
 
-8. **[DATABASE_DUPLICATE_FIX_SUMMARY.md](fixes/DATABASE_DUPLICATE_FIX_SUMMARY.md)** - Corrección duplicados BD
-9. **[DATABASE_SCHEMA_FIX_SUMMARY.md](fixes/DATABASE_SCHEMA_FIX_SUMMARY.md)** - Corrección esquema BD
+9. **[DATABASE_DUPLICATE_FIX_SUMMARY.md](fixes/DATABASE_DUPLICATE_FIX_SUMMARY.md)** - Corrección duplicados BD
+10. **[DATABASE_SCHEMA_FIX_SUMMARY.md](fixes/DATABASE_SCHEMA_FIX_SUMMARY.md)** - Corrección esquema BD
 
 ### **Stock**
 
-10. **[STOCK_ATTRIBUTE_ERROR_FIX.md](fixes/STOCK_ATTRIBUTE_ERROR_FIX.md)** - Error de atributo stock
-11. **[STOCK_DIALOG_FINAL_IMPLEMENTATION.md](fixes/STOCK_DIALOG_FINAL_IMPLEMENTATION.md)** - Implementación diálogo stock
-12. **[STOCK_SEARCH_FIX_SUMMARY.md](fixes/STOCK_SEARCH_FIX_SUMMARY.md)** - Corrección búsqueda stock
-13. **[STOCK_UPDATE_FACTURATION_FIX.md](fixes/STOCK_UPDATE_FACTURATION_FIX.md)** - Corrección actualización stock
-14. **[STOCK_UPDATE_INVESTIGATION.md](fixes/STOCK_UPDATE_INVESTIGATION.md)** - Investigación actualización stock
-15. **[STOCK_UPDATE_PROBLEM_CONFIRMED.md](fixes/STOCK_UPDATE_PROBLEM_CONFIRMED.md)** - Problema confirmado
-16. **[STOCK_WINDOW_FOCUS_FIX_SUMMARY.md](fixes/STOCK_WINDOW_FOCUS_FIX_SUMMARY.md)** - Corrección foco ventana
+11. **[STOCK_ATTRIBUTE_ERROR_FIX.md](fixes/STOCK_ATTRIBUTE_ERROR_FIX.md)** - Error de atributo stock
+12. **[STOCK_DIALOG_FINAL_IMPLEMENTATION.md](fixes/STOCK_DIALOG_FINAL_IMPLEMENTATION.md)** - Implementación diálogo stock
+13. **[STOCK_SEARCH_FIX_SUMMARY.md](fixes/STOCK_SEARCH_FIX_SUMMARY.md)** - Corrección búsqueda stock
+14. **[STOCK_UPDATE_FACTURATION_FIX.md](fixes/STOCK_UPDATE_FACTURATION_FIX.md)** - Corrección actualización stock
+15. **[STOCK_UPDATE_INVESTIGATION.md](fixes/STOCK_UPDATE_INVESTIGATION.md)** - Investigación actualización stock
+16. **[STOCK_UPDATE_PROBLEM_CONFIRMED.md](fixes/STOCK_UPDATE_PROBLEM_CONFIRMED.md)** - Problema confirmado
+17. **[STOCK_WINDOW_FOCUS_FIX_SUMMARY.md](fixes/STOCK_WINDOW_FOCUS_FIX_SUMMARY.md)** - Corrección foco ventana
 
 ### **PDF**
 
-17. **[PDF_EXPORT_SELECTION_FIX.md](fixes/PDF_EXPORT_SELECTION_FIX.md)** - Corrección selección exportación
-18. **[PDF_MESSAGES_COPYABLE_FIX_SUMMARY.md](fixes/PDF_MESSAGES_COPYABLE_FIX_SUMMARY.md)** - Mensajes PDF copiables
+18. **[PDF_EXPORT_SELECTION_FIX.md](fixes/PDF_EXPORT_SELECTION_FIX.md)** - Corrección selección exportación
+19. **[PDF_MESSAGES_COPYABLE_FIX_SUMMARY.md](fixes/PDF_MESSAGES_COPYABLE_FIX_SUMMARY.md)** - Mensajes PDF copiables
 
 ### **Interfaz**
 
-19. **[CORRECION_SELECCION_PRIMER_PRODUCTO.md](fixes/CORRECION_SELECCION_PRIMER_PRODUCTO.md)** - Selección primer producto
-20. **[FACTURA_IMPORT_FIX_SUMMARY.md](fixes/FACTURA_IMPORT_FIX_SUMMARY.md)** - Corrección importación factura
-21. **[FOCUS_AWARE_SCROLL_SOLUTION_SUMMARY.md](fixes/FOCUS_AWARE_SCROLL_SOLUTION_SUMMARY.md)** - Scroll con foco
-22. **[LOGO_PERSISTENCE_FIX_SUMMARY.md](fixes/LOGO_PERSISTENCE_FIX_SUMMARY.md)** - Persistencia logo
-23. **[SCROLL_FOCUS_FINAL_FIX_SUMMARY.md](fixes/SCROLL_FOCUS_FINAL_FIX_SUMMARY.md)** - Corrección final scroll/foco
-24. **[SOLUCION_LOGO_DESAPARECE.md](fixes/SOLUCION_LOGO_DESAPARECE.md)** - Solución logo desaparece
+20. **[CORRECION_SELECCION_PRIMER_PRODUCTO.md](fixes/CORRECION_SELECCION_PRIMER_PRODUCTO.md)** - Selección primer producto
+21. **[FACTURA_IMPORT_FIX_SUMMARY.md](fixes/FACTURA_IMPORT_FIX_SUMMARY.md)** - Corrección importación factura
+22. **[FOCUS_AWARE_SCROLL_SOLUTION_SUMMARY.md](fixes/FOCUS_AWARE_SCROLL_SOLUTION_SUMMARY.md)** - Scroll con foco
+23. **[LOGO_PERSISTENCE_FIX_SUMMARY.md](fixes/LOGO_PERSISTENCE_FIX_SUMMARY.md)** - Persistencia logo
+24. **[SCROLL_FOCUS_FINAL_FIX_SUMMARY.md](fixes/SCROLL_FOCUS_FINAL_FIX_SUMMARY.md)** - Corrección final scroll/foco
+25. **[SOLUCION_LOGO_DESAPARECE.md](fixes/SOLUCION_LOGO_DESAPARECE.md)** - Solución logo desaparece
 
 ---
 

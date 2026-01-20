@@ -1,3 +1,7 @@
+> **[⬆️ Volver al índice](../INDEX.md)** | **[📖 README](../README.md)** | **[🏠 Inicio](../../README.md)**
+
+---
+
 # 🔧 Documentation Technique
 
 ## 📋 **Description**
@@ -30,7 +34,7 @@ technical/
 
 ## 📖 **Documents Disponibles**
 
-### **🧪 Guide des Tests** (`TESTING_GUIDE.md`)
+### **🧪 Guide des Tests** ([`TESTING_GUIDE.md`](TESTING_GUIDE.md))
 **Description** : Guide complet du système de tests
 **Contenu** :
 - Structure des tests organisée
@@ -42,13 +46,13 @@ technical/
 **Utilisation** :
 ```bash
 # Consulter le guide
-cat doc/technical/TESTING_GUIDE.md
+cat docs/dev/technical/TESTING_GUIDE.md
 
 # Appliquer les pratiques
 ./run_organized_tests.sh --help
 ```
 
-### **📄 Fonctionnalité PDF Download** (`FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md`)
+### **📄 Fonctionnalité PDF Download** ([`FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md`](FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md))
 **Description** : Résumé technique de la fonctionnalité PDF
 **Contenu** :
 - Architecture de la fonctionnalité
@@ -60,13 +64,13 @@ cat doc/technical/TESTING_GUIDE.md
 **Utilisation** :
 ```bash
 # Comprendre l'implémentation PDF
-cat doc/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
+cat docs/dev/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 
 # Tester la fonctionnalité
 ./run_organized_tests.sh integration -k pdf
 ```
 
-### **📑 Résumé Final PDF Complet** (`RESUME_FINAL_FONCTIONNALITES_PDF.md`)
+### **📑 Résumé Final PDF Complet** ([`RESUME_FINAL_FONCTIONNALITES_PDF.md`](RESUME_FINAL_FONCTIONNALITES_PDF.md))
 **Description** : Documentation complète des fonctionnalités PDF
 **Contenu** :
 - Vue d'ensemble des fonctionnalités PDF
@@ -78,13 +82,13 @@ cat doc/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 **Utilisation** :
 ```bash
 # Vue d'ensemble PDF complète
-cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
+cat docs/dev/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 
 # Démonstration complète
 ./run_organized_tests.sh demo -k pdf
 ```
 
-### **🖼️ Mini Images Facturas** (`MINI_IMAGES_FACTURAS_RESUME.md`)
+### **🖼️ Mini Images Facturas** ([`MINI_IMAGES_FACTURAS_RESUME.md`](MINI_IMAGES_FACTURAS_RESUME.md))
 **Description** : Résumé technique des mini images dans facturas
 **Contenu** :
 - Architecture des utilitaires d'images
@@ -96,14 +100,14 @@ cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
 **Utilisation** :
 ```bash
 # Comprendre l'implémentation images
-cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
+cat docs/dev/technical/MINI_IMAGES_FACTURAS_RESUME.md
 
 # Tester les mini images
 ./run_organized_tests.sh ui -k mini_images
 ./run_organized_tests.sh demo -k mini_images
 ```
 
-### **🔄 Guide Système de Tri par Colonnes** (`../TREEVIEW_SORTING.md`)
+### **🔄 Guide Système de Tri par Colonnes** ([`../TREEVIEW_SORTING.md`](../TREEVIEW_SORTING.md))
 **Description** : Documentation complète du système de tri par colonnes
 **Contenu** :
 - Architecture du système TreeViewSorter
@@ -114,7 +118,7 @@ cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
 **Utilisation** :
 ```bash
 # Consulter le guide
-cat doc/TREEVIEW_SORTING.md
+cat docs/dev/TREEVIEW_SORTING.md
 
 # Tester le système
 python -m pytest test/ui/test_treeview_sorting.py -v
@@ -128,11 +132,11 @@ python test/demo/demo_treeview_sorting.py
 ### **Pour Nouveaux Développeurs**
 ```bash
 # 1. Commencer par le guide des tests
-cat doc/technical/TESTING_GUIDE.md
+cat docs/dev/technical/TESTING_GUIDE.md
 
 # 2. Comprendre les fonctionnalités principales
-cat doc/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
-cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
+cat docs/dev/technical/RESUME_FINAL_FONCTIONNALITES_PDF.md
+cat docs/dev/technical/MINI_IMAGES_FACTURAS_RESUME.md
 
 # 3. Appliquer les connaissances
 ./run_organized_tests.sh quick
@@ -142,13 +146,13 @@ cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
 ### **Pour Développement de Nouvelles Fonctionnalités**
 ```bash
 # 1. Étudier les implémentations existantes
-cat doc/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
+cat docs/dev/technical/FONCTIONNALITE_PDF_DOWNLOAD_RESUME.md
 
 # 2. Comprendre l'architecture
-cat doc/technical/MINI_IMAGES_FACTURAS_RESUME.md
+cat docs/dev/technical/MINI_IMAGES_FACTURAS_RESUME.md
 
 # 3. Suivre les bonnes pratiques
-cat doc/technical/TESTING_GUIDE.md
+cat docs/dev/technical/TESTING_GUIDE.md
 
 # 4. Tester l'intégration
 ./run_organized_tests.sh integration
@@ -157,7 +161,7 @@ cat doc/technical/TESTING_GUIDE.md
 ### **Pour Maintenance et Debug**
 ```bash
 # 1. Consulter la documentation technique
-cat doc/technical/[document_pertinent].md
+cat docs/dev/technical/[document_pertinent].md
 
 # 2. Exécuter les tests appropriés
 ./run_organized_tests.sh regression
@@ -184,7 +188,7 @@ cat doc/technical/[document_pertinent].md
 ## 🚀 **Bonnes Pratiques Techniques**
 
 ### **Lecture de Documentation**
-1. **Commencer par** : `TESTING_GUIDE.md` pour comprendre la structure
+1. **Commencer par** : [`TESTING_GUIDE.md`](TESTING_GUIDE.md) pour comprendre la structure
 2. **Approfondir avec** : Documents spécifiques aux fonctionnalités
 3. **Pratiquer avec** : Commandes et tests suggérés
 4. **Valider avec** : Démonstrations et tests d'intégration
@@ -253,9 +257,9 @@ Bénéfices techniques et utilisateur
 ## 🎯 **Ressources Complémentaires**
 
 ### **Liens Internes**
-- **Tests** : `../test/README.md` - Structure des tests
-- **Utilisateur** : `../user/` - Guides utilisateur finaux
-- **API** : `../api/` - Documentation API (si disponible)
+- **Tests** : [`../testing/`](../testing/) - Structure des tests
+- **Utilisateur** : [`../user/`](../user/) - Guides utilisateur finaux
+- **API** : [`../api/`](../api/) - Documentation API (si disponible)
 
 ### **Outils de Développement**
 ```bash
@@ -274,4 +278,4 @@ Bénéfices techniques et utilisateur
 
 **🔧 Cette documentation technique facilite le développement, la maintenance et l'évolution du projet !**
 
-**Pour plus d'informations générales, consultez : `../README.md`**
+**Pour plus d'informations générales, consultez : [`../README.md`](../README.md)**
