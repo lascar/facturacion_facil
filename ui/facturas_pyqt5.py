@@ -72,8 +72,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
 
     def setup_ui(self):
-        """Configurer l'interface utilisateur - Liste uniquement"""
-        # Pas besoin de scroll pour une simple liste
+        """Configurer l'interface utilisateur - Liste scrollable"""
+        # Activer le scroll pour la fenêtre
+        self.setup_scrollable_content(enable_horizontal=False, enable_vertical=True)
         main_layout = self.get_content_layout()
 
         # Titre
@@ -171,6 +172,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.facturas_table = QTableWidget()
         headers = ["Número", "Cliente", "Fecha", "Total", "Estado"]
         self.setup_table_widget(self.facturas_table, headers)
+
+        # Définir hauteur minimale pour afficher au moins 6 lignes
+        # Hauteur = header (~40-50px) + 6 lignes * hauteur_ligne (~35-40px) + marges (~20px)
+        self.facturas_table.setMinimumHeight(300)
 
         # Connecter la sélection
         self.facturas_table.itemSelectionChanged.connect(self.on_factura_selected)

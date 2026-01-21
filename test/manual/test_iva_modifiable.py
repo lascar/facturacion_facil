@@ -92,7 +92,7 @@ class TestIVAModifiable(BaseBehaviourTest):
             self.app.processEvents()
 
             # Ajouter le produit
-            edit_window.add_product_to_invoice()
+            edit_window.agregar_producto()
             self.app.processEvents()
 
             # Vérifier que le produit a été ajouté

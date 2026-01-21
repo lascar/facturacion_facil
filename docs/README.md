@@ -10,8 +10,8 @@
 
 ## 📊 Estadísticas
 
-- **Total de archivos**: 146 documentos markdown
-- **Última actualización**: 2025-01-20
+- **Total de archivos**: 148 documentos markdown
+- **Última actualización**: 2026-01-21
 - **Organización**: 2 secciones principales (dev/uso)
 
 ---
@@ -37,7 +37,7 @@ La documentación está organizada en **2 secciones principales** según la audi
 
 ---
 
-### 🛠️ **[Documentación de Desarrollo](dev/README.md)** (121 archivos)
+### 🛠️ **[Documentación de Desarrollo](dev/README.md)** (123 archivos)
 
 **Para desarrolladores y mantenedores del proyecto**
 
@@ -46,15 +46,17 @@ La documentación está organizada en **2 secciones principales** según la audi
 - ✨ **Funcionalidades** (21 docs) - Features implementadas
 - 🐛 **Correcciones** (24 docs) - Bugs resueltos
 - 🔧 **Implementación** (8 docs) - Detalles de implementación
-- ♻️ **Refactoring** (11 docs) - Refactorización y optimización
+- ♻️ **Refactoring** (12 docs) - Refactorización y optimización
 - 🌐 **Servicios** (2 docs) - API y servicios
 - 💡 **Soluciones** (18 docs) - Soluciones técnicas
 - 🔬 **Técnico** (3 docs) - Documentación técnica
-- 🧪 **Testing** (27 docs) - Tests, fixtures, guías
+- 🧪 **Testing** (28 docs) - Tests, fixtures, guías
 
 **Documentos críticos**:
 - [TODO.md](dev/TODO.md) - ⭐ Preferencias y reglas de desarrollo
 - [ARCHITECTURE.md](dev/ARCHITECTURE.md) - Arquitectura completa
+- [ORGANIZACION_CONFIG_JSON_REFACTORING.md](dev/refactoring/ORGANIZACION_CONFIG_JSON_REFACTORING.md) - 🔧 Refactorización Organización (NUEVO)
+- [PROTECTION_FICHIERS_PRODUCTION.md](dev/testing/PROTECTION_FICHIERS_PRODUCTION.md) - 🛡️ Protección de producción (CRÍTICO)
 - [GUIDE_FIXTURES.md](dev/testing/GUIDE_FIXTURES.md) - Sistema de fixtures (OBLIGATORIO)
 - [REGLES_CRITIQUES_TESTS_BASE_DONNEES.md](dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md) - Reglas de seguridad
 
@@ -63,7 +65,7 @@ La documentación está organizada en **2 secciones principales** según la audi
 ## 📁 Estructura Completa
 
 ```
-docs/ (146 archivos)
+docs/ (148 archivos)
 ├── README.md                    # Este archivo - Índice principal
 │
 ├── 👥 uso/                      # Documentación de Usuario (24 archivos)
@@ -73,7 +75,7 @@ docs/ (146 archivos)
 │   ├── user/                    # Funcionalidades específicas (5)
 │   └── USER_GUIDE_PDF_EXPORT.md # Guía de exportación PDF
 │
-└── 🛠️ dev/                      # Documentación de Desarrollo (121 archivos)
+└── 🛠️ dev/                      # Documentación de Desarrollo (123 archivos)
     ├── README.md                # Índice de documentación de desarrollo
     ├── ARCHITECTURE.md          # Arquitectura del proyecto
     ├── TODO.md                  # Tareas y preferencias ⭐
@@ -104,8 +106,9 @@ docs/ (146 archivos)
 ### **Para Desarrolladores**
 1. Lee **[TODO.md](dev/TODO.md)** - Preferencias y reglas ⭐
 2. Revisa **[ARCHITECTURE.md](dev/ARCHITECTURE.md)** - Arquitectura
-3. Estudia **[GUIDE_FIXTURES.md](dev/testing/GUIDE_FIXTURES.md)** - Sistema de fixtures
-4. Lee **[REGLES_CRITIQUES](dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md)** - Seguridad
+3. **🛡️ [PROTECTION_FICHIERS_PRODUCTION.md](dev/testing/PROTECTION_FICHIERS_PRODUCTION.md)** - Protección de producción (CRÍTICO)
+4. Estudia **[GUIDE_FIXTURES.md](dev/testing/GUIDE_FIXTURES.md)** - Sistema de fixtures
+5. Lee **[REGLES_CRITIQUES](dev/testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md)** - Seguridad
 
 ---
 

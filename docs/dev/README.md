@@ -10,8 +10,8 @@ Esta sección contiene toda la documentación técnica del proyecto **Facturaci�
 
 ## 📊 Estadísticas
 
-- **Total de archivos**: 121 documentos markdown
-- **Última actualización**: 2025-01-20
+- **Total de archivos**: 123 documentos markdown
+- **Última actualización**: 2026-01-21
 - **Organización**: 10 categorías temáticas
 
 ---
@@ -60,9 +60,11 @@ Detalles de implementación de módulos y funcionalidades.
 - [`STOCK_IMPLEMENTATION_SUMMARY.md`](implementation/STOCK_IMPLEMENTATION_SUMMARY.md) - Implementación de stock
 - [`VALIDACION_OPCIONAL_FACTURAS_RESUMEN.md`](implementation/VALIDACION_OPCIONAL_FACTURAS_RESUMEN.md) - Validación opcional
 
-### ♻️ **refactoring/** (11 archivos)
+### ♻️ **refactoring/** (12 archivos)
 Refactorización y optimizaciones del código.
 
+Destacados:
+- [`ORGANIZACION_CONFIG_JSON_REFACTORING.md`](refactoring/ORGANIZACION_CONFIG_JSON_REFACTORING.md) - **🔧 Refactorización Organización (config.json como fuente única)**
 - [`FINAL_VALIDATION_REPORT.md`](refactoring/FINAL_VALIDATION_REPORT.md) - Reporte de validación final
 - [`REFACTORING_SUMMARY.md`](refactoring/REFACTORING_SUMMARY.md) - Resumen de refactorización
 - [`REFACTORISATION_PYTHONIC_PLAN.md`](refactoring/REFACTORISATION_PYTHONIC_PLAN.md) - Plan de refactorización Pythonic
@@ -89,11 +91,12 @@ Documentación técnica detallada.
 - [`README.md`](technical/README.md) - Índice técnico
 - [`RESUME_FINAL_FONCTIONNALITES_PDF.md`](technical/RESUME_FINAL_FONCTIONNALITES_PDF.md) - Resumen funcionalidades PDF
 
-### 🧪 **testing/** (27 archivos)
+### 🧪 **testing/** (28 archivos)
 Tests, fixtures y guías de testing.
 
 Destacados:
 - [`GUIDE_FIXTURES.md`](testing/GUIDE_FIXTURES.md) - **Sistema de fixtures (OBLIGATORIO)**
+- [`PROTECTION_FICHIERS_PRODUCTION.md`](testing/PROTECTION_FICHIERS_PRODUCTION.md) - **🛡️ Protección de archivos de producción (CRÍTICO)**
 - [`GUIDE_TESTS_BEHAVIOUR_AUTO_CLOSE.md`](testing/GUIDE_TESTS_BEHAVIOUR_AUTO_CLOSE.md) - Tests sin bloqueo
 - [`GUIDE_TEST_SYNCHRONISATION.md`](testing/GUIDE_TEST_SYNCHRONISATION.md) - Sincronización de tests
 - [`REGLES_CRITIQUES_TESTS_BASE_DONNEES.md`](testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md) - **Reglas críticas de tests**
@@ -124,8 +127,9 @@ Destacados:
 ### **ANTES DE EMPEZAR**
 1. 📖 **[`TODO.md`](TODO.md)** - Leer preferencias y reglas de desarrollo
 2. 🏗️ **[`ARCHITECTURE.md`](ARCHITECTURE.md)** - Entender la arquitectura
-3. 🧪 **[`testing/GUIDE_FIXTURES.md`](testing/GUIDE_FIXTURES.md)** - Sistema de fixtures (OBLIGATORIO)
-4. ⚠️ **[`testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md`](testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md)** - Reglas de seguridad
+3. 🛡️ **[`testing/PROTECTION_FICHIERS_PRODUCTION.md`](testing/PROTECTION_FICHIERS_PRODUCTION.md)** - Protección de producción (CRÍTICO)
+4. 🧪 **[`testing/GUIDE_FIXTURES.md`](testing/GUIDE_FIXTURES.md)** - Sistema de fixtures (OBLIGATORIO)
+5. ⚠️ **[`testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md`](testing/REGLES_CRITIQUES_TESTS_BASE_DONNEES.md)** - Reglas de seguridad
 
 ### **Desarrollo de Funcionalidades**
 - `features/` - Ver funcionalidades existentes

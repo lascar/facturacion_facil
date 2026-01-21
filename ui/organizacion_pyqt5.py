@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Fenêtre de configuration de l'organisation - Version PyQt5 native
-Refactorisée pour utiliser OrganizacionService (Phase 5)
+Utilise UNIQUEMENT config/config.json comme source de vérité
 """
 
 import os
@@ -17,18 +17,13 @@ from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont, QPixmap, QTransform, QColor
 
 from ui.base_pyqt5_window import BasePyQt5Window
-from database import database  # Import du module, pas de l'instance
-from services.organizacion_service import OrganizacionService
 from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
-from utils.exceptions import (
-    OrganizationValidationError, OrganizationNotFoundError, DatabaseError
-)
 from ui.data_cleanup_dialog import DataCleanupDialog
 from ui.todo_editor_dialog import TodoEditorDialog
 
 class OrganizacionPyQt5Window(BasePyQt5Window):
-    """Fenêtre de configuration de l'organisation avec PyQt5 - Refactorisée avec OrganizacionService"""
+    """Fenêtre de configuration de l'organisation avec PyQt5 - Utilise uniquement config.json"""
 
     # Signaux
     organizacion_updated = Signal()
@@ -36,10 +31,6 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     def __init__(self, parent=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Configuración de la Organización", 800, 600)
-
-        # Service métier - utiliser le même chemin DB
-        db_path = database.db.db_path if hasattr(database.db, 'db_path') else None
-        self.organizacion_service = OrganizacionService(db_path)
 
         # Variables
         self.organizacion_data = {}
@@ -416,6 +407,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                     merged = defaults.copy()
                     merged.update(org_defaults)
 
+                    self.logger.info(f"Chargement config.json - nombre dans org_defaults: '{org_defaults.get('nombre', 'N/A')}'")
+                    self.logger.info(f"Chargement config.json - nombre dans merged: '{merged.get('nombre', 'N/A')}'")
+
                     # Si des clés manquaient, sauvegarder la version fusionnée
                     if set(merged.keys()) != set(org_defaults.keys()):
                         self.logger.info("Ajout des valeurs par défaut manquantes dans config.json")
@@ -437,8 +431,33 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.logger.error(f"Erreur chargement config.json: {e}")
             return self.get_default_config()
 
+    def save_all_to_config_json(self, organizacion_data):
+        """Sauvegarder TOUTES les données de l'organisation dans config.json"""
+        try:
+            # Créer le répertoire si nécessaire
+            os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
+
+            # Charger le fichier existant ou créer un nouveau
+            config = {}
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+
+            # Mettre à jour toutes les valeurs dans organizacion_defaults
+            config['organizacion_defaults'] = organizacion_data
+
+            # Sauvegarder
+            with open(self.config_file, 'w', encoding='utf-8') as f:
+                json.dump(config, f, indent=2, ensure_ascii=False)
+
+            self.logger.info("Config.json sauvegardé avec succès (toutes les données)")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur sauvegarde config.json: {e}")
+            return False
+
     def save_config_json(self, condiciones_pago, informacion_legal):
-        """Sauvegarder condiciones_pago et informacion_legal dans config.json"""
+        """Sauvegarder condiciones_pago et informacion_legal dans config.json (DEPRECATED - utiliser save_all_to_config_json)"""
         try:
             # Charger le fichier existant
             config = {}
@@ -464,23 +483,19 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             return False
 
     def load_organizacion(self):
-        """Charger les données de l'organisation depuis la base de données via OrganizacionService"""
+        """Charger les données de l'organisation depuis config.json UNIQUEMENT"""
         try:
-            self.organizacion_data = self.organizacion_service.get_organizacion()
-            if self.organizacion_data:
-                self.load_organization_data(self.organizacion_data)
+            # Charger les données depuis config.json (source unique de vérité)
+            config_data = self.load_config_json()
+
+            if config_data:
+                self.logger.info("Chargement de la configuration depuis config.json")
+                self.load_organization_data(config_data)
             else:
-                # Données par défaut si aucune organisation n'existe
+                # Aucune donnée disponible, formulaire vide
+                self.logger.warning("Aucune configuration trouvée dans config.json")
                 self.clear_form()
 
-            # Charger aussi les données depuis config.json
-            config_data = self.load_config_json()
-            if config_data:
-                self.condiciones_pago_edit.setPlainText(config_data.get('condiciones_pago', ''))
-                self.informacion_legal_edit.setPlainText(config_data.get('informacion_legal', ''))
-        except DatabaseError as e:
-            self.logger.error(f"Erreur base de données: {e}")
-            self.show_error("Error de Base de Datos", f"Error al cargar la configuración: {str(e)}")
         except Exception as e:
             self.logger.error(f"Erreur chargement organisation: {e}")
             self.show_error("Error", f"Error inesperado: {str(e)}")
@@ -806,14 +821,14 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self._updating_preview = False
 
     def save_organizacion(self):
-        """Sauvegarder la configuration de l'organisation"""
+        """Sauvegarder la configuration de l'organisation dans config.json UNIQUEMENT"""
         try:
             # Validation basique
             if not self.nombre_edit.text().strip():
                 self.show_warning("Validation", "Le nom de l'entreprise est requis")
                 return
 
-            # Préparer les données
+            # Préparer les données pour config.json
             organizacion_data = {
                 'nombre': self.nombre_edit.text().strip(),
                 'cif': self.cif_edit.text().strip(),
@@ -826,40 +841,20 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'directorio_imagenes_defecto': self.images_dir_edit.text().strip(),
                 'directorio_logos_storage': self.logos_storage_dir_edit.text().strip(),
                 'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip(),
-                'directorio_informes': self.informes_dir_edit.text().strip()
+                'directorio_informes': self.informes_dir_edit.text().strip(),
+                'condiciones_pago': self.condiciones_pago_edit.toPlainText().strip(),
+                'informacion_legal': self.informacion_legal_edit.toPlainText().strip()
             }
 
-            # Sauvegarder dans la base de données via OrganizacionService
-            if self.organizacion_data and self.organizacion_data.get('id'):
-                # Mise à jour
-                organizacion_data['id'] = self.organizacion_data['id']
-                self.organizacion_service.update_organizacion(organizacion_data)
-            else:
-                # Nouvelle organisation
-                self.organizacion_service.create_organizacion(organizacion_data)
-
-            # Sauvegarder condiciones_pago et informacion_legal dans config.json
-            condiciones_pago = self.condiciones_pago_edit.toPlainText().strip()
-            informacion_legal = self.informacion_legal_edit.toPlainText().strip()
-
-            if self.save_config_json(condiciones_pago, informacion_legal):
+            # Sauvegarder TOUT dans config.json (source unique de vérité)
+            if self.save_all_to_config_json(organizacion_data):
                 self.show_info("Éxito", "Configuración actualizada correctamente")
+                # Recharger les données
+                self.load_organizacion()
+                self.organizacion_updated.emit()
             else:
-                self.show_warning("Advertencia", "Configuración guardada pero hubo un error al guardar condiciones de pago e información legal")
+                self.show_error("Error", "Error al guardar la configuración")
 
-            # Recharger les données
-            self.load_organizacion()
-            self.organizacion_updated.emit()
-
-        except OrganizationValidationError as e:
-            self.logger.error(f"Erreur validation organisation: {e}")
-            self.show_error("Error de Validación", str(e))
-        except OrganizationNotFoundError as e:
-            self.logger.error(f"Organisation non trouvée: {e}")
-            self.show_error("Organización No Encontrada", str(e))
-        except DatabaseError as e:
-            self.logger.error(f"Erreur base de données: {e}")
-            self.show_error("Error de Base de Datos", str(e))
         except Exception as e:
             self.logger.error(f"Erreur sauvegarde organisation: {e}")
             self.show_error("Error", f"Error inesperado: {str(e)}")

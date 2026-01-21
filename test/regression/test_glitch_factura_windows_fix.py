@@ -117,45 +117,54 @@ class TestGlitchFacturaWindowsFix(unittest.TestCase):
 def run_visual_test():
     """Test visuel pour vérifier l'absence de glitch (optionnel)"""
     print("\n🧪 Test visuel du fix du glitch...")
-    
+
     app = QApplication.instance() or QApplication([])
-    
+
     try:
         # Simuler l'ouverture d'un dialog comme dans l'usage réel
         from database.database import Database
-        
-        # Utiliser une base de test
-        database = Database("base_de_datos/test_facturacion.db")
-        
+        import tempfile
+
+        # ✅ PROTECTION: Créer une base de test temporaire au lieu d'utiliser la production
+        temp_db_fd, temp_db_path = tempfile.mkstemp(suffix='.db', prefix='test_glitch_')
+        os.close(temp_db_fd)
+        database = Database(temp_db_path)
+
         print("1. Test CrearFacturaDialog...")
         crear_dialog = CrearFacturaDialog(database, None)
-        
+
         # Vérifier qu'il utilise le mixin sans glitch
         if isinstance(crear_dialog, NoGlitchDialogForegroundMixin):
             print("   ✅ CrearFacturaDialog utilise le mixin sans glitch")
         else:
             print("   ❌ CrearFacturaDialog n'utilise pas le mixin sans glitch")
             return False
-        
+
         crear_dialog.close()
-        
+
         print("2. Test FacturaEditWindow...")
-        
+
         # Créer une fenêtre d'édition
         edit_window = FacturaEditWindow(None, database, None)
-        
+
         # Vérifier qu'elle utilise le mixin sans glitch
         if isinstance(edit_window, NoGlitchDialogForegroundMixin):
             print("   ✅ FacturaEditWindow utilise le mixin sans glitch")
         else:
             print("   ❌ FacturaEditWindow n'utilise pas le mixin sans glitch")
             return False
-        
+
         edit_window.close()
-        
+
+        # Nettoyer la base de test
+        try:
+            os.unlink(temp_db_path)
+        except:
+            pass
+
         print("\n✅ SUCCÈS: Toutes les fenêtres utilisent le système sans glitch")
         return True
-        
+
     except Exception as e:
         print(f"\n❌ ERREUR dans le test visuel: {e}")
         return False

@@ -4,9 +4,10 @@ Fenêtre d'édition/création de facture unifiée
 Gère à la fois la création et l'édition de factures
 """
 
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, 
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
                              QLineEdit, QDateEdit, QComboBox, QTableWidget, QTableWidgetItem,
-                             QGroupBox, QGridLayout, QSpinBox, QDoubleSpinBox, QMessageBox, QWidget)
+                             QGroupBox, QGridLayout, QSpinBox, QDoubleSpinBox, QMessageBox, QWidget,
+                             QScrollArea)
 from PyQt5.QtCore import Qt, pyqtSignal as Signal, QDate, QTimer
 from PyQt5.QtGui import QFont
 from ui.client_autocomplete_widget import ClientAutoCompleteWidget, ClientDetailsWidget
@@ -77,27 +78,41 @@ class FacturaEditWindow(QDialog, NoGlitchDialogForegroundMixin):
     
     def setup_ui(self):
         """Configure l'interface utilisateur"""
-        layout = QVBoxLayout(self)
-        
+        # Layout principal du dialog
+        main_layout = QVBoxLayout(self)
+
+        # Créer un widget conteneur pour le contenu scrollable
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+
         # Section 1: Informations de la facture
         info_group = self.create_info_section()
-        layout.addWidget(info_group)
-        
+        content_layout.addWidget(info_group)
+
         # Section 2: Client
         client_group = self.create_client_section()
-        layout.addWidget(client_group)
-        
+        content_layout.addWidget(client_group)
+
         # Section 3: Produits
         products_group = self.create_products_section()
-        layout.addWidget(products_group)
-        
+        content_layout.addWidget(products_group)
+
         # Section 4: Totaux
         totals_group = self.create_totals_section()
-        layout.addWidget(totals_group)
-        
-        # Section 5: Boutons
+        content_layout.addWidget(totals_group)
+
+        # Créer une zone de scroll pour le contenu
+        scroll_area = QScrollArea()
+        scroll_area.setWidget(content_widget)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QScrollArea.NoFrame)
+
+        # Ajouter la zone de scroll au layout principal
+        main_layout.addWidget(scroll_area)
+
+        # Section 5: Boutons (en dehors du scroll, toujours visibles)
         buttons_layout = self.create_buttons_section()
-        layout.addLayout(buttons_layout)
+        main_layout.addLayout(buttons_layout)
     
     def create_info_section(self):
         """Crée la section d'informations de la facture"""
@@ -184,6 +199,11 @@ class FacturaEditWindow(QDialog, NoGlitchDialogForegroundMixin):
         self.productos_table.setColumnCount(len(headers))
         self.productos_table.setHorizontalHeaderLabels(headers)
         self.productos_table.horizontalHeader().setStretchLastSection(True)
+
+        # Définir hauteur minimale pour afficher au moins 4 lignes
+        # Hauteur = header (~40-50px) + 4 lignes * hauteur_ligne (~35-40px) + marges (~20px)
+        self.productos_table.setMinimumHeight(220)
+
         self.productos_table.itemChanged.connect(self.on_table_item_changed)
 
         products_layout.addWidget(self.productos_table)

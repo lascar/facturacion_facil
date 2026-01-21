@@ -19,6 +19,15 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV_DIR="../bin"
 TEST_DIR="test"
 COVERAGE_DIR="htmlcov"
+PRODUCTION_DB="base_de_datos/facturacion.db"
+BACKUP_DIR="base_de_datos/backups"
+BACKUP_FILE=""
+
+# Configuration et logos
+PRODUCTION_CONFIG="config/config.json"
+PRODUCTION_LOGO_DIR="logo"
+CONFIG_BACKUP_FILE=""
+LOGO_BACKUP_DIR=""
 
 # Fonction d'aide
 show_help() {
@@ -66,16 +75,156 @@ show_help() {
     echo ""
 }
 
+# Fonction de backup de la base de données de production
+backup_production_database() {
+    echo -e "${BLUE}💾 Sauvegarde de la base de données de production...${NC}"
+
+    # Créer le répertoire de backup s'il n'existe pas
+    mkdir -p "$BACKUP_DIR"
+
+    # Vérifier si la base de production existe
+    if [[ ! -f "$PRODUCTION_DB" ]]; then
+        echo -e "${YELLOW}⚠️  Base de données de production non trouvée: $PRODUCTION_DB${NC}"
+        echo -e "${YELLOW}   Aucun backup nécessaire${NC}"
+        return 0
+    fi
+
+    # Créer le nom du fichier de backup avec timestamp
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    BACKUP_FILE="$BACKUP_DIR/facturacion_backup_before_tests_${timestamp}.db"
+
+    # Copier la base de données
+    cp "$PRODUCTION_DB" "$BACKUP_FILE"
+
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}✅ Backup DB créé: $(basename $BACKUP_FILE)${NC}"
+        echo -e "${GREEN}   Taille: $(du -h $BACKUP_FILE | cut -f1)${NC}"
+    else
+        echo -e "${RED}❌ Erreur lors de la création du backup DB${NC}"
+        exit 1
+    fi
+}
+
+# Fonction de backup de la configuration et logos
+backup_production_config() {
+    echo -e "${BLUE}💾 Sauvegarde de la configuration et logos...${NC}"
+
+    # Créer le répertoire de backup s'il n'existe pas
+    mkdir -p "$BACKUP_DIR"
+
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+
+    # Backup config.json
+    if [[ -f "$PRODUCTION_CONFIG" ]]; then
+        CONFIG_BACKUP_FILE="$BACKUP_DIR/config_backup_before_tests_${timestamp}.json"
+        cp "$PRODUCTION_CONFIG" "$CONFIG_BACKUP_FILE"
+
+        if [[ $? -eq 0 ]]; then
+            echo -e "${GREEN}✅ Backup config.json créé: $(basename $CONFIG_BACKUP_FILE)${NC}"
+        else
+            echo -e "${RED}❌ Erreur lors de la création du backup config.json${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${YELLOW}⚠️  config.json non trouvé, aucun backup nécessaire${NC}"
+    fi
+
+    # Backup répertoire logo/
+    if [[ -d "$PRODUCTION_LOGO_DIR" ]]; then
+        LOGO_BACKUP_DIR="$BACKUP_DIR/logo_backup_before_tests_${timestamp}"
+        cp -r "$PRODUCTION_LOGO_DIR" "$LOGO_BACKUP_DIR"
+
+        if [[ $? -eq 0 ]]; then
+            local logo_count=$(find "$LOGO_BACKUP_DIR" -type f | wc -l)
+            echo -e "${GREEN}✅ Backup logo/ créé: $(basename $LOGO_BACKUP_DIR) ($logo_count fichiers)${NC}"
+        else
+            echo -e "${RED}❌ Erreur lors de la création du backup logo/${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${YELLOW}⚠️  Répertoire logo/ non trouvé, aucun backup nécessaire${NC}"
+    fi
+
+    echo ""
+}
+
+# Fonction de restauration de la base de données de production
+restore_production_database() {
+    echo ""
+    echo -e "${BLUE}🔄 Restauration de la base de données de production...${NC}"
+
+    # Vérifier si un backup a été créé
+    if [[ -z "$BACKUP_FILE" ]] || [[ ! -f "$BACKUP_FILE" ]]; then
+        echo -e "${YELLOW}⚠️  Aucun backup DB à restaurer${NC}"
+        return 0
+    fi
+
+    # Restaurer la base de données
+    cp "$BACKUP_FILE" "$PRODUCTION_DB"
+
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}✅ Base de données restaurée depuis: $(basename $BACKUP_FILE)${NC}"
+    else
+        echo -e "${RED}❌ Erreur lors de la restauration DB${NC}"
+        echo -e "${RED}   Le backup est disponible ici: $BACKUP_FILE${NC}"
+        exit 1
+    fi
+}
+
+# Fonction de restauration de la configuration et logos
+restore_production_config() {
+    echo -e "${BLUE}🔄 Restauration de la configuration et logos...${NC}"
+
+    local has_restore=false
+
+    # Restaurer config.json
+    if [[ -n "$CONFIG_BACKUP_FILE" ]] && [[ -f "$CONFIG_BACKUP_FILE" ]]; then
+        cp "$CONFIG_BACKUP_FILE" "$PRODUCTION_CONFIG"
+
+        if [[ $? -eq 0 ]]; then
+            echo -e "${GREEN}✅ config.json restauré depuis: $(basename $CONFIG_BACKUP_FILE)${NC}"
+            has_restore=true
+        else
+            echo -e "${RED}❌ Erreur lors de la restauration config.json${NC}"
+            echo -e "${RED}   Le backup est disponible ici: $CONFIG_BACKUP_FILE${NC}"
+            exit 1
+        fi
+    fi
+
+    # Restaurer répertoire logo/
+    if [[ -n "$LOGO_BACKUP_DIR" ]] && [[ -d "$LOGO_BACKUP_DIR" ]]; then
+        # Supprimer le répertoire logo/ actuel et restaurer le backup
+        rm -rf "$PRODUCTION_LOGO_DIR"
+        cp -r "$LOGO_BACKUP_DIR" "$PRODUCTION_LOGO_DIR"
+
+        if [[ $? -eq 0 ]]; then
+            local logo_count=$(find "$PRODUCTION_LOGO_DIR" -type f | wc -l)
+            echo -e "${GREEN}✅ logo/ restauré depuis: $(basename $LOGO_BACKUP_DIR) ($logo_count fichiers)${NC}"
+            has_restore=true
+        else
+            echo -e "${RED}❌ Erreur lors de la restauration logo/${NC}"
+            echo -e "${RED}   Le backup est disponible ici: $LOGO_BACKUP_DIR${NC}"
+            exit 1
+        fi
+    fi
+
+    if [[ "$has_restore" == false ]]; then
+        echo -e "${YELLOW}⚠️  Aucun backup config/logo à restaurer${NC}"
+    fi
+
+    echo ""
+}
+
 # Fonction de vérification de l'environnement
 check_environment() {
     echo -e "${BLUE}🔧 Vérification de l'environnement...${NC}"
-    
+
     # Vérifier le répertoire de travail
     if [[ ! -d "$TEST_DIR" ]]; then
         echo -e "${RED}❌ Répertoire de tests non trouvé: $TEST_DIR${NC}"
         exit 1
     fi
-    
+
     # Activer l'environnement virtuel
     if [[ -f "$VENV_DIR/activate" ]]; then
         echo -e "${GREEN}📁 Activation de l'environnement virtuel...${NC}"
@@ -83,13 +232,13 @@ check_environment() {
     else
         echo -e "${YELLOW}⚠️  Environnement virtuel non trouvé, utilisation de l'environnement système${NC}"
     fi
-    
+
     # Vérifier pytest
     if ! command -v pytest &> /dev/null; then
         echo -e "${RED}❌ pytest non installé${NC}"
         exit 1
     fi
-    
+
     echo -e "${GREEN}✅ Environnement prêt${NC}"
     echo ""
 }
@@ -274,29 +423,41 @@ main() {
         show_help
         exit 0
     fi
-    
+
     local test_type="$1"
     shift
-    
+
+    # 🛡️ PROTECTION CRITIQUE: Backup de la base de données de production
+    backup_production_database
+
+    # 🛡️ PROTECTION CRITIQUE: Backup de la configuration et logos
+    backup_production_config
+
     # Vérification de l'environnement
     check_environment
-    
+
     # Affichage des informations
     echo -e "${BLUE}🧪 === TESTS ORGANISÉS - FACTURACIÓN FÁCIL ===${NC}"
     echo -e "${YELLOW}📁 Répertoire de travail:${NC} $PROJECT_DIR"
     echo -e "${YELLOW}🎯 Type de tests:${NC} $test_type"
     echo -e "${YELLOW}⚙️  Options:${NC} $@"
     echo ""
-    
+
     # Exécution des tests
     local start_time=$(date +%s)
-    
+
     run_tests "$test_type" "$@"
     local exit_code=$?
-    
+
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
-    
+
+    # 🛡️ PROTECTION CRITIQUE: Restauration de la base de données de production
+    restore_production_database
+
+    # 🛡️ PROTECTION CRITIQUE: Restauration de la configuration et logos
+    restore_production_config
+
     # Rapport final
     show_report $exit_code "$test_type" $duration
 

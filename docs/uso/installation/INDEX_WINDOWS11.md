@@ -52,13 +52,17 @@ start.bat
 ### **Fenêtres avec scroll activé**
 - ✅ **Productos** - Scroll dans la gestion des produits
 - ✅ **Organización** - Scroll dans les formulaires de configuration
-- ✅ **Facturas** - Scroll dans l'interface de facturation
+- ✅ **Facturas (Gestión)** - Scroll dans la liste des factures
+- ✅ **Facturas (Nueva/Editar)** - Scroll dans le formulaire de création/édition
+  - Contenu scrollable (info, client, produits, totaux)
+  - Boutons toujours visibles en bas (Guardar, Cancelar)
 
 ### **Comment tester le scroll**
 1. Lancer l'application avec `start.bat`
 2. Ouvrir une des fenêtres mentionnées ci-dessus
 3. Utiliser la molette de souris pour scroller
 4. Le scroll fonctionne partout dans la fenêtre
+5. Dans "Nueva Factura", les boutons restent visibles même en scrollant
 
 ## 🔧 Résolution de problèmes
 

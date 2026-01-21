@@ -159,6 +159,9 @@ class MainWindowPyQt5(QMainWindow):
         try:
             if self.organizacion_window is None:
                 self.organizacion_window = OrganizacionPyQt5Window()
+            else:
+                # Forcer le rechargement des données depuis config.json à chaque ouverture
+                self.organizacion_window.load_organizacion()
             self.organizacion_window.show()
             self.organizacion_window.raise_()
             self.organizacion_window.activateWindow()

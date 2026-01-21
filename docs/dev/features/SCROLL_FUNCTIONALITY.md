@@ -18,8 +18,9 @@ Cette documentation décrit la nouvelle fonctionnalité de scroll avec la molett
 
 ### 🔧 **Fenêtres avec scroll activé**
 - ✅ **Productos** - Gestion des produits
-- ✅ **Organización** - Configuration de l'organisation  
-- ✅ **Facturas** - Gestion des factures
+- ✅ **Organización** - Configuration de l'organisation
+- ✅ **Facturas (Gestión)** - Gestion des factures (liste scrollable)
+- ✅ **Facturas (Nueva/Editar)** - Création/édition de factures (contenu scrollable, boutons fixes)
 - ⚪ **Clientes** - Gestion des clients (peut être activé si nécessaire)
 - ⚪ **Stock** - Gestion du stock (peut être activé si nécessaire)
 
@@ -39,18 +40,50 @@ Cette documentation décrit la nouvelle fonctionnalité de scroll avec la molett
 
 ### **Utilisation dans le code**
 
+#### **Méthode 1 : Utiliser BasePyQt5Window (Recommandé)**
+
 ```python
-# Dans une fenêtre PyQt5
+# Dans une fenêtre PyQt5 héritant de BasePyQt5Window
 class MaFenetre(BasePyQt5Window):
     def setup_ui(self):
         # Activer le scroll pour cette fenêtre
-        self.enable_window_scroll(enable_horizontal=False, enable_vertical=True)
-        
+        self.setup_scrollable_content(enable_horizontal=False, enable_vertical=True)
+
         # Obtenir le layout de contenu (scrollable)
         main_layout = self.get_content_layout()
-        
+
         # Ajouter le contenu normalement
         main_layout.addWidget(mon_widget)
+```
+
+#### **Méthode 2 : Utiliser QScrollArea directement (Pour QDialog)**
+
+```python
+# Dans un QDialog personnalisé (ex: FacturaEditWindow)
+class MonDialog(QDialog):
+    def setup_ui(self):
+        # Layout principal du dialog
+        main_layout = QVBoxLayout(self)
+
+        # Créer un widget conteneur pour le contenu scrollable
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+
+        # Ajouter le contenu au layout scrollable
+        content_layout.addWidget(mon_widget)
+
+        # Créer une zone de scroll
+        scroll_area = QScrollArea()
+        scroll_area.setWidget(content_widget)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QScrollArea.NoFrame)
+
+        # Ajouter la zone de scroll au layout principal
+        main_layout.addWidget(scroll_area)
+
+        # Boutons en dehors du scroll (toujours visibles)
+        buttons_layout = self.create_buttons()
+        main_layout.addLayout(buttons_layout)
 ```
 
 ## 🧪 Tests
@@ -89,14 +122,14 @@ class NouvelleFenetre(BasePyQt5Window):
     def __init__(self, parent=None):
         # Activer le scroll par défaut
         super().__init__(parent, title="Ma Fenêtre", enable_scroll=True)
-    
+
     def setup_ui(self):
         # Configurer le scroll
-        self.enable_window_scroll(
+        self.setup_scrollable_content(
             enable_horizontal=False,  # Pas de scroll horizontal
             enable_vertical=True      # Scroll vertical activé
         )
-        
+
         # Utiliser le layout scrollable
         layout = self.get_content_layout()
         # ... ajouter le contenu
@@ -111,13 +144,72 @@ class FenetreSimple(BasePyQt5Window):
         super().__init__(parent, title="Simple", enable_scroll=False)
 ```
 
+## 📚 Exemples Concrets
+
+### **Exemple 1 : FacturasPyQt5Window (Gestión de Facturas)**
+
+```python
+class FacturasPyQt5Window(BasePyQt5Window):
+    def setup_ui(self):
+        # Activer le scroll pour la liste de factures
+        self.setup_scrollable_content(enable_horizontal=False, enable_vertical=True)
+        main_layout = self.get_content_layout()
+
+        # Ajouter le contenu (titre, boutons, table)
+        main_layout.addWidget(title_label)
+        main_layout.addLayout(buttons_layout)
+        main_layout.addWidget(facturas_table)
+```
+
+### **Exemple 2 : FacturaEditWindow (Nueva/Editar Factura)**
+
+```python
+class FacturaEditWindow(QDialog):
+    def setup_ui(self):
+        main_layout = QVBoxLayout(self)
+
+        # Widget conteneur scrollable
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.addWidget(info_section)
+        content_layout.addWidget(client_section)
+        content_layout.addWidget(products_section)
+        content_layout.addWidget(totals_section)
+
+        # Zone de scroll
+        scroll_area = QScrollArea()
+        scroll_area.setWidget(content_widget)
+        scroll_area.setWidgetResizable(True)
+        main_layout.addWidget(scroll_area)
+
+        # Boutons HORS du scroll (toujours visibles)
+        main_layout.addLayout(buttons_layout)
+```
+
+## 🧪 Tests
+
+### **Tests de comportement créés**
+
+Fichier : `test/behaviour/test_scrollable_windows_behaviour.py`
+
+**3 tests BDD** :
+1. ✅ `test_factura_edit_window_is_scrollable` - Vérifie la présence de QScrollArea
+2. ✅ `test_facturas_pyqt5_window_is_scrollable` - Vérifie l'activation du scroll
+3. ✅ `test_factura_edit_window_buttons_outside_scroll` - Vérifie que les boutons sont toujours visibles
+
+**Exécution** :
+```bash
+pytest test/behaviour/test_scrollable_windows_behaviour.py -v
+```
+
 ## 🐛 Dépannage
 
 ### **Problèmes courants**
 
 1. **Le scroll ne fonctionne pas**
    - Vérifier que `enable_scroll=True` dans le constructeur
-   - S'assurer que `enable_window_scroll()` est appelé dans `setup_ui()`
+   - S'assurer que `setup_scrollable_content()` est appelé dans `setup_ui()`
+   - Pour QDialog, vérifier que QScrollArea est bien créé
 
 2. **Scroll trop rapide/lent**
    - Modifier `scroll_step` dans `handle_wheel_event()` du mixin
@@ -125,6 +217,10 @@ class FenetreSimple(BasePyQt5Window):
 3. **Conflits avec d'autres widgets**
    - Le filtre d'événements gère automatiquement la propagation
    - Les widgets natifs avec scroll (QTextEdit, etc.) gardent leur comportement
+
+4. **Boutons non visibles**
+   - S'assurer que les boutons sont ajoutés APRÈS le QScrollArea dans le layout principal
+   - Ne pas les ajouter dans le `content_widget` scrollable
 
 ## 📈 Performance
 

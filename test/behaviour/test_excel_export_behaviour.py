@@ -7,21 +7,20 @@ import os
 import pytest
 import uuid
 from datetime import datetime, timedelta
-from database.database import Database
+from test.base_test_with_fixtures import BaseTestWithFixtures
 from services.informes_service import InformesService
 from utils.excel_generator import ExcelGenerator
 
 
-class TestExcelExportBehaviour:
+class TestExcelExportBehaviour(BaseTestWithFixtures):
     """Tests BDD para la exportación de informes a Excel"""
-    
+
     @pytest.fixture(autouse=True)
-    def setup(self, tmp_path):
+    def setup(self, temp_db, tmp_path):
         """Configuration pour chaque test"""
-        # Créer une base de données temporaire
-        self.db_path = str(tmp_path / "test_excel_export.db")
-        self.db = Database(self.db_path)
-        # La base de données est initialisée automatiquement dans __init__
+        # Utiliser la fixture temp_db au lieu de créer Database() directement
+        self.db = temp_db
+        self.db_path = self.db.db_path
         self.informes_service = InformesService(self.db_path)
         self.excel_generator = ExcelGenerator()
         self.output_dir = str(tmp_path / "output")
@@ -31,10 +30,6 @@ class TestExcelExportBehaviour:
         self.test_id = str(uuid.uuid4())[:8]
 
         yield
-
-        # Nettoyage
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
     
     @pytest.mark.timeout(15)
     def test_excel_stock_file_is_created(self):

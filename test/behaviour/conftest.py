@@ -133,6 +133,11 @@ def app_instance(isolated_test_database, monkeypatch):
 
     # Créer l'application Qt si elle n'existe pas
     if not QApplication.instance():
+        # Configurer Qt pour fonctionner sans display (mode offscreen)
+        import os
+        if not has_display():
+            os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+            logger.info("🖥️  Mode offscreen activé (pas de display X11)")
         app = QApplication([])
     else:
         app = QApplication.instance()
