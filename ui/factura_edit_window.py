@@ -15,12 +15,12 @@ from services.factura_service import FacturaService
 from services.cliente_service import ClienteService
 from services.producto_service import ProductoService
 from utils.logger import get_logger
-from utils.dialog_simple_foreground import SimpleDialogForegroundMixin
+from utils.dialog_no_glitch_foreground import NoGlitchDialogForegroundMixin
 from utils.invoice_status_manager import invoice_status_manager
 from datetime import datetime
 
 
-class FacturaEditWindow(QDialog, SimpleDialogForegroundMixin):
+class FacturaEditWindow(QDialog, NoGlitchDialogForegroundMixin):
     """Fenêtre unifiée pour créer ou éditer une facture"""
     
     # Signal émis quand une facture est sauvegardée

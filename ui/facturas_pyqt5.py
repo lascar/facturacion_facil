@@ -32,6 +32,7 @@ from utils.exceptions import (
     InsufficientStockError, DatabaseError
 )
 from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
+from utils.dialog_no_glitch_foreground import NoGlitchDialogForegroundMixin, force_dialog_no_glitch_foreground
 from utils.dialog_foreground_linux import force_dialog_to_foreground_linux
 
 class FacturasPyQt5Window(BasePyQt5Window):
@@ -568,17 +569,11 @@ class FacturasPyQt5Window(BasePyQt5Window):
             # Garder une référence pour éviter que la fenêtre soit détruite
             self.current_edit_window = edit_window
 
-            # Forcer la fenêtre au premier plan de manière agressive
-            from PyQt5.QtCore import Qt
-            edit_window.setWindowFlags(edit_window.windowFlags() | Qt.WindowStaysOnTopHint)
+            # Affichage simple au premier plan (sans glitch)
             edit_window.show()
             edit_window.raise_()
             edit_window.activateWindow()
             edit_window.setFocus()
-
-            # Retirer le flag "always on top" après 500ms
-            from PyQt5.QtCore import QTimer
-            QTimer.singleShot(500, lambda: self._remove_always_on_top(edit_window))
 
         except Exception as e:
             self.logger.error(f"Error abriendo ventana de nueva factura: {e}")
@@ -615,33 +610,17 @@ class FacturasPyQt5Window(BasePyQt5Window):
             # Garder une référence pour éviter que la fenêtre soit détruite
             self.current_edit_window = edit_window
 
-            # Forcer la fenêtre au premier plan de manière agressive
-            from PyQt5.QtCore import Qt
-            edit_window.setWindowFlags(edit_window.windowFlags() | Qt.WindowStaysOnTopHint)
+            # Affichage simple au premier plan (sans glitch)
             edit_window.show()
             edit_window.raise_()
             edit_window.activateWindow()
             edit_window.setFocus()
 
-            # Retirer le flag "always on top" après 500ms
-            from PyQt5.QtCore import QTimer
-            QTimer.singleShot(500, lambda: self._remove_always_on_top(edit_window))
-
         except Exception as e:
             self.logger.error(f"Error abriendo ventana de edición: {e}")
             self.show_error("Error", f"Error al abrir ventana: {str(e)}")
 
-    def _remove_always_on_top(self, window):
-        """Retirer le flag WindowStaysOnTopHint d'une fenêtre"""
-        try:
-            if window and window.isVisible():
-                from PyQt5.QtCore import Qt
-                flags = window.windowFlags()
-                flags &= ~Qt.WindowStaysOnTopHint
-                window.setWindowFlags(flags)
-                window.show()
-        except:
-            pass
+
 
     def on_factura_double_clicked(self, item):
         """Gérer le double-clic sur une facture pour l'éditer"""
@@ -1297,10 +1276,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
         self.crear_dialog.finished.connect(on_dialog_finished)
 
-        # Afficher le dialog avec forçage simple multiplateforme
+        # Afficher le dialog avec forçage sans glitch
         self.crear_dialog.show()
-        # Forcer immédiatement au premier plan avec technique simple
-        force_dialog_simple_foreground(self.crear_dialog)
+        # Forcer immédiatement au premier plan sans glitch
+        force_dialog_no_glitch_foreground(self.crear_dialog)
 
     def view_factura(self):
         """Ver los detalles de la factura sélectionnée"""
@@ -1368,10 +1347,10 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
                 self.editar_dialog.finished.connect(on_edit_dialog_finished)
 
-                # Afficher le dialog avec forçage simple multiplateforme
+                # Afficher le dialog avec forçage sans glitch
                 self.editar_dialog.show()
-                # Forcer immédiatement au premier plan avec technique simple
-                force_dialog_simple_foreground(self.editar_dialog)
+                # Forcer immédiatement au premier plan sans glitch
+                force_dialog_no_glitch_foreground(self.editar_dialog)
                 self.logger.debug("edit_factura() - Dialog d'édition ouvert avec forçage simple multiplateforme")
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
@@ -1568,7 +1547,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.estado_label.setText("Estado: -")
 
 
-class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
+class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
     """Dialog para crear una nueva factura"""
 
     def __init__(self, database_instance, parent=None):
@@ -1593,9 +1572,9 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
 
         self.setup_ui()
 
-        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
-        # Fonctionne sur Windows, Linux, macOS sans complexité
-        self.setup_simple_foreground_display()
+        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
+        # Fonctionne sur Windows, Linux, macOS sans glitch
+        self.setup_no_glitch_foreground_display()
 
         # Charger les données de manière asynchrone après affichage
         from PyQt5.QtCore import QTimer
@@ -2060,7 +2039,7 @@ class CrearFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             QMessageBox.critical(self, "Error", f"Error al guardar la factura: {str(e)}")
 
 
-class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
+class EditarFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
     """Dialog para editar una factura existente"""
 
     def __init__(self, factura_data, database_instance, parent=None):
@@ -2088,9 +2067,9 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.load_data()
         self.load_factura_data()
 
-        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
-        # Fonctionne sur Windows, Linux, macOS sans complexité
-        self.setup_simple_foreground_display()
+        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
+        # Fonctionne sur Windows, Linux, macOS sans glitch
+        self.setup_no_glitch_foreground_display()
 
     def setup_ui(self):
         """Configurar la interfaz"""
@@ -2664,7 +2643,7 @@ class EditarFacturaDialog(QDialog, SimpleDialogForegroundMixin):
             QMessageBox.critical(self, "Error", f"Error al actualizar la factura: {str(e)}")
 
 
-class VerFacturaDialog(QDialog, SimpleDialogForegroundMixin):
+class VerFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
     """Dialog para ver detalles de una factura"""
 
     def __init__(self, factura_data, parent=None):
@@ -2674,9 +2653,9 @@ class VerFacturaDialog(QDialog, SimpleDialogForegroundMixin):
         self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(600, 500)
 
-        # SOLUTION SIMPLE MULTIPLATEFORME: Forçage au premier plan universel
-        # Fonctionne sur Windows, Linux, macOS sans complexité
-        self.setup_simple_foreground_display()
+        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
+        # Fonctionne sur Windows, Linux, macOS sans glitch
+        self.setup_no_glitch_foreground_display()
 
         self.setup_ui()
 
