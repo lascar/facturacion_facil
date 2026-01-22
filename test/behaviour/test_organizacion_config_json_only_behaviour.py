@@ -50,18 +50,35 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         self.app.processEvents()
         time.sleep(0.2)
 
-        # Créer une copie de backup de config.json
-        self.config_file = os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'config.json')
-        self.config_backup = self.config_file + '.backup_test'
-        if os.path.exists(self.config_file):
-            shutil.copy(self.config_file, self.config_backup)
+        # Détruire la fenêtre d'organisation AVANT le test pour forcer sa recréation
+        if hasattr(self.main_window, 'organizacion_window') and self.main_window.organizacion_window is not None:
+            try:
+                self.main_window.organizacion_window.close()
+                self.main_window.organizacion_window.deleteLater()
+                self.main_window.organizacion_window = None
+                self.app.processEvents()
+                self.logger.info("🗑️ Fenêtre d'organisation détruite AVANT le test")
+            except Exception as e:
+                self.logger.warning(f"⚠️ Erreur lors de la destruction de la fenêtre: {e}")
+
+        # Utiliser le fichier config de test (fourni par la fixture isolated_test_config)
+        self.config_file = os.environ.get('CONFIG_FILE', 'config/config.json')
+        self.logger.info(f"📝 Utilisation du fichier config: {self.config_file}")
 
         yield
 
-        # Restaurer config.json après le test
-        if os.path.exists(self.config_backup):
-            shutil.copy(self.config_backup, self.config_file)
-            os.remove(self.config_backup)
+        # Détruire la fenêtre d'organisation après chaque test pour forcer sa recréation
+        if hasattr(self.main_window, 'organizacion_window') and self.main_window.organizacion_window is not None:
+            try:
+                self.main_window.organizacion_window.close()
+                self.main_window.organizacion_window.deleteLater()
+                self.main_window.organizacion_window = None
+                self.app.processEvents()
+                self.logger.info("🗑️ Fenêtre d'organisation détruite après le test")
+            except Exception as e:
+                self.logger.warning(f"⚠️ Erreur lors de la destruction de la fenêtre: {e}")
+
+        # Pas besoin de restaurer - le fichier config de test sera automatiquement nettoyé
 
     def test_01_organizacion_window_no_database_imports(self):
         """

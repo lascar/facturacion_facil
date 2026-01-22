@@ -59,12 +59,61 @@ def isolated_test_database(test_database_path):
     logger.info("🧹 Données de test behaviour nettoyées")
 
 @pytest.fixture(scope="function")
-def app_instance(isolated_test_database, monkeypatch):
-    """Créer une instance de l'application avec base de test"""
+def isolated_test_config():
+    """Créer un fichier config_test.json isolé pour chaque test"""
+    import tempfile
+    import json
+
+    # Créer un fichier config temporaire
+    temp_dir = tempfile.mkdtemp(prefix="config_test_")
+    config_path = os.path.join(temp_dir, "config_test.json")
+
+    # Créer un config vide avec structure par défaut
+    default_config = {
+        "organizacion_defaults": {
+            "nombre": "Test Empresa",
+            "direccion": "Calle Test, 123",
+            "telefono": "+34 123 456 789",
+            "email": "test@test.com",
+            "cif": "B12345678",
+            "numero_factura_inicial": "1",
+            "directorio_imagenes_defecto": "images_test",
+            "directorio_descargas_pdf": "facturas_test/",
+            "directorio_informes": "informes_test/",
+            "directorio_logos_storage": "logo_test/",
+            "logo_path": "logo/test.png",
+            "logo_orientation": "landscape",
+            "visor_pdf_personalizado": "",
+            "condiciones_pago": "",
+            "informacion_legal": ""
+        }
+    }
+
+    with open(config_path, 'w', encoding='utf-8') as f:
+        json.dump(default_config, f, indent=2, ensure_ascii=False)
+
+    logger.info(f"🧪 Création du config de test: {config_path}")
+
+    yield config_path
+
+    # Nettoyage après le test
+    try:
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+            logger.info(f"🧹 Config de test nettoyé: {temp_dir}")
+    except Exception as e:
+        logger.warning(f"⚠️ Erreur lors du nettoyage du config: {e}")
+
+@pytest.fixture(scope="function")
+def app_instance(isolated_test_database, isolated_test_config, monkeypatch):
+    """Créer une instance de l'application avec base de test et config de test"""
 
     # ACTIVER LE MODE TEST DÈS LE DÉBUT
     import os
     os.environ['PYTEST_RUNNING'] = '1'
+
+    # CONFIGURER LE CHEMIN DU FICHIER CONFIG POUR LES TESTS
+    os.environ['CONFIG_FILE'] = isolated_test_config
 
     # PATCHER QMessageBox GLOBALEMENT
     from PyQt5.QtWidgets import QMessageBox
@@ -162,6 +211,13 @@ def app_instance(isolated_test_database, monkeypatch):
         if hasattr(main_window, '_close_all_child_windows'):
             main_window._close_all_child_windows()
 
+        # Détruire explicitement la fenêtre d'organisation pour forcer sa recréation
+        if hasattr(main_window, 'organizacion_window') and main_window.organizacion_window is not None:
+            main_window.organizacion_window.close()
+            main_window.organizacion_window.deleteLater()
+            main_window.organizacion_window = None
+            logger.info("🗑️ Fenêtre d'organisation détruite")
+
         # Fermer la fenêtre principale sans déclencher closeEvent
         main_window.hide()
         main_window.deleteLater()
@@ -180,6 +236,8 @@ def app_instance(isolated_test_database, monkeypatch):
         QMessageBox.information = original_information
         # Restaurer QDialog.exec_() original
         QDialog.exec_ = original_exec
+        # Restaurer la variable d'environnement CONFIG_FILE
+        os.environ.pop('CONFIG_FILE', None)
 
 def pytest_configure(config):
     """Configuration globale de pytest pour les tests behaviour"""

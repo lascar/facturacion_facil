@@ -7,9 +7,10 @@ from pathlib import Path
 
 class Config:
     """Clase para manejar la configuración de la aplicación"""
-    
-    def __init__(self):
-        self.config_file = "config/config.json"
+
+    def __init__(self, config_file=None):
+        # Utiliser config_test.json en mode test, sinon config.json
+        self.config_file = config_file or os.environ.get('CONFIG_FILE', 'config/config.json')
         self.default_config = {
             "default_image_directory": str(Path.home() / "Pictures"),
             "assets_directory": "assets/images",
