@@ -116,23 +116,25 @@ class Producto:
         """Guarda el producto en la base de datos"""
         if self.id:
             # Actualizar producto existente
-            query = '''UPDATE productos SET nombre=?, referencia=?, precio=?, 
-                      categoria=?, descripcion=?, imagen_path=?, iva_recomendado=? 
+            query = '''UPDATE productos SET nombre=?, referencia=?, precio=?,
+                      categoria=?, descripcion=?, imagen_path=?, iva_recomendado=?
                       WHERE id=?'''
             params = (self.nombre, self.referencia, self.precio, self.categoria,
                      self.descripcion, self.imagen_path, self.iva_recomendado, self.id)
             db.execute_query(query, params)
         else:
             # Crear nuevo producto
-            query = '''INSERT INTO productos (nombre, referencia, precio, categoria, 
-                      descripcion, imagen_path, iva_recomendado) 
+            query = '''INSERT INTO productos (nombre, referencia, precio, categoria,
+                      descripcion, imagen_path, iva_recomendado)
                       VALUES (?, ?, ?, ?, ?, ?, ?)'''
             params = (self.nombre, self.referencia, self.precio, self.categoria,
                      self.descripcion, self.imagen_path, self.iva_recomendado)
             self.id = db.execute_query(query, params)
-            
+
             # Crear entrada en stock
             Stock.create_for_product(self.id)
+
+        return self.id
     
     def delete(self):
         """Elimina el producto de la base de datos"""

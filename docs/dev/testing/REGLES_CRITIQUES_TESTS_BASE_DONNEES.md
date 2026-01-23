@@ -2,13 +2,19 @@
 
 ---
 
-# 🚨 RÈGLES CRITIQUES : Tests et Base de Données
+# 🚨 RÈGLES CRITIQUES : Tests et Fichiers de Production
 
 ## ⚠️ AVERTISSEMENT CRITIQUE
 
 **TOUTE VIOLATION DE CES RÈGLES EST CONSIDÉRÉE COMME UN INCIDENT GRAVE**
 
-Ces règles ont été établies suite à une violation des standards de sécurité de la base de données lors du développement de tests. Elles sont **NON NÉGOCIABLES** et s'appliquent à **TOUS** les développements, y compris les tests "temporaires" ou "de développement".
+Ces règles ont été établies suite à des violations des standards de sécurité lors du développement de tests. Elles sont **NON NÉGOCIABLES** et s'appliquent à **TOUS** les développements, y compris les tests "temporaires" ou "de développement".
+
+## 📁 Fichiers de Production Protégés
+
+Les fichiers suivants ne doivent **JAMAIS** être modifiés par les tests :
+- ❌ `database/facturacion.db` - Base de données de production
+- ❌ `config/config.json` - Configuration de production
 
 ## ❌ INTERDICTIONS ABSOLUES
 
@@ -45,6 +51,16 @@ db.execute_query("DROP TABLE...")  # VIOLATION GRAVE
 db.execute_query("CREATE TABLE...")  # VIOLATION GRAVE
 ```
 
+### 5. **Modification de config.json de production**
+```python
+# ❌ INTERDIT - Ne JAMAIS faire cela
+with open('config/config.json', 'w') as f:  # VIOLATION GRAVE
+    json.dump(test_data, f)
+
+# ❌ INTERDIT - Ne JAMAIS faire cela
+shutil.copy('config/config.json', 'config/config.json.backup')  # VIOLATION GRAVE
+```
+
 ## ✅ PRATIQUES AUTORISÉES
 
 ### 1. **Tests en lecture seule**
@@ -74,28 +90,35 @@ current_text = window.categoria_combo.currentText()
 assert current_text == 'Test Category'
 ```
 
-## 🛡️ PROTECTION DE LA BASE DE DONNÉES
+## 🛡️ PROTECTION DES FICHIERS DE PRODUCTION
 
 ### **Principe fondamental**
-La base de données de production `facturacion.db` est **SACRÉE**. Elle contient les données critiques de l'entreprise et ne doit **JAMAIS** être mise en danger, même par des tests.
+Les fichiers de production (`facturacion.db` et `config.json`) sont **SACRÉS**. Ils contiennent les données critiques de l'entreprise et ne doivent **JAMAIS** être mis en danger, même par des tests.
 
 ### **Conséquences des violations**
 - **Perte de données** : Incident grave avec impact business
-- **Corruption de base** : Arrêt complet du système
+- **Corruption de fichiers** : Arrêt complet du système
 - **Perte de confiance** : Impact sur la fiabilité du système
+- **Configuration corrompue** : Dysfonctionnement de l'application
 
 ## 📋 CHECKLIST AVANT TOUT TEST
 
 Avant de créer un test, vérifier :
 
-- [ ] ❌ Le test ne crée PAS de base de données temporaire
-- [ ] ❌ Le test ne modifie PAS le chemin de base de données
-- [ ] ❌ Le test ne crée PAS de données
-- [ ] ❌ Le test ne modifie PAS de données existantes
-- [ ] ❌ Le test ne supprime PAS de données
-- [ ] ❌ Le test ne modifie PAS la structure de base
-- [ ] ✅ Le test utilise UNIQUEMENT la base existante
-- [ ] ✅ Le test fonctionne en lecture seule
+### Base de Données
+- [ ] ❌ Le test ne crée PAS de base de données temporaire manuellement
+- [ ] ❌ Le test ne modifie PAS le chemin de base de données directement
+- [ ] ✅ Le test utilise la fixture `isolated_test_database`
+- [ ] ✅ Le test laisse le nettoyage à la fixture
+
+### Fichier config.json
+- [ ] ❌ Le test ne modifie PAS `config/config.json` directement
+- [ ] ❌ Le test ne crée PAS de backup manuel de config.json
+- [ ] ✅ Le test utilise la fixture `isolated_test_config` ou `app_instance`
+- [ ] ✅ Le test utilise `os.environ.get('CONFIG_FILE')` pour obtenir le chemin
+
+### Général
+- [ ] ✅ Le test fonctionne en isolation complète
 - [ ] ✅ Le test valide l'interface utilisateur
 - [ ] ✅ Le test respecte le système de migration officiel
 

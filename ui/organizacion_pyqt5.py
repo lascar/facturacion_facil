@@ -28,13 +28,15 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     # Signaux
     organizacion_updated = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, config_file=None):
         self.logger = get_logger(self.__class__.__name__)
         super().__init__(parent, "Configuración de la Organización", 800, 600)
 
         # Variables
         self.organizacion_data = {}
-        self.config_file = "config/config.json"
+        # Utiliser config_test.json en mode test, sinon config.json
+        import os
+        self.config_file = config_file or os.environ.get('CONFIG_FILE', 'config/config.json')
 
         # Charger les données
         self.load_organizacion()

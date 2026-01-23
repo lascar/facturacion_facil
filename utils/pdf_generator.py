@@ -206,11 +206,23 @@ class FacturaPDFGenerator:
         elements.append(Paragraph("DATOS DEL CLIENTE", self.styles['SectionHeader']))
 
         client = invoice_data.get('cliente', {})
-        client_info = f"""
-        <b>{client.get('nombre', 'N/A')}</b><br/>
-        NIF/CIF: {client.get('nif', 'N/A')}<br/>
-        {client.get('direccion', 'N/A').replace('\n', '<br/>')}
-        """
+
+        # Construire les informations client avec tous les champs
+        client_info_parts = [f"<b>{client.get('nombre', 'N/A')}</b>"]
+
+        if client.get('nif'):
+            client_info_parts.append(f"NIF/CIF: {client.get('nif')}")
+
+        if client.get('direccion'):
+            client_info_parts.append(client.get('direccion').replace('\n', '<br/>'))
+
+        if client.get('email'):
+            client_info_parts.append(f"Email: {client.get('email')}")
+
+        if client.get('telefono'):
+            client_info_parts.append(f"Tel: {client.get('telefono')}")
+
+        client_info = "<br/>".join(client_info_parts)
 
         elements.append(Paragraph(client_info, self.styles['Normal']))
         elements.append(Spacer(1, 20))
@@ -236,9 +248,13 @@ class FacturaPDFGenerator:
             producto_ref = linea.get('producto_referencia', 'N/A')
             producto_nombre = linea.get('producto_nombre', linea.get('descripcion', 'Producto'))
 
+            # Utiliser Paragraph pour permettre le retour à la ligne automatique
+            producto_ref_para = Paragraph(str(producto_ref), self.styles['Normal'])
+            producto_nombre_para = Paragraph(str(producto_nombre), self.styles['Normal'])
+
             row = [
-                producto_ref,
-                producto_nombre,
+                producto_ref_para,
+                producto_nombre_para,
                 str(linea.get('cantidad', 0)),
                 f"{linea.get('precio_unitario', 0):.2f} €",
                 f"{linea.get('descuento', 0):.1f}%",  # Utiliser 'descuento' au lieu de 'descuento_pct'
@@ -264,6 +280,7 @@ class FacturaPDFGenerator:
             ('FONTSIZE', (0, 1), (-1, -1), 9),
             ('ALIGN', (2, 1), (-1, -1), 'CENTER'),  # Quantité, prix, etc. centrés
             ('ALIGN', (0, 1), (1, -1), 'LEFT'),     # Produit et description à gauche
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # Alignement vertical au milieu
 
             # Bordures
             ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
@@ -564,7 +581,9 @@ class FacturaPDFGenerator:
                 'cliente': {
                     'nombre': getattr(factura, 'nombre_cliente', 'Cliente'),
                     'nif': getattr(factura, 'dni_nie_cliente', ''),
-                    'direccion': getattr(factura, 'direccion_cliente', '')
+                    'direccion': getattr(factura, 'direccion_cliente', ''),
+                    'email': getattr(factura, 'email_cliente', ''),
+                    'telefono': getattr(factura, 'telefono_cliente', '')
                 },
                 'lineas': [],
                 'subtotal': getattr(factura, 'subtotal', 0),
