@@ -162,6 +162,11 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.condiciones_pago_edit.setPlaceholderText("Ej: El pago deberá realizarse antes de la fecha de vencimiento...")
         payment_layout.addWidget(self.condiciones_pago_edit)
 
+        # Case à cocher pour la visibilité dans les PDFs
+        self.condiciones_pago_visible_checkbox = QCheckBox("✓ Visible en los PDF")
+        self.condiciones_pago_visible_checkbox.setChecked(True)  # Coché par défaut
+        payment_layout.addWidget(self.condiciones_pago_visible_checkbox)
+
         parent_layout.addWidget(payment_group)
 
         # GroupBox pour l'information légale
@@ -172,6 +177,11 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.informacion_legal_edit.setMaximumHeight(100)
         self.informacion_legal_edit.setPlaceholderText("Ej: Esta factura se emite de acuerdo con la normativa fiscal vigente...")
         legal_layout.addWidget(self.informacion_legal_edit)
+
+        # Case à cocher pour la visibilité dans les PDFs
+        self.informacion_legal_visible_checkbox = QCheckBox("✓ Visible en los PDF")
+        self.informacion_legal_visible_checkbox.setChecked(True)  # Coché par défaut
+        legal_layout.addWidget(self.informacion_legal_visible_checkbox)
 
         parent_layout.addWidget(legal_group)
 
@@ -389,7 +399,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             'logo_orientation': 'landscape',
             'visor_pdf_personalizado': '',
             'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
-            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.'
+            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.',
+            'condiciones_pago_visible': 1,
+            'informacion_legal_visible': 1
         }
 
     def load_config_json(self):
@@ -507,7 +519,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
             self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
             self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit,
-            self.informes_dir_edit
+            self.informes_dir_edit, self.condiciones_pago_edit, self.informacion_legal_edit
         ]
 
         # Bloquer les signaux
@@ -532,6 +544,16 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.logos_storage_dir_edit.setText(str(data.get('directorio_logos_storage', '')))
             self.pdfs_dir_edit.setText(str(data.get('directorio_descargas_pdf', '')))
             self.informes_dir_edit.setText(str(data.get('directorio_informes', '')))
+
+            # Charger les conditions de paiement et informations légales
+            self.condiciones_pago_edit.setPlainText(str(data.get('condiciones_pago', '')))
+            self.informacion_legal_edit.setPlainText(str(data.get('informacion_legal', '')))
+
+            # Charger les flags de visibilité (par défaut à True/1)
+            condiciones_visible = data.get('condiciones_pago_visible', 1)
+            informacion_visible = data.get('informacion_legal_visible', 1)
+            self.condiciones_pago_visible_checkbox.setChecked(bool(condiciones_visible))
+            self.informacion_legal_visible_checkbox.setChecked(bool(informacion_visible))
 
             # Mettre à jour l'aperçu du logo
             self.update_logo_preview()
@@ -843,7 +865,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'directorio_descargas_pdf': self.pdfs_dir_edit.text().strip(),
                 'directorio_informes': self.informes_dir_edit.text().strip(),
                 'condiciones_pago': self.condiciones_pago_edit.toPlainText().strip(),
-                'informacion_legal': self.informacion_legal_edit.toPlainText().strip()
+                'informacion_legal': self.informacion_legal_edit.toPlainText().strip(),
+                'condiciones_pago_visible': 1 if self.condiciones_pago_visible_checkbox.isChecked() else 0,
+                'informacion_legal_visible': 1 if self.informacion_legal_visible_checkbox.isChecked() else 0
             }
 
             # Sauvegarder TOUT dans config.json (source unique de vérité)

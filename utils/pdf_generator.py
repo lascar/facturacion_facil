@@ -338,7 +338,9 @@ class FacturaPDFGenerator:
         """Obtenir la configuration par défaut"""
         return {
             'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
-            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.'
+            'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.',
+            'condiciones_pago_visible': 1,
+            'informacion_legal_visible': 1
         }
 
     def load_config_data(self):
@@ -386,29 +388,40 @@ class FacturaPDFGenerator:
 
         # Charger les condiciones_pago et informacion_legal depuis config.json
         config_data = self.load_config_data()
-        condiciones_pago = config_data.get('condiciones_pago',
-            '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n'
-            '• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n'
-            '• Para cualquier consulta, contacte con nosotros.')
 
-        informacion_legal = config_data.get('informacion_legal',
-            '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n'
-            '• Conserve este documento para sus registros contables.')
+        # Récupérer les flags de visibilité (par défaut à 1 = visible)
+        condiciones_pago_visible = config_data.get('condiciones_pago_visible', 1)
+        informacion_legal_visible = config_data.get('informacion_legal_visible', 1)
 
-        # Convertir les sauts de ligne en <br/>
-        condiciones_pago_html = condiciones_pago.replace('\n', '<br/>')
-        informacion_legal_html = informacion_legal.replace('\n', '<br/>')
+        # Construire les sections du footer selon la visibilité
+        footer_parts = []
 
-        # Construire le footer avec les données configurables
-        footer_text = f"""
-        <b>CONDICIONES DE PAGO:</b><br/>
-        {condiciones_pago_html}<br/><br/>
+        # Ajouter les conditions de paiement si visibles
+        if condiciones_pago_visible:
+            condiciones_pago = config_data.get('condiciones_pago',
+                '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n'
+                '• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n'
+                '• Para cualquier consulta, contacte con nosotros.')
 
-        <b>INFORMACIÓN LEGAL:</b><br/>
-        {informacion_legal_html}<br/><br/>
+            if condiciones_pago.strip():  # Seulement si non vide
+                condiciones_pago_html = condiciones_pago.replace('\n', '<br/>')
+                footer_parts.append(f"<b>CONDICIONES DE PAGO:</b><br/>{condiciones_pago_html}")
 
-        <i>Factura generada automáticamente por Facturación Fácil - {datetime.now().strftime("%d/%m/%Y %H:%M")}</i>
-        """
+        # Ajouter les informations légales si visibles
+        if informacion_legal_visible:
+            informacion_legal = config_data.get('informacion_legal',
+                '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n'
+                '• Conserve este documento para sus registros contables.')
+
+            if informacion_legal.strip():  # Seulement si non vide
+                informacion_legal_html = informacion_legal.replace('\n', '<br/>')
+                footer_parts.append(f"<b>INFORMACIÓN LEGAL:</b><br/>{informacion_legal_html}")
+
+        # Ajouter la signature de génération automatique
+        footer_parts.append(f"<i>Factura generada automáticamente por Facturación Fácil - {datetime.now().strftime('%d/%m/%Y %H:%M')}</i>")
+
+        # Construire le footer final en joignant les parties avec double saut de ligne
+        footer_text = "<br/><br/>".join(footer_parts)
 
         footer_style = ParagraphStyle(
             name='Footer',
