@@ -32,43 +32,43 @@ class FacturaPDFGenerator:
         self.setup_custom_styles()
     
     def setup_custom_styles(self):
-        """Configure les styles personnalisés"""
-        # Style pour le titre principal
+        """Configure les styles personnalisés - fonts plus petites pour style épuré"""
+        # Style pour le titre principal - réduit
         self.styles.add(ParagraphStyle(
             name='InvoiceTitle',
             parent=self.styles['Heading1'],
-            fontSize=24,
-            textColor=colors.HexColor('#2c3e50'),
+            fontSize=14,  # Réduit de 24 à 14
+            textColor=colors.black,
             alignment=TA_CENTER,
-            spaceAfter=20
+            spaceAfter=12
         ))
-        
-        # Style pour les en-têtes de section
+
+        # Style pour les en-têtes de section - simplifié
         self.styles.add(ParagraphStyle(
             name='SectionHeader',
             parent=self.styles['Heading2'],
-            fontSize=14,
-            textColor=colors.HexColor('#34495e'),
-            backgroundColor=colors.HexColor('#ecf0f1'),
-            borderPadding=8,
-            spaceAfter=10
+            fontSize=9,  # Réduit de 14 à 9
+            textColor=colors.black,
+            # backgroundColor supprimé pour style épuré
+            borderPadding=4,
+            spaceAfter=6
         ))
-        
-        # Style pour les informations importantes
+
+        # Style pour les informations importantes - réduit
         self.styles.add(ParagraphStyle(
             name='ImportantInfo',
             parent=self.styles['Normal'],
-            fontSize=12,
-            textColor=colors.HexColor('#2c3e50'),
+            fontSize=8,  # Réduit de 12 à 8
+            textColor=colors.black,
             fontName='Helvetica-Bold'
         ))
-        
-        # Style pour le total
+
+        # Style pour le total - réduit
         self.styles.add(ParagraphStyle(
             name='TotalStyle',
             parent=self.styles['Normal'],
-            fontSize=16,
-            textColor=colors.HexColor('#e74c3c'),
+            fontSize=10,  # Réduit de 16 à 10
+            textColor=colors.black,
             fontName='Helvetica-Bold',
             alignment=TA_RIGHT
         ))
@@ -122,177 +122,228 @@ class FacturaPDFGenerator:
     def create_header(self, invoice_data):
         """Crée l'en-tête de la facture"""
         elements = []
-        
-        # Table pour l'en-tête (logo + info entreprise + titre facture)
+
+        # Table pour l'en-tête (logo + info entreprise | titre facture)
         header_data = []
-        
-        # Ligne 1: Logo, Info entreprise, Titre facture
-        logo_cell = "LOGO"
-        
+
         # Chercher un logo
         logo_path = self.find_company_logo()
+        logo_cell = None
+
         if logo_path:
             try:
-                logo_cell = Image(logo_path, width=60, height=40)
-                self.logger.info(f"Logo chargé avec succès: {logo_path}")
+                # Logo avec redimensionnement proportionnel
+                logo_cell = self.create_logo_image(logo_path, max_width=3*cm, max_height=3*cm)
+                if logo_cell:
+                    self.logger.info(f"Logo chargé avec succès: {logo_path}")
+                else:
+                    self.logger.warning(f"Logo non chargé: {logo_path}")
             except Exception as e:
                 self.logger.error(f"Erreur lors du chargement du logo {logo_path}: {e}")
-                logo_cell = "LOGO"
-        else:
-            self.logger.warning("Aucun logo disponible, utilisation du texte 'LOGO'")
-        
+                logo_cell = None
+
         # Récupérer les informations de l'organisation configurée
         company_info = self.get_company_info()
-        
+
+        # Titre FACTURA Nº aligné à droite sur une ligne, en gras
         invoice_title = f"""
-        <b style="font-size:18pt; color:#e74c3c;">FACTURA</b><br/>
-        <b style="font-size:14pt;">{invoice_data.get('numero', 'N/A')}</b>
+        <b style="font-size:14pt; color:#000000;">FACTURA Nº {invoice_data.get('numero', 'N/A')}</b>
         """
-        
-        header_data.append([
-            logo_cell,
-            Paragraph(company_info, self.styles['Normal']),
-            Paragraph(invoice_title, self.styles['Normal'])
-        ])
-        
-        header_table = Table(header_data, colWidths=[4*cm, 8*cm, 6*cm])
-        header_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 20),
-        ]))
-        
+
+        # Si on a un logo, créer une disposition avec logo + info entreprise à gauche
+        if logo_cell:
+            # Sous-table pour logo + info entreprise
+            left_section = Table(
+                [[logo_cell, Paragraph(company_info, self.styles['Normal'])]],
+                colWidths=[3.5*cm, 7*cm]
+            )
+            left_section.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                ('ALIGN', (1, 0), (1, 0), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                ('RIGHTPADDING', (0, 0), (0, 0), 10),
+            ]))
+
+            # Table principale avec section gauche et titre à droite
+            header_data.append([
+                left_section,
+                Paragraph(invoice_title, self.styles['Normal'])
+            ])
+
+            header_table = Table(header_data, colWidths=[10.5*cm, 7*cm])
+            header_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 20),
+            ]))
+        else:
+            # Sans logo, juste info entreprise à gauche et titre à droite
+            header_data.append([
+                Paragraph(company_info, self.styles['Normal']),
+                Paragraph(invoice_title, self.styles['Normal'])
+            ])
+
+            header_table = Table(header_data, colWidths=[10.5*cm, 7*cm])
+            header_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 20),
+            ]))
+
         elements.append(header_table)
         elements.append(Spacer(1, 20))
-        
+
         return elements
 
     def create_invoice_info(self, invoice_data):
-        """Crée la section d'informations de la facture"""
+        """Crée la section d'informations de la facture et client - date à gauche, client à droite"""
         elements = []
 
-        # Table des informations de facture
-        info_data = [
-            ['Fecha:', invoice_data.get('fecha', 'N/A')],
-            ['Vencimiento:', invoice_data.get('vencimiento', 'N/A')],
-            ['Estado:', invoice_data.get('estado', 'Pendiente')]
-        ]
+        # Style avec font plus petite, aligné à gauche
+        small_style_left = ParagraphStyle(
+            name='SmallInfoLeft',
+            parent=self.styles['Normal'],
+            fontSize=8,
+            leading=12,
+            alignment=TA_LEFT
+        )
 
-        info_table = Table(info_data, colWidths=[4*cm, 6*cm])
-        info_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#ecf0f1')),
-            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#2c3e50')),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('LEFTPADDING', (0, 0), (-1, -1), 8),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        # Style avec font plus petite, aligné à droite
+        small_style_right = ParagraphStyle(
+            name='SmallInfoRight',
+            parent=self.styles['Normal'],
+            fontSize=8,
+            leading=12,
+            alignment=TA_RIGHT
+        )
+
+        # Date à gauche
+        fecha = invoice_data.get('fecha', 'N/A')
+        fecha_text = f"<b>FECHA</b> {fecha}"
+        fecha_para = Paragraph(fecha_text, small_style_left)
+
+        # Informations client à droite - format texte simple
+        client = invoice_data.get('cliente', {})
+
+        client_lines = []
+        client_lines.append(f"<b>Cliente:</b> {client.get('nombre', 'N/A')}")
+
+        if client.get('telefono'):
+            client_lines.append(f"<b>Teléfono:</b> {client.get('telefono')}")
+
+        if client.get('direccion'):
+            # Séparer adresse et code postal
+            direccion_completa = client.get('direccion', '')
+            # Chercher le code postal (5 chiffres) et la ville
+            import re
+            match = re.search(r'(\d{5})\s+(.+)$', direccion_completa, re.MULTILINE)
+            if match:
+                # Adresse sans le code postal et la ville
+                direccion_sin_cp = direccion_completa[:direccion_completa.find(match.group(0))].strip()
+                codigo_postal_ciudad = f"{match.group(1)} {match.group(2)}"
+
+                if direccion_sin_cp:
+                    client_lines.append(f"<b>Dirección:</b> {direccion_sin_cp.replace(chr(10), ', ')}")
+                client_lines.append(codigo_postal_ciudad)
+            else:
+                # Si pas de code postal trouvé, afficher l'adresse telle quelle
+                client_lines.append(f"<b>Dirección:</b> {direccion_completa.replace(chr(10), ', ')}")
+
+        client_text = "<br/>".join(client_lines)
+        client_para = Paragraph(client_text, small_style_right)
+
+        # Table principale : fecha à gauche, client à droite
+        # MÊME LARGEUR que le tableau produits = 7cm + 1.8cm + 2cm + 1.5cm + 1.5cm + 2.5cm = 16.3cm
+        # Cette table définit le cadre de toute la mise en page
+        product_table_width = 16.3*cm
+
+        # Répartition : fecha prend ~40%, client prend ~60%
+        fecha_col_width = 6.5*cm
+        client_col_width = 9.8*cm
+
+        main_table = Table([[fecha_para, client_para]], colWidths=[fecha_col_width, client_col_width])
+        main_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, 0), 'LEFT'),   # FECHA à gauche
+            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),  # Client à droite
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+            ('TOPPADDING', (0, 0), (-1, -1), 0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
         ]))
 
-        elements.append(info_table)
-        elements.append(Spacer(1, 20))
+        elements.append(main_table)
+        elements.append(Spacer(1, 15))
 
         return elements
 
     def create_client_info(self, invoice_data):
-        """Crée la section d'informations client"""
-        elements = []
-
-        # Titre de section
-        elements.append(Paragraph("DATOS DEL CLIENTE", self.styles['SectionHeader']))
-
-        client = invoice_data.get('cliente', {})
-
-        # Construire les informations client avec tous les champs
-        client_info_parts = [f"<b>{client.get('nombre', 'N/A')}</b>"]
-
-        if client.get('nif'):
-            client_info_parts.append(f"NIF/CIF: {client.get('nif')}")
-
-        if client.get('direccion'):
-            client_info_parts.append(client.get('direccion').replace('\n', '<br/>'))
-
-        if client.get('email'):
-            client_info_parts.append(f"Email: {client.get('email')}")
-
-        if client.get('telefono'):
-            client_info_parts.append(f"Tel: {client.get('telefono')}")
-
-        client_info = "<br/>".join(client_info_parts)
-
-        elements.append(Paragraph(client_info, self.styles['Normal']))
-        elements.append(Spacer(1, 20))
-
-        return elements
+        """Crée la section d'informations client - DEPRECATED, fusionné avec create_invoice_info"""
+        # Cette fonction n'est plus utilisée, les infos client sont dans create_invoice_info
+        return []
 
     def create_invoice_lines_table(self, invoice_data):
-        """Crée la table des lignes de facture"""
+        """Crée la table des lignes de facture - style épuré sans bordures"""
         elements = []
 
-        # Titre de section
-        elements.append(Paragraph("DETALLE DE LA FACTURA", self.styles['SectionHeader']))
+        # Espace avant le tableau
+        elements.append(Spacer(1, 10))
 
-        # En-têtes de la table
-        headers = ['Producto', 'Descripción', 'Cant.', 'Precio Unit.', 'Desc.%', 'IVA%', 'Total']
+        # En-têtes de la table - avec toutes les colonnes incluant Desc% et IVA%
+        headers = ['', 'Unidades', 'Precio', 'Desc.%', 'IVA%', 'Total']
 
         # Données des lignes
         table_data = [headers]
 
         lineas = invoice_data.get('lineas', [])
         for linea in lineas:
-            # Utiliser les bonnes clés pour les données du produit
-            producto_ref = linea.get('producto_referencia', 'N/A')
+            # Nom du produit seulement (pas de référence séparée)
             producto_nombre = linea.get('producto_nombre', linea.get('descripcion', 'Producto'))
 
-            # Utiliser Paragraph pour permettre le retour à la ligne automatique
-            producto_ref_para = Paragraph(str(producto_ref), self.styles['Normal'])
-            producto_nombre_para = Paragraph(str(producto_nombre), self.styles['Normal'])
-
             row = [
-                producto_ref_para,
-                producto_nombre_para,
+                producto_nombre,
                 str(linea.get('cantidad', 0)),
-                f"{linea.get('precio_unitario', 0):.2f} €",
-                f"{linea.get('descuento', 0):.1f}%",  # Utiliser 'descuento' au lieu de 'descuento_pct'
-                f"{linea.get('iva_aplicado', 0):.1f}%",  # Utiliser 'iva_aplicado' au lieu de 'iva_pct'
-                f"{linea.get('total', 0):.2f} €"
+                f"{linea.get('precio_unitario', 0):.2f}",
+                f"{linea.get('descuento', 0):.1f}%",
+                f"{linea.get('iva_aplicado', 0):.1f}%",
+                f"{linea.get('total', 0):.2f}"
             ]
             table_data.append(row)
 
-        # Créer la table
-        lines_table = Table(table_data, colWidths=[3*cm, 5*cm, 1.5*cm, 2.5*cm, 1.5*cm, 1.5*cm, 2.5*cm])
+        # Créer la table avec toutes les colonnes
+        lines_table = Table(table_data, colWidths=[7*cm, 1.8*cm, 2*cm, 1.5*cm, 1.5*cm, 2.5*cm])
 
-        # Style de la table
+        # Style épuré avec en-tête fond vert, en gras, sans bordures
         lines_table.setStyle(TableStyle([
-            # En-tête
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495e')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            # En-tête - fond vert, en gras, sans bordures
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#90EE90')),  # Vert clair
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('FONTSIZE', (0, 0), (-1, 0), 8),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (0, 0), 'LEFT'),      # Nom produit à gauche
+            ('ALIGN', (1, 0), (-1, 0), 'RIGHT'),    # Unidades, Precio, Desc, IVA, Total à droite
 
-            # Corps de la table
+            # Corps de la table - fonts plus petites
             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 1), (-1, -1), 9),
-            ('ALIGN', (2, 1), (-1, -1), 'CENTER'),  # Quantité, prix, etc. centrés
-            ('ALIGN', (0, 1), (1, -1), 'LEFT'),     # Produit et description à gauche
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # Alignement vertical au milieu
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('ALIGN', (0, 1), (0, -1), 'LEFT'),     # Nom produit à gauche
+            ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),   # Chiffres à droite
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
 
-            # Bordures
-            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
+            # PAS de bordures - style épuré
+            # ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),  # RETIRÉ
 
-            # Alternance de couleurs
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),
+            # PAS d'alternance de couleurs - fond blanc partout
+            # ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),  # RETIRÉ
 
-            # Padding
-            ('LEFTPADDING', (0, 0), (-1, -1), 6),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            # Padding minimal
+            ('LEFTPADDING', (0, 0), (-1, -1), 2),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+            ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
         ]))
 
         elements.append(lines_table)
@@ -301,15 +352,15 @@ class FacturaPDFGenerator:
         return elements
 
     def create_totals_section(self, invoice_data):
-        """Crée la section des totaux"""
+        """Crée la section des totaux - style épuré sans bordures"""
         elements = []
 
-        # Table des totaux (alignée à droite)
+        # Table des totaux (alignée à droite) - style simplifié
         totals_data = [
-            ['Subtotal:', f"{invoice_data.get('subtotal', 0):.2f} €"],
-            ['IVA Total:', f"{invoice_data.get('iva_total', 0):.2f} €"],
+            ['Base Imponible', f"{invoice_data.get('subtotal', 0):.2f}"],
+            ['IVA    21%', f"{invoice_data.get('iva_total', 0):.2f}"],
             ['', ''],  # Ligne vide
-            ['TOTAL:', f"{invoice_data.get('total', 0):.2f} €"]
+            ['Total', f"{invoice_data.get('total', 0):.2f}"]
         ]
 
         totals_table = Table(totals_data, colWidths=[4*cm, 3*cm])
@@ -318,26 +369,26 @@ class FacturaPDFGenerator:
             ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
 
-            # Styles des labels
-            ('FONTNAME', (0, 0), (0, -2), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (0, -2), 11),
-            ('TEXTCOLOR', (0, 0), (0, -2), colors.HexColor('#2c3e50')),
+            # Styles des labels - fonts plus petites
+            ('FONTNAME', (0, 0), (0, -2), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (0, -2), 8),  # Réduit de 11 à 8
+            ('TEXTCOLOR', (0, 0), (0, -2), colors.black),
 
-            # Style du total final
+            # Style du total final - fond vert, en gras
+            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#90EE90')),  # Fond vert
             ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, -1), (-1, -1), 14),
-            ('TEXTCOLOR', (0, -1), (-1, -1), colors.HexColor('#e74c3c')),
-            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#f8f9fa')),
+            ('FONTSIZE', (0, -1), (-1, -1), 10),  # Réduit de 14 à 10
+            ('TEXTCOLOR', (0, -1), (-1, -1), colors.black),
 
-            # Bordures pour le total
-            ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),
-            ('LINEBELOW', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),
+            # PAS de bordures
+            # ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),  # RETIRÉ
+            # ('LINEBELOW', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),  # RETIRÉ
 
-            # Padding
-            ('LEFTPADDING', (0, 0), (-1, -1), 10),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            # Padding minimal
+            ('LEFTPADDING', (0, 0), (-1, -1), 2),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+            ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
         ]))
 
         # Centrer la table des totaux à droite
@@ -347,7 +398,7 @@ class FacturaPDFGenerator:
         ]))
 
         elements.append(totals_wrapper)
-        elements.append(Spacer(1, 30))
+        elements.append(Spacer(1, 20))
 
         return elements
 
@@ -434,8 +485,8 @@ class FacturaPDFGenerator:
                 informacion_legal_html = informacion_legal.replace('\n', '<br/>')
                 footer_parts.append(f"<b>INFORMACIÓN LEGAL:</b><br/>{informacion_legal_html}")
 
-        # Ajouter la signature de génération automatique
-        footer_parts.append(f"<i>Factura generada automáticamente por Facturación Fácil - {datetime.now().strftime('%d/%m/%Y %H:%M')}</i>")
+        # PAS de signature de génération automatique - retiré pour style épuré
+        # footer_parts.append(f"<i>Factura generada automáticamente por Facturación Fácil - {datetime.now().strftime('%d/%m/%Y %H:%M')}</i>")
 
         # Construire le footer final en joignant les parties avec double saut de ligne
         footer_text = "<br/><br/>".join(footer_parts)
