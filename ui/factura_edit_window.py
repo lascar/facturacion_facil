@@ -264,6 +264,10 @@ class FacturaEditWindow(QDialog, NoGlitchDialogForegroundMixin):
     def load_data(self):
         """Charge les données nécessaires"""
         try:
+            # Charger les clients dans le widget d'autocomplétion
+            clientes = self.cliente_service.get_all_clientes()
+            self.cliente_autocomplete.load_clients(clientes)
+
             # Charger les états de factures
             self.estados = invoice_status_manager.get_all_statuses()
             self.estado_combo.clear()
@@ -274,7 +278,7 @@ class FacturaEditWindow(QDialog, NoGlitchDialogForegroundMixin):
             self.productos = self.producto_service.get_all_productos()
             self.producto_autocomplete.load_products(self.productos)
 
-            self.logger.info(f"Datos cargados: {len(self.productos)} productos")
+            self.logger.info(f"Datos cargados: {len(clientes)} clientes, {len(self.productos)} productos")
 
         except Exception as e:
             self.logger.error(f"Error cargando datos: {e}")

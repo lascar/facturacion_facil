@@ -20,7 +20,7 @@ assets/
 
 # Distribution / packaging
 .Python
-logs/*
+/logs/*
 build/
 develop-eggs/
 dist/
