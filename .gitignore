@@ -206,3 +206,5 @@ lpt[1-9]
 /data/test_images/*
 /test/unit/base_de_datos/backups/*.db
 /base_de_datos/*
+/logs/facturacion_facil.log.*
+/test/behaviour/test_pdfs/*

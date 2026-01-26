@@ -38,6 +38,15 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         import os
         self.config_file = config_file or os.environ.get('CONFIG_FILE', 'config/config.json')
 
+        # ⚠️ PROTECTION PRODUCTION: Vérifier qu'on n'utilise pas config.json en mode test
+        if os.environ.get('PYTEST_RUNNING') == '1':
+            if self.config_file == 'config/config.json':
+                raise RuntimeError("❌ ERREUR CRITIQUE: Les tests ne doivent JAMAIS utiliser config/config.json de production !")
+            if 'test' not in self.config_file.lower() and 'tmp' not in self.config_file.lower():
+                raise RuntimeError(f"❌ ERREUR CRITIQUE: Le fichier config en mode test doit contenir 'test' ou 'tmp' ! Chemin: {self.config_file}")
+
+        self.logger.info(f"📁 OrganizacionPyQt5Window utilise le fichier: {self.config_file}")
+
         # Charger les données
         self.load_organizacion()
         
@@ -417,19 +426,19 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                     config = json.load(f)
                     org_defaults = config.get('organizacion_defaults', {})
 
+                    self.logger.info(f"📖 Lecture du fichier: {self.config_file}")
+                    self.logger.info(f"📖 Contenu brut org_defaults: {org_defaults}")
+
                     # Fusionner : defaults + valeurs existantes (les existantes ont priorité)
                     merged = defaults.copy()
                     merged.update(org_defaults)
 
-                    self.logger.info(f"Chargement config.json - nombre dans org_defaults: '{org_defaults.get('nombre', 'N/A')}'")
-                    self.logger.info(f"Chargement config.json - nombre dans merged: '{merged.get('nombre', 'N/A')}'")
+                    self.logger.info(f"📖 Chargement config.json - nombre dans org_defaults: '{org_defaults.get('nombre', 'N/A')}'")
+                    self.logger.info(f"📖 Chargement config.json - nombre dans merged: '{merged.get('nombre', 'N/A')}'")
 
-                    # Si des clés manquaient, sauvegarder la version fusionnée
-                    if set(merged.keys()) != set(org_defaults.keys()):
-                        self.logger.info("Ajout des valeurs par défaut manquantes dans config.json")
-                        config['organizacion_defaults'] = merged
-                        with open(self.config_file, 'w', encoding='utf-8') as f_write:
-                            json.dump(config, f_write, indent=2, ensure_ascii=False)
+                    # NE PAS réécrire le fichier lors du chargement
+                    # Cela cause des problèmes avec les tests et écrase les données utilisateur
+                    # La sauvegarde se fait uniquement via save_all_to_config_json()
 
                     return merged
             else:
@@ -448,6 +457,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     def save_all_to_config_json(self, organizacion_data):
         """Sauvegarder TOUTES les données de l'organisation dans config.json"""
         try:
+            self.logger.info(f"💾 save_all_to_config_json appelé - nombre à sauvegarder: '{organizacion_data.get('nombre', 'N/A')}'")
+            self.logger.info(f"💾 Fichier cible: {self.config_file}")
+
             # Créer le répertoire si nécessaire
             os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
 
@@ -456,13 +468,20 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             if os.path.exists(self.config_file):
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     config = json.load(f)
+                self.logger.info(f"💾 Fichier existant chargé - nombre actuel: '{config.get('organizacion_defaults', {}).get('nombre', 'N/A')}'")
 
             # Mettre à jour toutes les valeurs dans organizacion_defaults
             config['organizacion_defaults'] = organizacion_data
+            self.logger.info(f"💾 Config mise à jour - nombre dans config: '{config['organizacion_defaults'].get('nombre', 'N/A')}'")
 
             # Sauvegarder
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(config, f, indent=2, ensure_ascii=False)
+
+            # Vérifier immédiatement après l'écriture
+            with open(self.config_file, 'r', encoding='utf-8') as f:
+                verification = json.load(f)
+            self.logger.info(f"✅ Fichier écrit et vérifié - nombre dans fichier: '{verification.get('organizacion_defaults', {}).get('nombre', 'N/A')}'")
 
             self.logger.info("Config.json sauvegardé avec succès (toutes les données)")
             return True
@@ -498,6 +517,9 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
     def load_organizacion(self):
         """Charger les données de l'organisation depuis config.json UNIQUEMENT"""
+        import traceback
+        self.logger.info(f"🔄 load_organizacion() appelé depuis:\n{''.join(traceback.format_stack()[-3:-1])}")
+
         try:
             # Charger les données depuis config.json (source unique de vérité)
             config_data = self.load_config_json()
@@ -516,6 +538,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             
     def load_organization_data(self, data):
         """Charger les données dans le formulaire"""
+        self.logger.info(f"📝 load_organization_data appelé avec nombre: '{data.get('nombre', 'N/A')}'")
+
         # Bloquer temporairement tous les signaux pour éviter de déclencher data_modified
         widgets_to_block = [
             self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
@@ -530,6 +554,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
         try:
             self.nombre_edit.setText(str(data.get('nombre', '')))
+            self.logger.info(f"✅ Widget nombre_edit défini à: '{self.nombre_edit.text()}'")
             self.cif_edit.setText(str(data.get('cif', '')))
             self.telefono_edit.setText(str(data.get('telefono', '')))
             self.email_edit.setText(str(data.get('email', '')))
@@ -560,10 +585,15 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             # Mettre à jour l'aperçu du logo
             self.update_logo_preview()
 
+            self.logger.info(f"✅ Fin load_organization_data - Widget nombre_edit contient: '{self.nombre_edit.text()}'")
+
         finally:
             # Débloquer les signaux
             for widget in widgets_to_block:
                 widget.blockSignals(False)
+
+            self.logger.info(f"✅ Signaux débloqués - Widget nombre_edit contient: '{self.nombre_edit.text()}'")
+
 
             # Maintenant marquer comme non modifié
             self.set_data_modified(False)
@@ -847,6 +877,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
     def save_organizacion(self):
         """Sauvegarder la configuration de l'organisation dans config.json UNIQUEMENT"""
         try:
+            self.logger.info(f"💾 save_organizacion() appelé - Widget nombre_edit contient: '{self.nombre_edit.text()}'")
+
             # Validation basique
             if not self.nombre_edit.text().strip():
                 self.show_warning("Validation", "Le nom de l'entreprise est requis")
@@ -872,11 +904,16 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'informacion_legal_visible': 1 if self.informacion_legal_visible_checkbox.isChecked() else 0
             }
 
+            self.logger.info(f"💾 Données préparées - nombre: '{organizacion_data.get('nombre')}'")
+
             # Sauvegarder TOUT dans config.json (source unique de vérité)
             if self.save_all_to_config_json(organizacion_data):
+                self.logger.info("💾 Sauvegarde réussie, affichage du message de succès")
                 self.show_info("Éxito", "Configuración actualizada correctamente")
                 # Recharger les données
+                self.logger.info("💾 Rechargement des données avec load_organizacion()")
                 self.load_organizacion()
+                self.logger.info(f"💾 Après rechargement - Widget nombre_edit contient: '{self.nombre_edit.text()}'")
                 self.organizacion_updated.emit()
             else:
                 self.show_error("Error", "Error al guardar la configuración")

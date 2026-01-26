@@ -62,7 +62,11 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
                 self.logger.warning(f"⚠️ Erreur lors de la destruction de la fenêtre: {e}")
 
         # Utiliser le fichier config de test (fourni par la fixture isolated_test_config)
-        self.config_file = os.environ.get('CONFIG_FILE', 'config/config.json')
+        # ⚠️ PROTECTION PRODUCTION: Ne JAMAIS utiliser config/config.json en fallback !
+        self.config_file = os.environ.get('CONFIG_FILE')
+        assert self.config_file is not None, "❌ ERREUR CRITIQUE: CONFIG_FILE non défini ! Les tests ne doivent JAMAIS utiliser config/config.json de production !"
+        assert 'test' in self.config_file.lower() or 'tmp' in self.config_file.lower(), \
+            f"❌ ERREUR CRITIQUE: Le fichier config doit contenir 'test' ou 'tmp' dans son chemin ! Chemin actuel: {self.config_file}"
         self.logger.info(f"📝 Utilisation du fichier config: {self.config_file}")
 
         yield
@@ -112,7 +116,8 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         THEN: Les champs sont remplis avec les données de config.json
         """
         self.logger.info("🧪 Test 02: Vérification chargement depuis config.json uniquement")
-        
+        self.logger.info(f"📁 Chemin du fichier config: {self.config_file}")
+
         # Préparer des données de test dans config.json
         test_data = {
             "organizacion_defaults": {
@@ -136,24 +141,39 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         # Sauvegarder dans config.json
         with open(self.config_file, 'w', encoding='utf-8') as f:
             json.dump(test_data, f, indent=2, ensure_ascii=False)
-        
+
+        # Vérifier que le fichier a bien été écrit
+        with open(self.config_file, 'r', encoding='utf-8') as f:
+            verification = json.load(f)
+            self.logger.info(f"📝 Fichier écrit - nombre: '{verification['organizacion_defaults']['nombre']}'")
+
+        time.sleep(0.2)  # Attendre que le fichier soit bien écrit
+
+        # Vérifier une dernière fois avant d'ouvrir la fenêtre
+        with open(self.config_file, 'r', encoding='utf-8') as f:
+            final_check = json.load(f)
+            self.logger.info(f"📝 Vérification finale AVANT ouverture fenêtre - nombre: '{final_check['organizacion_defaults']['nombre']}'")
+
         # Ouvrir la fenêtre Organización
         organizacion_btn = self.automation.find_button_by_text(self.main_window, "Organización")
         assert organizacion_btn is not None, "Bouton Organización non trouvé"
-        
+
+        self.logger.info("🖱️ Clic sur le bouton Organización...")
         QTest.mouseClick(organizacion_btn, Qt.LeftButton)
         self.app.processEvents()
         time.sleep(0.5)
-        
-        # Trouver la fenêtre
-        organizacion_window = None
-        for widget in self.app.topLevelWidgets():
-            if hasattr(widget, 'windowTitle') and "Configuración de la Organización" in widget.windowTitle():
-                organizacion_window = widget
-                break
-        
-        assert organizacion_window is not None, "Fenêtre Organización non trouvée"
-        
+        self.logger.info("✅ Fenêtre Organización devrait être ouverte maintenant")
+
+        # Utiliser directement la fenêtre de main_window au lieu de chercher dans topLevelWidgets
+        # pour éviter de trouver une ancienne fenêtre non détruite
+        organizacion_window = self.main_window.organizacion_window
+
+        assert organizacion_window is not None, "Fenêtre Organización non trouvée dans main_window"
+        assert organizacion_window.isVisible(), "Fenêtre Organización n'est pas visible"
+
+        self.logger.info(f"🔍 Fenêtre trouvée - ID: {id(organizacion_window)}")
+        self.logger.info(f"🔍 Widget nombre_edit contient: '{organizacion_window.nombre_edit.text()}'")
+
         # Vérifier que les données sont chargées depuis config.json
         assert organizacion_window.nombre_edit.text() == "Test Empresa BDD", \
             f"Nom attendu: 'Test Empresa BDD', obtenu: '{organizacion_window.nombre_edit.text()}'"
@@ -179,14 +199,11 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         self.app.processEvents()
         time.sleep(0.5)
 
-        # Trouver la fenêtre
-        organizacion_window = None
-        for widget in self.app.topLevelWidgets():
-            if hasattr(widget, 'windowTitle') and "Configuración de la Organización" in widget.windowTitle():
-                organizacion_window = widget
-                break
+        # Utiliser directement la fenêtre de main_window
+        organizacion_window = self.main_window.organizacion_window
 
-        assert organizacion_window is not None, "Fenêtre Organización non trouvée"
+        assert organizacion_window is not None, "Fenêtre Organización non trouvée dans main_window"
+        assert organizacion_window.isVisible(), "Fenêtre Organización n'est pas visible"
 
         # Modifier les données
         test_nombre = "Nueva Empresa Test BDD"
@@ -309,14 +326,11 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         self.app.processEvents()
         time.sleep(0.5)
 
-        # Trouver la fenêtre
-        organizacion_window = None
-        for widget in self.app.topLevelWidgets():
-            if hasattr(widget, 'windowTitle') and "Configuración de la Organización" in widget.windowTitle():
-                organizacion_window = widget
-                break
+        # Utiliser directement la fenêtre de main_window
+        organizacion_window = self.main_window.organizacion_window
 
-        assert organizacion_window is not None, "Fenêtre Organización non trouvée"
+        assert organizacion_window is not None, "Fenêtre Organización non trouvée dans main_window"
+        assert organizacion_window.isVisible(), "Fenêtre Organización n'est pas visible"
 
         # Modifier et sauvegarder
         test_nombre = "Empresa Persistente BDD"

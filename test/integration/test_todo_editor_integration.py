@@ -115,12 +115,16 @@ class TestTodoEditorIntegration:
             print(f"   ❌ Error en test de creación: {e}")
             raise
     
-    def test_organization_window_todo_button(self):
+    def test_organization_window_todo_button(self, isolated_test_config):
         """Test du bouton TODO dans la fenêtre d'organisation"""
         print("\n🧪 Test: Botón TODO en ventana de organización")
-        
+
+        # Activer le mode test
+        os.environ['PYTEST_RUNNING'] = '1'
+        os.environ['CONFIG_FILE'] = isolated_test_config
+
         app = QApplication.instance() or QApplication(sys.argv)
-        
+
         try:
             # Créer la fenêtre d'organisation
             org_window = OrganizacionPyQt5Window()
@@ -163,20 +167,20 @@ class TestTodoEditorIntegration:
             print(f"   ❌ Error en test de carga: {e}")
             raise
     
-    def test_all_todo_editor_integration(self):
+    def test_all_todo_editor_integration(self, isolated_test_config):
         """Test principal d'intégration de l'éditeur TODO"""
         print("🔧 TESTS DE INTEGRACIÓN - EDITOR TODO")
         print("=" * 45)
-        
+
         try:
             # Exécuter tous les sous-tests
             self.test_todo_dialog_creation()
-            self.test_organization_window_todo_button()
+            self.test_organization_window_todo_button(isolated_test_config)
             self.test_todo_content_loading()
-            
+
             print(f"\n📊 RESUMEN DE TESTS:")
             print(f"🎉 Todos los tests pasaron exitosamente!")
-            
+
         except Exception as e:
             print(f"\n❌ Error en tests: {e}")
             raise

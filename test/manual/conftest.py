@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from test.behaviour.conftest import (
     app_instance,
     isolated_test_database,
+    isolated_test_config,
     test_database_path,
     test_config,
     screenshots_dir,
@@ -24,7 +25,8 @@ from test.behaviour.conftest import (
 # Réexporter les fixtures pour qu'elles soient disponibles dans test/manual/
 __all__ = [
     'app_instance',
-    'isolated_test_database', 
+    'isolated_test_database',
+    'isolated_test_config',
     'test_database_path',
     'test_config',
     'screenshots_dir',

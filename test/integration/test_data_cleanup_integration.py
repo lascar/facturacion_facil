@@ -192,15 +192,19 @@ class TestDataCleanupIntegration:
             print(f"   ❌ Error en test de creación: {e}")
             pytest.fail(f"Error en test de creación: {e}")
     
-    def test_organization_window_button(self):
+    def test_organization_window_button(self, isolated_test_config):
         """Testa que el botón aparece en la ventana de organización"""
         try:
             print("\n🧪 Test: Botón en ventana de organización")
-            
+
+            # Activer le mode test
+            os.environ['PYTEST_RUNNING'] = '1'
+            os.environ['CONFIG_FILE'] = isolated_test_config
+
             app = QApplication.instance()
             if app is None:
                 app = QApplication(sys.argv)
-            
+
             window = OrganizacionPyQt5Window()
             
             # Verificar que el botón existe
@@ -266,7 +270,7 @@ class TestDataCleanupIntegration:
         except Exception as e:
             self.logger.error(f"Error limpiando test: {e}")
     
-    def test_all_data_cleanup_integration(self):
+    def test_all_data_cleanup_integration(self, isolated_test_config):
         """Test principal d'intégration du système de nettoyage"""
         print("🔧 TESTS DE INTEGRACIÓN - LIMPIEZA DE DATOS")
         print("=" * 50)
@@ -277,7 +281,7 @@ class TestDataCleanupIntegration:
         try:
             # Exécuter tous les sous-tests
             self.test_dialog_creation()
-            self.test_organization_window_button()
+            self.test_organization_window_button(isolated_test_config)
             self.test_database_stats_loading()
 
             print(f"\n📊 RESUMEN DE TESTS:")

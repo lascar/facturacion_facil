@@ -9,6 +9,9 @@ import tempfile
 import gc
 import sqlite3
 
+# Importer isolated_test_config depuis test/behaviour/conftest.py
+from test.behaviour.conftest import isolated_test_config
+
 
 @pytest.fixture
 def integration_db(monkeypatch):

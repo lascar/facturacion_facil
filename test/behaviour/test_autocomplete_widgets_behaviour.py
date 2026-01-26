@@ -414,9 +414,9 @@ class TestAutoCompleteWidgetsBehaviour(BaseBehaviourTest):
         producto_widget = edit_window.producto_autocomplete
 
         # Test 1: Vérifier que les produits sont chargés dans le widget
-        assert hasattr(producto_widget, 'productos'), "Attribut productos non trouvé"
-        assert len(producto_widget.productos) > 0, "Aucun produit chargé dans producto_autocomplete"
-        self.logger.info(f"✅ {len(producto_widget.productos)} produits chargés dans l'autocomplétion")
+        assert hasattr(producto_widget, 'products_data'), "Attribut products_data non trouvé"
+        assert len(producto_widget.products_data) > 0, "Aucun produit chargé dans producto_autocomplete"
+        self.logger.info(f"✅ {len(producto_widget.products_data)} produits chargés dans l'autocomplétion")
 
         # Test 2: Vérifier que le completer a un modèle avec des données
         assert producto_widget.completer is not None, "Completer non initialisé"
