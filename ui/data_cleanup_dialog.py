@@ -30,6 +30,8 @@ class DataCleanupWorker(QThread):
         
     def run(self):
         """Ejecuta la limpieza de datos"""
+        conn: sqlite3.Connection | None = None
+        
         try:
             total_steps = len([opt for opt in self.cleanup_options.values() if opt]) + (1 if self.create_backup else 0)
             current_step = 0
@@ -47,11 +49,24 @@ class DataCleanupWorker(QThread):
             conn = db.get_connection()
             cursor = conn.cursor()
             
+            self.logger.info(f"🗑️ Limpieza iniciada - DB: {db.db_path}")
+            
             # Eliminar facturas y sus items
             if self.cleanup_options.get('facturas', False):
                 self.progress_updated.emit(int((current_step / total_steps) * 100), "Eliminando facturas...")
+                self.logger.info("🗑️ Eliminando facturas...")
+                
+                # Verificar cuántas facturas hay antes
+                cursor.execute("SELECT COUNT(*) FROM facturas")
+                count_before = cursor.fetchone()[0]
+                self.logger.info(f"📊 Facturas antes de eliminar: {count_before}")
+                
                 cursor.execute("DELETE FROM factura_items")
+                items_deleted = cursor.rowcount
                 cursor.execute("DELETE FROM facturas")
+                facturas_deleted = cursor.rowcount
+                
+                self.logger.info(f"✅ Eliminadas {facturas_deleted} facturas y {items_deleted} items")
                 current_step += 1
             
             # Eliminar productos y stocks
@@ -90,19 +105,33 @@ class DataCleanupWorker(QThread):
             
             conn.commit()
             conn.close()
+            conn = None  # Marcar como cerrada
             
             # Optimizar base de datos
             self.progress_updated.emit(95, "Optimizando base de datos...")
-            conn = sqlite3.connect(db.db_path)
-            conn.execute("VACUUM")
-            conn.close()
+            with sqlite3.connect(db.db_path) as vacuum_conn:
+                vacuum_conn.execute("VACUUM")
             
             self.progress_updated.emit(100, "Limpieza completada")
             self.finished_signal.emit(True, "Limpieza de datos completada exitosamente")
             
         except Exception as e:
-            self.logger.error(f"Error durante la limpieza: {e}")
+            self.logger.error(f"❌ Error durante la limpieza: {e}")
+            if conn:
+                try:
+                    conn.rollback()
+                    self.logger.info("🔄 Rollback ejecutado")
+                except Exception as rollback_error:
+                    self.logger.error(f"⚠️ Error en rollback: {rollback_error}")
             self.finished_signal.emit(False, f"Error durante la limpieza: {str(e)}")
+            
+        finally:
+            if conn:
+                try:
+                    conn.close()
+                    self.logger.debug("🔒 Conexión cerrada en finally")
+                except Exception as close_error:
+                    self.logger.warning(f"⚠️ Error cerrando conexión: {close_error}")
 
 class DataCleanupDialog(QDialog):
     """Diálogo para limpieza selectiva de datos"""

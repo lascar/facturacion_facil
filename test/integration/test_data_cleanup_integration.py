@@ -4,10 +4,11 @@
 Test d'intégration pour le système de nettoyage de données
 Teste l'interface et la fonctionnalité de suppression sélective
 
-Conforme aux préférences de développement :
-- Tests intégrés comme tests de régression/intégration
-- Utilise une base de données séparée de la production
-- Maintient la compatibilité avec la structure existante
+⚠️ PROTECTION PRODUCTION: Ce test utilise exclusivement isolated_test_database
+pour garantir l'isolation complète de la base de données de production.
+
+❌ INTERDICTION ABSOLUE: Ne jamais modifier db.db_path directement
+✅ OBLIGATOIRE: Utiliser monkeypatch pour remplacer l'instance db
 """
 
 import sys
@@ -35,9 +36,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 
 from ui.organizacion_pyqt5 import OrganizacionPyQt5Window
 from ui.data_cleanup_dialog import DataCleanupDialog
-from database.database import db
 from database.models import Producto, Cliente, Factura, Stock
 from utils.logger import get_logger
+
 
 @pytest.mark.integration
 class TestDataCleanupIntegration:
@@ -46,39 +47,13 @@ class TestDataCleanupIntegration:
     def setup_method(self):
         """Configuration avant chaque test"""
         self.logger = get_logger("test_data_cleanup")
-        self.test_db_path = None
-        self.original_db_path = None
 
-    def teardown_method(self):
-        """Nettoyage après chaque test"""
-        self.cleanup_test_database()
+    def create_test_data(self, db):
+        """
+        Crée des données de test dans la base fournie.
         
-    def setup_test_database(self):
-        """Crée une base de données de test avec des données"""
-        try:
-            # Créer une base de données temporaire
-            temp_dir = tempfile.mkdtemp()
-            self.test_db_path = os.path.join(temp_dir, "test_cleanup.db")
-            
-            # Sauvegarder le chemin original
-            self.original_db_path = db.db_path
-            
-            # Configurer la base de test
-            db.db_path = self.test_db_path
-            db.init_database()
-            
-            # Créer des données de test
-            self.create_test_data()
-
-            print(f"✅ Base de datos de test creada: {self.test_db_path}")
-            return True
-
-        except Exception as e:
-            self.logger.error(f"Error configurando base de test: {e}")
-            return False
-    
-    def create_test_data(self):
-        """Crée des données de test"""
+        ⚠️ PRODUCTION SAFETY: Utilise uniquement la base de test fournie en paramètre
+        """
         try:
             # Créer des clients
             cliente1 = Cliente(nombre="Cliente Test 1", email="test1@test.com")
@@ -123,8 +98,12 @@ class TestDataCleanupIntegration:
             self.logger.error(f"Error creando datos de test: {e}")
             raise
     
-    def get_database_counts(self):
-        """Obtiene el conteo actual de registros"""
+    def get_database_counts(self, db):
+        """
+        Obtiene el conteo actual de registros.
+        
+        ⚠️ PRODUCTION SAFETY: Utilise uniquement la base de test fournie
+        """
         try:
             conn = db.get_connection()
             cursor = conn.cursor()
@@ -157,10 +136,13 @@ class TestDataCleanupIntegration:
             self.logger.error(f"Error obteniendo conteos: {e}")
             return {}
     
-    def test_dialog_creation(self):
+    def test_dialog_creation(self, integration_db, monkeypatch):
         """Testa la creación del diálogo"""
         try:
             print("\n🧪 Test: Creación del diálogo de limpieza")
+            
+            # Patcher l'instance db dans le module data_cleanup_dialog
+            monkeypatch.setattr('ui.data_cleanup_dialog.db', integration_db)
             
             app = QApplication.instance()
             if app is None:
@@ -192,11 +174,14 @@ class TestDataCleanupIntegration:
             print(f"   ❌ Error en test de creación: {e}")
             pytest.fail(f"Error en test de creación: {e}")
     
-    def test_organization_window_button(self, isolated_test_config):
+    def test_organization_window_button(self, integration_db, isolated_test_config, monkeypatch):
         """Testa que el botón aparece en la ventana de organización"""
         try:
             print("\n🧪 Test: Botón en ventana de organización")
 
+            # Patcher l'instance db dans les modules
+            monkeypatch.setattr('database.models.db', integration_db)
+            
             # Activer le mode test
             os.environ['PYTEST_RUNNING'] = '1'
             os.environ['CONFIG_FILE'] = isolated_test_config
@@ -225,13 +210,20 @@ class TestDataCleanupIntegration:
             print(f"   ❌ Error en test de botón: {e}")
             pytest.fail(f"Error en test de botón: {e}")
     
-    def test_database_stats_loading(self):
+    def test_database_stats_loading(self, integration_db, monkeypatch):
         """Testa la carga de estadísticas de la base de datos"""
         try:
             print("\n🧪 Test: Carga de estadísticas")
             
-            # Obtener conteos antes
-            counts_before = self.get_database_counts()
+            # Patcher l'instance db dans les modules
+            monkeypatch.setattr('ui.data_cleanup_dialog.db', integration_db)
+            monkeypatch.setattr('database.models.db', integration_db)
+            
+            # Créer des données de test
+            self.create_test_data(integration_db)
+            
+            # Obtener conteos avant
+            counts_before = self.get_database_counts(integration_db)
             print(f"   📊 Conteos actuales: {counts_before}")
             
             app = QApplication.instance()
@@ -255,40 +247,23 @@ class TestDataCleanupIntegration:
             print(f"   ❌ Error en test de estadísticas: {e}")
             pytest.fail(f"Error en test de estadísticas: {e}")
     
-    def cleanup_test_database(self):
-        """Limpia la base de datos de test"""
-        try:
-            if self.original_db_path:
-                db.db_path = self.original_db_path
-            
-            if self.test_db_path and os.path.exists(self.test_db_path):
-                # Eliminar el directorio temporal
-                temp_dir = os.path.dirname(self.test_db_path)
-                shutil.rmtree(temp_dir, ignore_errors=True)
-                print(f"✅ Base de datos de test eliminada")
-                
-        except Exception as e:
-            self.logger.error(f"Error limpiando test: {e}")
-    
-    def test_all_data_cleanup_integration(self, isolated_test_config):
+    def test_all_data_cleanup_integration(self, integration_db, isolated_test_config, monkeypatch):
         """Test principal d'intégration du système de nettoyage"""
         print("🔧 TESTS DE INTEGRACIÓN - LIMPIEZA DE DATOS")
         print("=" * 50)
 
-        # Configurar base de test
-        assert self.setup_test_database(), "Error configurando base de test"
-
         try:
-            # Exécuter tous les sous-tests
-            self.test_dialog_creation()
-            self.test_organization_window_button(isolated_test_config)
-            self.test_database_stats_loading()
+            # Exécuter tous les sous-tests avec la base de test isolée
+            self.test_dialog_creation(integration_db, monkeypatch)
+            self.test_organization_window_button(integration_db, isolated_test_config, monkeypatch)
+            self.test_database_stats_loading(integration_db, monkeypatch)
 
             print(f"\n📊 RESUMEN DE TESTS:")
             print(f"🎉 Todos los tests pasaron exitosamente!")
 
-        finally:
-            self.cleanup_test_database()
+        except Exception as e:
+            self.logger.error(f"Error en test d'intégration: {e}")
+            raise
 
 # Fonction pour exécution directe (compatibilité)
 def main():
@@ -300,17 +275,8 @@ def main():
     except ImportError:
         # Fallback : exécution directe
         print("🔧 Exécution directe (pytest non disponible)")
-        tester = TestDataCleanupIntegration()
-        tester.setup_method()
-        try:
-            tester.test_all_data_cleanup_integration()
-            print("✅ Test réussi")
-            sys.exit(0)
-        except Exception as e:
-            print(f"❌ Test échoué: {e}")
-            sys.exit(1)
-        finally:
-            tester.teardown_method()
+        print("❌ Ce test nécessite pytest pour l'isolation de la base de données")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

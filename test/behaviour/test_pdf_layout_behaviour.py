@@ -87,17 +87,20 @@ def test_pdf_generation():
     logger.info(f"Génération du PDF de test: {pdf_path}")
     success = pdf_generator.generate_invoice_pdf(invoice_data, pdf_path)
     
-    if success:
-        logger.info(f"✅ PDF généré avec succès: {pdf_path}")
-        print(f"\n✅ PDF de test généré avec succès!")
-        print(f"📄 Fichier: {pdf_path}")
-        print(f"\nVérifie que:")
-        print(f"  1. Le logo est en haut à gauche")
-        print(f"  2. Les informations de l'entreprise sont à côté du logo")
-        print(f"  3. 'FACTURA' et le numéro sont en haut à droite")
-        print(f"  4. Aucun bouton de l'interface n'est visible")
-        
-        # Ouvrir le PDF automatiquement
+    # Vérifier le succès avec assertion (pytest ne doit pas retourner de valeur)
+    assert success, "Échec de la génération du PDF"
+    
+    logger.info(f"✅ PDF généré avec succès: {pdf_path}")
+    print(f"\n✅ PDF de test généré avec succès!")
+    print(f"📄 Fichier: {pdf_path}")
+    print(f"\nVérifie que:")
+    print(f"  1. Le logo est en haut à gauche")
+    print(f"  2. Les informations de l'entreprise sont à côté du logo")
+    print(f"  3. 'FACTURA' et le numéro sont en haut à droite")
+    print(f"  4. Aucun bouton de l'interface n'est visible")
+    
+    # Ouvrir le PDF automatiquement (uniquement si exécuté directement, pas en pytest)
+    if not os.environ.get('PYTEST_RUNNING'):
         try:
             import subprocess
             import platform
@@ -113,12 +116,6 @@ def test_pdf_generation():
             logger.info("PDF ouvert automatiquement")
         except Exception as e:
             logger.warning(f"Impossible d'ouvrir automatiquement le PDF: {e}")
-        
-        return True
-    else:
-        logger.error("❌ Échec de la génération du PDF")
-        print("\n❌ Échec de la génération du PDF")
-        return False
 
 if __name__ == "__main__":
     print("=" * 60)
@@ -126,7 +123,10 @@ if __name__ == "__main__":
     print("=" * 60)
     print()
     
-    success = test_pdf_generation()
-    
-    sys.exit(0 if success else 1)
+    try:
+        test_pdf_generation()
+        sys.exit(0)
+    except AssertionError as e:
+        print(f"\n❌ {e}")
+        sys.exit(1)
 

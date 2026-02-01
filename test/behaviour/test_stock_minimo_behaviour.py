@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Tests de comportement pour le stock minimal
+
+⚠️ PROTECTION PRODUCTION: Ce test utilise exclusivement isolated_test_database
+pour garantir l'isolation complète de la base de données de production.
 """
 
 import pytest
@@ -10,27 +13,29 @@ import os
 # Ajouter le répertoire parent au path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from database.database import Database
+from database.test_database import TestDatabase
 from services.informes_service import InformesService
 
 
+@pytest.mark.behaviour
 class TestStockMinimoBehaviour:
     """Tests BDD pour le stock minimal"""
     
     @pytest.fixture(autouse=True)
-    def setup(self, tmp_path):
-        """Configuration pour chaque test"""
-        # Créer une base de données temporaire
-        self.db_path = str(tmp_path / "test_stock_minimo.db")
-        self.db = Database(self.db_path)
-        # La base de données est initialisée automatiquement dans __init__
+    def setup(self, isolated_test_database):
+        """
+        Configuration pour chaque test utilisant la base de test isolée.
+        
+        ⚠️ OBLIGATOIRE: Utilise isolated_test_database pour l'isolation complète.
+        """
+        # Utiliser la base de test fournie par la fixture
+        self.db = isolated_test_database
+        self.db_path = isolated_test_database.test_db_path
         self.informes_service = InformesService(self.db_path)
-
+        
         yield
-
-        # Nettoyage
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
+        
+        # Le nettoyage est géré par la fixture isolated_test_database
     
     def test_stock_minimo_column_exists(self):
         """

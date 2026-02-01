@@ -27,6 +27,13 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
         self.database = app_instance['database']
         self.logger = get_logger(self.__class__.__name__)
 
+        # ⚠️ PROTECTION PRODUCTION: Utiliser le fichier config de test uniquement
+        self.config_file = os.environ.get('CONFIG_FILE')
+        assert self.config_file is not None, "❌ ERREUR CRITIQUE: CONFIG_FILE non défini !"
+        assert 'test' in self.config_file.lower() or 'tmp' in self.config_file.lower(), \
+            f"❌ ERREUR CRITIQUE: Le fichier config doit contenir 'test' ou 'tmp' ! Chemin: {self.config_file}"
+        self.logger.info(f"📝 Utilisation du fichier config de test: {self.config_file}")
+
         # Initialiser les attributs de base
         self.init_base_attributes()
 
@@ -264,7 +271,8 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
         """
         self.logger.info("🧪 Test 07: Vérification valeur par défaut dans config.json")
 
-        config_file = os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'config.json')
+        # ⚠️ PROTECTION PRODUCTION: Utiliser self.config_file (fichier de test)
+        config_file = self.config_file
 
         # Vérifier que le fichier existe
         assert os.path.exists(config_file), f"Fichier config.json non trouvé: {config_file}"
@@ -309,8 +317,8 @@ class TestOrganizacionDirectorioInformeBehaviour(BaseBehaviourTest):
 
         assert organizacion_window is not None, "Fenêtre Organización non trouvée"
 
-        # Charger config.json
-        config_file = os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'config.json')
+        # ⚠️ PROTECTION PRODUCTION: Utiliser self.config_file (fichier de test)
+        config_file = self.config_file
         with open(config_file, 'r', encoding='utf-8') as f:
             config = json.load(f)
 
