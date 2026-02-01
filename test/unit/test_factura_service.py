@@ -187,16 +187,30 @@ class TestFacturaService:
         assert totals['iva_total'] == 4.7  # 4.2 + 0.5
         assert totals['total'] == 29.7  # 25 + 4.7
 
-    def test_generate_factura_number_first(self):
-        """Test génération du premier numéro de facture"""
+    def test_generate_factura_number_first(self, monkeypatch):
+        """Test génération du premier numéro de facture avec le nouveau format"""
+        # Patcher la config pour avoir un comportement prévisible
+        import config.config as config_module
+        monkeypatch.setattr(config_module.Config, 'get_factura_numero_inicial', lambda self: 1)
+        monkeypatch.setattr(config_module.Config, 'get_factura_prefijo', lambda self: '')
+        
         numero = self.service.generate_factura_number()
-        assert numero == 'FAC-0001'
+        # Nouveau format: 001-2026 (année courante)
+        current_year = datetime.now().year
+        assert numero == f'001-{current_year}'
 
-    def test_generate_factura_number_increment(self):
-        """Test incrémentation du numéro de facture"""
+    def test_generate_factura_number_increment(self, monkeypatch):
+        """Test incrémentation du numéro de facture avec le nouveau format"""
+        # Patcher la config
+        import config.config as config_module
+        monkeypatch.setattr(config_module.Config, 'get_factura_numero_inicial', lambda self: 1)
+        monkeypatch.setattr(config_module.Config, 'get_factura_prefijo', lambda self: '')
+        
+        current_year = datetime.now().year
+        
         # Créer une facture
         self.service.create_factura({
-            'numero': 'FAC-0001',
+            'numero': f'001-{current_year}',
             'fecha': datetime.now().strftime('%Y-%m-%d'),
             'cliente': {
                 'id': self.cliente_id,
@@ -212,7 +226,7 @@ class TestFacturaService:
 
         # Générer le prochain numéro
         numero = self.service.generate_factura_number()
-        assert numero == 'FAC-0002'
+        assert numero == f'002-{current_year}'
 
     def test_get_all_facturas(self):
         """Test récupération de toutes les factures"""
@@ -350,11 +364,18 @@ class TestFacturaService:
 
         assert "Error calculando totales" in str(context.value)
 
-    def test_generate_factura_number_with_existing(self):
+    def test_generate_factura_number_with_existing(self, monkeypatch):
         """Test generate_factura_number avec factures existantes"""
+        # Patcher la config
+        import config.config as config_module
+        monkeypatch.setattr(config_module.Config, 'get_factura_numero_inicial', lambda self: 1)
+        monkeypatch.setattr(config_module.Config, 'get_factura_prefijo', lambda self: '')
+        
+        current_year = datetime.now().year
+        
         # Créer une facture
         factura_data = {
-            'numero': 'FAC-0005',
+            'numero': f'005-{current_year}',
             'fecha': datetime.now().strftime('%Y-%m-%d'),
             'cliente': {
                 'id': self.cliente_id,
@@ -376,10 +397,15 @@ class TestFacturaService:
 
         # Générer le prochain numéro
         next_number = self.service.generate_factura_number()
-        assert next_number == 'FAC-0006'
+        assert next_number == f'006-{current_year}'
 
-    def test_generate_factura_number_no_existing(self):
+    def test_generate_factura_number_no_existing(self, monkeypatch):
         """Test generate_factura_number sans factures existantes"""
+        # Patcher la config
+        import config.config as config_module
+        monkeypatch.setattr(config_module.Config, 'get_factura_numero_inicial', lambda self: 1)
+        monkeypatch.setattr(config_module.Config, 'get_factura_prefijo', lambda self: '')
+        
         # Créer un nouveau service avec une DB vide
         temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
         temp_db.close()
@@ -392,8 +418,9 @@ class TestFacturaService:
             from database.database import Database
             Database(temp_db.name)  # Initialiser la DB
             service = FacturaService(temp_db.name)
+            current_year = datetime.now().year
             number = service.generate_factura_number()
-            assert number == 'FAC-0001'
+            assert number == f'001-{current_year}'
         finally:
             # Restaurer TEST_DATABASE_PATH
             if old_test_db_path:

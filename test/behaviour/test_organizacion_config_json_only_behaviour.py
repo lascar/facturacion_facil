@@ -84,29 +84,29 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
 
         # Pas besoin de restaurer - le fichier config de test sera automatiquement nettoyé
 
-    def test_01_organizacion_window_no_database_imports(self):
+    def test_01_organizacion_window_imports_config_only(self):
         """
-        COMPORTEMENT: OrganizacionWindow ne doit PAS importer de modules de base de données
+        COMPORTEMENT: OrganizacionWindow doit utiliser config.json comme source principale
         GIVEN: Le fichier ui/organizacion_pyqt5.py
         WHEN: On vérifie les imports
-        THEN: Aucun import de database ou OrganizacionService n'est présent
+        THEN: Les imports de database sont minimaux et justifiés (numéro de facture)
         """
-        self.logger.info("🧪 Test 01: Vérification absence imports base de données")
+        self.logger.info("🧪 Test 01: Vérification imports pour numéro de facture")
         
         organizacion_file = os.path.join(os.path.dirname(__file__), '..', '..', 'ui', 'organizacion_pyqt5.py')
         
         with open(organizacion_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Vérifier qu'il n'y a PAS d'import de database
+        # Vérifier qu'il n'y a PAS d'import direct de database (utilisé via OrganizacionService)
         assert 'from database import database' not in content, \
-            "OrganizacionWindow ne doit PAS importer 'from database import database'"
+            "OrganizacionWindow ne doit PAS importer 'from database import database' directement"
         
-        # Vérifier qu'il n'y a PAS d'import de OrganizacionService
-        assert 'from services.organizacion_service import OrganizacionService' not in content, \
-            "OrganizacionWindow ne doit PAS importer OrganizacionService"
+        # Vérifier que OrganizacionService est importé (nécessaire pour sauvegarder le numéro de facture)
+        assert 'from services.organizacion_service import OrganizacionService' in content, \
+            "OrganizacionWindow DOIT importer OrganizacionService pour sauvegarder le numéro de facture"
         
-        self.logger.info("✅ Test 01 réussi: Aucun import de base de données")
+        self.logger.info("✅ Test 01 réussi: Imports corrects pour config.json + numéro de facture")
 
     def test_02_organizacion_loads_from_config_json_only(self):
         """

@@ -1772,8 +1772,8 @@ class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         try:
             from utils.factura_numbering import FacturaNumberingService
 
-            # Usar el servicio de numeración que respeta la configuración
-            numbering_service = FacturaNumberingService()
+            # Usar el servicio de numeración avec la base de données de l'instance
+            numbering_service = FacturaNumberingService(self.database)
             numero_factura = numbering_service.get_next_numero_factura()
 
             self.logger.info(f"Número de factura generado: {numero_factura}")

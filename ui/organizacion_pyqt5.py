@@ -21,6 +21,8 @@ from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
 from ui.data_cleanup_dialog import DataCleanupDialog
 from ui.todo_editor_dialog import TodoEditorDialog
+from services.organizacion_service import OrganizacionService
+from database.database import db
 
 class OrganizacionPyQt5Window(BasePyQt5Window):
     """Fenêtre de configuration de l'organisation avec PyQt5 - Utilise uniquement config.json"""
@@ -875,7 +877,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self._updating_preview = False
 
     def save_organizacion(self):
-        """Sauvegarder la configuration de l'organisation dans config.json UNIQUEMENT"""
+        """Sauvegarder la configuration de l'organisation dans config.json ET la base de données"""
         try:
             self.logger.info(f"💾 save_organizacion() appelé - Widget nombre_edit contient: '{self.nombre_edit.text()}'")
 
@@ -906,9 +908,14 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
             self.logger.info(f"💾 Données préparées - nombre: '{organizacion_data.get('nombre')}'")
 
-            # Sauvegarder TOUT dans config.json (source unique de vérité)
-            if self.save_all_to_config_json(organizacion_data):
-                self.logger.info("💾 Sauvegarde réussie, affichage du message de succès")
+            # Sauvegarder dans config.json
+            config_saved = self.save_all_to_config_json(organizacion_data)
+            
+            # Sauvegarder aussi dans la base de données pour la numérotation des factures
+            db_saved = self._save_organizacion_to_database(organizacion_data)
+            
+            if config_saved and db_saved:
+                self.logger.info("💾 Sauvegarde réussie (config.json + base de données)")
                 self.show_info("Éxito", "Configuración actualizada correctamente")
                 # Recharger les données
                 self.logger.info("💾 Rechargement des données avec load_organizacion()")
@@ -921,6 +928,54 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Erreur sauvegarde organisation: {e}")
             self.show_error("Error", f"Error inesperado: {str(e)}")
+    
+    def _save_organizacion_to_database(self, organizacion_data):
+        """
+        Sauvegarde les données d'organisation dans la base de données.
+        Nécessaire pour que le numéro de facture initial soit utilisé.
+        
+        ⚠️ PRODUCTION: Utilise db (base de données de production)
+        """
+        try:
+            # Préparer les données pour la base de données
+            db_data = {
+                'nombre': organizacion_data.get('nombre', ''),
+                'direccion': organizacion_data.get('direccion', ''),
+                'telefono': organizacion_data.get('telefono', ''),
+                'email': organizacion_data.get('email', ''),
+                'cif': organizacion_data.get('cif', ''),
+                'logo_path': organizacion_data.get('logo_path', ''),
+                'logo_orientation': organizacion_data.get('logo_orientation', 'landscape'),
+                'numero_factura_inicial': organizacion_data.get('numero_factura_inicial', '1'),
+                'directorio_imagenes_defecto': organizacion_data.get('directorio_imagenes_defecto', ''),
+                'directorio_logos_storage': organizacion_data.get('directorio_logos_storage', ''),
+                'directorio_descargas_pdf': organizacion_data.get('directorio_descargas_pdf', ''),
+                'visor_pdf_personalizado': organizacion_data.get('visor_pdf_personalizado', ''),
+            }
+            
+            # Utiliser le service d'organisation
+            org_service = OrganizacionService(db)
+            
+            # Vérifier si l'organisation existe déjà
+            existing = org_service.get_organizacion()
+            
+            if existing and existing.get('id'):
+                # Mettre à jour
+                db_data['id'] = existing['id']
+                success = org_service.update_organizacion(db_data)
+                self.logger.info(f"💾 Organisation mise à jour dans la base de données: {success}")
+            else:
+                # Créer
+                success = org_service.create_organizacion(db_data)
+                self.logger.info(f"💾 Organisation créée dans la base de données: {success}")
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"❌ Erreur sauvegarde organisation dans la DB: {e}")
+            # Ne pas bloquer la sauvegarde dans config.json si la DB échoue
+            # mais retourner False pour informer
+            return False
 
     # ==================== MÉTODOS PARA ESTADOS DE FACTURAS ====================
 

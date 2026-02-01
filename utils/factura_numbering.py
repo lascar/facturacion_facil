@@ -4,7 +4,7 @@ Servicio para manejar la numeración de facturas
 """
 
 import re
-from database.database import Database
+from database.database import Database, db
 from config.config import app_config
 from utils.logger import get_logger
 
@@ -13,8 +13,15 @@ logger = get_logger(__name__)
 class FacturaNumberingService:
     """Servicio para generar y gestionar números de factura"""
     
-    def __init__(self):
-        self.db = Database()
+    def __init__(self, database=None):
+        """
+        Inicializa el servicio de numeración.
+        
+        Args:
+            database: Instance de Database à utiliser (optionnel).
+                     Si non fournie, utilise l'instance globale db.
+        """
+        self.db = database if database is not None else db
         self.config = app_config
     
     def get_next_numero_factura(self):
@@ -103,6 +110,7 @@ class FacturaNumberingService:
         """
         Incrementa un formato personalizado manteniendo su estructura
         Ej: "2025-wp-01" → "2025-wp-02"
+        Ej: "2026/02" → "2026/03"
         """
         try:
             import re
@@ -117,15 +125,18 @@ class FacturaNumberingService:
                 # Incrementar manteniendo el formato (ceros a la izquierda)
                 nuevo_num_str = str(nuevo_numero).zfill(len(ultimo_num_str))
 
-                # Reemplazar el último número en el formato
-                resultado = formato_base
-                # Reemplazar de derecha a izquierda para asegurar que reemplazamos el último
-                for i in range(len(numeros) - 1, -1, -1):
-                    if numeros[i] == ultimo_num_str:
-                        resultado = resultado.replace(ultimo_num_str, nuevo_num_str, 1)
-                        break
-
-                return resultado
+                # Reemplazar el ÚLTIMO número en el formato (no el primero)
+                # Encontrar la última posición del número
+                ultima_pos = formato_base.rfind(ultimo_num_str)
+                if ultima_pos != -1:
+                    # Construir el resultado: antes + nuevo número + después
+                    resultado = (formato_base[:ultima_pos] + 
+                                nuevo_num_str + 
+                                formato_base[ultima_pos + len(ultimo_num_str):])
+                    return resultado
+                else:
+                    # Fallback: agregar al final
+                    return f"{formato_base}-{nuevo_numero:02d}"
             else:
                 # Si no hay números, agregar el número al final
                 return f"{formato_base}-{nuevo_numero:02d}"

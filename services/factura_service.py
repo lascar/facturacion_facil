@@ -237,34 +237,42 @@ class FacturaService(BaseService):
 
     def generate_factura_number(self) -> str:
         """
-        Générer un nouveau numéro de facture
+        Générer un nouveau numéro de facture en respectant la configuration
 
         Returns:
-            Nouveau numéro de facture (format: FAC-XXXX)
+            Nouveau numéro de facture (format selon config ou FAC-XXXX)
 
         Raises:
             DatabaseError: En cas d'erreur de base de données
         """
         try:
-            last_number = self.get_last_invoice_number()
-
-            if last_number:
-                # Extraire le numéro et l'incrémenter
-                import re
-                match = re.search(r'(\d+)$', last_number)
-                if match:
-                    next_num = int(match.group(1)) + 1
-                    return f"FAC-{next_num:04d}"
-
-            # Par défaut, commencer à FAC-0001
-            return "FAC-0001"
+            from utils.factura_numbering import FacturaNumberingService
+            
+            # Utiliser le service de numérotation qui respecte la configuration
+            numbering_service = FacturaNumberingService(self.db)
+            numero = numbering_service.get_next_numero_factura()
+            
+            self.logger.info(f"Número de factura generado: {numero}")
+            return numero
 
         except Exception as e:
-            # En cas d'erreur, utiliser un timestamp
-            from datetime import datetime
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            self.logger.warning(f"Error generando número de factura, usando timestamp: {e}")
-            return f"FAC-{timestamp}"
+            # En cas d'erreur, fallback vers l'ancienne méthode
+            self.logger.warning(f"Error usando FacturaNumberingService, usando fallback: {e}")
+            
+            try:
+                last_number = self.get_last_invoice_number()
+                if last_number:
+                    import re
+                    match = re.search(r'(\d+)$', last_number)
+                    if match:
+                        next_num = int(match.group(1)) + 1
+                        return f"FAC-{next_num:04d}"
+                return "FAC-0001"
+            except Exception as e2:
+                from datetime import datetime
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                self.logger.error(f"Error en fallback: {e2}")
+                return f"FAC-{timestamp}"
 
     def _validate_factura_data(self, data: Dict[str, Any]) -> None:
         """
@@ -503,32 +511,40 @@ class FacturaService(BaseService):
 
     def generate_factura_number(self) -> str:
         """
-        Générer un nouveau numéro de facture
+        Générer un nouveau numéro de facture en respectant la configuration
 
         Returns:
-            Nouveau numéro de facture (format: FAC-XXXX)
+            Nouveau numéro de facture (format selon config ou FAC-XXXX)
 
         Raises:
             DatabaseError: En cas d'erreur de base de données
         """
         try:
-            last_number = self.get_last_invoice_number()
-
-            if last_number:
-                # Extraire le numéro et l'incrémenter
-                import re
-                match = re.search(r'(\d+)$', last_number)
-                if match:
-                    next_num = int(match.group(1)) + 1
-                    return f"FAC-{next_num:04d}"
-
-            # Par défaut, commencer à FAC-0001
-            return "FAC-0001"
+            from utils.factura_numbering import FacturaNumberingService
+            
+            # Utiliser le service de numérotation qui respecte la configuration
+            numbering_service = FacturaNumberingService(self.db)
+            numero = numbering_service.get_next_numero_factura()
+            
+            self.logger.info(f"Número de factura generado: {numero}")
+            return numero
 
         except Exception as e:
-            # En cas d'erreur, utiliser un timestamp
-            from datetime import datetime
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            self.logger.warning(f"Error generando número de factura, usando timestamp: {e}")
-            return f"FAC-{timestamp}"
+            # En cas d'erreur, fallback vers l'ancienne méthode
+            self.logger.warning(f"Error usando FacturaNumberingService, usando fallback: {e}")
+            
+            try:
+                last_number = self.get_last_invoice_number()
+                if last_number:
+                    import re
+                    match = re.search(r'(\d+)$', last_number)
+                    if match:
+                        next_num = int(match.group(1)) + 1
+                        return f"FAC-{next_num:04d}"
+                return "FAC-0001"
+            except Exception as e2:
+                from datetime import datetime
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                self.logger.error(f"Error en fallback: {e2}")
+                return f"FAC-{timestamp}"
 
