@@ -161,7 +161,7 @@ class TestDatabaseIsolation:
         # Le nettoyage sera fait automatiquement par pytest_runtest_teardown
     
     def test_database_reset_functionality(self, unit_db):
-        """Test de la fonctionnalité de remise à zéro"""
+        """Test de la fonctionnalité de remise à zéro de la base de données"""
         # Ajouter des données
         producto = Producto(
             nombre="Reset Test",
@@ -170,19 +170,9 @@ class TestDatabaseIsolation:
         )
         producto.save()
         
-        organizacion = Organizacion(
-            nombre="Test Company",
-            cif="B12345678"
-        )
-        organizacion.save()
-        
         # Vérifier que les données existent
         productos = Producto.get_all()
         assert len(productos) == 1
-        
-        org = Organizacion.get()
-        assert org is not None
-        assert org.nombre == "Test Company"
         
         # Remettre à zéro
         test_db_manager.reset_database(unit_db)
@@ -190,10 +180,9 @@ class TestDatabaseIsolation:
         # Vérifier que les données ont été supprimées
         productos = Producto.get_all()
         assert len(productos) == 0
-
-        org = Organizacion.get()
-        # Après reset, l'organisation devrait être vide ou None
-        assert org is None or org.nombre == "" or org.nombre is None
+        
+        # NOTE: Organizacion n'est plus dans la DB mais dans config.json
+        # donc elle n'est pas affectée par le reset de la DB
     
 
     

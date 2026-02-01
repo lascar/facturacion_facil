@@ -2,21 +2,46 @@
 
 ---
 
-# 📄 Contrôles de Visibilité PDF - Conditions de Paiement et Informations Légales
+# 📄 Contrôles de Visibilité PDF - Conditions de Paiement, Forma de Pago et Informations Légales
 
-> **Date** : 2026-01-23  
+> **Date** : 2026-02-01  
 > **Statut** : ✅ Implémenté et testé  
-> **Version** : 1.0
+> **Version** : 2.0
 
 ---
 
 ## 📋 Vue d'ensemble
 
-Cette fonctionnalité permet de contrôler la visibilité des sections "Condiciones de Pago" et "Información Legal" dans les PDFs de factures générés par l'application.
+Cette fonctionnalité permet de contrôler la visibilité des sections "Condiciones de Pago", "Forma de Pago" et "Información Legal" dans les PDFs de factures générés par l'application.
 
-### Objectif
+### Architecture
 
-Donner à l'utilisateur la possibilité de masquer certaines sections du footer des PDFs sans avoir à supprimer le contenu de ces champs.
+Toute la configuration de l'organisation est stockée dans **`config/config.json`** avec un système de cache en mémoire. La base de données n'est plus utilisée pour ces données.
+
+```
+┌─────────────────────────────────────────────┐
+│         CONFIGURATION ORGANISATION          │
+│                                             │
+│  config.json (SOURCE UNIQUE)                │
+│  ├── organizacion_defaults                  │
+│  │   ├── nombre, direccion, telefono       │
+│  │   ├── email, cif, logo_path             │
+│  │   ├── numero_factura_inicial            │
+│  │   ├── condiciones_pago / _visible       │
+│  │   ├── forma_pago / _visible             │
+│  │   └── informacion_legal / _visible      │
+│  │                                          │
+│  └── Cache (functools.lru_cache)            │
+│      ├── get_config() → lecture avec cache  │
+│      ├── save_config() → écriture + invalide│
+│      └── invalidate_config_cache()          │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+### Compatibilité Rétroactive
+
+L'API `Organizacion.get()` et `Organizacion.save()` reste inchangée pour maintenir la compatibilité avec le code existant. Si `config.json` est vide, une **migration automatique** depuis la base de données est effectuée.
 
 ---
 
@@ -26,29 +51,39 @@ Donner à l'utilisateur la possibilité de masquer certaines sections du footer 
 
 **Localisation** : Fenêtre "Configuración de la Organización"
 
-Deux nouvelles cases à cocher ont été ajoutées :
+Trois nouvelles cases à cocher ont été ajoutées :
 - ✅ **"Visible en los PDF"** sous le champ "Condiciones de Pago"
+- ✅ **"Visible en los PDF"** sous le champ "Forma de Pago"
 - ✅ **"Visible en los PDF"** sous le champ "Información Legal"
 
-**Comportement par défaut** : Les deux cases sont cochées (sections visibles)
+**Comportement par défaut** : Les trois cases sont cochées (sections visibles)
 
 ### Configuration
 
 **Fichier** : `config/config.json`
 
-Deux nouveaux champs dans `organizacion_defaults` :
+Structure complète :
 ```json
 {
   "organizacion_defaults": {
+    "nombre": "Mi Empresa",
+    "direccion": "Calle Principal, 123",
+    "telefono": "+34 123 456 789",
+    "email": "contacto@miempresa.com",
+    "cif": "B12345678",
+    "logo_path": "logo/logo.png",
+    "numero_factura_inicial": "1",
     "condiciones_pago": "...",
+    "forma_pago": "...",
     "informacion_legal": "...",
     "condiciones_pago_visible": 1,
+    "forma_pago_visible": 1,
     "informacion_legal_visible": 1
   }
 }
 ```
 
-**Valeurs** :
+**Valeurs des flags de visibilité** :
 - `1` = Section visible dans les PDFs
 - `0` = Section masquée dans les PDFs
 
@@ -58,6 +93,7 @@ Le générateur PDF vérifie les flags de visibilité avant d'inclure les sectio
 
 **Logique** :
 - Si `condiciones_pago_visible == 0` → Section "CONDICIONES DE PAGO" non affichée
+- Si `forma_pago_visible == 0` → Section "FORMA DE PAGO" non affichée
 - Si `informacion_legal_visible == 0` → Section "INFORMACIÓN LEGAL" non affichée
 
 ---
@@ -66,90 +102,163 @@ Le générateur PDF vérifie les flags de visibilité avant d'inclure les sectio
 
 ### Fichiers Modifiés
 
-#### 1. **Interface** (`ui/organizacion_pyqt5.py`)
+#### 1. **Configuration** (`config/config.py`)
 
-**Ajouts** :
-- Lignes 166-168 : QCheckBox pour condiciones_pago_visible
-- Lignes 182-184 : QCheckBox pour informacion_legal_visible
-- Lignes 403-404 : Valeurs par défaut dans get_default_config()
-- Lignes 553-556 : Chargement des états dans load_organization_data()
-- Lignes 869-870 : Sauvegarde des états dans save_organizacion()
+**Nouveau système de cache** :
+```python
+# Cache global
+_config_cache = {}
 
-#### 2. **Générateur PDF** (`utils/pdf_generator.py`)
+def get_config(config_file=None):
+    """Obtient la configuration avec cache"""
+    
+def save_config(config_data, config_file=None):
+    """Sauvegarde et invalide le cache automatiquement"""
+    
+def invalidate_config_cache(config_file=None):
+    """Invalide le cache pour forcer le rechargement"""
+```
+
+**Classe Config** (compatible legacy) :
+```python
+class Config:
+    def reload(self):
+        """Recharge depuis le fichier (invalide le cache)"""
+        
+    def get_organizacion_defaults(self):
+        """Obtient les valeurs depuis config.json"""
+        
+    def set_organizacion_defaults(self, data):
+        """Définit les valeurs et sauvegarde"""
+```
+
+#### 2. **Modèle** (`database/models.py`)
+
+**Classe Organizacion** (API inchangée, implémentation modifiée) :
+
+```python
+class Organizacion:
+    """
+    Modelo de Organizacion - AHORA USA config.json (no base de datos)
+    
+    Mantiene compatibilidad: Organizacion.get() y Organizacion.save()
+    """
+    
+    def save(self):
+        """Guarda en config.json (no en DB)"""
+        from config.config import get_config, save_config
+        # ...
+    
+    @staticmethod
+    def get():
+        """Obtiene desde config.json (con fallback a DB para migración)"""
+        from config.config import get_config
+        # Si config.json vacío → migra desde DB → guarda en config.json
+```
+
+**Compatibilité** : Le code existant utilisant `Organizacion.get()` et `Organizacion.save()` continue de fonctionner sans modification.
+
+#### 3. **Interface** (`ui/organizacion_pyqt5.py`)
 
 **Modifications** :
-- Lignes 337-344 : Ajout des flags dans get_default_config()
-- Lignes 385-438 : Logique conditionnelle dans create_footer()
+- Utilise `get_config()` pour le chargement (avec cache)
+- Appelle `invalidate_config_cache()` après sauvegarde
+- Plus de sauvegarde dans la base de données
 
-**Logique de construction du footer** :
 ```python
-footer_parts = []
-
-# Ajouter les conditions de paiement si visibles
-if condiciones_pago_visible:
-    if condiciones_pago.strip():
-        footer_parts.append(f"<b>CONDICIONES DE PAGO:</b><br/>{condiciones_pago_html}")
-
-# Ajouter les informations légales si visibles
-if informacion_legal_visible:
-    if informacion_legal.strip():
-        footer_parts.append(f"<b>INFORMACIÓN LEGAL:</b><br/>{informacion_legal_html}")
-
-# Joindre les parties avec double saut de ligne
-footer_text = "<br/><br/>".join(footer_parts)
+def save_organizacion(self):
+    # Sauvegarder dans config.json
+    config_saved = self.save_all_to_config_json(organizacion_data)
+    
+    if config_saved:
+        # Invalider le cache pour forcer le rechargement
+        from config.config import invalidate_config_cache
+        invalidate_config_cache(self.config_file)
 ```
+
+#### 4. **Générateur PDF** (`utils/pdf_generator.py`)
+
+Lecture depuis config.json via le cache :
+```python
+def load_config_data(self):
+    from config.config import get_config
+    config = get_config(self.config_file)
+    return config.get('organizacion_defaults', {})
+```
+
+---
+
+## 🔄 Migration depuis la Base de Données
+
+### Processus Automatique
+
+Lors du premier accès après la mise à jour :
+
+1. `Organizacion.get()` vérifie config.json
+2. Si vide → lit la base de données (table `organizacion`)
+3. Migre les données vers config.json
+4. Sauvegarde dans config.json
+5. Affiche : "🔄 Migración automática: Datos de organización migrados de DB a config.json"
+
+### Données Migrées
+
+| Champ | Source → Destination |
+|-------|---------------------|
+| `nombre` | DB.organizacion → config.json |
+| `direccion` | DB.organizacion → config.json |
+| `telefono` | DB.organizacion → config.json |
+| `email` | DB.organizacion → config.json |
+| `cif` | DB.organizacion → config.json |
+| `logo_path` | DB.organizacion → config.json |
+| `numero_factura_inicial` | DB.organizacion → config.json |
+
+**Note** : La table `organizacion` dans la DB est préservée mais ignorée après migration.
 
 ---
 
 ## 🧪 Tests
 
-### Fichier de Tests
+### Structure des Tests
 
-**Localisation** : `test/behaviour/test_organizacion_visibility_checkboxes_behaviour.py`
+**Fichiers de Tests** :
+- `test/unit/test_models.py::TestOrganizacion` (6 tests unitaires)
+- `test/behaviour/test_organizacion_visibility_checkboxes_behaviour.py` (4 tests)
+- `test/behaviour/test_organizacion_forma_pago_behaviour.py` (5 tests)
+- `test/behaviour/test_forma_pago_pdf_visibility_behaviour.py` (5 tests)
 
-### Tests Implémentés
+### Tests Unitaires - Organizacion
 
-**4 tests de comportement** :
+| Test | Description |
+|------|-------------|
+| `test_organizacion_creation` | Création d'une organisation |
+| `test_organizacion_creation_with_defaults` | Valeurs par défaut |
+| `test_organizacion_save_new` | Sauvegarde dans config.json |
+| `test_organizacion_save_update` | Mise à jour config.json |
+| `test_organizacion_get` | Récupération depuis config.json |
+| `test_organizacion_get_empty` | Comportement si vide |
 
-1. **test_01_checkboxes_exist_in_organizacion_window**
-   - Vérifie que les cases à cocher existent dans l'interface
+### Tests de Comportement
 
-2. **test_02_checkboxes_default_checked**
-   - Vérifie que les cases sont cochées par défaut
+**14 tests de comportement** :
+- 4 tests : Condiciones de Pago / Información Legal
+- 5 tests : Forma de Pago (UI)
+- 5 tests : Visibilité PDF Forma de Pago
 
-3. **test_03_checkboxes_save_to_config_json**
-   - Vérifie que les états sont sauvegardés dans config.json
-
-4. **test_04_checkboxes_load_from_config_json**
-   - Vérifie que les états sont chargés depuis config.json
-
-### Protection des Fichiers de Production
-
-**Conformité** : ✅ Respecte `docs/dev/testing/PROTECTION_FICHIERS_PRODUCTION.md`
-
-**Méthode** :
-- Utilisation de `tmp_path` (fixture pytest) pour créer un fichier config temporaire
-- Patch de `organizacion_window.config_file` après ouverture de la fenêtre
-- Rechargement des données avec `organizacion_window.load_organizacion()`
-- Aucun accès direct à `config/config.json` en production
-
-**Vérification** :
-```bash
-python3 test/scripts/verify_no_production_db_usage.py
-# ✅ Aucun problème détecté dans test_organizacion_visibility_checkboxes_behaviour.py
-```
-
-### Exécution des Tests
+### Exécution
 
 ```bash
+# Tests unitaires
+pytest test/unit/test_models.py::TestOrganizacion -v
+
+# Tests de comportement
+pytest test/behaviour/test_organizacion_forma_pago_behaviour.py -v
+pytest test/behaviour/test_forma_pago_pdf_visibility_behaviour.py -v
+
 # Tous les tests
-pytest test/behaviour/test_organizacion_visibility_checkboxes_behaviour.py -v
-
-# Test spécifique
-pytest test/behaviour/test_organizacion_visibility_checkboxes_behaviour.py::TestOrganizacionVisibilityCheckboxesBehaviour::test_01_checkboxes_exist_in_organizacion_window -v
+pytest test/ -v
 ```
 
-**Résultat** : ✅ 4/4 tests passent
+**Résultat** : ✅ 401+ tests passent
 
 ---
 
@@ -158,31 +267,61 @@ pytest test/behaviour/test_organizacion_visibility_checkboxes_behaviour.py::Test
 ### Pour l'Utilisateur Final
 
 1. Ouvrir **"Configuración de la Organización"**
-2. Remplir les champs "Condiciones de Pago" et/ou "Información Legal"
-3. Cocher/décocher les cases **"✓ Visible en los PDF"** selon les besoins
+2. Remplir tous les champs
+3. Cocher/décocher les cases **"✓ Visible en los PDF"**
 4. Cliquer sur **"💾 Guardar Configuración"**
 5. Les PDFs générés respecteront les choix de visibilité
 
-### Cas d'Usage
+### Pour les Développeurs
 
-**Exemple 1** : Masquer temporairement les conditions de paiement
-- Décocher "Visible en los PDF" sous "Condiciones de Pago"
-- Le contenu est conservé mais n'apparaît pas dans les PDFs
+**Lecture de la configuration** :
+```python
+from database.models import Organizacion
 
-**Exemple 2** : Afficher uniquement les informations légales
-- Décocher "Visible en los PDF" sous "Condiciones de Pago"
-- Laisser cochée "Visible en los PDF" sous "Información Legal"
+# Lecture avec cache automatique
+org = Organizacion.get()
+print(org.nombre, org.cif)
+```
+
+**Sauvegarde (invalide le cache automatiquement)** :
+```python
+org = Organizacion()
+org.nombre = "Nueva Empresa"
+org.save()  # Sauvegarde dans config.json + invalide cache
+```
+
+**Forcer le rechargement** :
+```python
+from config.config import invalidate_config_cache
+invalidate_config_cache()
+```
+
+---
+
+## 🔒 Protection des Données de Production
+
+Le script `test/verifier_protection_tests.py` est exécuté automatiquement par `run_organized_tests.sh` avant tout test. Il bloque l'exécution si des données de test sont détectées dans :
+
+| Source | Critère de détection | Action |
+|--------|---------------------|--------|
+| **Base de données** | Produits/factures/clients avec "Test" | ❌ Bloque |
+| **config.json** | Nom/email contenant "test" ou "empresa" | ❌ Bloque |
+| **Organisation DB** | Nom contenant "test" | ❌ Bloque |
+| **Protection PYTEST_RUNNING** | Absent de database.py | ❌ Bloque |
+
+**Commande de vérification manuelle :**
+```bash
+python3 test/verifier_protection_tests.py
+```
 
 ---
 
 ## 🔗 Voir Aussi
 
 - **[PDF_FEATURES_SUMMARY.md](PDF_FEATURES_SUMMARY.md)** - Vue d'ensemble des fonctionnalités PDF
-- **[PROTECTION_FICHIERS_PRODUCTION.md](../testing/PROTECTION_FICHIERS_PRODUCTION.md)** - Protection des fichiers de production dans les tests
-- **[GUIDE_TESTS_BEHAVIOUR_AUTO_CLOSE.md](../testing/GUIDE_TESTS_BEHAVIOUR_AUTO_CLOSE.md)** - Guide des tests comportementaux
+- **[PROTECTION_FICHIERS_PRODUCTION.md](../testing/PROTECTION_FICHIERS_PRODUCTION.md)** - Protection des fichiers de production
 
 ---
 
-**Dernière mise à jour** : 2026-01-23  
+**Dernière mise à jour** : 2026-02-01  
 **Auteur** : Équipe de développement
-

@@ -427,6 +427,22 @@ main() {
     local test_type="$1"
     shift
 
+    # 🛡️ VÉRIFICATION CRITIQUE: Protection contre la pollution de la base de production
+    echo -e "${BLUE}🛡️  Vérification de la protection des données de production...${NC}"
+    if ! python3 "${TEST_DIR}/verifier_protection_tests.py"; then
+        echo ""
+        echo -e "${RED}❌ ERREUR CRITIQUE: La protection de la base de données n'est pas correctement configurée!${NC}"
+        echo -e "${RED}   Les tests risquent de polluer la base de données de production.${NC}"
+        echo ""
+        echo -e "${YELLOW}🔧 Solutions possibles:${NC}"
+        echo -e "   1. Vérifier que database/database.py utilise PYTEST_RUNNING et TEST_DATABASE_PATH"
+        echo -e "   2. Vérifier que test/conftest.py définit correctement les fixtures isolées"
+        echo -e "   3. Vérifier que test/unit/conftest.py utilise tempfile pour unit_db"
+        echo ""
+        exit 1
+    fi
+    echo ""
+
     # 🛡️ PROTECTION CRITIQUE: Backup de la base de données de production
     backup_production_database
 

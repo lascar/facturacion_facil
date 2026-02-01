@@ -134,7 +134,9 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
                 "logo_path": "logo/test.png",
                 "logo_orientation": "landscape",
                 "condiciones_pago": "Condiciones de test",
+                "forma_pago": "Transferencia bancaria - IBAN test",
                 "informacion_legal": "Info legal de test"
+                # Note: ces champs sont UNIQUEMENT dans config.json (pas dans la DB)
             }
         }
         
@@ -189,7 +191,8 @@ class TestOrganizacionConfigJsonOnlyBehaviour(BaseBehaviourTest):
         COMPORTEMENT: OrganizacionWindow doit sauvegarder dans config.json UNIQUEMENT
         GIVEN: La fenêtre Organización est ouverte avec des données modifiées
         WHEN: On clique sur le bouton Guardar
-        THEN: Les données sont sauvegardées dans config.json (et non dans la base de données)
+        THEN: Toutes les données (y compris nom, adresse, téléphone, email, CIF, logo) 
+              sont sauvegardées dans config.json et le cache est invalidé
         """
         self.logger.info("🧪 Test 03: Vérification sauvegarde dans config.json uniquement")
 

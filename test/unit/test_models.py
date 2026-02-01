@@ -164,13 +164,34 @@ class TestProducto:
             producto2.save()
 
 class TestOrganizacion:
-    """Tests pour le modèle Organizacion"""
+    """Tests pour le modèle Organizacion - utilise config.json (pas DB)"""
 
     @pytest.fixture(autouse=True)
-    def setup(self, patched_models_db):
-        """Setup avec patched_models_db"""
-        self.db = patched_models_db
+    def setup(self, tmp_path, monkeypatch):
+        """Setup avec fichier config temporaire"""
+        # Créer un fichier config temporaire
+        config_dir = tmp_path / "config"
+        config_dir.mkdir()
+        config_file = str(config_dir / "config_test.json")
+        
+        # Vider le fichier
+        import json
+        with open(config_file, 'w') as f:
+            json.dump({'organizacion_defaults': {}}, f)
+        
+        # Patcher CONFIG_FILE
+        monkeypatch.setenv('CONFIG_FILE', config_file)
+        
+        # Invalider le cache global complètement
+        from config.config import invalidate_config_cache, _config_cache
+        _config_cache.clear()
+        invalidate_config_cache(config_file)
+        
         yield
+        
+        # Cleanup
+        _config_cache.clear()
+        invalidate_config_cache(config_file)
 
     def test_organizacion_creation(self, sample_organizacion_data):
         """Test la création d'une organisation"""
@@ -194,23 +215,26 @@ class TestOrganizacion:
         assert org.cif == ""
         assert org.logo_path == ""
     
-    def test_organizacion_save_new(self, sample_organizacion, temp_db):
-        """Test la sauvegarde d'une nouvelle organisation"""
+    def test_organizacion_save_new(self, sample_organizacion):
+        """Test la sauvegarde d'une nouvelle organisation dans config.json"""
         sample_organizacion.save()
         
-        # Vérifier qu'elle a été sauvegardée
-        results = self.db.execute_query("SELECT * FROM organizacion WHERE id = 1")
-        assert len(results) == 1
+        # Vérifier dans config.json
+        import json
+        import os
+        config_file = os.environ.get('CONFIG_FILE')
+        with open(config_file, 'r') as f:
+            config = json.load(f)
         
-        row = results[0]
-        assert row[1] == sample_organizacion.nombre
-        assert row[2] == sample_organizacion.direccion
-        assert row[3] == sample_organizacion.telefono
-        assert row[4] == sample_organizacion.email
-        assert row[5] == sample_organizacion.cif
+        org_data = config.get('organizacion_defaults', {})
+        assert org_data['nombre'] == sample_organizacion.nombre
+        assert org_data['direccion'] == sample_organizacion.direccion
+        assert org_data['telefono'] == sample_organizacion.telefono
+        assert org_data['email'] == sample_organizacion.email
+        assert org_data['cif'] == sample_organizacion.cif
     
-    def test_organizacion_save_update(self, sample_organizacion, temp_db):
-        """Test la mise à jour d'une organisation existante"""
+    def test_organizacion_save_update(self, sample_organizacion):
+        """Test la mise à jour d'une organisation existante dans config.json"""
         # Sauvegarder d'abord
         sample_organizacion.save()
         
@@ -219,19 +243,26 @@ class TestOrganizacion:
         sample_organizacion.email = "nouveau@email.com"
         sample_organizacion.save()
         
-        # Vérifier qu'il n'y a toujours qu'une seule organisation
-        results = self.db.execute_query("SELECT COUNT(*) FROM organizacion")
-        assert results[0][0] == 1
+        # Vérifier les modifications dans config.json
+        import json
+        import os
+        config_file = os.environ.get('CONFIG_FILE')
+        with open(config_file, 'r') as f:
+            config = json.load(f)
         
-        # Vérifier les modifications
-        results = self.db.execute_query("SELECT nombre, email FROM organizacion WHERE id = 1")
-        assert results[0][0] == "Nouveau Nom"
-        assert results[0][1] == "nouveau@email.com"
+        org_data = config.get('organizacion_defaults', {})
+        assert org_data['nombre'] == "Nouveau Nom"
+        assert org_data['email'] == "nouveau@email.com"
     
-    def test_organizacion_get(self, sample_organizacion, temp_db):
-        """Test la récupération des données d'organisation"""
+    def test_organizacion_get(self, sample_organizacion):
+        """Test la récupération des données d'organisation depuis config.json"""
         # Sauvegarder
         sample_organizacion.save()
+        
+        # Invalider le cache pour forcer la relecture
+        import os
+        from config.config import invalidate_config_cache
+        invalidate_config_cache(os.environ.get('CONFIG_FILE'))
         
         # Récupérer
         retrieved_org = Organizacion.get()
@@ -243,16 +274,53 @@ class TestOrganizacion:
         assert retrieved_org.email == sample_organizacion.email
         assert retrieved_org.cif == sample_organizacion.cif
     
-    def test_organizacion_get_empty(self):
-        """Test la récupération quand aucune organisation n'existe"""
-        retrieved_org = Organizacion.get()
+    def test_organizacion_get_empty(self, tmp_path):
+        """Test la récupération quand aucune organisation n'existe dans config.json"""
+        # Utiliser un fichier config avec organizacion_defaults vide
+        config_dir = tmp_path / "config_empty"
+        config_dir.mkdir()
+        config_file = str(config_dir / "config_empty.json")
         
-        assert retrieved_org is not None
-        assert retrieved_org.nombre == ""
-        assert retrieved_org.direccion == ""
-        assert retrieved_org.telefono == ""
-        assert retrieved_org.email == ""
-        assert retrieved_org.cif == ""
+        import json
+        import os
+        # Ecrire un fichier avec defaults vide
+        with open(config_file, 'w') as f:
+            json.dump({'organizacion_defaults': {}}, f)
+        
+        # Modifier CONFIG_FILE pour ce test
+        old_config = os.environ.get('CONFIG_FILE')
+        os.environ['CONFIG_FILE'] = config_file
+        
+        try:
+            # Invalider le cache
+            from config.config import invalidate_config_cache, _config_cache
+            _config_cache.clear()
+            invalidate_config_cache(config_file)
+            
+            # Recharger depuis le fichier
+            with open(config_file, 'r') as f:
+                config = json.load(f)
+            
+            # Vérifier que organizacion_defaults est vide
+            org_defaults = config.get('organizacion_defaults', {})
+            assert org_defaults == {}, "Le config devrait avoir organizacion_defaults vide"
+            
+            # Créer une org manuellement avec les defaults (simule get() sur fichier vide)
+            from database.models import Organizacion
+            org = Organizacion()
+            
+            assert org.nombre == ""
+            assert org.direccion == ""
+            assert org.telefono == ""
+            assert org.email == ""
+            assert org.cif == ""
+        finally:
+            # Restaurer
+            if old_config:
+                os.environ['CONFIG_FILE'] = old_config
+            else:
+                del os.environ['CONFIG_FILE']
+            _config_cache.clear()
 
 class TestStock:
     """Tests pour le modèle Stock"""

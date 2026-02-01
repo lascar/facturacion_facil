@@ -182,6 +182,22 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
 
         parent_layout.addWidget(payment_group)
 
+        # GroupBox pour la forma de pago (Mode de paiement)
+        self.forma_pago_group = QGroupBox("Forma de Pago")
+        forma_pago_layout = QVBoxLayout(self.forma_pago_group)
+
+        self.forma_pago_edit = QTextEdit()
+        self.forma_pago_edit.setMaximumHeight(100)
+        self.forma_pago_edit.setPlaceholderText("Ej: Transferencia bancaria - IBAN: ES00 0000 0000 0000 0000 0000...")
+        forma_pago_layout.addWidget(self.forma_pago_edit)
+
+        # Case à cocher pour la visibilité dans les PDFs
+        self.forma_pago_visible_checkbox = QCheckBox("✓ Visible en los PDF")
+        self.forma_pago_visible_checkbox.setChecked(True)  # Coché par défaut
+        forma_pago_layout.addWidget(self.forma_pago_visible_checkbox)
+
+        parent_layout.addWidget(self.forma_pago_group)
+
         # GroupBox pour l'information légale
         legal_group = QGroupBox("Información Legal")
         legal_layout = QVBoxLayout(legal_group)
@@ -413,44 +429,32 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             'visor_pdf_personalizado': '',
             'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
             'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.',
+            'forma_pago': '• Transferencia bancaria:\n  IBAN: ES00 0000 0000 0000 0000 0000\n  BIC/SWIFT: XXXX\n• El pago debe realizarse dentro de los 30 días siguientes a la fecha de emisión.',
             'condiciones_pago_visible': 1,
-            'informacion_legal_visible': 1
+            'informacion_legal_visible': 1,
+            'forma_pago_visible': 1
         }
 
     def load_config_json(self):
-        """Charger les données depuis config.json avec fusion intelligente des défauts"""
+        """Charger les données depuis config.json avec cache (source unique de vérité)"""
         try:
+            self.logger.info(f"📖 load_config_json() - Fichier: {self.config_file}")
+            
+            # Utiliser le cache de configuration
+            from config.config import get_config
+            config = get_config(self.config_file)
+            
             # Obtenir les valeurs par défaut
             defaults = self.get_default_config()
+            
+            # Fusionner avec les données du cache
+            org_defaults = config.get('organizacion_defaults', {})
+            merged = defaults.copy()
+            merged.update(org_defaults)
 
-            if os.path.exists(self.config_file):
-                with open(self.config_file, 'r', encoding='utf-8') as f:
-                    config = json.load(f)
-                    org_defaults = config.get('organizacion_defaults', {})
+            self.logger.info(f"📖 Chargement config.json (cache) - nombre: '{merged.get('nombre', 'N/A')}'")
 
-                    self.logger.info(f"📖 Lecture du fichier: {self.config_file}")
-                    self.logger.info(f"📖 Contenu brut org_defaults: {org_defaults}")
-
-                    # Fusionner : defaults + valeurs existantes (les existantes ont priorité)
-                    merged = defaults.copy()
-                    merged.update(org_defaults)
-
-                    self.logger.info(f"📖 Chargement config.json - nombre dans org_defaults: '{org_defaults.get('nombre', 'N/A')}'")
-                    self.logger.info(f"📖 Chargement config.json - nombre dans merged: '{merged.get('nombre', 'N/A')}'")
-
-                    # NE PAS réécrire le fichier lors du chargement
-                    # Cela cause des problèmes avec les tests et écrase les données utilisateur
-                    # La sauvegarde se fait uniquement via save_all_to_config_json()
-
-                    return merged
-            else:
-                # Créer le fichier avec les valeurs par défaut
-                self.logger.info("Création de config.json avec les valeurs par défaut")
-                os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
-                config = {'organizacion_defaults': defaults}
-                with open(self.config_file, 'w', encoding='utf-8') as f:
-                    json.dump(config, f, indent=2, ensure_ascii=False)
-                return defaults
+            return merged
 
         except Exception as e:
             self.logger.error(f"Erreur chargement config.json: {e}")
@@ -547,7 +551,8 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.nombre_edit, self.cif_edit, self.telefono_edit, self.email_edit,
             self.direccion_edit, self.logo_path_edit, self.numero_factura_edit,
             self.images_dir_edit, self.logos_storage_dir_edit, self.pdfs_dir_edit,
-            self.informes_dir_edit, self.condiciones_pago_edit, self.informacion_legal_edit
+            self.informes_dir_edit, self.condiciones_pago_edit, self.informacion_legal_edit,
+            self.forma_pago_edit
         ]
 
         # Bloquer les signaux
@@ -574,15 +579,18 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.pdfs_dir_edit.setText(str(data.get('directorio_descargas_pdf', '')))
             self.informes_dir_edit.setText(str(data.get('directorio_informes', '')))
 
-            # Charger les conditions de paiement et informations légales
+            # Charger les conditions de paiement, forma de pago et informations légales
             self.condiciones_pago_edit.setPlainText(str(data.get('condiciones_pago', '')))
             self.informacion_legal_edit.setPlainText(str(data.get('informacion_legal', '')))
+            self.forma_pago_edit.setPlainText(str(data.get('forma_pago', '')))
 
             # Charger les flags de visibilité (par défaut à True/1)
             condiciones_visible = data.get('condiciones_pago_visible', 1)
             informacion_visible = data.get('informacion_legal_visible', 1)
+            forma_pago_visible = data.get('forma_pago_visible', 1)
             self.condiciones_pago_visible_checkbox.setChecked(bool(condiciones_visible))
             self.informacion_legal_visible_checkbox.setChecked(bool(informacion_visible))
+            self.forma_pago_visible_checkbox.setChecked(bool(forma_pago_visible))
 
             # Mettre à jour l'aperçu du logo
             self.update_logo_preview()
@@ -902,8 +910,10 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
                 'directorio_informes': self.informes_dir_edit.text().strip(),
                 'condiciones_pago': self.condiciones_pago_edit.toPlainText().strip(),
                 'informacion_legal': self.informacion_legal_edit.toPlainText().strip(),
+                'forma_pago': self.forma_pago_edit.toPlainText().strip(),
                 'condiciones_pago_visible': 1 if self.condiciones_pago_visible_checkbox.isChecked() else 0,
-                'informacion_legal_visible': 1 if self.informacion_legal_visible_checkbox.isChecked() else 0
+                'informacion_legal_visible': 1 if self.informacion_legal_visible_checkbox.isChecked() else 0,
+                'forma_pago_visible': 1 if self.forma_pago_visible_checkbox.isChecked() else 0
             }
 
             self.logger.info(f"💾 Données préparées - nombre: '{organizacion_data.get('nombre')}'")
@@ -911,11 +921,13 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             # Sauvegarder dans config.json
             config_saved = self.save_all_to_config_json(organizacion_data)
             
-            # Sauvegarder aussi dans la base de données pour la numérotation des factures
-            db_saved = self._save_organizacion_to_database(organizacion_data)
-            
-            if config_saved and db_saved:
-                self.logger.info("💾 Sauvegarde réussie (config.json + base de données)")
+            if config_saved:
+                # Invalider le cache de configuration pour forcer le rechargement
+                from config.config import invalidate_config_cache
+                invalidate_config_cache(self.config_file)
+                self.logger.info("💾 Cache de configuration invalidé")
+                
+                self.logger.info("💾 Sauvegarde réussie dans config.json")
                 self.show_info("Éxito", "Configuración actualizada correctamente")
                 # Recharger les données
                 self.logger.info("💾 Rechargement des données avec load_organizacion()")
@@ -929,54 +941,6 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             self.logger.error(f"Erreur sauvegarde organisation: {e}")
             self.show_error("Error", f"Error inesperado: {str(e)}")
     
-    def _save_organizacion_to_database(self, organizacion_data):
-        """
-        Sauvegarde les données d'organisation dans la base de données.
-        Nécessaire pour que le numéro de facture initial soit utilisé.
-        
-        ⚠️ PRODUCTION: Utilise db (base de données de production)
-        """
-        try:
-            # Préparer les données pour la base de données
-            db_data = {
-                'nombre': organizacion_data.get('nombre', ''),
-                'direccion': organizacion_data.get('direccion', ''),
-                'telefono': organizacion_data.get('telefono', ''),
-                'email': organizacion_data.get('email', ''),
-                'cif': organizacion_data.get('cif', ''),
-                'logo_path': organizacion_data.get('logo_path', ''),
-                'logo_orientation': organizacion_data.get('logo_orientation', 'landscape'),
-                'numero_factura_inicial': organizacion_data.get('numero_factura_inicial', '1'),
-                'directorio_imagenes_defecto': organizacion_data.get('directorio_imagenes_defecto', ''),
-                'directorio_logos_storage': organizacion_data.get('directorio_logos_storage', ''),
-                'directorio_descargas_pdf': organizacion_data.get('directorio_descargas_pdf', ''),
-                'visor_pdf_personalizado': organizacion_data.get('visor_pdf_personalizado', ''),
-            }
-            
-            # Utiliser le service d'organisation
-            org_service = OrganizacionService(db)
-            
-            # Vérifier si l'organisation existe déjà
-            existing = org_service.get_organizacion()
-            
-            if existing and existing.get('id'):
-                # Mettre à jour
-                db_data['id'] = existing['id']
-                success = org_service.update_organizacion(db_data)
-                self.logger.info(f"💾 Organisation mise à jour dans la base de données: {success}")
-            else:
-                # Créer
-                success = org_service.create_organizacion(db_data)
-                self.logger.info(f"💾 Organisation créée dans la base de données: {success}")
-            
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"❌ Erreur sauvegarde organisation dans la DB: {e}")
-            # Ne pas bloquer la sauvegarde dans config.json si la DB échoue
-            # mais retourner False pour informer
-            return False
-
     # ==================== MÉTODOS PARA ESTADOS DE FACTURAS ====================
 
     def load_invoice_statuses(self):

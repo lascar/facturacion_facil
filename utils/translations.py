@@ -39,6 +39,10 @@ TEXTS = {
     "cif": "CIF",
     "logo": "Logo",
     "seleccionar_logo": "Seleccionar Logo",
+    "forma_pago": "Forma de Pago",
+    "condiciones_pago": "Condiciones de Pago",
+    "informacion_legal": "Información Legal",
+    "visible_pdf": "Visible en los PDF",
     
     # Stock
     "gestion_stock": "Gestión de Stock",

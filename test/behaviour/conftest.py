@@ -85,6 +85,7 @@ def isolated_test_config():
             "logo_orientation": "landscape",
             "visor_pdf_personalizado": "",
             "condiciones_pago": "",
+            "forma_pago": "Transferencia bancaria - IBAN: ES00 0000 0000 0000 0000 0000",
             "informacion_legal": ""
         }
     }

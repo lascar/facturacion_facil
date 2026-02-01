@@ -352,16 +352,55 @@ class FacturaPDFGenerator:
         return elements
 
     def create_totals_section(self, invoice_data):
-        """Crée la section des totaux - style épuré sans bordures"""
+        """Crée la section des totaux avec IVA groupé par taux - style épuré sans bordures"""
         elements = []
 
-        # Table des totaux (alignée à droite) - style simplifié
-        totals_data = [
-            ['Base Imponible', f"{invoice_data.get('subtotal', 0):.2f}"],
-            ['IVA    21%', f"{invoice_data.get('iva_total', 0):.2f}"],
-            ['', ''],  # Ligne vide
-            ['Total', f"{invoice_data.get('total', 0):.2f}"]
-        ]
+        # Récupérer les lignes de la facture
+        lineas = invoice_data.get('lineas', [])
+        
+        # Calculer les totaux par taux d'IVA
+        iva_groups = {}
+        total_base_imponible = 0
+        total_iva = 0
+        
+        for linea in lineas:
+            tasa_iva = linea.get('iva_aplicado', 0)
+            cantidad = linea.get('cantidad', 0)
+            precio = linea.get('precio_unitario', 0)
+            descuento = linea.get('descuento', 0)
+            
+            # Calculer le net pour cette ligne (avant IVA)
+            net_linea = cantidad * precio * (1 - descuento / 100)
+            # Calculer l'IVA pour cette ligne
+            iva_linea = net_linea * tasa_iva / 100
+            
+            if tasa_iva not in iva_groups:
+                iva_groups[tasa_iva] = {
+                    'base': 0,
+                    'iva': 0
+                }
+            
+            iva_groups[tasa_iva]['base'] += net_linea
+            iva_groups[tasa_iva]['iva'] += iva_linea
+            total_base_imponible += net_linea
+            total_iva += iva_linea
+        
+        # Construire les données du tableau
+        totals_data = []
+        
+        # Base imposable totale
+        totals_data.append(['Base Imponible', f"{total_base_imponible:.2f}"])
+        
+        # IVA groupé par taux (trié par taux décroissant)
+        for tasa in sorted(iva_groups.keys(), reverse=True):
+            datos = iva_groups[tasa]
+            totals_data.append([f'IVA ({tasa:.1f}%)', f"{datos['iva']:.2f}"])
+        
+        # Ligne vide
+        totals_data.append(['', ''])
+        
+        # Total
+        totals_data.append(['Total', f"{invoice_data.get('total', 0):.2f}"])
 
         totals_table = Table(totals_data, colWidths=[4*cm, 3*cm])
         totals_table.setStyle(TableStyle([
@@ -379,10 +418,6 @@ class FacturaPDFGenerator:
             ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
             ('FONTSIZE', (0, -1), (-1, -1), 10),  # Réduit de 14 à 10
             ('TEXTCOLOR', (0, -1), (-1, -1), colors.black),
-
-            # PAS de bordures
-            # ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),  # RETIRÉ
-            # ('LINEBELOW', (0, -1), (-1, -1), 2, colors.HexColor('#e74c3c')),  # RETIRÉ
 
             # Padding minimal
             ('LEFTPADDING', (0, 0), (-1, -1), 2),
@@ -407,8 +442,10 @@ class FacturaPDFGenerator:
         return {
             'condiciones_pago': '• El pago de esta factura deberá realizarse antes de la fecha de vencimiento.\n• Pasados 30 días de la fecha de vencimiento, se aplicarán intereses de demora.\n• Para cualquier consulta, contacte con nosotros.',
             'informacion_legal': '• Esta factura se emite de acuerdo con la normativa fiscal vigente.\n• Conserve este documento para sus registros contables.',
+            'forma_pago': '• Transferencia bancaria:\n  IBAN: ES00 0000 0000 0000 0000 0000\n  BIC/SWIFT: XXXX\n• El pago debe realizarse dentro de los 30 días siguientes a la fecha de emisión.',
             'condiciones_pago_visible': 1,
-            'informacion_legal_visible': 1
+            'informacion_legal_visible': 1,
+            'forma_pago_visible': 1
         }
 
     def load_config_data(self):
@@ -460,6 +497,7 @@ class FacturaPDFGenerator:
         # Récupérer les flags de visibilité (par défaut à 1 = visible)
         condiciones_pago_visible = config_data.get('condiciones_pago_visible', 1)
         informacion_legal_visible = config_data.get('informacion_legal_visible', 1)
+        forma_pago_visible = config_data.get('forma_pago_visible', 1)
 
         # Construire les sections du footer selon la visibilité
         footer_parts = []
@@ -474,6 +512,16 @@ class FacturaPDFGenerator:
             if condiciones_pago.strip():  # Seulement si non vide
                 condiciones_pago_html = condiciones_pago.replace('\n', '<br/>')
                 footer_parts.append(f"<b>CONDICIONES DE PAGO:</b><br/>{condiciones_pago_html}")
+
+        # Ajouter la forma de pago si visible
+        if forma_pago_visible:
+            forma_pago = config_data.get('forma_pago',
+                '• Transferencia bancaria:\n  IBAN: ES00 0000 0000 0000 0000 0000\n  BIC/SWIFT: XXXX\n'
+                '• El pago debe realizarse dentro de los 30 días siguientes a la fecha de emisión.')
+
+            if forma_pago.strip():  # Seulement si non vide
+                forma_pago_html = forma_pago.replace('\n', '<br/>')
+                footer_parts.append(f"<b>FORMA DE PAGO:</b><br/>{forma_pago_html}")
 
         # Ajouter les informations légales si visibles
         if informacion_legal_visible:

@@ -457,6 +457,13 @@ class FacturaItem:
         return items
 
 class Organizacion:
+    """
+    Modelo de Organizacion - AHORA USA config.json (no base de datos)
+    
+    Mantiene compatibilidad con codigo existente que usa Organizacion.get() y Organizacion.save()
+    pero internamente lee/escribe en config.json usando cache.
+    """
+    
     def __init__(self, nombre="", direccion="", telefono="", email="", cif="",
                  logo_path="", directorio_imagenes_defecto="", numero_factura_inicial="1",
                  directorio_descargas_pdf="", visor_pdf_personalizado="", directorio_informes=""):
@@ -473,51 +480,103 @@ class Organizacion:
         self.directorio_informes = directorio_informes
     
     def save(self):
-        """Guarda los datos de la organización"""
-        # Verificar si ya existe una organización
-        existing = Organizacion.get()
-        if existing and existing.nombre:  # Si existe et n'est pas vide
-            query = '''UPDATE organizacion SET nombre=?, direccion=?, telefono=?,
-                      email=?, cif=?, logo_path=?, directorio_imagenes_defecto=?,
-                      numero_factura_inicial=?, directorio_descargas_pdf=?, visor_pdf_personalizado=?, directorio_informes=?, fecha_actualizacion=CURRENT_TIMESTAMP
-                      WHERE id=1'''
-        else:
-            query = '''INSERT INTO organizacion (id, nombre, direccion, telefono,
-                      email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, directorio_descargas_pdf, visor_pdf_personalizado, directorio_informes)
-                      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
-
-        params = (self.nombre, self.direccion, self.telefono, self.email, self.cif,
-                 self.logo_path, self.directorio_imagenes_defecto, self.numero_factura_inicial, self.directorio_descargas_pdf, self.visor_pdf_personalizado, self.directorio_informes)
-        db.execute_query(query, params)
+        """Guarda los datos de la organizacion en config.json"""
+        from config.config import get_config, save_config
+        import os
+        
+        config_file = os.environ.get('CONFIG_FILE', 'config/config.json')
+        config = get_config(config_file)
+        
+        # Preparar datos para guardar
+        org_data = {
+            'nombre': self.nombre,
+            'direccion': self.direccion,
+            'telefono': self.telefono,
+            'email': self.email,
+            'cif': self.cif,
+            'logo_path': self.logo_path,
+            'directorio_imagenes_defecto': self.directorio_imagenes_defecto,
+            'numero_factura_inicial': self.numero_factura_inicial,
+            'directorio_descargas_pdf': self.directorio_descargas_pdf,
+            'visor_pdf_personalizado': self.visor_pdf_personalizado,
+            'directorio_informes': self.directorio_informes,
+        }
+        
+        # Preservar campos adicionales si existen
+        existing = config.get('organizacion_defaults', {})
+        for key in ['condiciones_pago', 'condiciones_pago_visible', 'forma_pago', 
+                    'forma_pago_visible', 'informacion_legal', 'informacion_legal_visible',
+                    'logo_orientation', 'directorio_logos_storage']:
+            if key in existing:
+                org_data[key] = existing[key]
+        
+        config['organizacion_defaults'] = org_data
+        save_config(config, config_file)
     
     @staticmethod
     def get():
-        """Obtiene los datos de la organización"""
-        query = "SELECT * FROM organizacion WHERE id=1"
-        results = db.execute_query(query)
-        if results:
-            row = results[0]
-            # Orden real de columnas: id, nombre, direccion, telefono, email, cif, logo_path, directorio_imagenes_defecto, numero_factura_inicial, fecha_actualizacion, directorio_descargas_pdf, visor_pdf_personalizado, logo_orientation, directorio_logos_storage, directorio_informes
-            # Manejar compatibilidad avec bases de datos existentes
-            logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
-            directorio_imagenes = row[7] if len(row) > 7 and row[7] is not None else ""
-            numero_inicial = row[8] if len(row) > 8 and row[8] is not None else "1"
-            # CORRECTION: directorio_descargas_pdf est à l'index 10, pas 9
-            directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
-            # CORRECTION: visor_pdf_personalizado est à l'index 11, pas 10
-            visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
-            # directorio_informes est à l'index 14
-            directorio_informes = row[14] if len(row) > 14 and row[14] is not None else "informes/"
-
+        """Obtiene los datos de la organizacion desde config.json (con fallback a DB para migracion)"""
+        from config.config import get_config
+        import os
+        
+        config_file = os.environ.get('CONFIG_FILE', 'config/config.json')
+        config = get_config(config_file)
+        
+        org_defaults = config.get('organizacion_defaults', {})
+        
+        # Si hay datos en config.json, usarlos
+        if org_defaults and org_defaults.get('nombre'):
             return Organizacion(
-                nombre=row[1], direccion=row[2], telefono=row[3],
-                email=row[4], cif=row[5], logo_path=logo_path,
-                directorio_imagenes_defecto=directorio_imagenes,
-                numero_factura_inicial=numero_inicial,
-                directorio_descargas_pdf=directorio_pdf,
-                visor_pdf_personalizado=visor_pdf,
-                directorio_informes=directorio_informes
+                nombre=org_defaults.get('nombre', ''),
+                direccion=org_defaults.get('direccion', ''),
+                telefono=org_defaults.get('telefono', ''),
+                email=org_defaults.get('email', ''),
+                cif=org_defaults.get('cif', ''),
+                logo_path=org_defaults.get('logo_path', ''),
+                directorio_imagenes_defecto=org_defaults.get('directorio_imagenes_defecto', ''),
+                numero_factura_inicial=org_defaults.get('numero_factura_inicial', '1'),
+                directorio_descargas_pdf=org_defaults.get('directorio_descargas_pdf', ''),
+                visor_pdf_personalizado=org_defaults.get('visor_pdf_personalizado', ''),
+                directorio_informes=org_defaults.get('directorio_informes', 'informes/')
             )
+        
+        # COMPATIBILIDAD: Si no hay datos en config.json, intentar leer de la DB (migracion silenciosa)
+        try:
+            query = "SELECT * FROM organizacion WHERE id=1"
+            results = db.execute_query(query)
+            if results:
+                row = results[0]
+                logo_path = row[6] if len(row) > 6 and row[6] is not None else ""
+                directorio_imagenes = row[7] if len(row) > 7 and row[7] is not None else ""
+                numero_inicial = row[8] if len(row) > 8 and row[8] is not None else "1"
+                directorio_pdf = row[10] if len(row) > 10 and row[10] is not None else ""
+                visor_pdf = row[11] if len(row) > 11 and row[11] is not None else ""
+                directorio_informes = row[14] if len(row) > 14 and row[14] is not None else "informes/"
+                
+                # Crear objeto
+                org = Organizacion(
+                    nombre=row[1] if len(row) > 1 else "",
+                    direccion=row[2] if len(row) > 2 else "",
+                    telefono=row[3] if len(row) > 3 else "",
+                    email=row[4] if len(row) > 4 else "",
+                    cif=row[5] if len(row) > 5 else "",
+                    logo_path=logo_path,
+                    directorio_imagenes_defecto=directorio_imagenes,
+                    numero_factura_inicial=numero_inicial,
+                    directorio_descargas_pdf=directorio_pdf,
+                    visor_pdf_personalizado=visor_pdf,
+                    directorio_informes=directorio_informes
+                )
+                
+                # Migrar a config.json para futuros accesos
+                org.save()
+                print(f"Migracion automatica: Datos de organizacion migrados de DB a config.json")
+                
+                return org
+        except Exception as e:
+            # Si falla la lectura de DB, continuar con objeto vacio
+            pass
+        
         return Organizacion()
 
 class Stock:
