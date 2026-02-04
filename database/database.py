@@ -1957,5 +1957,42 @@ class Database:
             self.logger.error(f"Error actualizando organización: {e}")
             raise e
 
-# Instancia global de la base de datos
-db = Database()
+# Instancia global de la base de datos - Lazy initialization pour protection tests
+# ⚠️ CRITIQUE: Ne jamais créer Database() directement au niveau du module
+# pour éviter que la base de production soit utilisée avant que PYTEST_RUNNING soit défini
+
+class _LazyDatabase:
+    """
+    Proxy lazy pour l'instance globale de Database.
+    Crée l'instance réelle uniquement lors du premier accès,
+    permettant à PYTEST_RUNNING d'être défini avant la création.
+    """
+    _instance: 'Database' = None
+    _initialized: bool = False
+    
+    def _get_instance(self) -> 'Database':
+        """Retourne l'instance réelle, créée au premier appel"""
+        if self._instance is None:
+            self._instance = Database()
+            self._initialized = True
+        return self._instance
+    
+    def __getattr__(self, name: str):
+        """Délègue tous les accès d'attributs à l'instance réelle"""
+        return getattr(self._get_instance(), name)
+    
+    def __call__(self, *args, **kwargs):
+        """Permet d'appeler l'objet comme une fonction"""
+        return self._get_instance()(*args, **kwargs)
+    
+    def __bool__(self) -> bool:
+        """Support pour 'if db:'"""
+        return self._instance is not None or not self._initialized
+    
+    def __repr__(self) -> str:
+        if self._initialized:
+            return f"<_LazyDatabase (initialized: {self._instance!r})>"
+        return "<_LazyDatabase (not initialized)>"
+
+# Instance globale lazy - ne crée pas Database() immédiatement
+db = _LazyDatabase()

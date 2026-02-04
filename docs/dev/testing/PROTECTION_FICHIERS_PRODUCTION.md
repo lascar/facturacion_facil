@@ -197,3 +197,87 @@ Documentation complète de la solution.
 **Dernière mise à jour** : 2026-01-21  
 **Auteur** : Équipe de développement
 
+
+
+---
+
+## 🚨 INCIDENT CRITIQUE - 2026-02-04
+
+### Problème Découvert
+Malgré toutes les protections en place, la base de données de production a été **polluée par des données de test**.
+
+### Données Impactées
+- ❌ **21 produits de test** trouvés dans `base_de_datos/facturacion.db`
+- ❌ **32 factures de test** trouvées
+- ❌ **37 clients de test** trouvés
+- ❌ **Organisation** "Test Organization" présente
+
+### Cause Racine Identifiée
+**Lazy Import vs Eager Initialization**
+
+Le problème était dans `database/database.py` ligne 1961 :
+```python
+# ❌ PROBLÈME: Création immédiate au niveau du module
+db = Database()
+```
+
+**Ordre d'exécution problématique :**
+1. Les tests importent `from database.database import db`
+2. L'import crée immédiatement `db = Database()` 
+3. À ce moment, `PYTEST_RUNNING` n'est pas encore défini
+4. L'instance `db` pointe donc vers la **base de production**
+5. Quand les tests utilisent `db`, ils polluent la production
+
+### Solution Implémentée (Lazy Initialization)
+
+Remplacement par un **proxy lazy** qui retarde la création de l'instance :
+
+```python
+# ✅ SOLUTION: Création différée jusqu'au premier accès
+class _LazyDatabase:
+    _instance = None
+    
+    def __getattr__(self, name):
+        # Crée l'instance réelle SEULEMENT au premier accès
+        if self._instance is None:
+            self._instance = Database()
+        return getattr(self._instance, name)
+
+db = _LazyDatabase()  # Ne crée pas Database() immédiatement
+```
+
+**Avantages :**
+- L'instance `Database()` n'est créée que lors du premier accès à `db.xxx`
+- À ce moment-là, `pytest_configure()` a déjà défini `PYTEST_RUNNING=1`
+- La base de test est donc utilisée, pas la production
+- **11 fichiers de test** utilisant `from database.database import db` sont maintenant sécurisés
+
+### Fichiers Concernés par le Fix
+- `database/database.py` - Implémentation du proxy `_LazyDatabase`
+- `docs/dev/testing/PROTECTION_FICHIERS_PRODUCTION.md` - Ce document
+
+### Vérification Post-Fix
+```bash
+# Vérifier qu'aucune donnée de test ne persiste
+./run_organized_tests.sh all
+python3 test/scripts/verify_no_production_db_usage.py
+```
+
+---
+
+## 📅 Historique
+
+- **2026-02-04** : 🚨 **INCIDENT CRITIQUE** - Base de production polluée par lazy import
+  - Cause : `db = Database()` créé au niveau du module avant `PYTEST_RUNNING`
+  - Solution : Lazy initialization avec `_LazyDatabase` proxy
+  - Statut : ✅ Corrigé et testé
+  
+- **2026-01-21** : Protection complète activée et testée avec succès
+  - Base de données : ✅ Protégée
+  - config.json : ✅ Protégé
+  - logo/ : ✅ Protégé
+
+---
+
+**Dernière mise à jour** : 2026-02-04  
+**Auteur** : Équipe de développement
