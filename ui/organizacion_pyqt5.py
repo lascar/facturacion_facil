@@ -96,6 +96,26 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             }
         """)
 
+        # Bouton pour vider le cache de configuration
+        self.clear_cache_btn = QPushButton("🧹 Limpiar Caché")
+        self.clear_cache_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #fd7e14;
+                color: white;
+                font-weight: bold;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
+                min-width: 120px;
+            }
+            QPushButton:hover {
+                background-color: #e56b0a;
+            }
+            QPushButton:pressed {
+                background-color: #c75a00;
+            }
+        """)
+
         # Bouton rouge pour la suppression de données
         self.cleanup_btn = QPushButton("🗑️ Limpiar Datos")
         self.cleanup_btn.setStyleSheet("""
@@ -120,6 +140,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         buttons_layout.addWidget(self.reset_btn)
         buttons_layout.addStretch()
         buttons_layout.addWidget(self.todo_btn)
+        buttons_layout.addWidget(self.clear_cache_btn)
         buttons_layout.addWidget(self.cleanup_btn)
 
         main_layout.addLayout(buttons_layout)
@@ -376,6 +397,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.save_btn.clicked.connect(self.save_organizacion)
         self.reset_btn.clicked.connect(self.load_organizacion)
         self.todo_btn.clicked.connect(self.open_todo_editor)
+        self.clear_cache_btn.clicked.connect(self.clear_config_cache)
         self.cleanup_btn.clicked.connect(self.open_data_cleanup_dialog)
         self.logo_browse_btn.clicked.connect(self.browse_logo)
         print("DEBUG: logo_browse_btn connecté à browse_logo")
@@ -1096,6 +1118,38 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Error abriendo editor de TODO: {e}")
             self.show_error("Error", f"Error al abrir el editor de TODO: {str(e)}")
+
+    def clear_config_cache(self):
+        """Vider le cache de configuration et recharger depuis le fichier"""
+        try:
+            self.logger.info("Limpiando caché de configuración")
+            
+            # Importer et appeler la fonction d'invalidation du cache
+            from config.config import invalidate_config_cache, get_config
+            
+            # Invalider le cache
+            invalidated = invalidate_config_cache()
+            
+            # Recharger la configuration
+            config = get_config()
+            
+            if invalidated:
+                self.logger.info("Caché invalidado y configuración recargada")
+                self.show_info("Caché Limpiado", 
+                             "El caché de configuración ha sido limpiado exitosamente.\n"
+                             "Los cambios en config.json ahora están activos.")
+            else:
+                self.logger.info("No había caché que invalidar, configuración recargada")
+                self.show_info("Caché", 
+                             "No había caché activo.\n"
+                             "La configuración ha sido recargada desde el archivo.")
+            
+            # Recharger les données affichées
+            self.load_organizacion()
+            
+        except Exception as e:
+            self.logger.error(f"Error limpiando caché: {e}")
+            self.show_error("Error", f"Error al limpiar el caché: {str(e)}")
 
     def open_data_cleanup_dialog(self):
         """Abre el diálogo de limpieza de datos"""

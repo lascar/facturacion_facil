@@ -404,6 +404,47 @@ class Database:
                 FOREIGN KEY (producto_id) REFERENCES productos (id)
             )
         ''')
+
+        # Tabla de facturas archivadas (misma estructura que facturas)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS facturas_archivadas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                numero_factura TEXT UNIQUE NOT NULL,
+                fecha_factura DATE NOT NULL,
+                cliente_id INTEGER,
+                nombre_cliente TEXT NOT NULL,
+                dni_nie_cliente TEXT,
+                direccion_cliente TEXT,
+                email_cliente TEXT,
+                telefono_cliente TEXT,
+                subtotal REAL NOT NULL,
+                total_iva REAL NOT NULL,
+                total_factura REAL NOT NULL,
+                modo_pago TEXT,
+                estado TEXT DEFAULT 'Borrador',
+                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                fecha_archivado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                anio_archivado INTEGER NOT NULL
+            )
+        ''')
+
+        # Tabla de items de facturas archivadas
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS factura_items_archivadas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                factura_archivada_id INTEGER NOT NULL,
+                producto_id INTEGER NOT NULL,
+                cantidad INTEGER NOT NULL,
+                precio_unitario REAL NOT NULL,
+                iva_aplicado REAL NOT NULL,
+                descuento REAL DEFAULT 0,
+                subtotal REAL NOT NULL,
+                descuento_amount REAL DEFAULT 0,
+                iva_amount REAL NOT NULL,
+                total REAL NOT NULL,
+                FOREIGN KEY (factura_archivada_id) REFERENCES facturas_archivadas (id)
+            )
+        ''')
         
         conn.commit()
         conn.close()
@@ -1956,6 +1997,144 @@ class Database:
         except Exception as e:
             self.logger.error(f"Error actualizando organización: {e}")
             raise e
+
+    def archivar_facturas_anio(self) -> tuple[bool, int, str]:
+        """Archiva todas las facturas del año actual a la tabla de archivadas.
+        
+        WARNING: Cette opération déplace TOUTES les factures vers les tables d'archivage
+        et vide la table factures. À utiliser avec précaution (début d'année).
+        
+        Returns:
+            tuple: (success: bool, count: int, message: str)
+            - success: True si l'archivage a réussi
+            - count: nombre de factures archivées
+            - message: message de confirmation ou d'erreur
+        """
+        from datetime import datetime
+        
+        conn = None
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            
+            # Vérifier s'il y a des factures à archiver
+            cursor.execute("SELECT COUNT(*) FROM facturas")
+            count = cursor.fetchone()[0]
+            
+            if count == 0:
+                return True, 0, "No hay facturas para archivar"
+            
+            anio_actual = datetime.now().year
+            
+            # Démarrer une transaction
+            cursor.execute("BEGIN TRANSACTION")
+            
+            # 1. Copier les factures vers facturas_archivadas
+            # Utiliser INSERT OR IGNORE pour éviter l'erreur si déjà archivé
+            cursor.execute('''
+                INSERT OR IGNORE INTO facturas_archivadas (
+                    numero_factura, fecha_factura, cliente_id, nombre_cliente,
+                    dni_nie_cliente, direccion_cliente, email_cliente, telefono_cliente,
+                    subtotal, total_iva, total_factura, modo_pago, estado,
+                    fecha_creacion, fecha_archivado, anio_archivado
+                )
+                SELECT 
+                    numero_factura, fecha_factura, cliente_id, nombre_cliente,
+                    dni_nie_cliente, direccion_cliente, email_cliente, telefono_cliente,
+                    subtotal, total_iva, total_factura, modo_pago, estado,
+                    fecha_creacion, CURRENT_TIMESTAMP, ?
+                FROM facturas
+            ''', (anio_actual,))
+            
+            facturas_archivadas = cursor.rowcount
+            
+            # 2. Copier les items des factures
+            # Utiliser INSERT OR IGNORE pour éviter les doublons
+            cursor.execute('''
+                INSERT OR IGNORE INTO factura_items_archivadas (
+                    factura_archivada_id, producto_id, cantidad, precio_unitario,
+                    iva_aplicado, descuento, subtotal, descuento_amount, iva_amount, total
+                )
+                SELECT 
+                    fa.id, fi.producto_id, fi.cantidad, fi.precio_unitario,
+                    fi.iva_aplicado, fi.descuento, fi.subtotal, fi.descuento_amount, fi.iva_amount, fi.total
+                FROM factura_items fi
+                INNER JOIN facturas f ON fi.factura_id = f.id
+                INNER JOIN facturas_archivadas fa ON f.numero_factura = fa.numero_factura
+                WHERE fa.anio_archivado = ?
+            ''', (anio_actual,))
+            
+            items_archivados = cursor.rowcount
+            
+            # 3. Supprimer les items des factures
+            cursor.execute("DELETE FROM factura_items WHERE factura_id IN (SELECT id FROM facturas)")
+            
+            # 4. Supprimer les factures
+            cursor.execute("DELETE FROM facturas")
+            
+            # Valider la transaction
+            conn.commit()
+            
+            # Vérifier si certaines factures étaient déjà archivées
+            cursor.execute("SELECT COUNT(*) FROM facturas_archivadas WHERE anio_archivado = ?", (anio_actual,))
+            total_archivadas = cursor.fetchone()[0]
+            
+            self.logger.info(f"Archivadas {facturas_archivadas} facturas nuevas del año {anio_actual}")
+            self.logger.info(f"Total facturas archivadas para el año: {total_archivadas}")
+            self.logger.info(f"Archivados {items_archivados} items de facturas")
+            
+            # Message informatif
+            if facturas_archivadas > 0:
+                message = f"Se han archivado {facturas_archivadas} facturas del año {anio_actual}"
+                if total_archivadas > facturas_archivadas:
+                    message += f". Total acumulado: {total_archivadas} facturas archivadas."
+            else:
+                message = f"Todas las facturas ya estaban archivadas. Total: {total_archivadas} facturas"
+            
+            return True, facturas_archivadas, message
+            
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            self.logger.error(f"Error archivando facturas: {e}")
+            return False, 0, f"Error al archivar facturas: {str(e)}"
+        finally:
+            if conn:
+                conn.close()
+
+    def get_facturas_archivadas(self, anio: int = None) -> list:
+        """Obtiene las facturas archivadas de un año específico o todas.
+        
+        Args:
+            anio: Año de archivado (opcional)
+            
+        Returns:
+            list: Lista de facturas archivadas
+        """
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            if anio:
+                cursor.execute('''
+                    SELECT * FROM facturas_archivadas 
+                    WHERE anio_archivado = ?
+                    ORDER BY fecha_factura DESC
+                ''', (anio,))
+            else:
+                cursor.execute('''
+                    SELECT * FROM facturas_archivadas 
+                    ORDER BY anio_archivado DESC, fecha_factura DESC
+                ''')
+            
+            columns = [description[0] for description in cursor.description]
+            facturas = []
+            for row in cursor.fetchall():
+                facturas.append(dict(zip(columns, row)))
+            
+            return facturas
+        finally:
+            conn.close()
 
 # Instancia global de la base de datos - Lazy initialization pour protection tests
 # ⚠️ CRITIQUE: Ne jamais créer Database() directement au niveau du module

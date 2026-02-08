@@ -16,7 +16,7 @@
 ### Reglas de seguridad absolutas
 - ❌ PROHIBICIÓN ABSOLUTA: Usar la base de datos de producción para los tests (INCIDENTE GRAVE)
 - ❌ PROHIBICIÓN ABSOLUTA: Modificar, crear o eliminar datos en producción vía los tests
-     leer docs/dev/testing/PROTECTION_FICHIERS_PRODUCTION.md
+- ✅ leer y aplicar strictamente docs/dev/testing/PROTECTION_FICHIERS_PRODUCTION.md
 - ✅ OBLIGATORIO: Usar `database/test_database.py` para crear una base de test aislada
 - ✅ OBLIGATORIO: Verificar que la ruta de la base contiene "test" o "temp" antes de cualquier test
 - ✅ OBLIGATORIO: Limpiar automáticamente las bases de test después de uso

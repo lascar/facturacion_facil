@@ -60,6 +60,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         # Variables
         self.facturas = []
         self.selected_factura_id = None
+        self.mostrar_archivadas = False  # False = actives, True = archivadas
 
         # Variables pour éviter les ouvertures multiples
         self.crear_dialog = None
@@ -109,12 +110,24 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.refresh_btn = QPushButton("🔄 Actualizar")
         self.refresh_btn.setMinimumHeight(40)
 
+        self.nuevo_anio_btn = QPushButton("📦 Empezar Nuevo Año")
+        self.nuevo_anio_btn.setMinimumHeight(40)
+        self.nuevo_anio_btn.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #ff9800; color: white;")
+        self.nuevo_anio_btn.setToolTip("Archiva todas las facturas actuales y empieza con una base limpia")
+
+        self.ver_archivadas_btn = QPushButton("📁 Ver Archivadas")
+        self.ver_archivadas_btn.setMinimumHeight(40)
+        self.ver_archivadas_btn.setStyleSheet("font-size: 14px; background-color: #2196F3; color: white;")
+        self.ver_archivadas_btn.setToolTip("Ver las facturas archivadas de años anteriores")
+
         top_buttons_layout.addWidget(self.new_btn)
         top_buttons_layout.addWidget(self.editar_btn)
         top_buttons_layout.addWidget(self.view_btn)
         top_buttons_layout.addWidget(self.pdf_btn)
         top_buttons_layout.addWidget(self.eliminar_btn)
         top_buttons_layout.addWidget(self.refresh_btn)
+        top_buttons_layout.addWidget(self.ver_archivadas_btn)
+        top_buttons_layout.addWidget(self.nuevo_anio_btn)
         top_buttons_layout.addStretch()
 
         main_layout.addLayout(top_buttons_layout)
@@ -553,6 +566,8 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.pdf_btn.clicked.connect(self.exportar_pdf)
         self.eliminar_btn.clicked.connect(self.eliminar_factura)
         self.refresh_btn.clicked.connect(self.load_facturas)
+        self.nuevo_anio_btn.clicked.connect(self.on_nuevo_anio)
+        self.ver_archivadas_btn.clicked.connect(self.on_toggle_archivadas)
 
     def open_new_factura_window(self):
         """Ouvrir une fenêtre pour créer une nouvelle facture"""
@@ -955,7 +970,13 @@ class FacturasPyQt5Window(BasePyQt5Window):
     def load_facturas(self):
         """Charger les factures depuis la base de données via FacturaService"""
         try:
-            self.facturas = self.factura_service.get_all_facturas()
+            if self.mostrar_archivadas:
+                # Charger les factures archivées
+                self.facturas = self.database.get_facturas_archivadas()
+                self.logger.info(f"Cargadas {len(self.facturas)} facturas archivadas")
+            else:
+                # Charger les factures actives
+                self.facturas = self.factura_service.get_all_facturas()
             self.update_facturas_table()
         except DatabaseError as e:
             self.logger.error(f"Erreur base de données: {e}")
@@ -969,11 +990,18 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.facturas_table.setRowCount(len(self.facturas))
 
         for row, factura in enumerate(self.facturas):
-            self.facturas_table.setItem(row, 0, QTableWidgetItem(str(factura.get('numero', ''))))
-            self.facturas_table.setItem(row, 1, QTableWidgetItem(str(factura.get('cliente_nombre', ''))))
-            self.facturas_table.setItem(row, 2, QTableWidgetItem(str(factura.get('fecha', ''))))
-            self.facturas_table.setItem(row, 3, QTableWidgetItem(f"{factura.get('total', 0):.2f}€"))
-            self.facturas_table.setItem(row, 4, QTableWidgetItem(str(factura.get('estado', ''))))
+            # Gérer les différences de noms entre factures actives et archivées
+            numero = factura.get('numero', factura.get('numero_factura', ''))
+            cliente = factura.get('cliente_nombre', factura.get('nombre_cliente', ''))
+            fecha = factura.get('fecha', factura.get('fecha_factura', ''))
+            total = factura.get('total', factura.get('total_factura', 0))
+            estado = factura.get('estado', 'Archivada' if self.mostrar_archivadas else '')
+            
+            self.facturas_table.setItem(row, 0, QTableWidgetItem(str(numero)))
+            self.facturas_table.setItem(row, 1, QTableWidgetItem(str(cliente)))
+            self.facturas_table.setItem(row, 2, QTableWidgetItem(str(fecha)))
+            self.facturas_table.setItem(row, 3, QTableWidgetItem(f"{total:.2f}€"))
+            self.facturas_table.setItem(row, 4, QTableWidgetItem(str(estado)))
 
     def on_factura_selected(self):
         """Gérer la sélection d'une facture"""
@@ -982,11 +1010,17 @@ class FacturasPyQt5Window(BasePyQt5Window):
             factura = self.facturas[current_row]
             self.selected_factura_id = factura.get('id')
 
-            # Activer les boutons d'action
-            self.editar_btn.setEnabled(True)
+            # Activer les boutons d'action (lecture seule pour archivées)
             self.view_btn.setEnabled(True)
             self.pdf_btn.setEnabled(True)
-            self.eliminar_btn.setEnabled(True)
+            
+            # Désactiver édition/suppression si en mode archivées
+            if not self.mostrar_archivadas:
+                self.editar_btn.setEnabled(True)
+                self.eliminar_btn.setEnabled(True)
+            else:
+                self.editar_btn.setEnabled(False)
+                self.eliminar_btn.setEnabled(False)
 
             # Émettre le signal
             self.factura_selected.emit(factura)
@@ -1300,7 +1334,12 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 self.ver_dialog.activateWindow()
                 return
 
-            factura = self.factura_service.get_factura_by_id(self.selected_factura_id)
+            # Obtenir la facture (active ou archivée)
+            if self.mostrar_archivadas:
+                factura = self._get_factura_archivada_by_id(self.selected_factura_id)
+            else:
+                factura = self.factura_service.get_factura_by_id(self.selected_factura_id)
+            
             if factura:
                 self.ver_dialog = VerFacturaDialog(factura, None)
 
@@ -1380,8 +1419,14 @@ class FacturasPyQt5Window(BasePyQt5Window):
             return
 
         try:
-            # Obtener la factura seleccionada via FacturaService
-            factura_data = self.factura_service.get_factura_by_id(self.selected_factura_id)
+            # Obtener la factura seleccionada
+            if self.mostrar_archivadas:
+                # Factura archivada - récupérer depuis la base directement
+                factura_data = self._get_factura_archivada_by_id(self.selected_factura_id)
+            else:
+                # Factura active - utiliser le service
+                factura_data = self.factura_service.get_factura_by_id(self.selected_factura_id)
+            
             if not factura_data:
                 self.show_error("Error", "No se pudo cargar la factura seleccionada")
                 return
@@ -1429,6 +1474,81 @@ class FacturasPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Error exportando PDF: {e}")
             self.show_error("Error", f"Error al exportar PDF:\n{str(e)}")
+
+    def _get_factura_archivada_by_id(self, factura_id: int) -> dict:
+        """Obtener una factura archivada par son ID.
+        
+        Args:
+            factura_id: ID de la factura archivada
+            
+        Returns:
+            dict: Données de la factura formatées comme les factures actives
+        """
+        try:
+            conn = self.database.get_connection()
+            cursor = conn.cursor()
+            
+            # Récupérer la factura archivée
+            cursor.execute('''
+                SELECT * FROM facturas_archivadas WHERE id = ?
+            ''', (factura_id,))
+            
+            row = cursor.fetchone()
+            if not row:
+                conn.close()
+                return None
+            
+            # Convertir en dictionnaire
+            columns = [description[0] for description in cursor.description]
+            factura = dict(zip(columns, row))
+            
+            # Récupérer les items
+            cursor.execute('''
+                SELECT * FROM factura_items_archivadas 
+                WHERE factura_archivada_id = ?
+            ''', (factura_id,))
+            
+            items_rows = cursor.fetchall()
+            items_columns = [description[0] for description in cursor.description]
+            items = [dict(zip(items_columns, item_row)) for item_row in items_rows]
+            
+            conn.close()
+            
+            # Normaliser le format pour compatibilité avec le générateur PDF
+            return {
+                'id': factura['id'],
+                'numero': factura['numero_factura'],
+                'fecha': factura['fecha_factura'],
+                'cliente': {
+                    'id': factura['cliente_id'],
+                    'nombre': factura['nombre_cliente'],
+                    'nif': factura['dni_nie_cliente'],
+                    'direccion': factura['direccion_cliente'],
+                    'email': factura['email_cliente'],
+                    'telefono': factura['telefono_cliente']
+                },
+                'subtotal': factura['subtotal'],
+                'iva_total': factura['total_iva'],
+                'total': factura['total_factura'],
+                'estado': factura['estado'],
+                'lineas': [
+                    {
+                        'producto_id': item['producto_id'],
+                        'producto_nombre': f"Producto {item['producto_id']}",  # Nom par défaut
+                        'cantidad': item['cantidad'],
+                        'precio_unitario': item['precio_unitario'],
+                        'iva_aplicado': item['iva_aplicado'],
+                        'subtotal': item['subtotal'],
+                        'iva_amount': item['iva_amount'],
+                        'total': item['total']
+                    }
+                    for item in items
+                ]
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error obteniendo factura archivada: {e}")
+            return None
 
     def abrir_pdf(self, pdf_path):
         """Abrir el archivo PDF con el visor predeterminado del sistema"""
@@ -1550,6 +1670,132 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.fecha_label.setText("Fecha: -")
         self.total_label.setText("Total: 0.00€")
         self.estado_label.setText("Estado: -")
+
+    def on_nuevo_anio(self):
+        """Archivar todas las facturas y empezar el nuevo año"""
+        from datetime import datetime
+        from PyQt5.QtWidgets import QMessageBox
+        
+        anio_actual = datetime.now().year
+        
+        # Demander confirmation avec avertissement clair
+        reply = QMessageBox.warning(
+            self,
+            "⚠️ Empezar Nuevo Año",
+            f"<b>Esta acción archivará TODAS las facturas del año {anio_actual}.</b><br><br>"
+            f"Las facturas se moverán a la tabla de archivadas y "
+            f"la lista de facturas actuales quedará vacía.<br><br>"
+            f"<b>Esta acción no se puede deshacer.</b><br><br>"
+            f"¿Está seguro de que desea continuar?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply != QMessageBox.Yes:
+            return
+        
+        # Double confirmation pour plus de sécurité
+        reply2 = QMessageBox.question(
+            self,
+            "Confirmación Final",
+            f"¿Está completamente seguro de archivar todas las facturas del año {anio_actual}?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply2 != QMessageBox.Yes:
+            return
+        
+        try:
+            # Archiver les factures
+            success, count, message = self.database.archivar_facturas_anio()
+            
+            if success:
+                if count > 0:
+                    QMessageBox.information(
+                        self,
+                        "✅ Archivado Completado",
+                        f"<b>{message}</b><br><br>"
+                        f"La lista de facturas ha sido limpiada. "
+                        f"Puede comenzar a crear nuevas facturas para el nuevo año."
+                    )
+                else:
+                    QMessageBox.information(
+                        self,
+                        "ℹ️ Sin Facturas",
+                        "No hay facturas para archivar. La lista ya está vacía."
+                    )
+                
+                # Rafraîchir la liste des factures
+                self.load_facturas()
+                
+                # Réinitialiser la sélection
+                self.selected_factura_id = None
+                self.editar_btn.setEnabled(False)
+                self.view_btn.setEnabled(False)
+                self.pdf_btn.setEnabled(False)
+                self.eliminar_btn.setEnabled(False)
+                
+                self.logger.info(f"Nuevo año iniciado: {count} facturas archivadas")
+            else:
+                QMessageBox.critical(
+                    self,
+                    "❌ Error",
+                    f"No se pudieron archivar las facturas:<br><br>{message}"
+                )
+                
+        except Exception as e:
+            self.logger.error(f"Error en on_nuevo_anio: {e}")
+            QMessageBox.critical(
+                self,
+                "❌ Error",
+                f"Error inesperado al archivar facturas:<br><br>{str(e)}"
+            )
+
+    def on_toggle_archivadas(self):
+        """Basculer entre les factures actives et archivées"""
+        try:
+            self.mostrar_archivadas = not self.mostrar_archivadas
+            
+            if self.mostrar_archivadas:
+                # Passer à la vue des archivées
+                self.ver_archivadas_btn.setText("📋 Ver Facturas Actuales")
+                self.ver_archivadas_btn.setStyleSheet("font-size: 14px; background-color: #4CAF50; color: white;")
+                self.ver_archivadas_btn.setToolTip("Volver a ver las facturas del año en curso")
+                
+                # Désactiver les boutons d'action (on ne peut pas modifier les archivées)
+                self.new_btn.setEnabled(False)
+                self.editar_btn.setEnabled(False)
+                self.eliminar_btn.setEnabled(False)
+                self.nuevo_anio_btn.setEnabled(False)
+                
+                self.logger.info("Mostrando facturas archivadas")
+            else:
+                # Revenir aux factures actives
+                self.ver_archivadas_btn.setText("📁 Ver Archivadas")
+                self.ver_archivadas_btn.setStyleSheet("font-size: 14px; background-color: #2196F3; color: white;")
+                self.ver_archivadas_btn.setToolTip("Ver las facturas archivadas de años anteriores")
+                
+                # Réactiver les boutons d'action
+                self.new_btn.setEnabled(True)
+                self.nuevo_anio_btn.setEnabled(True)
+                # Les autres boutons seront réactivés par on_factura_selected si une ligne est sélectionnée
+                
+                self.logger.info("Mostrando facturas actuales")
+            
+            # Recharger la liste
+            self.load_facturas()
+            
+            # Réinitialiser la sélection
+            self.selected_factura_id = None
+            self.editar_btn.setEnabled(False)
+            self.view_btn.setEnabled(False)
+            self.pdf_btn.setEnabled(False)
+            self.eliminar_btn.setEnabled(False)
+            
+        except Exception as e:
+            self.logger.error(f"Error cambiando vista: {e}")
+            self.show_error("Error", f"Error al cambiar la vista: {str(e)}")
 
 
 class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):

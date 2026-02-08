@@ -563,3 +563,125 @@ class TestFacturasBehaviour(BaseBehaviourTest):
             self.take_screenshot("factura_workflow_qtest_error")
             self.logger.error(f"❌ Erreur workflow facture QTest: {e}")
             raise
+
+    @pytest.mark.timeout(20)
+    def test_client_details_persist_on_product_focus(self, mock_messagebox):
+        """Test que les détails du client restent visibles quand on clique sur le produit.
+        
+        Ce test vérifie le bug fixé où les informations du client disparaissaient
+        quand on cliquait dans la zone de saisie du produit pour ajouter un article.
+        """
+        self.logger.info("🧪 Test: Client persiste quand focus sur produit")
+
+        # Mock des dialogues
+        mock_messagebox.question.return_value = mock_messagebox.No
+        mock_messagebox.information.return_value = mock_messagebox.Ok
+        mock_messagebox.warning.return_value = mock_messagebox.Ok
+
+        try:
+            # 1. Créer un client de test avec NIF (format: "Nom (NIF)")
+            from database.database import db
+            client_data = {
+                'nombre': 'Cliente Persist Test',
+                'nif': '12345678A',
+                'direccion': 'Calle Test 123',
+                'telefono': '600123456',
+                'email': 'persist@test.com'
+            }
+            client_id = db.add_client(client_data)
+            assert client_id is not None, "Client non créé"
+
+            # 2. Créer un produit de test
+            product_data = {
+                'nombre': 'Producto Persist Test',
+                'referencia': 'PERSIST-001',
+                'precio_venta': 50.0,
+                'iva_recomendado': 21.0,
+                'sin_stock': 1,  # Sans stock pour éviter les warnings
+                'stock_actual': 100
+            }
+            product_id = db.add_product(product_data)
+            assert product_id is not None, "Produit non créé"
+
+            # 3. Recharger les données dans la fenêtre Facturas
+            refresh_btn = self.automation.find_button_by_text(self.facturas_window, "Actualizar")
+            if refresh_btn:
+                self.automation.click_button_safe(refresh_btn, wait_after=0.3)
+
+            # 4. Ouvrir la fenêtre de création de facture
+            new_btn = self.automation.find_button_by_text(self.facturas_window, "Nueva")
+            assert new_btn is not None, "Bouton Nueva Factura non trouvé"
+            self.automation.click_button_safe(new_btn, wait_after=0.5)
+
+            # 5. Attendre l'ouverture de la fenêtre d'édition
+            edit_window = None
+            for widget in self.app.topLevelWidgets():
+                if isinstance(widget, FacturaEditWindow) and widget.isVisible():
+                    edit_window = widget
+                    break
+            assert edit_window is not None, "Fenêtre d'édition non ouverte"
+
+            # 6. Sélectionner le client avec autocomplétion
+            client_widget = edit_window.cliente_autocomplete
+            assert client_widget is not None, "Widget client non trouvé"
+
+            # Simuler la saisie du nom du client
+            self.automation.set_text_safe(client_widget, client_data['nombre'])
+            self.slow_mode_wait()
+
+            # Simuler la sélection depuis l'autocomplétion (format: "Nom (NIF)")
+            client_widget.set_client({
+                'id': client_id,
+                'nombre': client_data['nombre'],
+                'nif': client_data['nif'],
+                'direccion': client_data['direccion'],
+                'telefono': client_data['telefono'],
+                'email': client_data['email']
+            })
+            self.app.processEvents()
+            self.slow_mode_wait()
+
+            # 7. Vérifier que les détails du client sont affichés
+            client_details = edit_window.client_details
+            assert client_details.isVisible(), "Détails du client non visibles"
+            assert client_details.current_client is not None, "Aucun client sélectionné"
+            assert client_details.current_client['nombre'] == client_data['nombre'], \
+                f"Nom client incorrect: {client_details.current_client['nombre']}"
+
+            self.take_screenshot("client_selected_before_product_click")
+            self.logger.info(f"✅ Client sélectionné: {client_details.current_client['nombre']}")
+
+            # 8. Cliquer sur le widget produit (simuler le focus)
+            product_widget = edit_window.producto_autocomplete
+            assert product_widget is not None, "Widget produit non trouvé"
+
+            # Donner le focus au widget produit (ce qui déclenchait le bug)
+            product_widget.setFocus()
+            self.app.processEvents()
+            self.slow_mode_wait()
+
+            # 9. VÉRIFICATION CRITIQUE: Les détails du client doivent toujours être là
+            assert client_details.isVisible(), \
+                "BUG RÉGRESSION: Les détails du client ont disparu quand on a cliqué sur le produit!"
+            assert client_details.current_client is not None, \
+                "BUG RÉGRESSION: Le client a été effacé quand on a cliqué sur le produit!"
+            assert client_details.current_client['nombre'] == client_data['nombre'], \
+                f"BUG RÉGRESSION: Nom client changé: {client_details.current_client['nombre']}"
+
+            # 10. Vérifier aussi que le widget client a toujours le bon client
+            assert client_widget.current_client is not None, \
+                "BUG RÉGRESSION: current_client du widget est None!"
+            assert client_widget.current_client['nombre'] == client_data['nombre'], \
+                f"BUG RÉGRESSION: Nom dans widget client changé: {client_widget.current_client['nombre']}"
+
+            self.take_screenshot("client_persisted_after_product_focus")
+            self.logger.info("✅ Test réussi: Client persiste après focus sur produit")
+
+            # 11. Fermer la fenêtre d'édition
+            edit_window.close()
+            self.app.processEvents()
+
+        except Exception as e:
+            self.take_screenshot("client_persist_error")
+            self.logger.error(f"❌ Erreur test client persist: {e}")
+            raise

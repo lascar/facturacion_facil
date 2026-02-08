@@ -156,14 +156,19 @@ class ClientAutoCompleteWidget(QLineEdit):
                 self.client_changed.emit()  # Informer que le client a changé
             return
 
-        # Si on a un client sélectionné et que le texte ne correspond plus au nom du client
-        if self.current_client and self.current_client.get('nombre', '') != text.strip():
-            # Le texte a changé, on n'a plus de client sélectionné
-            self.current_client = None
-            self.setProperty("hasClient", False)
-            self.setProperty("isNew", False)
-            self.style().polish(self)
-            self.client_changed.emit()  # Informer que le client a changé
+        # Si on a un client sélectionné, vérifier si le texte correspond au nom du client
+        # Le texte peut contenir "Nom (NIF)" quand sélectionné depuis l'autocomplétion
+        if self.current_client:
+            client_name = self.current_client.get('nombre', '')
+            # Extraire le nom du texte (enlever le NIF entre parenthèses si présent)
+            text_name = text.strip().split(' (')[0].strip()
+            if client_name != text_name:
+                # Le texte a changé, on n'a plus de client sélectionné
+                self.current_client = None
+                self.setProperty("hasClient", False)
+                self.setProperty("isNew", False)
+                self.style().polish(self)
+                self.client_changed.emit()  # Informer que le client a changé
 
         # Démarrer le timer pour la recherche
         if text.strip():
@@ -265,13 +270,18 @@ class ClientAutoCompleteWidget(QLineEdit):
             self.client_changed.emit()
             return
 
+        # Extraire le nom du texte (enlever le NIF entre parenthèses si présent)
+        # Le texte peut être "Nom" ou "Nom (NIF)" quand sélectionné depuis l'autocomplétion
+        text_name = text.split(' (')[0].strip()
+
         # Vérifier si c'est un client existant exact (nom complet ou suggestion)
         client_found = False
 
         # Recherche exacte par nom
         for client in self.clients_data:
             client_name = client.get('nombre', '')
-            if client_name.lower() == text.lower():
+            # Comparer avec le nom extrait (sans NIF) car le texte peut contenir "Nom (NIF)"
+            if client_name.lower() == text_name.lower():
                 # Récupérer les données complètes via le service
                 try:
                     full_client_data = self.cliente_service.get_cliente_by_id(client['id'])
@@ -300,7 +310,10 @@ class ClientAutoCompleteWidget(QLineEdit):
             model = self.completer.model()
             for i in range(model.rowCount()):
                 suggestion = model.data(model.index(i, 0), Qt.DisplayRole)
-                if suggestion and suggestion.lower() == text.lower():
+                # Comparer la suggestion avec le texte (suggestion contient "Nom (NIF)")
+                # ou comparer le nom extrait de la suggestion avec le nom extrait du texte
+                suggestion_name = suggestion.split(' (')[0].strip() if suggestion else ""
+                if suggestion and (suggestion.lower() == text.lower() or suggestion_name.lower() == text_name.lower()):
                     # Extraire le nom du client de la suggestion
                     client_name = suggestion.split(' (')[0].strip()
                     for client in self.clients_data:
@@ -364,7 +377,11 @@ class ClientAutoCompleteWidget(QLineEdit):
         """Définit le client actuel"""
         if client:
             self.current_client = client
+            # Bloquer temporairement les signaux pour éviter que on_text_changed
+            # ne réinitialise le client quand on met à jour le texte programmatiquement
+            self.blockSignals(True)
             self.setText(client.get('nombre', ''))
+            self.blockSignals(False)
             self.setProperty("hasClient", True)
             self.setProperty("isNew", client.get('is_new', False))
             self.style().polish(self)
