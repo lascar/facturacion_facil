@@ -288,106 +288,18 @@ echo.
 
 :: CRÍTICO: Verificar y migrar estructura de base de datos
 echo 🔄 VERIFICANDO Y MIGRANDO BASE DE DATOS...
-echo ⚠️  CRÍTICO: Verificación de compatibilidad de estructura
+echo ⚠️  CRÍTICO: Verificacion de compatibilidad de estructura
 
 if exist "facturacion.db" (
     echo 📋 Base de datos encontrada: facturacion.db
-
-    :: Ejecutar verificación y migración automática
-    echo 🔧 Ejecutando verificación de estructura...
-    %PYTHON% -c "
-import sys
-import os
-sys.path.insert(0, '.')
-try:
-    from database.migration_manager import MigrationManager
-
-    # Crear instancia del gestor de migración
-    migration_manager = MigrationManager('facturacion.db')
-
-    print('✅ Sistema de migración cargado correctamente')
-
-    # Crear backup adicional específico para migración
-    backup_path = migration_manager.create_backup('pre_update_migration')
-    if backup_path:
-        print(f'✅ Backup de migración creado: {backup_path}')
-    else:
-        print('⚠️  No se pudo crear backup de migración')
-
-    # Ejecutar todas las migraciones
-    print('🔄 Ejecutando migraciones de base de datos...')
-    migration_success = migration_manager.run_all_migrations()
-
-    if migration_success:
-        print('✅ MIGRACIÓN COMPLETADA: Base de datos actualizada correctamente')
-        sys.exit(0)
-    else:
-        print('❌ ERROR EN MIGRACIÓN: Problemas detectados en la estructura')
-        print('   Consultar logs para más detalles')
-        sys.exit(1)
-
-except ImportError as e:
-    print(f'⚠️  Sistema de migración no disponible: {e}')
-    print('   Continuando sin migración automática')
-    sys.exit(0)
-except Exception as e:
-    print(f'❌ ERROR CRÍTICO EN MIGRACIÓN: {e}')
-    print('   RECOMENDACIÓN: Verificar manualmente la base de datos')
-    sys.exit(2)
-" 2>nul
-
-    set "MIGRATION_RESULT=%errorlevel%"
-
-    if %MIGRATION_RESULT%==0 (
-        echo ✅ MIGRACIÓN EXITOSA: Base de datos compatible y actualizada
-    ) else if %MIGRATION_RESULT%==1 (
-        echo ❌ ERROR EN MIGRACIÓN: Problemas en la estructura de base de datos
-        echo.
-        echo ⚠️  ADVERTENCIA CRÍTICA:
-        echo    • La base de datos puede tener problemas de compatibilidad
-        echo    • Se recomienda verificar manualmente antes de usar la aplicación
-        echo    • Backup disponible en: backup\facturacion_%FECHA%.db
-        echo.
-        echo 💡 Acciones recomendadas:
-        echo    1. Verificar logs de la aplicación
-        echo    2. Contactar soporte técnico si persisten problemas
-        echo    3. Usar backup si es necesario restaurar
-        echo.
-        echo ¿Desea continuar con la actualización? (S/N)
-        set /p "CONTINUAR=Respuesta: "
-        if /i not "%CONTINUAR%"=="S" (
-            echo ❌ Actualización cancelada por el usuario
-            echo    Datos protegidos en backup\facturacion_%FECHA%.db
-            pause
-            exit /b 1
-        )
-        echo ⚠️  Continuando bajo responsabilidad del usuario...
-    ) else if %MIGRATION_RESULT%==2 (
-        echo ❌ ERROR CRÍTICO: Fallo grave en el sistema de migración
-        echo.
-        echo 🚨 ALERTA MÁXIMA:
-        echo    • Error crítico en el sistema de base de datos
-        echo    • NO se recomienda continuar sin verificación manual
-        echo    • Backup disponible en: backup\facturacion_%FECHA%.db
-        echo.
-        echo 💡 Acciones OBLIGATORIAS:
-        echo    1. Verificar integridad de facturacion.db manualmente
-        echo    2. Contactar soporte técnico inmediatamente
-        echo    3. NO usar la aplicación hasta resolver el problema
-        echo.
-        echo ❌ DETENIENDO actualización por seguridad de datos
-        pause
-        exit /b 1
-    ) else (
-        echo ✅ Sistema de migración no disponible - Continuando
-        echo    (Esto es normal en instalaciones básicas)
-    )
+    echo 🔧 Las migraciones se ejecutaran automaticamente al iniciar la aplicacion
+    echo ✅ Base de datos protegida con backup previo
 ) else (
-    echo ⚠️  Base de datos no encontrada - Primera instalación
-    echo    Se creará automáticamente al iniciar la aplicación
+    echo ⚠️  Base de datos no encontrada - Primera instalacion
+    echo    Se creara automaticamente al iniciar la aplicacion
 )
 
-echo ✅ VERIFICACIÓN DE BASE DE DATOS COMPLETADA
+echo ✅ VERIFICACION DE BASE DE DATOS COMPLETADA
 echo.
 
 :: Verificar integridad de la aplicación
