@@ -33,7 +33,6 @@ from utils.exceptions import (
 )
 from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
 from utils.dialog_no_glitch_foreground import NoGlitchDialogForegroundMixin, force_dialog_no_glitch_foreground
-from utils.dialog_foreground_linux import force_dialog_to_foreground_linux
 
 class FacturasPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion des factures avec PyQt5"""
@@ -1303,9 +1302,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.crear_dialog.activateWindow()
             return
 
-        # Créer un nouveau dialog SANS parent pour éviter les problèmes de hiérarchie
-        # Le dialog s'affiche automatiquement au premier plan grâce à son constructeur
-        self.crear_dialog = CrearFacturaDialog(self.database, None)
+        # Créer un nouveau dialog avec self comme parent
+        # Le dialog se fermera automatiquement si la fenêtre principale se ferme
+        self.crear_dialog = CrearFacturaDialog(self.database, self)
 
         # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
         def on_dialog_finished(result):
@@ -1330,8 +1329,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
             # Vérifier si un dialog de visualisation est déjà ouvert
             if self.ver_dialog is not None and self.ver_dialog.isVisible():
                 self.logger.debug("Dialog de visualisation déjà ouvert - amener au premier plan")
-                self.ver_dialog.raise_()
-                self.ver_dialog.activateWindow()
+                self.ver_dialog.show_with_focus()
                 return
 
             # Obtenir la facture (active ou archivée)
@@ -1341,7 +1339,8 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 factura = self.factura_service.get_factura_by_id(self.selected_factura_id)
             
             if factura:
-                self.ver_dialog = VerFacturaDialog(factura, None)
+                # Usar self como parent para que el diálogo se cierre con la ventana principal
+                self.ver_dialog = VerFacturaDialog(factura, self)
 
                 # Connecter le signal de fermeture pour nettoyer la référence
                 def on_ver_dialog_finished():
@@ -1349,10 +1348,8 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
                 self.ver_dialog.finished.connect(on_ver_dialog_finished)
 
-                # Afficher le dialog avec forçage Linux optimisé
-                self.ver_dialog.show()
-                # Forcer immédiatement au premier plan avec techniques Linux
-                force_dialog_to_foreground_linux(self.ver_dialog)
+                # Afficher le dialog con forzado al frente
+                self.ver_dialog.show_with_focus()
             else:
                 self.show_error("Error", "No se pudo cargar la factura")
         except Exception as e:
@@ -1381,7 +1378,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
 
             factura = self.factura_service.get_factura_by_id(self.selected_factura_id)
             if factura:
-                self.editar_dialog = EditarFacturaDialog(factura, self.database, None)
+                self.editar_dialog = EditarFacturaDialog(factura, self.database, self)
 
                 # Connecter le signal de fermeture pour recharger les factures et nettoyer la référence
                 def on_edit_dialog_finished(result):
@@ -1806,6 +1803,16 @@ class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         self.logger = get_logger(self.__class__.__name__)
         self.setWindowTitle("Crear Nueva Factura")
         self.resize(800, 600)
+        
+        # IMPORTANTE: Eliminar diálogo al cerrar
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        
+        # Configurar como Tool Window para mejor comportamiento
+        self.setWindowFlags(
+            Qt.Tool |                    # Ventana tipo herramienta
+            Qt.WindowCloseButtonHint |   # Botón cerrar
+            Qt.WindowTitleHint           # Barra de título
+        )
 
         # Instance de base de données
         self.database = database_instance
@@ -1822,10 +1829,6 @@ class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         self.lineas_factura = []
 
         self.setup_ui()
-
-        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
-        # Fonctionne sur Windows, Linux, macOS sans glitch
-        self.setup_no_glitch_foreground_display()
 
         # Charger les données de manière asynchrone après affichage
         from PyQt5.QtCore import QTimer
@@ -2299,6 +2302,16 @@ class EditarFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         self.factura_data = factura_data
         self.setWindowTitle(f"Editar Factura {factura_data['numero']}")
         self.resize(800, 600)
+        
+        # IMPORTANTE: Eliminar diálogo al cerrar
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        
+        # Configurar como Tool Window para mejor comportamiento
+        self.setWindowFlags(
+            Qt.Tool |                    # Ventana tipo herramienta
+            Qt.WindowCloseButtonHint |   # Botón cerrar
+            Qt.WindowTitleHint           # Barra de título
+        )
 
         # Instance de base de données
         self.database = database_instance
@@ -2317,10 +2330,6 @@ class EditarFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         self.setup_ui()
         self.load_data()
         self.load_factura_data()
-
-        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
-        # Fonctionne sur Windows, Linux, macOS sans glitch
-        self.setup_no_glitch_foreground_display()
 
     def setup_ui(self):
         """Configurar la interfaz"""
@@ -2903,12 +2912,44 @@ class VerFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         self.setWindowTitle(f"Factura {factura_data['numero']}")
         self.setModal(False)  # Permitir acceso a otras ventanas
         self.resize(600, 500)
-
-        # SOLUTION SANS GLITCH: Forçage au premier plan sans effets visuels
-        # Fonctionne sur Windows, Linux, macOS sans glitch
-        self.setup_no_glitch_foreground_display()
+        
+        # IMPORTANTE: Eliminar diálogo al cerrar
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        
+        # Configurar como Tool Window para que se cierre con la aplicación padre
+        # pero sin ser modal
+        self.setWindowFlags(
+            Qt.Tool |                    # Ventana tipo herramienta (hija pero no modal)
+            Qt.WindowCloseButtonHint |   # Botón cerrar
+            Qt.WindowTitleHint           # Barra de título
+        )
 
         self.setup_ui()
+    
+    def show_with_focus(self):
+        """Muestra el diálogo forzándolo al frente"""
+        from PyQt5.QtCore import QTimer
+        
+        # Mostrar la ventana
+        self.show()
+        
+        # Forzar al frente con múltiples intentos
+        self._force_to_front()
+        
+        # Reintentar después de un breve retraso (para gestores de ventanas lentos)
+        QTimer.singleShot(50, self._force_to_front)
+        QTimer.singleShot(150, self._force_to_front)
+    
+    def _force_to_front(self):
+        """Fuerza la ventana al frente"""
+        self.raise_()
+        self.activateWindow()
+        self.setWindowState(Qt.WindowActive)
+        if hasattr(self, 'setFocus'):
+            self.setFocus()
+        # Notificar al sistema de ventanas
+        QApplication.setActiveWindow(self)
+        QApplication.processEvents()
 
     def setup_ui(self):
         """Configurar la interfaz"""
