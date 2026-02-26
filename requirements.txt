@@ -1,15 +1,14 @@
-# GUI Framework (PyQt5 est maintenant le framework principal)
-# Compatible avec Python 3.10+ et Windows 10/11
-PyQt5
+# Facturación Fácil - Dependencias principales
+# Compatible con Python 3.10+ y Windows 10/11
 
-# Framework GUI principal (migration complète vers PyQt5)
-# customtkinter==5.2.2  # SUPPRIMÉ - Migration complète vers PyQt5
+# GUI Framework
+PyQt5>=5.15.0
 
-# Dépendances principales
-Pillow==12.1.1          # Traitement d'images - Compatible Windows 11
-reportlab==4.2.2        # Génération PDF - Compatible Windows 11
-matplotlib>=3.7.0       # Génération de graphiques pour rapports
+# Procesamiento de imágenes
+Pillow>=10.0.0
 
-# Dépendances système (installées automatiquement)
-# - Microsoft Visual C++ Redistributable (inclus avec Python sur Windows 11)
-# - Qt5 runtime libraries (incluses avec PyQt5)
+# Generación de PDF
+reportlab>=4.0.0
+
+# Gráficos para informes
+matplotlib>=3.7.0
