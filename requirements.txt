@@ -6,7 +6,7 @@ PyQt5
 # customtkinter==5.2.2  # SUPPRIMÉ - Migration complète vers PyQt5
 
 # Dépendances principales
-Pillow==10.4.0          # Traitement d'images - Compatible Windows 11
+Pillow==12.1.1          # Traitement d'images - Compatible Windows 11
 reportlab==4.2.2        # Génération PDF - Compatible Windows 11
 matplotlib>=3.7.0       # Génération de graphiques pour rapports
 
