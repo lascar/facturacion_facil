@@ -92,11 +92,16 @@ class TestStockService:
         assert producto['stock_actual'] == nuevo_stock
 
     def test_update_stock_negative(self):
-        """Test mise à jour avec stock négatif"""
-        with pytest.raises(ProductValidationError) as context:
-            self.service.update_stock(self.producto_id, -10)
+        """Test mise à jour avec stock négatif - maintenant autorisé"""
+        # NOTE: Les stocks négatifs sont maintenant permis
+        nuevo_stock = -10
+        success = self.service.update_stock(self.producto_id, nuevo_stock)
 
-        assert "no puede ser negativo" in str(context.value)
+        assert success
+
+        # Vérifier que le stock a été mis à jour (même négatif)
+        producto = self.service.get_stock_by_product_id(self.producto_id)
+        assert producto['stock_actual'] == nuevo_stock
 
     def test_update_stock_invalid_id(self):
         """Test mise à jour avec ID invalide"""

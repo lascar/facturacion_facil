@@ -94,18 +94,14 @@ class ProductAutoCompleteWidget(QLineEdit):
         """Met à jour le modèle du completer avec filtrage"""
         try:
             if not filter_text:
-                # Afficher tous les produits avec stock > 0 OU sin_stock=1
-                self.filtered_products = [
-                    p for p in self.products_data
-                    if p.get('stock_actual', 0) > 0 or p.get('sin_stock', 0) == 1
-                ]
+                # Afficher tous les produits (même ceux avec stock = 0)
+                self.filtered_products = self.products_data
             else:
-                # Filtrer par nom et (stock > 0 OU sin_stock=1)
+                # Filtrer par nom uniquement (tous les produits sont proposés)
                 filter_lower = filter_text.lower()
                 self.filtered_products = [
                     p for p in self.products_data
                     if filter_lower in p.get('nombre', '').lower()
-                    and (p.get('stock_actual', 0) > 0 or p.get('sin_stock', 0) == 1)
                 ]
 
             # Créer les suggestions avec format: "Nom - Talla - Prix€ (Stock: X)" ou "Nom - Talla - Prix€ (Sin stock)"
@@ -179,10 +175,9 @@ class ProductAutoCompleteWidget(QLineEdit):
         matching_product = None
         for product in self.products_data:
             if text.lower() == product.get('nombre', '').lower():
-                # Accepter les produits avec stock > 0 OU sin_stock=1
-                if product.get('stock_actual', 0) > 0 or product.get('sin_stock', 0) == 1:
-                    matching_product = product
-                    break
+                # Accepter tous les produits (même ceux avec stock = 0)
+                matching_product = product
+                break
 
         if matching_product:
             self.set_product(matching_product)
@@ -243,4 +238,5 @@ class ProductAutoCompleteWidget(QLineEdit):
     
     def has_valid_product(self):
         """Vérifie si un produit valide est sélectionné"""
-        return self.current_product is not None and self.current_product.get('stock_actual', 0) > 0
+        # NOTA: Un produit est valide même avec stock = 0
+        return self.current_product is not None

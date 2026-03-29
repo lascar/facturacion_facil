@@ -193,16 +193,24 @@ class StockUpdateIntegrationTest(unittest.TestCase):
         self.assertTrue(result, "Le dialogue devrait apparaître et être confirmé")
     
     def test_stock_update_insufficient_stock(self):
-        """Test: Stock insuffisant - vente non autorisée"""
-        cantidad_venta = self.create_test_factura(15)  # Plus que le stock disponible
+        """Test: Stock insuffisant - vente autorisée avec stock négatif"""
+        # NOTE: Les stocks négatifs sont maintenant permis
+        cantidad_venta = self.create_test_factura(15)  # Plus que le stock disponible (10)
         
-        # Vérifier que la validation détecte le stock insuffisant
+        # La validation ne devrait plus retourner d'erreur - juste un warning
         errors = self.test_instance.validate_stock_availability()
-        self.assertGreater(len(errors), 0, "Devrait y avoir des erreurs pour stock insuffisant")
+        self.assertEqual(len(errors), 0, "Ne devrait plus y avoir d'erreurs pour stock insuffisant")
         
-        # Vérifier le message d'erreur
-        error_message = errors[0]
-        self.assertIn("stock insuficiente", error_message.lower())
+        # Exécuter la mise à jour du stock - devrait fonctionner
+        self.factura_test.save()
+        self.test_instance.update_stock_after_save()
+        
+        # Vérifier que le stock est maintenant négatif
+        stock_final = Stock.get_by_product(self.producto_test.id)
+        stock_esperado = self.stock_inicial - cantidad_venta  # 10 - 15 = -5
+        
+        self.assertEqual(stock_final, stock_esperado,
+                        f"Stock devrait être {stock_esperado} (négatif), mais est {stock_final}")
     
     def test_multiple_products_stock_update(self):
         """Test: Mise à jour du stock pour plusieurs produits"""
@@ -415,15 +423,15 @@ class StockButtonsInterfaceIntegrationTest(unittest.TestCase):
         self.assertEqual(last_movement.tipo, "AJUSTE_POSITIVO",
                         "Le type de mouvement devrait être AJUSTE_POSITIVO")
 
-        # Test 4: Test avec minimum à 0 (logique métier)
-        print("   4️⃣ Test minimum à 0")
+        # Test 4: Test avec stock négatif (logique métier)
+        print("   4️⃣ Test stock négatif autorisé")
 
+        # NOTE: Les stocks négatifs sont maintenant permis
         # Simuler la logique de _decrease_stock avec stock à 0
         test_stock = 0
-        if test_stock > 0:
-            test_stock -= 1
+        test_stock -= 1  # Maintenant on permet de descendre sous 0
 
-        self.assertEqual(test_stock, 0, "Stock ne devrait pas descendre en dessous de 0")
+        self.assertEqual(test_stock, -1, "Stock devrait pouvoir être négatif")
 
         # Test 5: Test de cohérence des données
         print("   5️⃣ Test cohérence des données")

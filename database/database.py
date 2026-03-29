@@ -722,7 +722,7 @@ class Database:
 
                 # Calcular el nuevo stock
                 if operation == 'subtract':
-                    nuevo_stock = max(0, stock_actual - cantidad)  # No permitir stock negativo
+                    nuevo_stock = stock_actual - cantidad  # Se permite stock negativo
                     movimiento = -cantidad
                 elif operation == 'add':
                     nuevo_stock = stock_actual + cantidad
@@ -793,7 +793,7 @@ class Database:
 
                 # Calcular el nuevo stock
                 if operation == 'subtract':
-                    nuevo_stock = max(0, stock_actual - cantidad)  # No permitir stock negativo
+                    nuevo_stock = stock_actual - cantidad  # Se permite stock negativo
                     movimiento = -cantidad
                 elif operation == 'add':
                     nuevo_stock = stock_actual + cantidad

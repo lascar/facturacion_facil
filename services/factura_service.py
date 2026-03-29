@@ -398,14 +398,15 @@ class FacturaService(BaseService):
                     )
 
                 # Vérifier le stock (solo si el producto gestiona stock)
+                # NOTA: Se permite stock negativo, solo se registra un warning
                 sin_stock = producto.get('sin_stock', 0)
                 if not sin_stock:
                     stock_actual = producto.get('stock_actual', 0)
                     if stock_actual < cantidad:
-                        raise InsufficientStockError(
-                            producto.get('nombre', 'producto'),
-                            cantidad,
-                            stock_actual
+                        self.logger.warning(
+                            f"Stock insuficiente para {producto.get('nombre', 'producto')}: "
+                            f"disponible {stock_actual}, solicitado {cantidad}. "
+                            f"Se permitirá stock negativo."
                         )
         except (InsufficientStockError, InvoiceValidationError):
             raise

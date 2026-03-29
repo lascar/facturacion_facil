@@ -199,10 +199,12 @@ class FacturasMethodsMixin:
                     if producto:
                         stock_actual = Stock.get_by_product(producto.id)
 
+                        # NOTA: Se permite stock negativo, solo se registra warning
                         if stock_actual < item.cantidad:
-                            errors.append(
+                            self.logger.warning(
                                 f"Stock insuficiente para {producto.nombre}: "
-                                f"disponible {stock_actual}, solicitado {item.cantidad}"
+                                f"disponible {stock_actual}, solicitado {item.cantidad}. "
+                                f"Se permitirá stock negativo."
                             )
                         elif stock_actual - item.cantidad <= 2:  # Stock bajo
                             self.logger.warning(

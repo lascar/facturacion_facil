@@ -85,12 +85,7 @@ class StockService(BaseService):
         """
         # Validation
         self.validate_id(producto_id, 'producto', ProductValidationError)
-        
-        if nuevo_stock < 0:
-            raise ProductValidationError(
-                "El stock no puede ser negativo",
-                details={'producto_id': producto_id, 'nuevo_stock': nuevo_stock}
-            )
+        # NOTA: Se permite stock negativo
         
         try:
             success = self.db.update_product_stock(producto_id, nuevo_stock)

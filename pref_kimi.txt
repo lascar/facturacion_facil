@@ -77,6 +77,19 @@
 - 🧪 TESTEAR: Con el script `test_migration_system.py` antes de cualquier modificación
 - 🔄 RECUPERACIÓN: Usar `restore_and_migrate.py` en caso de pérdida de datos
 
+## 📦 Configuración Stock - IMPORTANTE ⚠️
+
+### Stocks négatifs - PERMIS
+- ✅ **Stock négatif autorisé** : Les factures peuvent être créées même sans stock suffisant
+- ✅ **Configuration** : `config.json` → `stock.permitir_stock_negativo: true`
+- ✅ **Comportement** : Warning dans les logs mais pas de blocage
+- ✅ **Produits sans stock** : Tous les produits apparaissent dans l'autocomplétion (même stock=0)
+
+### Protection des données de configuration
+- ❌ **INTERDICTION** : Ne jamais laisser de données de test dans `config.json`
+- ✅ **Vérification** : Toujours vérifier après les tests que `config.json` est propre
+- ✅ **Valeurs par défaut** : Laisser les champs organisation vides si non configurés
+
 ## 🛠️ Entorno de desarrollo
 
 ### Configuración Python

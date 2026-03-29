@@ -22,13 +22,18 @@ def faker_instance():
     return fake
 
 @pytest.fixture
-def temp_db(request):
-    """Base de datos temporal para tests - Version améliorée"""
+def temp_db(request, monkeypatch, tmp_path):
+    """Base de datos temporal para tests - Version améliorée avec isolation config.json"""
     # Obtenir le nom du test pour debugging
     test_name = request.node.name if hasattr(request, 'node') else 'unknown'
 
     # Créer base de données isolée
     test_db, db_path = test_db_manager.create_test_database(test_name)
+    
+    # Isoler config.json pour éviter de polluer la config de production
+    temp_config = tmp_path / "test_config.json"
+    temp_config.write_text("{}")
+    monkeypatch.setenv('CONFIG_FILE', str(temp_config))
 
     yield test_db
 
@@ -126,8 +131,8 @@ def setup_test_environment(monkeypatch, temp_db, request):
 
 
 @pytest.fixture
-def patched_models_db(monkeypatch, unit_db):
-    """Fixture pour patcher l'instance globale db dans les modèles"""
+def patched_models_db(monkeypatch, unit_db, tmp_path):
+    """Fixture pour patcher l'instance globale db dans les modèles ET isoler config.json"""
     # Importer les modèles
     try:
         from database import models
@@ -135,7 +140,12 @@ def patched_models_db(monkeypatch, unit_db):
         monkeypatch.setattr(models, 'db', unit_db)
     except:
         pass
-
+    
+    # Isoler config.json pour éviter de polluer la config de production
+    temp_config = tmp_path / "test_config.json"
+    temp_config.write_text("{}")
+    monkeypatch.setenv('CONFIG_FILE', str(temp_config))
+    
     yield unit_db
 
 @pytest.fixture

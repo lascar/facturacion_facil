@@ -851,12 +851,12 @@ class FacturasPyQt5Window(BasePyQt5Window):
                 return
 
             # Verificar stock (solo si el producto gestiona stock)
+            # NOTA: Se permite stock negativo, solo se muestra advertencia
             sin_stock = producto.get('sin_stock', 0)
             stock_actual = producto.get('stock_actual', 0)
 
             if not sin_stock and cantidad > stock_actual:
-                self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
-                return
+                self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}. Se permitirá stock negativo.")
 
             # Verificar si el producto ya está en la factura
             for row in range(self.productos_table.rowCount()):
@@ -866,9 +866,9 @@ class FacturasPyQt5Window(BasePyQt5Window):
                     cantidad_actual = int(self.productos_table.item(row, 1).text())
                     nueva_cantidad = cantidad_actual + cantidad
 
+                    # NOTA: Se permite stock negativo
                     if not sin_stock and nueva_cantidad > stock_actual:
-                        self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}")
-                        return
+                        self.show_warning("Stock", f"Stock insuficiente. Disponible: {stock_actual}. Se permitirá stock negativo.")
 
                     # Producto ya existe, actualizar cantidad
                     self.productos_table.blockSignals(True)
@@ -2044,12 +2044,12 @@ class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
         sin_stock = producto_data.get('sin_stock', 0)
         stock_actual = producto_data.get('stock_actual', 0)
 
-        # Verificar stock (solo si el producto gestiona stock)
+        # NOTA: Se permite stock negativo, solo se muestra advertencia
         if not sin_stock and cantidad > stock_actual:
             from PyQt5.QtWidgets import QMessageBox
             QMessageBox.warning(self, "Stock insuficiente",
-                              f"Stock disponible: {stock_actual}\nCantidad solicitada: {cantidad}")
-            return
+                              f"Stock disponible: {stock_actual}\nCantidad solicitada: {cantidad}\n"
+                              f"Se permitirá stock negativo.")
 
         # Calcular precios
         precio_unitario = producto_data['precio_venta']
@@ -2113,22 +2113,18 @@ class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
 
                 if producto_data:
                     # Verificar si el producto gestiona stock
+                    # NOTA: Se permite stock negativo, solo se muestra advertencia
                     sin_stock = producto_data.get('sin_stock', 0)
                     if not sin_stock:
                         stock_actual = producto_data.get('stock_actual', 0)
                         if nueva_cantidad > stock_actual:
                             from PyQt5.QtWidgets import QMessageBox
                             stock_resultante = stock_actual - nueva_cantidad
-                            reply = QMessageBox.question(self, "Stock insuficiente",
-                                                       f"Stock disponible: {stock_actual}\n"
-                                                       f"Cantidad solicitada: {nueva_cantidad}\n"
-                                                       f"Stock resultante: {stock_resultante}\n\n"
-                                                       f"¿Desea continuar con stock negativo?",
-                                                       QMessageBox.Yes | QMessageBox.No,
-                                                       QMessageBox.No)
-                            if reply != QMessageBox.Yes:
-                                item.setText(str(self.lineas_factura[row]['cantidad']))
-                                return
+                            QMessageBox.warning(self, "Stock insuficiente",
+                                               f"Stock disponible: {stock_actual}\n"
+                                               f"Cantidad solicitada: {nueva_cantidad}\n"
+                                               f"Stock resultante: {stock_resultante}\n"
+                                               f"Se permitirá stock negativo.")
 
                 self.lineas_factura[row]['cantidad'] = nueva_cantidad
                 self.recalcular_linea(row)

@@ -471,7 +471,8 @@ class TestFacturaService:
         assert "Producto 99999 no encontrado" in str(context.value)
 
     def test_validate_stock_insufficient(self):
-        """Test validation stock insuffisant"""
+        """Test validation stock insuffisant - maintenant autorisé avec warning"""
+        # NOTE: Les stocks négatifs sont maintenant permis
         # Le produit a un stock de 100
         lineas = [{
             'producto_id': self.producto_id,
@@ -480,8 +481,9 @@ class TestFacturaService:
             'iva': 21.0
         }]
 
-        with pytest.raises(InsufficientStockError):
-            self.service._validate_stock_availability(lineas)
+        # Ne devrait plus lever d'exception - juste un warning dans les logs
+        self.service._validate_stock_availability(lineas)
+        # Si on arrive ici, c'est que la validation a passé (stock négatif permis)
 
 
 if __name__ == '__main__':
