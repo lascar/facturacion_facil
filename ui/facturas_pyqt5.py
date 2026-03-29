@@ -33,6 +33,10 @@ from utils.exceptions import (
 )
 from utils.dialog_simple_foreground import SimpleDialogForegroundMixin, force_dialog_simple_foreground
 from utils.dialog_no_glitch_foreground import NoGlitchDialogForegroundMixin, force_dialog_no_glitch_foreground
+from ui.verifacti_factura_handler import (
+    crear_boton_enviar_verifacti, crear_boton_enviar_pendientes,
+    cargar_configuracion as cargar_config_verifacti
+)
 
 class FacturasPyQt5Window(BasePyQt5Window):
     """Fenêtre de gestion des factures avec PyQt5"""
@@ -119,6 +123,17 @@ class FacturasPyQt5Window(BasePyQt5Window):
         self.ver_archivadas_btn.setStyleSheet("font-size: 14px; background-color: #2196F3; color: white;")
         self.ver_archivadas_btn.setToolTip("Ver las facturas archivadas de años anteriores")
 
+        # Botón enviar pendientes Verifacti
+        self.verifacti_pendientes_btn = QPushButton("📤 Enviar Pendientes Verifacti")
+        self.verifacti_pendientes_btn.setMinimumHeight(40)
+        self.verifacti_pendientes_btn.setStyleSheet("font-size: 14px; background-color: #17a2b8; color: white;")
+        self.verifacti_pendientes_btn.setToolTip("Enviar facturas pendientes a Verifacti")
+        self.verifacti_pendientes_btn.clicked.connect(self._enviar_pendientes_verifacti)
+        # Ocultar inicialmente si no está configurado
+        config_verifacti = cargar_config_verifacti()
+        if not config_verifacti.habilitado:
+            self.verifacti_pendientes_btn.setVisible(False)
+
         top_buttons_layout.addWidget(self.new_btn)
         top_buttons_layout.addWidget(self.editar_btn)
         top_buttons_layout.addWidget(self.view_btn)
@@ -127,6 +142,7 @@ class FacturasPyQt5Window(BasePyQt5Window):
         top_buttons_layout.addWidget(self.refresh_btn)
         top_buttons_layout.addWidget(self.ver_archivadas_btn)
         top_buttons_layout.addWidget(self.nuevo_anio_btn)
+        top_buttons_layout.addWidget(self.verifacti_pendientes_btn)
         top_buttons_layout.addStretch()
 
         main_layout.addLayout(top_buttons_layout)
@@ -1794,6 +1810,21 @@ class FacturasPyQt5Window(BasePyQt5Window):
             self.logger.error(f"Error cambiando vista: {e}")
             self.show_error("Error", f"Error al cambiar la vista: {str(e)}")
 
+    def _enviar_pendientes_verifacti(self):
+        """Envía las facturas pendientes a Verifacti"""
+        try:
+            from ui.verifacti_factura_handler import reenviar_facturas_pendientes
+            
+            exitos, fallidos = reenviar_facturas_pendientes(self)
+            
+            # Recargar la lista para mostrar estados actualizados
+            if exitos > 0:
+                self.load_facturas()
+                
+        except Exception as e:
+            self.logger.error(f"Error enviando pendientes Verifacti: {e}")
+            self.show_error("Error", f"Error al enviar facturas pendientes: {str(e)}")
+
 
 class CrearFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
     """Dialog para crear una nueva factura"""
@@ -3011,7 +3042,73 @@ class VerFacturaDialog(QDialog, NoGlitchDialogForegroundMixin):
 
         layout.addWidget(totales_group)
 
+        # Botón enviar a Verifacti (si está configurado)
+        self._add_verifacti_button(layout)
+
         # Botón cerrar
         buttons = QDialogButtonBox(QDialogButtonBox.Close)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+
+    def _add_verifacti_button(self, layout):
+        """Añade el botón para enviar a Verifacti si está configurado"""
+        try:
+            from ui.verifacti_factura_handler import (
+                cargar_configuracion, obtener_estado_factura, EstadoVerifacti
+            )
+            
+            config = cargar_configuracion()
+            if not config.habilitado:
+                return
+            
+            # Obtener estado actual de la factura
+            factura_id = self.factura_data.get('id')
+            if not factura_id:
+                return
+            
+            estado = obtener_estado_factura(factura_id)
+            
+            # Crear grupo para el botón Verifacti
+            verifacti_group = QGroupBox("Verifacti (AEAT)")
+            verifacti_layout = QHBoxLayout(verifacti_group)
+            
+            # Mostrar estado actual
+            estado_label = QLabel(f"Estado: {estado.value}")
+            verifacti_layout.addWidget(estado_label)
+            verifacti_layout.addStretch()
+            
+            # Botón según el estado
+            if estado == EstadoVerifacti.ENVIADO:
+                btn = QPushButton("✓ Enviado a Verifacti")
+                btn.setEnabled(False)
+                btn.setStyleSheet("background-color: #28a745; color: white;")
+            else:
+                btn = QPushButton("📤 Enviar a Verifacti")
+                btn.setStyleSheet("background-color: #17a2b8; color: white; font-weight: bold;")
+                btn.clicked.connect(self._on_enviar_verifacti)
+            
+            verifacti_layout.addWidget(btn)
+            layout.addWidget(verifacti_group)
+            
+        except Exception as e:
+            # Si hay error, no mostrar el botón
+            pass
+
+    def _on_enviar_verifacti(self):
+        """Maneja el envío de la factura a Verifacti"""
+        from ui.verifacti_factura_handler import enviar_factura_verifacti
+        
+        factura_id = self.factura_data.get('id')
+        if not factura_id:
+            return
+        
+        exito, msg = enviar_factura_verifacti(factura_id, self)
+        
+        if exito:
+            # Actualizar UI
+            self._add_verifacti_button_refresh()
+
+    def _add_verifacti_button_refresh(self):
+        """Refresca el estado del botón Verifacti después de envío"""
+        # Recargar el diálogo con datos actualizados
+        self.accept()  # Cerrar y permitir que el usuario reabra si quiere

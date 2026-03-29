@@ -21,6 +21,7 @@ from utils.logger import get_logger
 from utils.invoice_status_manager import invoice_status_manager
 from ui.data_cleanup_dialog import DataCleanupDialog
 from ui.todo_editor_dialog import TodoEditorDialog
+from ui.verifacti_config_dialog import VerifactiConfigDialog
 from services.organizacion_service import OrganizacionService
 from database.database import db
 
@@ -136,9 +137,30 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
             }
         """)
 
+        # Bouton pour configurer Verifacti
+        self.verifacti_btn = QPushButton("📋 Preparar por Verifacti")
+        self.verifacti_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #17a2b8;
+                color: white;
+                font-weight: bold;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
+                min-width: 150px;
+            }
+            QPushButton:hover {
+                background-color: #138496;
+            }
+            QPushButton:pressed {
+                background-color: #117a8b;
+            }
+        """)
+
         buttons_layout.addWidget(self.save_btn)
         buttons_layout.addWidget(self.reset_btn)
         buttons_layout.addStretch()
+        buttons_layout.addWidget(self.verifacti_btn)
         buttons_layout.addWidget(self.todo_btn)
         buttons_layout.addWidget(self.clear_cache_btn)
         buttons_layout.addWidget(self.cleanup_btn)
@@ -399,6 +421,7 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         self.todo_btn.clicked.connect(self.open_todo_editor)
         self.clear_cache_btn.clicked.connect(self.clear_config_cache)
         self.cleanup_btn.clicked.connect(self.open_data_cleanup_dialog)
+        self.verifacti_btn.clicked.connect(self.open_verifacti_config)
         self.logo_browse_btn.clicked.connect(self.browse_logo)
         print("DEBUG: logo_browse_btn connecté à browse_logo")
         self.logo_landscape_radio.toggled.connect(self.on_orientation_changed)
@@ -1171,3 +1194,27 @@ class OrganizacionPyQt5Window(BasePyQt5Window):
         except Exception as e:
             self.logger.error(f"Error abriendo diálogo de limpieza: {e}")
             self.show_error("Error", f"Error al abrir el diálogo de limpieza: {str(e)}")
+
+    def open_verifacti_config(self):
+        """Abre el diálogo de configuración de Verifacti"""
+        try:
+            self.logger.info("Abriendo configuración de Verifacti")
+            
+            from ui.verifacti_config_dialog import VerifactiConfigDialog
+            
+            dialog = VerifactiConfigDialog(self)
+            result = dialog.exec_()
+            
+            if result == dialog.Accepted:
+                self.logger.info("Configuración de Verifacti guardada")
+                self.show_info(
+                    "Configuración Guardada",
+                    "La configuración de Verifacti se ha guardado correctamente.\n\n"
+                    "Ahora puede enviar facturas a Verifacti desde el detalle de cada factura."
+                )
+            else:
+                self.logger.info("Configuración de Verifacti cancelada")
+                
+        except Exception as e:
+            self.logger.error(f"Error abriendo configuración Verifacti: {e}")
+            self.show_error("Error", f"Error al abrir la configuración de Verifacti: {str(e)}")

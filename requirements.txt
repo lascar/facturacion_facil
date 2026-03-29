@@ -12,3 +12,6 @@ reportlab>=4.0.0
 
 # Gráficos para informes
 matplotlib>=3.7.0
+
+# API HTTP para Verifacti
+requests>=2.31.0

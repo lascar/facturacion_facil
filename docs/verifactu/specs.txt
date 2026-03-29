@@ -1,0 +1,7 @@
+lis et intègre pref_kimi.txt
+respète les principes python dans pref_auggie.txt et aussi la doc de docs/dev
+nous avons été interrompu
+regarde ce qui a été fait (git diff) et continue ces specs
+1 - créer un bouton dans organisation. 'preparar por verifacti'. quand ce bouton est cliqué, on crée (s´ il n'existe pas) un estado de factura, verifacti non modifiable, 3 directories  verifacti/enviadas, verifacti/errores, verifacti/pendientes et on ouvre une fenêtre pour renseigner toutes les informations dont verifacti a besoin (nif, nom de l'entreprise...). ces info sont gardées dans config/config.json et si elles sont déja renseigner on a la possibilité de les modifier.
+2 créer un bouton dans 'ver detalle' verifacti qui essai d'envoyer s'il y a internet la facture à verifacti, mette l'estado verifacti et copie la facture formatée dans verifacti/enviadas. si la facture n'a pas pu être envoyée la facture formatée est copiée dans verifacti/pendientes, s'il y a eu une erreur autre qu 'internet non disponible qui a empéché le bon envoie, alors la facture formatée est copiée dans verifacti/errores avec un log avec le même titre mais terminant par log
+3 dans facturas un bouton enviar verifacti pendientes qui tente à nouveau d'envoyer s'il y a internet les factures pendientes

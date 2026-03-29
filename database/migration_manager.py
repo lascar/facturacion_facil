@@ -498,6 +498,52 @@ class MigrationManager:
             self.logger.error(f"Erreur migration ajout colonne talla: {e}")
             return False
 
+    def migrate_facturas_verifacti(self):
+        """Migration pour ajouter les colonnes Verifacti à la table facturas"""
+        self.logger.info("Début migration Verifacti pour table facturas")
+        
+        try:
+            # Ajouter colonne estado_verifacti
+            if not self.column_exists("facturas", "estado_verifacti"):
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    ALTER TABLE facturas 
+                    ADD COLUMN estado_verifacti TEXT DEFAULT 'No enviado'
+                """)
+                conn.commit()
+                conn.close()
+                self.logger.info("Colonne estado_verifacti ajoutée à facturas")
+            
+            # Ajouter colonne fecha_envio_verifacti
+            if not self.column_exists("facturas", "fecha_envio_verifacti"):
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    ALTER TABLE facturas 
+                    ADD COLUMN fecha_envio_verifacti TIMESTAMP
+                """)
+                conn.commit()
+                conn.close()
+                self.logger.info("Colonne fecha_envio_verifacti ajoutée à facturas")
+            
+            # Créer index
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_facturas_estado_verifacti 
+                ON facturas(estado_verifacti)
+            """)
+            conn.commit()
+            conn.close()
+            
+            self.logger.info("Migration Verifacti pour facturas terminée avec succès")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Erreur migration Verifacti facturas: {e}")
+            return False
+
     def run_all_migrations(self):
         """Exécute toutes les migrations nécessaires"""
         self.logger.info("Début des migrations")
@@ -522,6 +568,9 @@ class MigrationManager:
 
         # Ajouter la migration pour la colonne talla
         migrations.append(("add_talla_column", self.migrate_add_talla_column))
+        
+        # Ajouter la migration pour Verifacti
+        migrations.append(("facturas_verifacti", self.migrate_facturas_verifacti))
 
         success = True
         for migration_name, migration_func in migrations:
