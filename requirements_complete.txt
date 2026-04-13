@@ -12,7 +12,7 @@ pluggy==1.6.0
 psutil==7.1.0
 py-cpuinfo==9.0.0
 Pygments==2.19.2
-pytest==8.4.2
+pytest==9.0.3
 pytest-benchmark==5.1.0
 pytest-cov==7.0.0
 pytest-mock==3.15.1
