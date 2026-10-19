@@ -527,6 +527,30 @@ class MigrationManager:
                 conn.close()
                 self.logger.info("Colonne fecha_envio_verifacti ajoutée à facturas")
             
+            # Ajouter colonne qr_verifacti (base64 del QR)
+            if not self.column_exists("facturas", "qr_verifacti"):
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    ALTER TABLE facturas 
+                    ADD COLUMN qr_verifacti TEXT
+                """)
+                conn.commit()
+                conn.close()
+                self.logger.info("Colonne qr_verifacti ajoutée à facturas")
+            
+            # Ajouter colonne uuid_verifacti
+            if not self.column_exists("facturas", "uuid_verifacti"):
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    ALTER TABLE facturas 
+                    ADD COLUMN uuid_verifacti TEXT
+                """)
+                conn.commit()
+                conn.close()
+                self.logger.info("Colonne uuid_verifacti ajoutée à facturas")
+            
             # Créer index
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()

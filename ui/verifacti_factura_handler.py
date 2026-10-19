@@ -134,7 +134,12 @@ def enviar_factura_verifacti(
         # Éxito: guardar en enviadas
         try:
             guardar_factura_local(payload, respuesta, ENVIADAS_DIR)
-            actualizar_estado_factura_db(factura_id, EstadoVerifacti.ENVIADO)
+            actualizar_estado_factura_db(
+                factura_id, 
+                EstadoVerifacti.ENVIADO,
+                qr_data=respuesta.qr,
+                uuid=respuesta.uuid
+            )
             
             msg = (
                 f"Factura enviada correctamente a Verifacti.\n\n"
@@ -267,23 +272,44 @@ def reenviar_facturas_pendientes(parent: Optional[Any] = None) -> tuple[int, int
     return exitos, fallidos
 
 
-def actualizar_estado_factura_db(factura_id: int, estado: EstadoVerifacti) -> None:
+def actualizar_estado_factura_db(
+    factura_id: int, 
+    estado: EstadoVerifacti,
+    qr_data: Optional[str] = None,
+    uuid: Optional[str] = None
+) -> None:
     """
     Actualiza el estado Verifacti de una factura en la base de datos.
     
-    Nota: Esta función requiere que exista el campo 'estado_verifacti' 
-    en la tabla facturas. Si no existe, solo se loguea.
+    Args:
+        factura_id: ID de la factura
+        estado: Nuevo estado
+        qr_data: Datos del QR en base64 (opcional)
+        uuid: UUID de Verifacti (opcional)
     """
     try:
         from database.database import db
         
-        # Intentar actualizar
-        query = """
+        # Construir query dinámicamente según los datos proporcionados
+        campos = ["estado_verifacti = ?", "fecha_envio_verifacti = CURRENT_TIMESTAMP"]
+        valores = [estado.value]
+        
+        if qr_data:
+            campos.append("qr_verifacti = ?")
+            valores.append(qr_data)
+        
+        if uuid:
+            campos.append("uuid_verifacti = ?")
+            valores.append(uuid)
+        
+        valores.append(factura_id)
+        
+        query = f"""
             UPDATE facturas 
-            SET estado_verifacti = ?, fecha_envio_verifacti = CURRENT_TIMESTAMP
+            SET {', '.join(campos)}
             WHERE id = ?
         """
-        db.execute_query(query, (estado.value, factura_id))
+        db.execute_query(query, tuple(valores))
         logger.info(f"Estado Verifacti actualizado para factura {factura_id}: {estado.value}")
         
     except Exception as e:

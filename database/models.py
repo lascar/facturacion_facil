@@ -176,7 +176,8 @@ class Producto:
 class Factura:
     def __init__(self, id=None, numero_factura="", fecha_factura="", cliente_id=None, nombre_cliente="",
                  dni_nie_cliente="", direccion_cliente="", email_cliente="", telefono_cliente="",
-                 subtotal=0.0, total_iva=0.0, total_factura=0.0, modo_pago="", fecha_creacion=""):
+                 subtotal=0.0, total_iva=0.0, total_factura=0.0, modo_pago="", fecha_creacion="",
+                 estado_verifacti=None, qr_verifacti=None, uuid_verifacti=None):
         self.id = id
         self.numero_factura = numero_factura
         self.fecha_factura = fecha_factura
@@ -191,6 +192,9 @@ class Factura:
         self.total_factura = total_factura
         self.modo_pago = modo_pago
         self.fecha_creacion = fecha_creacion
+        self.estado_verifacti = estado_verifacti
+        self.qr_verifacti = qr_verifacti
+        self.uuid_verifacti = uuid_verifacti
         self.items = []  # Lista de FacturaItem
 
     def save(self):
@@ -274,7 +278,7 @@ class Factura:
             cliente_id_pos = column_map['cliente_id']
             if cliente_id_pos == 3:
                 # Nueva estructura: id, numero_factura, fecha_factura, cliente_id, nombre_cliente, ...
-                return {
+                base_indices = {
                     'cliente_id': 3, 'nombre_cliente': 4, 'dni_nie_cliente': 5,
                     'direccion_cliente': 6, 'email_cliente': 7, 'telefono_cliente': 8,
                     'subtotal': 9, 'total_iva': 10, 'total_factura': 11,
@@ -282,7 +286,7 @@ class Factura:
                 }
             else:
                 # Antigua estructura: ..., fecha_creacion, cliente_id
-                return {
+                base_indices = {
                     'cliente_id': 13, 'nombre_cliente': 3, 'dni_nie_cliente': 4,
                     'direccion_cliente': 5, 'email_cliente': 6, 'telefono_cliente': 7,
                     'subtotal': 8, 'total_iva': 9, 'total_factura': 10,
@@ -290,12 +294,32 @@ class Factura:
                 }
         else:
             # Sin cliente_id (muy antigua)
-            return {
+            base_indices = {
                 'cliente_id': None, 'nombre_cliente': 3, 'dni_nie_cliente': 4,
                 'direccion_cliente': 5, 'email_cliente': 6, 'telefono_cliente': 7,
                 'subtotal': 8, 'total_iva': 9, 'total_factura': 10,
                 'modo_pago': 11, 'fecha_creacion': 12
             }
+        
+        # Añadir columnas Verifacti si existen
+        if 'estado_verifacti' in column_map:
+            base_indices['estado_verifacti'] = column_map['estado_verifacti']
+        if 'qr_verifacti' in column_map:
+            base_indices['qr_verifacti'] = column_map['qr_verifacti']
+        if 'uuid_verifacti' in column_map:
+            base_indices['uuid_verifacti'] = column_map['uuid_verifacti']
+        
+        return base_indices
+    
+    @staticmethod
+    def _get_column_value(row, indices, column_name, default=None):
+        """Obtiene el valor de una columna de forma segura"""
+        if column_name not in indices:
+            return default
+        idx = indices[column_name]
+        if idx is None or idx >= len(row):
+            return default
+        return row[idx]
 
     @staticmethod
     def get_all():
@@ -316,7 +340,10 @@ class Factura:
                 direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
                 telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
                 total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
-                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']],
+                estado_verifacti=Factura._get_column_value(row, indices, 'estado_verifacti'),
+                qr_verifacti=Factura._get_column_value(row, indices, 'qr_verifacti'),
+                uuid_verifacti=Factura._get_column_value(row, indices, 'uuid_verifacti')
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)
@@ -341,7 +368,10 @@ class Factura:
                 direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
                 telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
                 total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
-                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']],
+                estado_verifacti=Factura._get_column_value(row, indices, 'estado_verifacti'),
+                qr_verifacti=Factura._get_column_value(row, indices, 'qr_verifacti'),
+                uuid_verifacti=Factura._get_column_value(row, indices, 'uuid_verifacti')
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)
@@ -366,7 +396,10 @@ class Factura:
                 direccion_cliente=row[indices['direccion_cliente']], email_cliente=row[indices['email_cliente']],
                 telefono_cliente=row[indices['telefono_cliente']], subtotal=row[indices['subtotal']],
                 total_iva=row[indices['total_iva']], total_factura=row[indices['total_factura']],
-                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']]
+                modo_pago=row[indices['modo_pago']], fecha_creacion=row[indices['fecha_creacion']],
+                estado_verifacti=Factura._get_column_value(row, indices, 'estado_verifacti'),
+                qr_verifacti=Factura._get_column_value(row, indices, 'qr_verifacti'),
+                uuid_verifacti=Factura._get_column_value(row, indices, 'uuid_verifacti')
             )
             # Cargar items de la factura
             factura.items = FacturaItem.get_by_factura_id(factura.id)

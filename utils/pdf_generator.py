@@ -106,6 +106,9 @@ class FacturaPDFGenerator:
             # Totaux
             story.extend(self.create_totals_section(invoice_data))
             
+            # Section QR Verifacti (si disponible)
+            story.extend(self.create_verifacti_section(invoice_data))
+            
             # Pied de page avec conditions
             story.extend(self.create_footer(invoice_data))
             
@@ -437,6 +440,87 @@ class FacturaPDFGenerator:
 
         return elements
 
+    def create_verifacti_section(self, invoice_data):
+        """Crée la section QR Verifacti si disponible"""
+        elements = []
+        
+        # Vérifier si on a des données Verifacti
+        qr_base64 = invoice_data.get('qr_verifacti')
+        uuid_verifacti = invoice_data.get('uuid_verifacti')
+        estado_verifacti = invoice_data.get('estado_verifacti')
+        
+        if not qr_base64:
+            return elements
+        
+        try:
+            import base64
+            import tempfile
+            from reportlab.platypus import Image as RLImage
+            
+            # Décoder le QR base64
+            qr_bytes = base64.b64decode(qr_base64)
+            
+            # Créer un fichier temporaire pour l'image
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                tmp.write(qr_bytes)
+                qr_path = tmp.name
+            
+            # Créer l'image ReportLab avec taille fixe
+            qr_img = RLImage(qr_path, width=3*cm, height=3*cm)
+            
+            # Style pour le texte Verifacti
+            verifacti_style = ParagraphStyle(
+                name='Verifacti',
+                parent=self.styles['Normal'],
+                fontSize=8,
+                textColor=colors.HexColor('#28a745'),
+                alignment=TA_CENTER
+            )
+            
+            # Texte d'information
+            info_lines = ["<b>Verifacti (AEAT)</b>"]
+            if estado_verifacti:
+                info_lines.append(f"Estado: {estado_verifacti}")
+            if uuid_verifacti:
+                info_lines.append(f"UUID: {uuid_verifacti[:20]}...")
+            
+            info_text = "<br/>".join(info_lines)
+            info_para = Paragraph(info_text, verifacti_style)
+            
+            # Table combinée QR + info
+            combined_data = [[qr_img, info_para]]
+            combined_table = Table(combined_data, colWidths=[5*cm, 10*cm])
+            combined_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'CENTER'),
+                ('ALIGN', (1, 0), (1, 0), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            
+            # Bordure verte pour indiquer la validation
+            from reportlab.lib.colors import HexColor
+            combined_table.setStyle(TableStyle([
+                ('BOX', (0, 0), (-1, -1), 1, HexColor('#28a745')),
+                ('BACKGROUND', (0, 0), (-1, -1), HexColor('#f8fff8')),
+            ]))
+            
+            elements.append(combined_table)
+            elements.append(Spacer(1, 15))
+            
+            # Nettoyer le fichier temporaire
+            try:
+                os.unlink(qr_path)
+            except:
+                pass
+                
+        except Exception as e:
+            self.logger.error(f"Error creando sección Verifacti: {e}")
+        
+        return elements
+
     def get_default_config(self):
         """Obtenir la configuration par défaut"""
         return {
@@ -687,7 +771,11 @@ class FacturaPDFGenerator:
                 'lineas': [],
                 'subtotal': getattr(factura, 'subtotal', 0),
                 'iva_total': getattr(factura, 'total_iva', 0),
-                'total': getattr(factura, 'total_factura', 0)
+                'total': getattr(factura, 'total_factura', 0),
+                # Données Verifacti pour le QR
+                'qr_verifacti': getattr(factura, 'qr_verifacti', None),
+                'uuid_verifacti': getattr(factura, 'uuid_verifacti', None),
+                'estado_verifacti': getattr(factura, 'estado_verifacti', None)
             }
 
             # Ajouter les lignes de facture si disponibles
